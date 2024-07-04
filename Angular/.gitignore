@@ -1,0 +1,14 @@
+
+### Node modules ###
+Angular/node_modules/
+
+### IntelliJ IDEA ###
+*.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+workspace.code-workspace
+.VSCodeCounter
