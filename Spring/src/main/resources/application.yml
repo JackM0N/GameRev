@@ -1,0 +1,26 @@
+spring:
+  jackson:
+    time-zone: Europe/Warsaw
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+          show_sql: false
+          format_sql: true
+          use_sql_comments: false
+          ddl-auto: none
+          default_auto_commit: false
+  liquibase:
+    enabled: true
+    change-log: db/db.changelog-master.xml
