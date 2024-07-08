@@ -6,9 +6,9 @@ export interface WebsiteUser {
   username: string;
   password: string;
   email: string;
+  nickname: string;
 
   profilepic?: string;
-  nickname?: string;
   description?: string;
   join_date?: string;
   is_banned?: boolean;

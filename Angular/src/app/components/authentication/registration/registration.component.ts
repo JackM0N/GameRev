@@ -57,7 +57,8 @@ export class RegistrationComponent {
       const userData: WebsiteUser = {
         username: this.registrationForm.get('username')?.value,
         email: this.registrationForm.get('email')?.value,
-        password: this.registrationForm.get('password')?.value
+        password: this.registrationForm.get('password')?.value,
+        nickname: this.registrationForm.get('username')?.value,
       };
 
       const observer: Observer<any> = {
