@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Set;
 
 @Getter
@@ -18,7 +17,7 @@ public class Role {
 
     @Column(name = "role_name", nullable = false)
     private String roleName;
-
+  
     @ManyToMany(mappedBy = "roles")
     private Set<WebsiteUser> users;
 }
