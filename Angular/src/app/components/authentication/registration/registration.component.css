@@ -1,0 +1,32 @@
+
+.form-container {
+    margin: 16px;
+}
+
+mat-form-field {
+    display: block;
+    width: 300px;
+    margin: 0 auto;
+    margin-bottom: 8px;
+}
+
+.field-container {
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid #f1f1f1;
+    border-radius: 6px;
+    width: fit-content;
+    margin-bottom: 16px;
+    padding: 16px;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+mat-form-field button {
+    margin-right: 8px;
+}
+
+.centered-container {
+    margin: 0 auto;
+    text-align: center;
+}

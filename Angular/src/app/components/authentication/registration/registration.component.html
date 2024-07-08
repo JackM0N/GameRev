@@ -1,0 +1,75 @@
+<div class="form-container">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+        <div class="field-container">
+            <p>Register</p>
+
+            <mat-form-field>
+                <mat-label>Login username</mat-label>
+                <input matInput placeholder="Input username" formControlName="username" required/>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Enter your email</mat-label>
+                <input matInput placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                <mat-error *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Enter your password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                <button
+                mat-icon-button
+                matSuffix
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Confirm your password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
+                <button
+                mat-icon-button
+                matSuffix
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-error *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
+        </div>
+
+        <!--
+        <div class="field-container">
+            <h3>Profile information</h3>
+
+            <mat-form-field>
+                <mat-label>Profile nickname</mat-label>
+                <input matInput placeholder="Input nickname" formControlName="nickname" required/>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Description (Optional)</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Profile Picture</mat-label>
+                <input type="file" (change)="onFileSelected($event)" formControlName="profilepic" />
+                <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
+            </mat-form-field>
+        </div>
+        -->
+
+        <div class="centered-container">
+            <button mat-stroked-button [disabled]="!registrationForm.valid">Submit and Register</button>
+        </div>
+    </form>
+</div>

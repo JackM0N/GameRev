@@ -1,6 +1,7 @@
 
 ### Node modules ###
 Angular/node_modules/
+.angular/
 
 ### IntelliJ IDEA ###
 *.idea
