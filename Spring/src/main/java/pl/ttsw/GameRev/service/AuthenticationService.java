@@ -38,8 +38,8 @@ public class AuthenticationService {
         user.setEmail(request.getEmail());
         user.setNickname(request.getNickname());
         user.setJoinDate(LocalDate.now());
+        user.setLastActionDate(LocalDate.now());
         user.setDescription(null);
-        user.setLastActionDate(null);
         user.setIsBanned(false);
         user.setIsDeleted(false);
         user.setProfilepic(null);

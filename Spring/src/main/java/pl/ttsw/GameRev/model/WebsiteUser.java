@@ -35,8 +35,8 @@ public class WebsiteUser {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "last_action_date")
-    private String lastActionDate;
+    @Column(name = "last_action_date", nullable = false)
+    private LocalDate lastActionDate;
 
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
