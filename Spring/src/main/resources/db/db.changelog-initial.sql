@@ -9,7 +9,7 @@ CREATE TABLE website_user
     profilepic       VARCHAR(255),
     nickname         VARCHAR(255) NOT NULL,
     email            VARCHAR(255) NOT NULL,
-    last_action_date DATE         NOT NULL,
+    last_action_date TIMESTAMP    NOT NULL,
     description      TEXT,
     join_date        DATE         NOT NULL,
     is_banned        BOOLEAN      NOT NULL,
