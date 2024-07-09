@@ -49,7 +49,7 @@ public class WebsiteUser {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
+    
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role",
