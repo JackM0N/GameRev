@@ -24,3 +24,11 @@ spring:
   liquibase:
     enabled: true
     change-log: db/db.changelog-master.xml
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          filter:
+            OncePerRequestFilter: DEBUG

@@ -2,6 +2,7 @@ package pl.ttsw.GameRev.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.model.Role;
@@ -12,6 +13,7 @@ import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.security.JWTService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -38,8 +40,8 @@ public class AuthenticationService {
         user.setEmail(request.getEmail());
         user.setNickname(request.getNickname());
         user.setJoinDate(LocalDate.now());
+        user.setLastActionDate(LocalDateTime.now());
         user.setDescription(null);
-        user.setLastActionDate(null);
         user.setIsBanned(false);
         user.setIsDeleted(false);
         user.setProfilepic(null);
@@ -55,14 +57,17 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(WebsiteUser request) {
+        WebsiteUser user;
+        String login = request.getUsername() != null ? request.getUsername() : request.getEmail();
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        login,
                         request.getPassword()
                 )
         );
 
-        WebsiteUser user = websiteUserRepository.findByUsername(request.getUsername());
+        user = websiteUserRepository.findByUsernameOrEmail(login, login);
         String token = jwtService.generateToken(user);
 
         return new AuthenticationResponse(token);

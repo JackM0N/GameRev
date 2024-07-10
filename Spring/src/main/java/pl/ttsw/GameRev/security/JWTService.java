@@ -49,7 +49,7 @@ public class JWTService {
         return extractClaims(token, Claims::getSubject);
     }
 
-    public boolean validateToken(String token, WebsiteUser user) {
+    public boolean validateToken(String token, UserDetails user) {
         String username = extractClaims(token, Claims::getSubject);
         return (username.equals(user.getUsername())) && !isTokenExpired(token);
     }
