@@ -30,3 +30,13 @@ mat-form-field button {
     margin: 0 auto;
     text-align: center;
 }
+
+.bottom-mat-error {
+    margin-bottom: 16px;
+}
+
+#delete-account-button {
+    background-color: #d13b3b;
+    border: 2px solid black;
+}
+
