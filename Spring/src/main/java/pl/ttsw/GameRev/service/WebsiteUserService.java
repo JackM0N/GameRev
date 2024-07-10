@@ -2,6 +2,7 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 public class WebsiteUserService {
 
     private final WebsiteUserRepository websiteUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository) {
+    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder) {
         this.websiteUserRepository = websiteUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public WebsiteUser findByUsername(String username) {
@@ -35,13 +38,13 @@ public class WebsiteUserService {
     public WebsiteUser updateUserProfile(String username, WebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
-        if (!Objects.equals(request.getPassword(), user.getPassword())) {
+        System.out.println(request.getPassword());
+        System.out.println(user.getPassword());
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadRequestException("Passwords do not match");
         }
 
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(request.getPassword());
-        }
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
             user.setEmail(request.getEmail());
         }
@@ -63,6 +66,7 @@ public class WebsiteUserService {
     public WebsiteUserDTO mapToDTO(WebsiteUser user) {
         WebsiteUserDTO dto = new WebsiteUserDTO();
         dto.setId(user.getId());
+        dto.setPassword(user.getPassword());
         dto.setUsername(user.getUsername());
         dto.setProfilepic(user.getProfilepic());
         dto.setNickname(user.getNickname());

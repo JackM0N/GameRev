@@ -27,8 +27,8 @@ public class WebsiteUserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @PostMapping("/edit-profile/{username}")
-    public ResponseEntity<?> edit(@PathVariable String username, @RequestBody WebsiteUserDTO request, Principal principal) throws BadRequestException {
+    @PutMapping("/edit-profile/{username}")
+    public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody WebsiteUserDTO request, Principal principal) throws BadRequestException {
         String currentUsername = principal.getName();
 
         if (!currentUsername.equals(username)) {
@@ -37,6 +37,7 @@ public class WebsiteUserController {
 
         WebsiteUser user = websiteUserService.updateUserProfile(username, request);
         WebsiteUserDTO userDTO = websiteUserService.mapToDTO(user);
+        System.out.println("I worked!");
         return ResponseEntity.ok(userDTO);
     }
 }
