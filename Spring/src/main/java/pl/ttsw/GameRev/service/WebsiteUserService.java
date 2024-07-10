@@ -52,6 +52,9 @@ public class WebsiteUserService {
         if (request.getNickname() != null && !request.getNickname().isEmpty()) {
             user.setNickname(request.getNickname());
         }
+        if (request.getDescription() != null && !request.getDescription().isEmpty()) {
+            user.setDescription(request.getDescription());
+        }
         if (request.getProfilepic() != null && !request.getProfilepic().isEmpty()) {
             user.setProfilepic(request.getProfilepic());
         }
@@ -71,6 +74,7 @@ public class WebsiteUserService {
         dto.setUsername(user.getUsername());
         dto.setProfilepic(user.getProfilepic());
         dto.setNickname(user.getNickname());
+        dto.setDescription(user.getDescription());
         dto.setEmail(user.getEmail());
         dto.setJoinDate(user.getJoinDate());
         dto.setIsBanned(user.getIsBanned());
