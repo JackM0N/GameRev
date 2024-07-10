@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface WebsiteUserRepository extends JpaRepository<WebsiteUser, Integer> {
     WebsiteUser findByUsername(String username);
-    WebsiteUser findByEmail(String email);
     WebsiteUser findByUsernameOrEmail(String username, String email);
+    WebsiteUser findByNickname(String nickname);
 }
