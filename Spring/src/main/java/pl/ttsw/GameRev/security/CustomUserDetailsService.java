@@ -21,8 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<WebsiteUser> user = Optional.ofNullable(websiteUserRepository.findByUsername(username));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        Optional<WebsiteUser> user = Optional.ofNullable(websiteUserRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail));
         if (user.isPresent()) {
             var websiteUser = user.get();
             return User.builder()
@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .roles(websiteUser.getRoles().stream().map(Role::getRoleName).toArray(String[]::new))
                     .build();
         }else {
-            throw new UsernameNotFoundException("User "+username+" not found");
+            throw new UsernameNotFoundException("User not found");
         }
     }
 }
