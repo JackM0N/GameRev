@@ -26,18 +26,18 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
   ) {
     this.changePasswordForm = this.formBuilder.group({
-      curentPassword: ['', [Validators.required, Validators.minLength(6)]],
+      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
     }, { validators: passwordMatchValidator });
 
     this.changeEmailForm = this.formBuilder.group({
-      curentPassword: ['', [Validators.required, Validators.minLength(6)]],
+      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
     });
     
     this.changeProfileInformationForm = this.formBuilder.group({
-      curentPassword: ['', [Validators.required, Validators.minLength(6)]],
+      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       nickname: ['', [Validators.minLength(3)]],
       description: [''],
     });
@@ -53,8 +53,31 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     const userName = this.authService.getUserName();
-    // set the nickname form value to the current username
-    this.changeProfileInformationForm.get('nickname')?.setValue(userName);
+    const token = this.authService.getToken();
+  
+    if (!userName) {
+      console.error("Username not found");
+      return;
+    }
+
+    if (!token) {
+      console.error("Token not found");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        console.log("Profile information:", response);
+        this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
+        this.changeProfileInformationForm.get('description')?.setValue(response.description);
+        this.changeEmailForm.get('email')?.setValue(response.email);
+      },
+      error: error => {
+        console.error("Profile information:", error);
+      },
+      complete: () => {}
+    };
+    this.authService.getUserProfileInformation(userName, token).subscribe(observer);
   }
 
   logout() {
@@ -67,47 +90,60 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  onSubmitNicknameChange() {
+  onSubmitProfileInformationChange() {
     if (this.changeProfileInformationForm.valid) {
       const userName = this.authService.getUserName();
+      const token = this.authService.getToken();
 
       if (!userName) {
         console.error("Username not found");
         return;
       }
 
+      if (!token) {
+        console.error("Token not found");
+        return;
+      }
+
       const newData: NewCredentials = {
         username: userName,
-        currentPassword: this.changePasswordForm.get('currentPassword')?.value,
+        currentPassword: this.changeProfileInformationForm.get('currentPassword')?.value,
         nickname: this.changeProfileInformationForm.get('nickname')?.value,
+        description: this.changeProfileInformationForm.get('description')?.value,
       };
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Nickname change successful:", response);
+          console.log("Profile information change successful:", response);
         },
         error: error => {
-          console.error("Nickname change failed:", error);
+          console.error("Profile information change failed:", error);
         },
         complete: () => {}
       };
-      this.authService.changeProfile(newData).subscribe(observer);
+      this.authService.changeProfile(newData, token).subscribe(observer);
     }
   }
 
   onSubmitPasswordChange() {
     if (this.changePasswordForm.valid) {
       const userName = this.authService.getUserName();
+      const token = this.authService.getToken();
 
       if (!userName) {
         console.error("Username not found");
         return;
       }
 
+      if (!token) {
+        console.error("Token not found");
+        return;
+      }
+
       const newData: NewCredentials = {
         username: userName,
         currentPassword: this.changePasswordForm.get('currentPassword')?.value,
-        password: this.changePasswordForm.get('password')?.value,
+        newPassword: this.changePasswordForm.get('password')?.value,
       };
 
       const observer: Observer<any> = {
@@ -119,12 +155,42 @@ export class ProfileComponent implements OnInit {
         },
         complete: () => {}
       };
-      this.authService.changeProfile(newData).subscribe(observer);
+      this.authService.changeProfile(newData, token).subscribe(observer);
     }
   }
 
   onSubmitEmailChange() {
+    if (this.changeEmailForm.valid) {
+      const userName = this.authService.getUserName();
+      const token = this.authService.getToken();
 
+      if (!userName) {
+        console.error("Username not found");
+        return;
+      }
+
+      if (!token) {
+        console.error("Token not found");
+        return;
+      }
+
+      const newData: NewCredentials = {
+        username: userName,
+        currentPassword: this.changeEmailForm.get('currentPassword')?.value,
+        email: this.changeEmailForm.get('email')?.value,
+      };
+
+      const observer: Observer<any> = {
+        next: response => {
+          console.log("Profile information change successful:", response);
+        },
+        error: error => {
+          console.error("Profile information change failed:", error);
+        },
+        complete: () => {}
+      };
+      this.authService.changeProfile(newData, token).subscribe(observer);
+    }
   }
 
   hidePasswordClickEvent(event: MouseEvent) {

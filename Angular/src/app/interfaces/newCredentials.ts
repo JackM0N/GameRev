@@ -3,7 +3,7 @@ export interface NewCredentials {
   username: string;
   currentPassword: string;
 
-  password?: string;
+  newPassword?: string;
   email?: string;
   nickname?: string;
   profilepic?: string;

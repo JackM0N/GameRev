@@ -1,14 +1,13 @@
 
 <div class="form-container">
-
     
     <div class="field-container">
         <h3>Change profile information</h3>
 
-        <form [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitNicknameChange()">
+        <form [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitProfileInformationChange()">
             <mat-form-field>
                 <mat-label>Enter your current password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="curentPassword" required />
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
                 <button
                 mat-icon-button
                 matSuffix
@@ -42,7 +41,7 @@
         <form [formGroup]="changeEmailForm" (ngSubmit)="onSubmitEmailChange()">
             <mat-form-field>
                 <mat-label>Enter your current password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="curentPassword" required />
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
                 <button
                 mat-icon-button
                 matSuffix
@@ -72,7 +71,7 @@
         <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitPasswordChange()">
             <mat-form-field>
                 <mat-label>Enter your current password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="curentPassword" required />
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
                 <button
                 mat-icon-button
                 matSuffix

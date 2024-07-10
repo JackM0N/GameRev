@@ -1,10 +1,11 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteuser';
 import { LoginCredentials } from '../interfaces/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { NewCredentials } from '../interfaces/newCredentials';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
   private registerUrl = 'http://localhost:8080/register';
   private loginUrl = 'http://localhost:8080/login';
-  private profileChangeUrl = 'http://localhost:8080/changeprofile';
+  private profileChangeUrl = 'http://localhost:8080/user/edit-profile';
+  private profileInformationUrl = 'http://localhost:8080/user/account';
 
   constructor(
     private http: HttpClient,
@@ -51,6 +53,10 @@ export class AuthService {
     return false;
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
@@ -68,7 +74,20 @@ export class AuthService {
     return null;
   }
 
-  changeProfile(userData: WebsiteUser): Observable<any> {
-    return this.http.post<any>(this.profileChangeUrl, userData);
+  getUserProfileInformation(username: string, token: string): Observable<WebsiteUser> {
+    const url = `${this.profileInformationUrl}/${username}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<WebsiteUser>(url, { headers });
+}
+
+  changeProfile(userData: NewCredentials, token: string): Observable<any> {
+    const url = `${this.profileChangeUrl}/${userData.username}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put<WebsiteUser>(url, userData, { headers });
   }
 }
