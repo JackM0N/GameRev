@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,8 +36,8 @@ public class WebsiteUser {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "last_action_date")
-    private String lastActionDate;
+    @Column(name = "last_action_date", nullable = false)
+    private LocalDateTime lastActionDate;
 
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;

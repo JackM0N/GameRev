@@ -13,6 +13,7 @@ import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.security.JWTService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -39,8 +40,8 @@ public class AuthenticationService {
         user.setEmail(request.getEmail());
         user.setNickname(request.getNickname());
         user.setJoinDate(LocalDate.now());
+        user.setLastActionDate(LocalDateTime.now());
         user.setDescription(null);
-        user.setLastActionDate(null);
         user.setIsBanned(false);
         user.setIsDeleted(false);
         user.setProfilepic(null);
