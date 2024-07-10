@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RoleDTO;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -35,16 +36,16 @@ public class WebsiteUserService {
         return websiteUserRepository.findByNickname(nickname);
     }
 
-    public WebsiteUser updateUserProfile(String username, WebsiteUserDTO request) throws BadRequestException {
+    public WebsiteUser updateUserProfile(String username, UpdateWebsiteUserDto request) throws BadRequestException {
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
-        System.out.println(request.getPassword());
-        System.out.println(user.getPassword());
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new BadRequestException("Passwords do not match");
         }
 
+        if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        }
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
             user.setEmail(request.getEmail());
         }
