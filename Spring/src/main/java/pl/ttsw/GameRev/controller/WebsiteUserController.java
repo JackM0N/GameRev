@@ -20,9 +20,8 @@ public class WebsiteUserController {
         this.websiteUserService = websiteUserService;
     }
 
-    @GetMapping("/account")
-    public ResponseEntity<?> getAccount(Principal principal) {
-        String username = principal.getName();
+    @GetMapping("/account/{username}")
+    public ResponseEntity<?> getAccount(@PathVariable String username) {
         WebsiteUser user = websiteUserService.findByUsername(username);
         WebsiteUserDTO userDTO = websiteUserService.mapToDTO(user);
         return ResponseEntity.ok(userDTO);

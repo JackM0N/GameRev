@@ -36,7 +36,8 @@
             ],
             "styles": [
               "src/custom-theme.scss",
-              "src/styles.css"
+              "src/styles.css",
+              "src/assets/styles/toaster.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",

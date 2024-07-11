@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Observer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WebsiteUser } from '../../../interfaces/websiteuser';
-import { WebsiteUserService } from '../../../services/websiteuser.service';
+import { AuthService } from '../../../services/auth.service';
+import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
+import { Toast, ToasterService } from 'angular-toaster';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrl: './registration.component.css',
+  styleUrl: '/src/app/styles/shared-form-styles.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationComponent {
@@ -18,21 +21,18 @@ export class RegistrationComponent {
   passwordMismatchErrorMessage = signal('');
   hidePassword = signal(true);
 
-  fileError: string | null = null;
-
   constructor(
     private formBuilder: FormBuilder,
-    private websiteUserService: WebsiteUserService
+    private authService: AuthService,
+    private toasterService: ToasterService,
+    private router: Router
   ) {
     this.registrationForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-      //nickname: ['', [Validators.maxLength(20)]],
-      //description: ['', [Validators.maxLength(100)]],
-      //profilepic: [null]
-    }, { validators: this.passwordMatchValidator });
+      confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
+    }, { validators: passwordMatchValidator });
 
     const email = this.registrationForm.get('email');
     const password = this.registrationForm.get('password');
@@ -53,7 +53,6 @@ export class RegistrationComponent {
 
   onSubmit() {
     if (this.registrationForm.valid) {
-
       const userData: WebsiteUser = {
         username: this.registrationForm.get('username')?.value,
         email: this.registrationForm.get('email')?.value,
@@ -63,15 +62,26 @@ export class RegistrationComponent {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Registration successful:", response);
+          this.router.navigate(['/']);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Registration successful',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Registration failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Registration failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };
-      this.websiteUserService.registerUser(userData).subscribe(observer);
-      
+      this.authService.registerUser(userData).subscribe(observer);
     }
   }
 
@@ -96,13 +106,10 @@ export class RegistrationComponent {
   }
 
   isPasswordMismatch() {
-    //return this.registrationForm.hasError('passwordMismatch') && this.registrationForm.get('confirmPassword')?.touched;
     return this.registrationForm.hasError('passwordMismatch');
   }
 
   updatePasswordMismatchErrorMessage() {
-    console.log("updatePasswordMismatchErrorMessage: " + this.isPasswordMismatch());
-
     if (this.isPasswordMismatch()) {
       this.passwordMismatchErrorMessage.set('Passwords do not match');
     } else {
@@ -110,30 +117,8 @@ export class RegistrationComponent {
     }
   }
 
-  passwordMatchValidator: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => { 
-    let pass = group.get('password')?.value;
-    let confirmPass = group.get('confirmPassword')?.value
-
-    return pass === confirmPass ? null : { passwordMismatch: true }
-  }
-
   hidePasswordClickEvent(event: MouseEvent) {
     this.hidePassword.set(!this.hidePassword());
     event.stopPropagation();
   }
-
-  /*
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      const file = input.files[0];
-      if (file.size > 5000000) { // 5 MB limit
-        this.fileError = 'File size should be less than 5 MB';
-      } else {
-        this.fileError = null;
-        this.registrationForm.patchValue({ photo: file });
-      }
-    }
-  }
-  */
 }

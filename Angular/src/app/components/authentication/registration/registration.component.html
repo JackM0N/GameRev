@@ -43,33 +43,11 @@
                 </button>
             </mat-form-field>
 
-            <mat-error *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
-        </div>
+            <mat-error class="bottom-mat-error" *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
 
-        <!--
-        <div class="field-container">
-            <h3>Profile information</h3>
-
-            <mat-form-field>
-                <mat-label>Profile nickname</mat-label>
-                <input matInput placeholder="Input nickname" formControlName="nickname" required/>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Description (Optional)</mat-label>
-                <textarea matInput formControlName="description"></textarea>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Profile Picture</mat-label>
-                <input type="file" (change)="onFileSelected($event)" formControlName="profilepic" />
-                <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
-            </mat-form-field>
-        </div>
-        -->
-
-        <div class="centered-container">
-            <button mat-stroked-button [disabled]="!registrationForm.valid">Submit and Register</button>
+            <div class="centered-container">
+                <button mat-stroked-button [disabled]="!registrationForm.valid">Submit and Register</button>
+            </div>
         </div>
     </form>
 </div>
