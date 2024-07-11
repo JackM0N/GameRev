@@ -5,6 +5,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WebsiteUser } from '../../../interfaces/websiteuser';
 import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
+import { Toast, ToasterService } from 'angular-toaster';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -21,7 +23,9 @@ export class RegistrationComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private toasterService: ToasterService,
+    private router: Router
   ) {
     this.registrationForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -58,10 +62,22 @@ export class RegistrationComponent {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Registration successful:", response);
+          this.router.navigate(['/']);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Registration successful',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Registration failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Registration failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };

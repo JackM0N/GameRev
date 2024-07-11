@@ -4,6 +4,7 @@ import { Observer } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
 import { Router } from '@angular/router';
+import { Toast, ToasterService } from 'angular-toaster';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private toasterService: ToasterService,
     private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
@@ -48,11 +50,22 @@ export class LoginComponent {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Login successful:", response);
           this.router.navigate(['/']);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Login successful',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Login failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Login failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };

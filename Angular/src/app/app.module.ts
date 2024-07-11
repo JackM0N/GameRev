@@ -14,6 +14,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
 import { ProfileComponent } from './components/user/profile/profile.component';
+import { LogoutConfirmationDialogComponent } from './components/user/logout-confirmation-dialog/logout-confirmation-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToasterModule, ToasterService } from 'angular-toaster';
 
 @NgModule({
   declarations: [
@@ -21,6 +25,7 @@ import { ProfileComponent } from './components/user/profile/profile.component';
     LoginComponent,
     RegistrationComponent,
     ProfileComponent,
+    LogoutConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -31,6 +36,7 @@ import { ProfileComponent } from './components/user/profile/profile.component';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
+    MatDialogModule,
     HttpClientModule,
     JwtModule.forRoot({
       config: {
@@ -41,11 +47,14 @@ import { ProfileComponent } from './components/user/profile/profile.component';
         disallowedRoutes: ['localhost:8080/login']
       }
     }),
+    BrowserAnimationsModule,
+    ToasterModule.forRoot()
   ],
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
     AuthService,
+    ToasterService
   ],
   bootstrap: [AppComponent]
 })

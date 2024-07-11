@@ -24,7 +24,21 @@ export class AuthService {
   ) { }
 
   registerUser(userData: WebsiteUser): Observable<any> {
-    return this.http.post<any>(this.registerUrl, userData);
+    return this.http.post<any>(this.registerUrl, userData)
+      .pipe(
+        map(response => {
+          const token = response.token;
+          
+          if (token && isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('access_token', token);
+          }
+          return response;
+        }),
+        catchError(error => {
+          console.error('Registration failed:', error);
+          return throwError(error);
+        })
+      );
   }
 
   login(credentials: LoginCredentials): Observable<any> {
@@ -54,7 +68,11 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('access_token');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('access_token');
+    } else {
+      return null;
+    }
   }
 
   logout() {

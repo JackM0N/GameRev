@@ -6,6 +6,9 @@ import { merge, Observer } from 'rxjs';
 import { NewCredentials } from '../../../interfaces/newCredentials';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
+import { LogoutConfirmationDialogComponent } from '../logout-confirmation-dialog/logout-confirmation-dialog.component';
+import { Toast, ToasterService } from 'angular-toaster';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +27,8 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder,
+    public dialog: MatDialog,
+    private toasterService: ToasterService,
   ) {
     this.changePasswordForm = this.formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -55,34 +60,49 @@ export class ProfileComponent implements OnInit {
     const userName = this.authService.getUserName();
     const token = this.authService.getToken();
   
-    if (!userName) {
-      console.error("Username not found");
-      return;
-    }
-
-    if (!token) {
-      console.error("Token not found");
+    if (!userName || !token) {
       return;
     }
 
     const observer: Observer<any> = {
       next: response => {
-        console.log("Profile information:", response);
         this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
         this.changeProfileInformationForm.get('description')?.setValue(response.description);
         this.changeEmailForm.get('email')?.setValue(response.email);
       },
       error: error => {
-        console.error("Profile information:", error);
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Unable to retrieve profile information',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
       },
       complete: () => {}
     };
     this.authService.getUserProfileInformation(userName, token).subscribe(observer);
   }
 
+  openLogoutDialog() {
+    const dialogRef = this.dialog.open(LogoutConfirmationDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.logout();
+      }
+    });
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/']);
+    var toast: Toast = {
+      type: 'success',
+      title: 'Successfully logged out',
+      showCloseButton: true
+    };
+    this.toasterService.pop(toast);
   }
 
   deleteAccount() {
@@ -95,13 +115,14 @@ export class ProfileComponent implements OnInit {
       const userName = this.authService.getUserName();
       const token = this.authService.getToken();
 
-      if (!userName) {
-        console.error("Username not found");
-        return;
-      }
-
-      if (!token) {
-        console.error("Token not found");
+      if (!userName || !token) {
+        console.error("Username or token not found");
+        var toast: Toast = {
+          type: 'error',
+          title: 'Profile information change failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
         return;
       }
 
@@ -114,10 +135,21 @@ export class ProfileComponent implements OnInit {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Profile information change successful:", response);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Profile information change successful!',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Profile information change failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Profile information change failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };
@@ -130,13 +162,14 @@ export class ProfileComponent implements OnInit {
       const userName = this.authService.getUserName();
       const token = this.authService.getToken();
 
-      if (!userName) {
-        console.error("Username not found");
-        return;
-      }
-
-      if (!token) {
-        console.error("Token not found");
+      if (!userName || !token) {
+        console.error("Username or token not found");
+        var toast: Toast = {
+          type: 'error',
+          title: 'Profile information change failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
         return;
       }
 
@@ -148,10 +181,21 @@ export class ProfileComponent implements OnInit {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Password change successful:", response);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Password change successful',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Password change failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Password change failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };
@@ -164,13 +208,14 @@ export class ProfileComponent implements OnInit {
       const userName = this.authService.getUserName();
       const token = this.authService.getToken();
 
-      if (!userName) {
-        console.error("Username not found");
-        return;
-      }
-
-      if (!token) {
-        console.error("Token not found");
+      if (!userName || !token) {
+        console.error("Username or token not found");
+        var toast: Toast = {
+          type: 'error',
+          title: 'Profile information change failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
         return;
       }
 
@@ -182,10 +227,21 @@ export class ProfileComponent implements OnInit {
 
       const observer: Observer<any> = {
         next: response => {
-          console.log("Profile information change successful:", response);
+          var toast: Toast = {
+            type: 'success',
+            title: 'Email change successful',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         error: error => {
-          console.error("Profile information change failed:", error);
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Email change failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
         },
         complete: () => {}
       };
