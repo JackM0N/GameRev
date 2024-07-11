@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.service.AuthenticationService;
+import pl.ttsw.GameRev.service.WebsiteUserService;
 
 @RestController
 public class AuthenticationController {
 
     private AuthenticationService authenticationService;
+    private WebsiteUserService websiteUserService;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
+    public AuthenticationController(AuthenticationService authenticationService, WebsiteUserService websiteUserService) {
         this.authenticationService = authenticationService;
+        this.websiteUserService = websiteUserService;
     }
 
     @PostMapping("/register")

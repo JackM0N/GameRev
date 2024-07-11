@@ -32,3 +32,6 @@ logging:
         web:
           filter:
             OncePerRequestFilter: DEBUG
+profile:
+  pics:
+    directory: src/main/resources/static/profile_pics

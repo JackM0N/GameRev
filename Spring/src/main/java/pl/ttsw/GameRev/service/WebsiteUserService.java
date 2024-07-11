@@ -1,20 +1,22 @@
 package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
-import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-import pl.ttsw.GameRev.security.AuthenticationResponse;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Objects;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,9 @@ public class WebsiteUserService {
 
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${profile.pics.directory}")
+    private String profilePicsDirectory;
 
     public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder) {
         this.websiteUserRepository = websiteUserRepository;
@@ -62,6 +67,35 @@ public class WebsiteUserService {
         user = websiteUserRepository.save(user);
 
         return user;
+    }
+
+    public void uploadProfilePicture(ProfilePictureDTO profilePictureDTO) throws IOException {
+        String username = profilePictureDTO.getUsername();
+        MultipartFile file = profilePictureDTO.getProfilePicture();
+        WebsiteUser user = websiteUserRepository.findByUsername(username);
+
+        if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
+            Path oldFilepath = Paths.get(user.getProfilepic());
+            Files.deleteIfExists(oldFilepath);
+        }
+
+        String filename = username + "_" + file.getOriginalFilename();
+        Path filepath = Paths.get(profilePicsDirectory, filename);
+        Files.copy(file.getInputStream(), filepath);
+
+        user.setProfilepic(filepath.toString());
+        websiteUserRepository.save(user);
+    }
+
+    public byte[] getProfilePicture(String username) throws IOException {
+        WebsiteUser user = websiteUserRepository.findByUsername(username);
+
+        if (user.getProfilepic() == null) {
+            throw new IOException("Users profile picture not found");
+        }
+
+        Path filepath = Paths.get(user.getProfilepic());
+        return Files.readAllBytes(filepath);
     }
 
     public WebsiteUserDTO mapToDTO(WebsiteUser user) {
