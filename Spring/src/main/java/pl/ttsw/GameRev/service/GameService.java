@@ -48,6 +48,11 @@ public class GameService {
         return mapToDTO(gameRepository.findGameByTitle(title));
     }
 
+    public List<GameDTO> getAllGames() {
+        List<Game> games = gameRepository.findAll();
+        return games.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
     public GameDTO mapToDTO(Game game) {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setId(game.getId());

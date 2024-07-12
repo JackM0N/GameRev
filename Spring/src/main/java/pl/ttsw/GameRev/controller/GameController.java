@@ -6,8 +6,10 @@ import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/games")
 public class GameController {
     private final GameService gameService;
 
@@ -32,5 +34,11 @@ public class GameController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(gameService.getGameByTitle(title));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllGames() {
+        List<GameDTO> games = gameService.getAllGames();
+        return ResponseEntity.ok(games);
     }
 }
