@@ -11,6 +11,8 @@ import { Game } from '../interfaces/game';
 export class GameService {
   private baseUrl = 'http://localhost:8080/games';
   private postUrl = 'http://localhost:8080/games/create';
+  private editUrl = 'http://localhost:8080/games/edit';
+  private deleteUrl = 'http://localhost:8080/games/delete';
 
   constructor(
     private http: HttpClient,
@@ -26,7 +28,15 @@ export class GameService {
     return this.http.get<Game>(`${this.baseUrl}/${name}`);
   }
 
-  addGame(ServiceAvailability?: Game): Observable<Game> {
-    return this.http.post<Game>(this.postUrl, ServiceAvailability);
+  addGame(game: Game): Observable<Game> {
+    return this.http.post<Game>(this.postUrl, game);
+  }
+
+  editGame(game: Game): Observable<Game> {
+    return this.http.put<Game>(this.editUrl, game);
+  }
+
+  deleteGame(id: number): Observable<Game> {
+    return this.http.delete<Game>(`${this.deleteUrl}/${id}`);
   }
 }

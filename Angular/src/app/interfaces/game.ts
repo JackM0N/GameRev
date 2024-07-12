@@ -1,3 +1,4 @@
+import { ReleaseStatus } from "./releaseStatus";
 import { Tag } from "./tag";
 
 export interface Game {
@@ -6,8 +7,8 @@ export interface Game {
   title: string;
   developer: string;
   publisher: string;
-  releaseDate?: string;
-  releaseStatus: number;
+  releaseDate?: Date;
+  releaseStatus?: ReleaseStatus;
   description: string;
   tags: Tag[];
 }

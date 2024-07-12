@@ -5,6 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { GameDeletionConfirmationDialogComponent } from '../game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
 
 @Component({
   selector: 'app-games-list',
@@ -14,19 +16,19 @@ import { Observer } from 'rxjs';
 export class ViewingGamesComponent implements AfterViewInit, OnInit {
   gamesList: Game[] = [];
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseStatus', 'tags', 'description', 'options'];
+  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'tags', 'description', 'options'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private gameService: GameService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog,
   ) {
   }
 
   ngOnInit() {
     const observer: Observer<any> = {
       next: response => {
-        console.log(response);
         this.gamesList = response;
         this.dataSource = new MatTableDataSource<Game>(this.gamesList);
       },
@@ -50,11 +52,36 @@ export class ViewingGamesComponent implements AfterViewInit, OnInit {
     this.router.navigate(['/games/edit/' + title]);
   }
 
+  openGameDeletionConfirmationDialog(game: Game) {
+    const dialogRef = this.dialog.open(GameDeletionConfirmationDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.deleteGame(game);
+      }
+    });
+  }
+
   deleteGame(game: Game) {
-    console.log('Delete game: ', game);
+    if(!game || !game.id) {
+      console.log('Game ID is not valid.');
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        this.gamesList = response;
+        this.dataSource = new MatTableDataSource<Game>(this.gamesList);
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.gameService.deleteGame(game.id).subscribe(observer);
   }
 
   getTags(game: Game) {
-    return game.tags.map(tag => tag).join(', ');
+    return game.tags.map(tag => tag.tagName).join(', ');
   }
 }

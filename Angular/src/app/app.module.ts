@@ -29,6 +29,8 @@ import { ReleaseStatusService } from './services/release-status.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
+import { GameDeletionConfirmationDialogComponent } from './components/games/game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { TagService } from './services/tag.service';
     ProfileComponent,
     LogoutConfirmationDialogComponent,
     AccountDeletionConfirmationDialogComponent,
+    GameDeletionConfirmationDialogComponent,
     AddingGamesComponent,
     ViewingGamesComponent
   ],
@@ -78,6 +81,7 @@ import { TagService } from './services/tag.service';
     ReleaseStatusService,
     TagService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

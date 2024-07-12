@@ -26,8 +26,8 @@ export class AddingGamesComponent implements OnInit {
     title: '',
     developer: '',
     publisher: '',
-    releaseDate: '',
-    releaseStatus: -1,
+    releaseDate: new Date(),
+    releaseStatus: undefined,
     description: '',
     tags: []
   };
@@ -86,6 +86,40 @@ export class AddingGamesComponent implements OnInit {
       if (params['name']) {
         this.gameService.getGameByName(params['name']).subscribe((game: Game) => {
           this.game = game;
+
+          var fixedDate = game.releaseDate;
+          if(game.releaseDate) {
+            fixedDate = new Date(game.releaseDate);
+          }
+
+          var releaseStatus = game.releaseStatus;
+          if (game.releaseStatus) {
+            for (let i = 0; i < this.releaseStatuses.length; i++) {
+              if (this.releaseStatuses[i].id === game.releaseStatus['id']) {
+                releaseStatus = this.releaseStatuses[i];
+                break;
+              }
+            }
+          }
+
+          var tags = [];
+          for (let i = 0; i < this.tagsList.length; i++) {
+            for (let j = 0; j < game.tags.length; j++) {
+              if(this.tagsList[i].id === game.tags[j].id) {
+                tags.push(this.tagsList[i]);
+              }
+            }
+          }
+
+          this.addingGameForm.patchValue({
+            title: game.title,
+            developer: game.developer,
+            publisher: game.publisher,
+            releaseDate: fixedDate,
+            releaseStatus: releaseStatus,
+            tags: tags,
+            description: game.description
+          });
         });
       }
     });
@@ -137,5 +171,9 @@ export class AddingGamesComponent implements OnInit {
     }
 
     return releaseStatusControl.hasError('required') && releaseStatusControl.touched
+  }
+
+  trackByFn(index: number, item: any): number {
+    return item.id;
   }
 }

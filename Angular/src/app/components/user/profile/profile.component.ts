@@ -10,7 +10,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LogoutConfirmationDialogComponent } from '../logout-confirmation-dialog/logout-confirmation-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
-import { WebsiteUser } from '../../../interfaces/websiteuser';
 
 @Component({
   selector: 'app-profile',
@@ -132,8 +131,6 @@ export class ProfileComponent implements OnInit {
       isDeleted: true,
       currentPassword: password,
     };
-
-    console.log(userData);
 
     const observer: Observer<any> = {
       next: response => {
