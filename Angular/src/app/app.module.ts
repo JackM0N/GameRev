@@ -18,6 +18,16 @@ import { LogoutConfirmationDialogComponent } from './components/user/logout-conf
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService } from 'angular-toaster';
+import { AccountDeletionConfirmationDialogComponent } from './components/user/account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
+import { ViewingGamesComponent } from './components/games/games-list/games-list.component';
+import { AddingGamesComponent } from './components/games/games-form/games-form.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { GameService } from './services/game.service';
+import { ReleaseStatusService } from './services/release-status.service';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -25,7 +35,10 @@ import { ToasterModule, ToasterService } from 'angular-toaster';
     LoginComponent,
     RegistrationComponent,
     ProfileComponent,
-    LogoutConfirmationDialogComponent
+    LogoutConfirmationDialogComponent,
+    AccountDeletionConfirmationDialogComponent,
+    AddingGamesComponent,
+    ViewingGamesComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +51,11 @@ import { ToasterModule, ToasterService } from 'angular-toaster';
     MatButtonModule,
     MatDialogModule,
     HttpClientModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
@@ -54,7 +72,10 @@ import { ToasterModule, ToasterService } from 'angular-toaster';
     provideClientHydration(),
     provideAnimationsAsync(),
     AuthService,
-    ToasterService
+    ToasterService,
+    GameService,
+    ReleaseStatusService,
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
   ],
   bootstrap: [AppComponent]
 })

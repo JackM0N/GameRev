@@ -6,9 +6,11 @@ import { merge, Observer } from 'rxjs';
 import { NewCredentials } from '../../../interfaces/newCredentials';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LogoutConfirmationDialogComponent } from '../logout-confirmation-dialog/logout-confirmation-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
+import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
+import { WebsiteUser } from '../../../interfaces/websiteuser';
 
 @Component({
   selector: 'app-profile',
@@ -105,8 +107,57 @@ export class ProfileComponent implements OnInit {
     this.toasterService.pop(toast);
   }
 
-  deleteAccount() {
-    //todo
+  openAccountDeletionDialog() {
+    const dialogRef = this.dialog.open(AccountDeletionConfirmationDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.deleteAccount(dialogRef);
+      }
+    });
+  }
+
+  deleteAccount(dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>) {
+    const userName = this.authService.getUserName();
+    const token = this.authService.getToken();
+  
+    if (!userName || !token || !dialogRef || !dialogRef.componentRef) {
+      return;
+    }
+
+    const password = dialogRef.componentRef.instance.deleteAccountForm.get('currentPassword')?.value;
+
+    const userData: NewCredentials = {
+      username: userName,
+      isDeleted: true,
+      currentPassword: password,
+    };
+
+    console.log(userData);
+
+    const observer: Observer<any> = {
+      next: response => {
+        this.authService.logout();
+        var toast: Toast = {
+          type: 'success',
+          title: 'Account deleted successfuly!',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Account deletion failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.authService.deleteOwnAccount(userData, token).subscribe(observer);
+
     this.router.navigate(['/']);
   }
 

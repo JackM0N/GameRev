@@ -98,9 +98,18 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
     return this.http.get<WebsiteUser>(url, { headers });
-}
+  }
 
   changeProfile(userData: NewCredentials, token: string): Observable<any> {
+    const url = `${this.profileChangeUrl}/${userData.username}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put<WebsiteUser>(url, userData, { headers });
+  }
+
+  deleteOwnAccount(userData: NewCredentials, token: string): Observable<any> {
     const url = `${this.profileChangeUrl}/${userData.username}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
