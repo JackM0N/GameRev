@@ -1,12 +1,15 @@
 
+<toaster-container></toaster-container>
+
 <header class="header">
   <div class="container">
     <h1 class="logo">Gamerev</h1>
     <nav class="navbar">
       <ul class="nav-list">
         <li class="nav-item"><a routerLink="/" routerLinkActive="active">Homepage</a></li>
-        <li class="nav-item"><a routerLink="/login" routerLinkActive="active">Login</a></li>
-        <li class="nav-item"><a routerLink="/register" routerLinkActive="active">Register</a></li>
+        <li class="nav-item" *ngIf="!authService.isAuthenticated()"><a routerLink="/login" routerLinkActive="active">Login</a></li>
+        <li class="nav-item" *ngIf="!authService.isAuthenticated()"><a routerLink="/register" routerLinkActive="active">Register</a></li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
       </ul>
     </nav>
   </div>

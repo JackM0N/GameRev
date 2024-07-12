@@ -1,0 +1,134 @@
+
+<div class="form-container">
+    
+    <div class="field-container">
+        <h3>Change profile information</h3>
+
+        <form [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitProfileInformationChange()">
+            <mat-form-field>
+                <mat-label>Enter your current password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+                <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Enter your new nickname</mat-label>
+                <input matInput placeholder="Input nickname" formControlName="nickname"/>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+
+            <div class="centered-container">
+                <button mat-stroked-button [disabled]="!changeProfileInformationForm.valid">Change profile</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="field-container">
+        <h3>Change email</h3>
+
+        <form [formGroup]="changeEmailForm" (ngSubmit)="onSubmitEmailChange()">
+            <mat-form-field>
+                <mat-label>Enter your current password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+                <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Enter your email</mat-label>
+                <input matInput placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                <mat-error *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+            </mat-form-field>
+
+            <div class="centered-container">
+                <button mat-stroked-button [disabled]="!changeEmailForm.valid">Change email</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="field-container">
+        <h3>Change password</h3>
+
+        <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitPasswordChange()">
+            <mat-form-field>
+                <mat-label>Enter your current password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+                <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Enter new password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Confirm new password</mat-label>
+                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
+                <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
+                >
+                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-error class="bottom-mat-error" *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
+
+            <div class="centered-container">
+                <button mat-stroked-button [disabled]="!changePasswordForm.valid">Change password</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="centered-container" style="margin-bottom: 8px;">
+        <button mat-stroked-button (click)="openLogoutDialog()">Logout</button>
+    </div>
+
+    <div class="centered-container">
+        <button id="delete-account-button" mat-stroked-button (click)="deleteAccount()">Delete account</button>
+    </div>
+</div>
