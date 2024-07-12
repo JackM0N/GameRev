@@ -8,6 +8,7 @@ import { Toast, ToasterService } from 'angular-toaster';
 import { GameService } from '../../../services/game.service';
 import { ReleaseStatusService } from '../../../services/release-status.service';
 import { Tag } from '../../../interfaces/tag';
+import { TagService } from '../../../services/tag.service';
 
 @Component({
   selector: 'app-games-form',
@@ -16,17 +17,17 @@ import { Tag } from '../../../interfaces/tag';
 })
 export class AddingGamesComponent implements OnInit {
   addingGameForm: FormGroup;
-  releaseStatuses: ReleaseStatus[];
+  releaseStatuses: ReleaseStatus[] = [];
   isEditRoute: boolean;
   listTitle: string = 'Add new game';
-  tagsList: Tag[];
+  tagsList: Tag[] = [];
 
   game: Game = {
     title: '',
     developer: '',
     publisher: '',
-    release_date: '',
-    release_status: -1,
+    releaseDate: '',
+    releaseStatus: -1,
     description: '',
     tags: []
   };
@@ -37,14 +38,15 @@ export class AddingGamesComponent implements OnInit {
     private route: ActivatedRoute,
     private toasterService: ToasterService,
     private gameService: GameService,
+    private tagService: TagService,
     private releaseStatusService: ReleaseStatusService,
   ) {
     this.addingGameForm = this.formBuilder.group({
       title: [this.game.title, [Validators.required, Validators.minLength(1)]],
       developer: [this.game.developer, [Validators.required, Validators.minLength(1)]],
       publisher: [this.game.publisher, [Validators.required, Validators.minLength(1)]],
-      release_date: [this.game.release_date],
-      release_status: [this.game.release_status, [Validators.required, Validators.minLength(1)]],
+      releaseDate: [this.game.releaseDate],
+      releaseStatus: [this.game.releaseStatus, [Validators.required, Validators.minLength(1)]],
       tags: [this.game.tags],
       description: [this.game.description, [Validators.required, Validators.minLength(1)]],
     });
@@ -55,33 +57,28 @@ export class AddingGamesComponent implements OnInit {
       this.listTitle = 'Editing game';
     }
 
-    const observer: Observer<any> = {
+    const observerReleaseStatus: Observer<any> = {
       next: response => {
-        console.log(response);
+        this.releaseStatuses = response;
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    //this.releaseStatusService.getReleaseStatuses().subscribe(observer);
+    this.releaseStatusService.getReleaseStatuses().subscribe(observerReleaseStatus);
 
-    this.releaseStatuses = [
-      { release_status_id: 1, status_name: 'Released' },
-      { release_status_id: 2, status_name: 'Early Access' },
-      { release_status_id: 3, status_name: 'Announced' },
-      { release_status_id: 4, status_name: 'Canceled' },
-      { release_status_id: 5, status_name: 'Closed' }
-    ];
-
-    this.tagsList = [
-      { tag_id: 1, tag_name: 'Singleplayer', priority: 1 },
-      { tag_id: 2, tag_name: 'Multiplayer', priority: 2 },
-      { tag_id: 3, tag_name: 'MMO', priority: 3 },
-      { tag_id: 4, tag_name: 'Co-op', priority: 4 },
-    ];
-
-    this.tagsList.sort((a, b) => a.priority - b.priority);
+    const observerTag: Observer<any> = {
+      next: response => {
+        this.tagsList = response;
+        this.tagsList.sort((a, b) => a.priority - b.priority);
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.tagService.getTags().subscribe(observerTag);
   }
 
   ngOnInit() {
@@ -133,7 +130,7 @@ export class AddingGamesComponent implements OnInit {
   }
 
   isReleaseStatusInvalid() {
-    const releaseStatusControl = this.addingGameForm.get('release_status');
+    const releaseStatusControl = this.addingGameForm.get('releaseStatus');
 
     if (!releaseStatusControl) {
       return true;

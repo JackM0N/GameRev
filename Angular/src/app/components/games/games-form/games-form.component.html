@@ -22,7 +22,7 @@
 
             <mat-form-field>
                 <mat-label>Release date</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="release_date">
+                <input matInput [matDatepicker]="picker" formControlName="releaseDate">
                 <mat-hint>MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -30,10 +30,10 @@
 
             <mat-form-field>
                 <mat-label>Release status</mat-label>
-                <mat-select formControlName="release_status">
+                <mat-select formControlName="releaseStatus">
                     <mat-option>--</mat-option>
                     @for (status of releaseStatuses; track status) {
-                        <mat-option [value]="status.release_status_id">{{status.status_name}}</mat-option>
+                        <mat-option [value]="status.id">{{status.statusName}}</mat-option>
                     }
                 </mat-select>
                 @if (isReleaseStatusInvalid()) {
@@ -45,7 +45,7 @@
                 <mat-label>Tags</mat-label>
                 <mat-select formControlName="tags" multiple required>
                   @for (tag of tagsList; track tag) {
-                    <mat-option [value]="tag.tag_id">{{tag.tag_name}}</mat-option>
+                    <mat-option [value]="tag.id">{{tag.tagName}}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>

@@ -19,5 +19,4 @@ public class Tag {
 
     @Column(name = "priority", nullable = false)
     private Integer priority;
-
 }

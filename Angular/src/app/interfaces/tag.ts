@@ -1,7 +1,7 @@
 
 export interface Tag {
-  tag_id?: number;
+  id?: number;
 
-  tag_name: string;
+  tagName: string;
   priority: number;
 }

@@ -1,13 +1,13 @@
 import { Tag } from "./tag";
 
 export interface Game {
-  game_id?: number;
+  id?: number;
 
   title: string;
   developer: string;
   publisher: string;
-  release_date?: string;
-  release_status: number;
+  releaseDate?: string;
+  releaseStatus: number;
   description: string;
   tags: Tag[];
 }

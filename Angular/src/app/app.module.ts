@@ -28,6 +28,7 @@ import { GameService } from './services/game.service';
 import { ReleaseStatusService } from './services/release-status.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TagService } from './services/tag.service';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ToasterService,
     GameService,
     ReleaseStatusService,
+    TagService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
   ],
   bootstrap: [AppComponent]

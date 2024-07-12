@@ -10,7 +10,7 @@ import { Game } from '../interfaces/game';
 // Service for handling games
 export class GameService {
   private baseUrl = 'http://localhost:8080/games';
-  private postUrl = 'http://localhost:8080/games/add';
+  private postUrl = 'http://localhost:8080/games/create';
 
   constructor(
     private http: HttpClient,
