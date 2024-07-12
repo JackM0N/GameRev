@@ -36,6 +36,25 @@ public class GameController {
         return ResponseEntity.ok(gameService.getGameByTitle(title));
     }
 
+    @PostMapping("/{title}")
+    public ResponseEntity<?> editGame(@PathVariable String title, @RequestBody GameDTO request) {
+        title = title.replaceAll("-"," ");
+        GameDTO updatedGame = gameService.updateGame(title,request);
+        if (updatedGame == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedGame);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGame(@PathVariable Integer id) {
+        boolean gotRemoved = gameService.deleteGame(id);
+        if (!gotRemoved) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllGames() {
         List<GameDTO> games = gameService.getAllGames();
