@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.service;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
+import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
@@ -34,12 +35,16 @@ public class GameService {
         newGame.setReleaseDate(game.getReleaseDate());
         newGame.setDescription(game.getDescription());
 
-        ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus())
+        ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus().getId())
                 .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
         newGame.setReleaseStatus(releaseStatus);
 
-        List<Tag> tags = tagRepository.findAllById(game.getTags());
+        List<Tag> tags = game.getTags().stream()
+                .map(tagDTO -> tagRepository.findById(tagDTO.getId())
+                        .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
+                .collect(Collectors.toList());
         newGame.setTags(tags);
+
 
         return gameRepository.save(newGame);
     }
@@ -60,12 +65,29 @@ public class GameService {
         gameDTO.setDeveloper(game.getDeveloper());
         gameDTO.setPublisher(game.getPublisher());
         gameDTO.setReleaseDate(game.getReleaseDate());
-        gameDTO.setReleaseStatus(game.getReleaseStatus().getId());
         gameDTO.setDescription(game.getDescription());
 
-        List<Long> tagIds = game.getTags().stream().map(Tag::getId).collect(Collectors.toList());
-        gameDTO.setTags(tagIds);
+        gameDTO.setReleaseStatus(mapReleaseStatusToDTO(game.getReleaseStatus()));
+
+        gameDTO.setTags(game.getTags().stream()
+                .map(this::mapTagToDTO)
+                .collect(Collectors.toList()));
 
         return gameDTO;
+    }
+
+    private ReleaseStatusDTO mapReleaseStatusToDTO(ReleaseStatus releaseStatus) {
+        ReleaseStatusDTO statusDTO = new ReleaseStatusDTO();
+        statusDTO.setId(releaseStatus.getId());
+        statusDTO.setStatusName(releaseStatus.getStatusName());
+        return statusDTO;
+    }
+
+    private TagDTO mapTagToDTO(Tag tag) {
+        TagDTO tagDTO = new TagDTO();
+        tagDTO.setId(tag.getId());
+        tagDTO.setTagName(tag.getTagName());
+        tagDTO.setPriority(tag.getPriority());
+        return tagDTO;
     }
 }
