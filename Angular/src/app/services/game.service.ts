@@ -32,8 +32,8 @@ export class GameService {
     return this.http.post<Game>(this.postUrl, game);
   }
 
-  editGame(game: Game): Observable<Game> {
-    return this.http.put<Game>(this.editUrl, game);
+  editGame(title: string, game: Game): Observable<Game> {
+    return this.http.put<Game>(`${this.editUrl}/${title}`, game);
   }
 
   deleteGame(id: number): Observable<Game> {

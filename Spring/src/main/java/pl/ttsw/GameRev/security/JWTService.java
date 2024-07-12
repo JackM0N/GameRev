@@ -4,11 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.model.WebsiteUser;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.function.Function;

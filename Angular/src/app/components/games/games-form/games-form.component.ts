@@ -21,6 +21,7 @@ export class AddingGamesComponent implements OnInit {
   isEditRoute: boolean;
   listTitle: string = 'Add new game';
   tagsList: Tag[] = [];
+  gameTitle: string = '';
 
   game: Game = {
     title: '',
@@ -53,7 +54,7 @@ export class AddingGamesComponent implements OnInit {
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
 
-    if(this.isEditRoute) {
+    if (this.isEditRoute) {
       this.listTitle = 'Editing game';
     }
 
@@ -84,7 +85,8 @@ export class AddingGamesComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
-        this.gameService.getGameByName(params['name']).subscribe((game: Game) => {
+        this.gameTitle = params['name'];
+        this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
           this.game = game;
 
           var fixedDate = game.releaseDate;
@@ -132,9 +134,35 @@ export class AddingGamesComponent implements OnInit {
         ...this.addingGameForm.value
       };
 
+      if (this.isEditRoute) {
+        const observer: Observer<any> = {
+          next: response => {
+            this.router.navigate(['/games']);
+            var toast: Toast = {
+              type: 'success',
+              title: 'Edited game successfuly',
+              showCloseButton: true
+            };
+            this.toasterService.pop(toast);
+          },
+          error: error => {
+            console.error(error);
+            var toast: Toast = {
+              type: 'error',
+              title: 'Editing game failed',
+              showCloseButton: true
+            };
+            this.toasterService.pop(toast);
+          },
+          complete: () => {}
+        };
+        this.gameService.editGame(this.gameTitle, gameData).subscribe(observer);
+        return;
+      }
+
       const observer: Observer<any> = {
         next: response => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/games']);
           var toast: Toast = {
             type: 'success',
             title: 'Added game successfuly',
@@ -154,8 +182,6 @@ export class AddingGamesComponent implements OnInit {
         complete: () => {}
       };
       this.gameService.addGame(gameData).subscribe(observer);
-
-      console.log(gameData);
     }
   }
 

@@ -12,7 +12,6 @@ import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
 import java.security.Principal;
 

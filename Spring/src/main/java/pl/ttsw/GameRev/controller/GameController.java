@@ -35,17 +35,17 @@ public class GameController {
         return ResponseEntity.ok(gameService.getGameByTitle(title));
     }
 
-    @PostMapping("/{title}")
+    @PutMapping("/edit/{title}")
     public ResponseEntity<?> editGame(@PathVariable String title, @RequestBody GameDTO request) {
         title = title.replaceAll("-"," ");
-        GameDTO updatedGame = gameService.updateGame(title,request);
+        GameDTO updatedGame = gameService.updateGame(title, request);
         if (updatedGame == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedGame);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGame(@PathVariable Integer id) {
         boolean gotRemoved = gameService.deleteGame(id);
         if (!gotRemoved) {

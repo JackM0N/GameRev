@@ -11,8 +11,6 @@ import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

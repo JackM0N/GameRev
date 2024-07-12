@@ -1,7 +1,6 @@
 package pl.ttsw.GameRev.dto;
 
 import lombok.Value;
-
 import java.io.Serializable;
 
 /**

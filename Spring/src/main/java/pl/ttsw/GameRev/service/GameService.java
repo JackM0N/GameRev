@@ -10,7 +10,6 @@ import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.ReleaseStatusRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,7 +85,6 @@ public class GameService {
                     .collect(Collectors.toList());
             updatedGame.setTags(tags);
         }
-        System.out.println(mapToDTO(updatedGame));
         return mapToDTO(gameRepository.save(updatedGame));
     }
 
