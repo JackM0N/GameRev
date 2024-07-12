@@ -27,6 +27,10 @@ public class GameService {
         this.tagRepository = tagRepository;
     }
 
+    public GameDTO getGameById(Integer id) {
+        return mapToDTO(gameRepository.findGameById(id));
+    }
+
     public Game createGame(GameDTO game) {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
@@ -51,6 +55,47 @@ public class GameService {
 
     public GameDTO getGameByTitle(String title) {
         return mapToDTO(gameRepository.findGameByTitle(title));
+    }
+
+    public GameDTO updateGame(String title, GameDTO game) {
+        Game updatedGame = gameRepository.findGameByTitle(title);
+        if (game.getTitle() != null) {
+            updatedGame.setTitle(game.getTitle());
+        }
+        if (game.getDeveloper() != null) {
+            updatedGame.setDeveloper(game.getDeveloper());
+        }
+        if (game.getPublisher() != null) {
+            updatedGame.setPublisher(game.getPublisher());
+        }
+        if (game.getReleaseDate() != null) {
+            updatedGame.setReleaseDate(game.getReleaseDate());
+        }
+        if (game.getDescription() != null) {
+            updatedGame.setDescription(game.getDescription());
+        }
+        if (game.getReleaseStatus() != null) {
+            ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus().getId())
+                    .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
+            updatedGame.setReleaseStatus(releaseStatus);
+        }
+        if (game.getTags() != null) {
+            List<Tag> tags = game.getTags().stream()
+                    .map(tagDTO -> tagRepository.findById(tagDTO.getId())
+                            .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
+                    .collect(Collectors.toList());
+            updatedGame.setTags(tags);
+        }
+        System.out.println(mapToDTO(updatedGame));
+        return mapToDTO(gameRepository.save(updatedGame));
+    }
+
+    public boolean deleteGame(Integer id) {
+        if (gameRepository.existsById(id)){
+            gameRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public List<GameDTO> getAllGames() {
