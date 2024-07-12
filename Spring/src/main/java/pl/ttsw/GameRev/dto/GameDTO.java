@@ -8,6 +8,7 @@ import pl.ttsw.GameRev.model.ReleaseStatus;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.Game}
@@ -23,4 +24,5 @@ public class GameDTO implements Serializable {
     LocalDate releaseDate;
     Long releaseStatus;
     String description;
+    List<Long> tags;
 }

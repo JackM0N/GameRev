@@ -5,17 +5,25 @@ import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.ReleaseStatus;
+import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.ReleaseStatusRepository;
+import pl.ttsw.GameRev.repository.TagRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
     private final GameRepository gameRepository;
     private final ReleaseStatusRepository statusRepository;
+    private final TagRepository tagRepository;
 
-    public GameService(GameRepository gameRepository, ReleaseStatusRepository statusRepository) {
+    public GameService(GameRepository gameRepository, ReleaseStatusRepository statusRepository,
+                       TagRepository tagRepository) {
         this.gameRepository = gameRepository;
         this.statusRepository = statusRepository;
+        this.tagRepository = tagRepository;
     }
 
     public Game createGame(GameDTO game) {
@@ -30,7 +38,9 @@ public class GameService {
                 .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
         newGame.setReleaseStatus(releaseStatus);
 
-        System.out.println(game);
+        List<Tag> tags = tagRepository.findAllById(game.getTags());
+        newGame.setTags(tags);
+
         return gameRepository.save(newGame);
     }
 
@@ -40,12 +50,17 @@ public class GameService {
 
     public GameDTO mapToDTO(Game game) {
         GameDTO gameDTO = new GameDTO();
+        gameDTO.setId(game.getId());
         gameDTO.setTitle(game.getTitle());
         gameDTO.setDeveloper(game.getDeveloper());
         gameDTO.setPublisher(game.getPublisher());
         gameDTO.setReleaseDate(game.getReleaseDate());
         gameDTO.setReleaseStatus(game.getReleaseStatus().getId());
         gameDTO.setDescription(game.getDescription());
+
+        List<Long> tagIds = game.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+        gameDTO.setTags(tagIds);
+
         return gameDTO;
     }
 }
