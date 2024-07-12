@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +37,11 @@ public class Game {
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
     private String description;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "game_tag",
+            joinColumns = @JoinColumn(name = "game_id", referencedColumnName = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
 }
