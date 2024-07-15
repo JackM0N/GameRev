@@ -134,6 +134,8 @@ export class AddingGamesComponent implements OnInit {
         ...this.addingGameForm.value
       };
 
+      gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
+
       if (this.isEditRoute) {
         const observer: Observer<any> = {
           next: response => {
