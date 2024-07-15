@@ -22,12 +22,13 @@ export class AddingGamesComponent implements OnInit {
   listTitle: string = 'Add new game';
   tagsList: Tag[] = [];
   gameTitle: string = '';
+  gameDate: Date = new Date();
 
   game: Game = {
     title: '',
     developer: '',
     publisher: '',
-    releaseDate: new Date(),
+    releaseDate: [],
     releaseStatus: undefined,
     description: '',
     tags: []
@@ -87,12 +88,10 @@ export class AddingGamesComponent implements OnInit {
       if (params['name']) {
         this.gameTitle = params['name'];
         this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
-          this.game = game;
-
-          var fixedDate = game.releaseDate;
-          if(game.releaseDate) {
-            fixedDate = new Date(game.releaseDate);
+          if (game.releaseDate) {
+            this.gameDate = new Date(game.releaseDate[0], game.releaseDate[1] -1, game.releaseDate[2], 15);
           }
+          this.game = game;
 
           var releaseStatus = game.releaseStatus;
           if (game.releaseStatus) {
@@ -117,7 +116,7 @@ export class AddingGamesComponent implements OnInit {
             title: game.title,
             developer: game.developer,
             publisher: game.publisher,
-            releaseDate: fixedDate,
+            releaseDate: this.gameDate,
             releaseStatus: releaseStatus,
             tags: tags,
             description: game.description

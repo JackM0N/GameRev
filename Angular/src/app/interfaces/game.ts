@@ -7,7 +7,7 @@ export interface Game {
   title: string;
   developer: string;
   publisher: string;
-  releaseDate?: Date;
+  releaseDate?: any;
   releaseStatus?: ReleaseStatus;
   description: string;
   tags: Tag[];
