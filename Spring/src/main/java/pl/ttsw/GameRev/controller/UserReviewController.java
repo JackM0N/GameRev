@@ -1,10 +1,7 @@
 package pl.ttsw.GameRev.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserReview;
@@ -27,11 +24,19 @@ public class UserReviewController {
 
     @GetMapping("/{title}")
     public ResponseEntity<?> getUserReviewByGame(@PathVariable String title) {
-        title = title.replaceAll("-"," ");
+        title = title.replaceAll("-", " ");
         List<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title);
-        if (userReviewDTO == null) {
+        if (userReviewDTO == null || userReviewDTO.isEmpty()) {
             return ResponseEntity.badRequest().body("There are no user reviews for this title");
         }
         return ResponseEntity.ok(userReviewDTO);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createUserReview(@RequestBody UserReviewDTO userReviewDTO) {
+        if (userReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There was an error creating the user review");
+        }
+        return ResponseEntity.ok(userReviewService.createUserReview(userReviewDTO));
     }
 }
