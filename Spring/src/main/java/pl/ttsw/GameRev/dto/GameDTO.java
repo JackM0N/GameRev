@@ -3,10 +3,6 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import pl.ttsw.GameRev.model.ReleaseStatus;
-import pl.ttsw.GameRev.model.Tag;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;

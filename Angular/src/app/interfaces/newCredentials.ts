@@ -8,4 +8,5 @@ export interface NewCredentials {
   nickname?: string;
   profilepic?: string;
   description?: string;
+  isDeleted?: boolean;
 }

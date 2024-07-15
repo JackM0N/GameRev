@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
-
 import java.util.List;
 
 @RestController
@@ -36,17 +35,17 @@ public class GameController {
         return ResponseEntity.ok(gameService.getGameByTitle(title));
     }
 
-    @PostMapping("/{title}")
+    @PutMapping("/edit/{title}")
     public ResponseEntity<?> editGame(@PathVariable String title, @RequestBody GameDTO request) {
         title = title.replaceAll("-"," ");
-        GameDTO updatedGame = gameService.updateGame(title,request);
+        GameDTO updatedGame = gameService.updateGame(title, request);
         if (updatedGame == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedGame);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGame(@PathVariable Integer id) {
         boolean gotRemoved = gameService.deleteGame(id);
         if (!gotRemoved) {

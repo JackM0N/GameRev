@@ -2,7 +2,6 @@ package pl.ttsw.GameRev.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.model.Role;
@@ -11,7 +10,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.security.JWTService;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
