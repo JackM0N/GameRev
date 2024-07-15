@@ -11,11 +11,11 @@ import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 
 @Component({
-  selector: 'app-games-form',
-  templateUrl: './games-form.component.html',
+  selector: 'app-game-form',
+  templateUrl: './game-form.component.html',
   styleUrl: '/src/app/styles/shared-form-styles.css'
 })
-export class AddingGamesComponent implements OnInit {
+export class GameFormComponent implements OnInit {
   addingGameForm: FormGroup;
   releaseStatuses: ReleaseStatus[] = [];
   isEditRoute: boolean;

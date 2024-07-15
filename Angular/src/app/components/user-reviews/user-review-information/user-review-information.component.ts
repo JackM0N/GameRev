@@ -1,31 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Game } from '../../../interfaces/game';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '../../../services/game.service';
-import { Location } from '@angular/common';
 import { UserReviewService } from '../../../services/user-review.service';
 import { UserReview } from '../../../interfaces/userReview';
+import { Location } from '@angular/common';
 
 @Component({
-  selector: 'app-game-information',
-  templateUrl: './game-information.component.html',
-  styleUrl: './game-information.component.css'
+  selector: 'app-user-review-information',
+  templateUrl: './user-review-information.component.html',
+  styleUrl: './user-review-information.component.css'
 })
 export class GameInformationComponent implements OnInit {
-  game: Game = {
-    title: '',
-    developer: '',
-    publisher: '',
-    releaseDate: [],
-    releaseStatus: undefined,
-    description: '',
-    tags: [],
-    usersScore: 0
+  userReview: UserReview = {
+    game: undefined,
+    user: undefined,
+    content: '',
+    postDate: '',
+    score: undefined,
   };
 
   constructor(
     private route: ActivatedRoute,
-    private gameService: GameService,
     private userReviewService: UserReviewService,
     private router: Router,
     private _location: Location
@@ -34,15 +28,9 @@ export class GameInformationComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      if (params['name']) {
-        this.gameService.getGameByName(params['name']).subscribe((game: Game) => {
-          this.game = game;
-
-
-          this.userReviewService.getUserReviewsForGame(params['name']).subscribe((userReviews: UserReview[]) => {
-            console.log(userReviews);
-          });
-
+      if (params['id']) {
+        this.userReviewService.getUserReview(params['id']).subscribe((userReview: UserReview) => {
+          this.userReview = userReview;
         });
       }
     });
@@ -73,9 +61,5 @@ export class GameInformationComponent implements OnInit {
 
   goBack() {
     this._location.back();
-  }
-
-  routeToAddNewReview() {
-    this.router.navigate(['/user-reviews/add/' + this.game.title]);
   }
 }

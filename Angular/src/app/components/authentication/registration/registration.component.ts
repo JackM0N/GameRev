@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Observer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { WebsiteUser } from '../../../interfaces/websiteuser';
+import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { Toast, ToasterService } from 'angular-toaster';
