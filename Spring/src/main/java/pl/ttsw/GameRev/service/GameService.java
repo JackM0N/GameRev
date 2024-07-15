@@ -37,11 +37,9 @@ public class GameService {
         newGame.setPublisher(game.getPublisher());
         newGame.setReleaseDate(game.getReleaseDate());
         newGame.setDescription(game.getDescription());
-        newGame.setUsersScore(game.getUsersScore());
+        newGame.setUsersScore(0.0f);
 
-        ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus().getId())
-                .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
-        newGame.setReleaseStatus(releaseStatus);
+        newGame.setReleaseStatus(statusRepository.findReleaseStatusById(game.getReleaseStatus().getId()));
 
         List<Tag> tags = game.getTags().stream()
                 .map(tagDTO -> tagRepository.findById(tagDTO.getId())
