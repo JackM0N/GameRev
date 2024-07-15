@@ -1,0 +1,16 @@
+
+<div class="container">
+    <h3>{{this.game.title}}</h3>
+    <p>Developer: {{this.game.developer}}</p>
+    <p>Publisher: {{this.game.publisher}}</p>
+    <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
+    <p>Release status: {{this.game.releaseStatus?.statusName}}</p>
+    <p>Description: {{this.game.description}}</p>
+    <div class="grid-container">
+        <div class="grid-item" *ngFor="let tag of game.tags">
+          {{ tag.tagName }}
+        </div>
+    </div>
+
+    <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
+</div>

@@ -31,6 +31,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
 import { GameDeletionConfirmationDialogComponent } from './components/games/game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
+import { GameInformationComponent } from './components/games/game-information/game-information.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { DatePipe } from '@angular/common';
     AccountDeletionConfirmationDialogComponent,
     GameDeletionConfirmationDialogComponent,
     AddingGamesComponent,
-    ViewingGamesComponent
+    ViewingGamesComponent,
+    GameInformationComponent
   ],
   imports: [
     BrowserModule,

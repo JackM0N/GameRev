@@ -52,6 +52,10 @@ export class ViewingGamesComponent implements AfterViewInit, OnInit {
     this.router.navigate(['/games/edit/' + title]);
   }
 
+  routeToViewGame(title: string) {
+    this.router.navigate(['/game/' + title]);
+  }
+
   openGameDeletionConfirmationDialog(game: Game) {
     const dialogRef = this.dialog.open(GameDeletionConfirmationDialogComponent);
 

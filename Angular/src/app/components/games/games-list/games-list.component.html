@@ -47,6 +47,7 @@
     <ng-container matColumnDef="options">
       <th mat-header-cell *matHeaderCellDef> Options </th>
       <td mat-cell *matCellDef="let element">
+        <button mat-stroked-button (click)="routeToViewGame(element.title)">View</button>
         <button mat-stroked-button (click)="routeToEditGame(element.title)">Edit</button>
         <button mat-stroked-button (click)="openGameDeletionConfirmationDialog(element)">Delete</button>
       </td>
