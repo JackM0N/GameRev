@@ -37,6 +37,7 @@ public class GameService {
         newGame.setPublisher(game.getPublisher());
         newGame.setReleaseDate(game.getReleaseDate());
         newGame.setDescription(game.getDescription());
+        newGame.setUsersScore(game.getUsersScore());
 
         ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus().getId())
                 .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
@@ -109,6 +110,7 @@ public class GameService {
         gameDTO.setPublisher(game.getPublisher());
         gameDTO.setReleaseDate(game.getReleaseDate());
         gameDTO.setDescription(game.getDescription());
+        gameDTO.setUsersScore(game.getUsersScore());
 
         gameDTO.setReleaseStatus(mapReleaseStatusToDTO(game.getReleaseStatus()));
 

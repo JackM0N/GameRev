@@ -22,4 +22,5 @@ public class GameDTO implements Serializable {
     ReleaseStatusDTO releaseStatus;
     String description;
     List<TagDTO> tags;
+    float usersScore;
 }
