@@ -11,4 +11,5 @@ export interface Game {
   releaseStatus?: ReleaseStatus;
   description: string;
   tags: Tag[];
+  usersScore: number;
 }

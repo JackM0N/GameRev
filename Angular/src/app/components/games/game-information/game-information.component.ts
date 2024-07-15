@@ -16,7 +16,8 @@ export class GameInformationComponent implements OnInit {
     releaseDate: [],
     releaseStatus: undefined,
     description: '',
-    tags: []
+    tags: [],
+    usersScore: 0
   };
 
   constructor(

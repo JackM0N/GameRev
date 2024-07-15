@@ -31,7 +31,8 @@ export class AddingGamesComponent implements OnInit {
     releaseDate: [],
     releaseStatus: undefined,
     description: '',
-    tags: []
+    tags: [],
+    usersScore: 0
   };
 
   constructor(
@@ -51,6 +52,7 @@ export class AddingGamesComponent implements OnInit {
       releaseStatus: [this.game.releaseStatus, [Validators.required, Validators.minLength(1)]],
       tags: [this.game.tags],
       description: [this.game.description, [Validators.required, Validators.minLength(1)]],
+      usersScore: [this.game.usersScore]
     });
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
@@ -119,7 +121,8 @@ export class AddingGamesComponent implements OnInit {
             releaseDate: this.gameDate,
             releaseStatus: releaseStatus,
             tags: tags,
-            description: game.description
+            description: game.description,
+            usersScore: game.usersScore
           });
         });
       }

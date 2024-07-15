@@ -16,7 +16,7 @@ import { GameDeletionConfirmationDialogComponent } from '../game-deletion-confir
 export class ViewingGamesComponent implements AfterViewInit, OnInit {
   gamesList: Game[] = [];
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'tags', 'description', 'options'];
+  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(

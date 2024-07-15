@@ -34,6 +34,11 @@
       <td mat-cell *matCellDef="let element"> {{element.releaseStatus.statusName}} </td>
     </ng-container>
   
+    <ng-container matColumnDef="usersScore">
+      <th mat-header-cell *matHeaderCellDef> Users score </th>
+      <td mat-cell *matCellDef="let element"> {{element.usersScore}} </td>
+    </ng-container>
+  
     <ng-container matColumnDef="tags">
       <th mat-header-cell *matHeaderCellDef> Tags </th>
       <td mat-cell *matCellDef="let element"> {{getTags(element)}} </td>
