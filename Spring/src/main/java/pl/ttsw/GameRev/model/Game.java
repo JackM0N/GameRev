@@ -36,6 +36,9 @@ public class Game {
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
     private String description;
 
+    @Column(name = "users_score")
+    private float usersScore;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "game_tag",

@@ -32,4 +32,9 @@ public class UserReview {
     @Column(name = "score", nullable = false)
     private Integer score;
 
+    @Column(name = "positive_rating")
+    private Integer positiveRating;
+
+    @Column(name = "negative_rating")
+    private Integer negativeRating;
 }
