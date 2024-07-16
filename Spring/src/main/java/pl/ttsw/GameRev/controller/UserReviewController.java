@@ -22,6 +22,15 @@ public class UserReviewController {
         this.gameRepository = gameRepository;
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getUserReviewById(@PathVariable Integer id) {
+        UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(id);
+        if (userReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There are no user reviews for this id");
+        }
+        return ResponseEntity.ok(userReviewDTO);
+    }
+
     @GetMapping("/{title}")
     public ResponseEntity<?> getUserReviewByGame(@PathVariable String title) {
         title = title.replaceAll("-", " ");
@@ -40,18 +49,17 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewService.createUserReview(userReviewDTO));
     }
 
-    @PutMapping("/{title}")
-    public ResponseEntity<?> updateUserReview(@PathVariable String title, @RequestBody UserReviewDTO userReviewDTO) {
+    @PutMapping("")
+    public ResponseEntity<?> updateUserReview(@RequestBody UserReviewDTO userReviewDTO) {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error updating the user review");
         }
-        title = title.replaceAll("-", " ");
-        return ResponseEntity.ok(userReviewService.updateUserReview(title, userReviewDTO));
+        return ResponseEntity.ok(userReviewService.updateUserReview(userReviewDTO));
     }
-
-    @DeleteMapping("")
-    public ResponseEntity<?> deleteUserReview(@RequestBody UserReviewDTO userReviewDTO) {
-        boolean gotRemoved = userReviewService.deleteUserReview(userReviewDTO);
+  
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserReview(@PathVariable Integer id) {
+        boolean gotRemoved = userReviewService.deleteUserReview(id);
         if (!gotRemoved) {
             return ResponseEntity.badRequest().body("There was an error deleting the user review");
         }
