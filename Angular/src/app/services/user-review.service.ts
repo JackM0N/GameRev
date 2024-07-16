@@ -9,7 +9,7 @@ import { UserReview } from '../interfaces/userReview';
 })
 // Service for handling user reviews
 export class UserReviewService {
-  private baseUrl = 'http://localhost:8080/user-reviews';
+  private baseUrl = 'http://localhost:8080/users-reviews';
 
   constructor(
     private http: HttpClient,

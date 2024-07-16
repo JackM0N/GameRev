@@ -15,6 +15,11 @@
                 <input type="number" min="1" max="10" matInput placeholder="Input the review's score" formControlName="score" required/>
             </mat-form-field>
 
+            <mat-button-toggle-group id="is-positive-button-group" name="isPositive" aria-label="Is positive" formControlName="isPositive">
+                <mat-button-toggle value="1">Positive</mat-button-toggle>
+                <mat-button-toggle value="0">Negative</mat-button-toggle>
+            </mat-button-toggle-group>
+
             <div class="centered-container">
                 <button mat-stroked-button (click)="cancel()">Cancel</button>
                 <button mat-stroked-button [disabled]="!userReviewForm.valid">Submit</button>

@@ -13,6 +13,17 @@
         </div>
     </div>
 
+
+    <h3>Reviews</h3>
+    <div class="review-container">
+        <div class="review-item" *ngFor="let review of reviewList">
+          <p>{{ review.userUsername }}, score: {{ review.score }} ({{isPositive(review)}}), date: {{ formatDate(review.postDate) }}</p>
+          <p>{{ review.content }}</p>
+          <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
+          <button mat-stroked-button (click)="editReview(review)">Edit review</button>
+        </div>
+    </div>
+
     <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()">Add review</button>
     <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
 </div>

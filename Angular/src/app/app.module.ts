@@ -34,6 +34,8 @@ import { DatePipe } from '@angular/common';
 import { GameInformationComponent } from './components/games/game-information/game-information.component';
 import { UserReviewService } from './services/user-review.service';
 import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
+import { UserReviewDeletionConfirmationDialogComponent } from './components/user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import { UserReviewFormComponent } from './components/user-reviews/user-review-f
     GameFormComponent,
     ViewingGamesComponent,
     GameInformationComponent,
-    UserReviewFormComponent
+    UserReviewFormComponent,
+    UserReviewDeletionConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { UserReviewFormComponent } from './components/user-reviews/user-review-f
     MatSelectModule,
     MatTableModule,
     MatPaginatorModule,
+    MatButtonToggleModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

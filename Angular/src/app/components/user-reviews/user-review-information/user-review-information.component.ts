@@ -11,8 +11,8 @@ import { Location } from '@angular/common';
 })
 export class GameInformationComponent implements OnInit {
   userReview: UserReview = {
-    game: undefined,
-    user: undefined,
+    gameTitle: '',
+    userUsername: '',
     content: '',
     postDate: '',
     score: undefined,

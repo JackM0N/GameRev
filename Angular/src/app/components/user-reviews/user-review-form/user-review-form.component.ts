@@ -14,7 +14,10 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-user-review-form',
   templateUrl: './user-review-form.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css'
+  styleUrls: [
+    './user-review-form.component.css',
+    '/src/app/styles/shared-form-styles.css'
+  ]
 })
 export class UserReviewFormComponent implements OnInit {
   userReviewForm: FormGroup;
@@ -27,11 +30,12 @@ export class UserReviewFormComponent implements OnInit {
   }
 
   userReview: UserReview = {
-    game: undefined,
-    user: this.ourUser,
+    gameTitle: '',
+    userUsername: '',
     content: '',
     postDate: new Date(),
     score: undefined,
+    rating: true,
   };
 
   constructor(
@@ -46,7 +50,8 @@ export class UserReviewFormComponent implements OnInit {
   ) {
     this.userReviewForm = this.formBuilder.group({
       content: [this.userReview.content, [Validators.required, Validators.minLength(10)]],
-      score: [this.userReview.score, [Validators.required]]
+      score: [this.userReview.score, [Validators.required]],
+      isPositive: [this.userReview.rating, [Validators.required]]
     });
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
@@ -55,17 +60,13 @@ export class UserReviewFormComponent implements OnInit {
       this.formTitle = 'Editing review';
     }
 
-    if (this.userReview.user) {
-      this.userReview.user.username = this.authService.getUserName();
-    }
+    this.userReview.userUsername = this.authService.getUserName();
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
-        this.gameService.getGameByName(params['name']).subscribe((game: Game) => {
-          this.userReview.game = game;
-        });
+        this.userReview.gameTitle = params['name'];
       }
     });
   }
@@ -76,6 +77,8 @@ export class UserReviewFormComponent implements OnInit {
         ...this.userReview,
         ...this.userReviewForm.value
       };
+
+      console.log(reviewData);
 
       if (this.isEditRoute) {
         const observer: Observer<any> = {
