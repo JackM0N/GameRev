@@ -40,7 +40,7 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewService.createUserReview(userReviewDTO));
     }
 
-    @PutMapping("/edit/{title}")
+    @PutMapping("/{title}")
     public ResponseEntity<?> updateUserReview(@PathVariable String title, @RequestBody UserReviewDTO userReviewDTO) {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error updating the user review");
@@ -49,7 +49,7 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewService.updateUserReview(title, userReviewDTO));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserReview(@PathVariable Integer id) {
         boolean gotRemoved = userReviewService.deleteUserReview(id);
         if (!gotRemoved) {
