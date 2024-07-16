@@ -68,7 +68,6 @@ public class UserReviewService{
         if (userReviewDTO.getContent() != null){
             userReview.setContent(userReviewDTO.getContent());
         }
-        System.out.println(mapToDTO(userReview));
         return mapToDTO(userReviewRepository.save(userReview));
     }
 
