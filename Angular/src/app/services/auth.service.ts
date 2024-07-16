@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { WebsiteUser } from '../interfaces/websiteuser';
+import { WebsiteUser } from '../interfaces/websiteUser';
 import { LoginCredentials } from '../interfaces/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -81,7 +81,7 @@ export class AuthService {
     }
   }
 
-  getUserName(): string | null {
+  getUserName(): string | undefined {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('access_token');
       if (token) {
@@ -89,7 +89,7 @@ export class AuthService {
         return decodedToken.sub
       }
     }
-    return null;
+    return undefined;
   }
 
   getUserProfileInformation(username: string, token: string): Observable<WebsiteUser> {

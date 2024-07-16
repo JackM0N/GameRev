@@ -11,6 +11,7 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +40,12 @@ public class UserReviewService{
                 .collect(Collectors.toList());
     }
 
+    public UserReviewDTO getUserReviewById(Integer id) {
+        Optional<UserReview> userReview = (userReviewRepository.findById(id));
+
+        return userReview.map(this::mapToDTO).orElse(null);
+    }
+
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) {
         UserReview userReview = new UserReview();
         userReview.setUser(websiteUserRepository.findByUsername(userReviewDTO.getUserUsername()));
@@ -52,8 +59,8 @@ public class UserReviewService{
         return mapToDTO(userReviewRepository.save(userReview));
     }
 
-    public UserReviewDTO updateUserReview(String title, UserReviewDTO userReviewDTO) {
-        UserReview userReview = userReviewRepository.findByUserUsernameAndGameTitle(userReviewDTO.getUserUsername(), title);
+    public UserReviewDTO updateUserReview(UserReviewDTO userReviewDTO) {
+        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
         userReview.setPostDate(LocalDate.now());
         if (userReviewDTO.getScore() != null){
             userReview.setScore(userReviewDTO.getScore());

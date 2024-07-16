@@ -22,6 +22,15 @@ public class UserReviewController {
         this.gameRepository = gameRepository;
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getUserReviewById(@PathVariable Integer id) {
+        UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(id);
+        if (userReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There are no user reviews for this id");
+        }
+        return ResponseEntity.ok(userReviewDTO);
+    }
+
     @GetMapping("/{title}")
     public ResponseEntity<?> getUserReviewByGame(@PathVariable String title) {
         title = title.replaceAll("-", " ");
@@ -32,7 +41,7 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewDTO);
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> createUserReview(@RequestBody UserReviewDTO userReviewDTO) {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error creating the user review");
@@ -40,16 +49,15 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewService.createUserReview(userReviewDTO));
     }
 
-    @PutMapping("/edit/{title}")
-    public ResponseEntity<?> updateUserReview(@PathVariable String title, @RequestBody UserReviewDTO userReviewDTO) {
+    @PutMapping("")
+    public ResponseEntity<?> updateUserReview(@RequestBody UserReviewDTO userReviewDTO) {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error updating the user review");
         }
-        title = title.replaceAll("-", " ");
-        return ResponseEntity.ok(userReviewService.updateUserReview(title, userReviewDTO));
+        return ResponseEntity.ok(userReviewService.updateUserReview(userReviewDTO));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserReview(@PathVariable Integer id) {
         boolean gotRemoved = userReviewService.deleteUserReview(id);
         if (!gotRemoved) {
