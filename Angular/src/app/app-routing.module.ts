@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'games/add', component: GameFormComponent},
   { path: 'games/edit/:name', component: GameFormComponent},
   { path: 'user-reviews/add/:name', component: UserReviewFormComponent},
+  { path: 'user-reviews/edit/:id', component: UserReviewFormComponent},
 ];
 
 @NgModule({

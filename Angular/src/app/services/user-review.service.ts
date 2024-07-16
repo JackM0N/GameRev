@@ -10,6 +10,7 @@ import { UserReview } from '../interfaces/userReview';
 // Service for handling user reviews
 export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
+  private getByIdUrl = 'http://localhost:8080/users-reviews/id';
 
   constructor(
     private http: HttpClient,
@@ -21,8 +22,8 @@ export class UserReviewService {
     return this.http.get<UserReview[]>(this.baseUrl);
   }
 
-  getUserReview(id: string): Observable<UserReview> {
-    return this.http.get<UserReview>(`${this.baseUrl}/${id}`);
+  getUserReviewById(id: string): Observable<UserReview> {
+    return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
   getUserReviewsForGame(name: string): Observable<UserReview[]> {
@@ -33,8 +34,8 @@ export class UserReviewService {
     return this.http.post<UserReview>(this.baseUrl, userReview);
   }
 
-  editUserReview(title: string, userReview: UserReview): Observable<UserReview> {
-    return this.http.put<UserReview>(`${this.baseUrl}/${title}`, userReview);
+  editUserReview(userReview: UserReview): Observable<UserReview> {
+    return this.http.put<UserReview>(this.baseUrl, userReview);
   }
 
   deleteUserReview(id: number): Observable<UserReview> {

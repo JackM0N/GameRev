@@ -9,5 +9,4 @@ export interface UserReview {
   score?: number;
   positiveRating?: number;
   negativeRating?: number;
-  rating?: boolean;
 }

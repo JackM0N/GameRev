@@ -9,6 +9,7 @@ import { Observer } from 'rxjs';
 import { Toast, ToasterService } from 'angular-toaster';
 import { UserReviewDeletionConfirmationDialogComponent } from '../../user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { formatDate } from '../../../util/formatDate';
 
 @Component({
   selector: 'app-game-information',
@@ -17,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class GameInformationComponent implements OnInit {
   reviewList: UserReview[] = [];
+  formatDate = formatDate;
 
   game: Game = {
     title: '',
@@ -56,29 +58,6 @@ export class GameInformationComponent implements OnInit {
     });
   }
 
-  formatDate(dateArray: number[] | undefined): string {
-    if (!dateArray) {
-      return 'Unknown';
-    }
-
-    if (dateArray.length !== 3) {
-      return 'Invalid date';
-    }
-
-    const [year, month, day] = dateArray;
-    const date = new Date(year, month - 1, day, 15);
-
-    if (isNaN(date.getTime())) {
-      return 'Invalid date';
-    }
-
-    return new Intl.DateTimeFormat('en-US', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
-  }
-
   goBack() {
     this._location.back();
   }
@@ -87,15 +66,8 @@ export class GameInformationComponent implements OnInit {
     this.router.navigate(['/user-reviews/add/' + this.game.title]);
   }
 
-  isPositive(review: UserReview): string {
-    if (review.negativeRating && review.negativeRating > 0) {
-      return 'negative';
-    }
-    return 'positive';
-  }
-
   editReview(review: UserReview) {
-    
+    this.router.navigate(['/user-reviews/edit/' + review.id]);
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {

@@ -14,10 +14,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-user-review-form',
   templateUrl: './user-review-form.component.html',
-  styleUrls: [
-    './user-review-form.component.css',
-    '/src/app/styles/shared-form-styles.css'
-  ]
+  styleUrl: '/src/app/styles/shared-form-styles.css'
 })
 export class UserReviewFormComponent implements OnInit {
   userReviewForm: FormGroup;
@@ -35,7 +32,6 @@ export class UserReviewFormComponent implements OnInit {
     content: '',
     postDate: new Date(),
     score: undefined,
-    rating: true,
   };
 
   constructor(
@@ -45,13 +41,11 @@ export class UserReviewFormComponent implements OnInit {
     private toasterService: ToasterService,
     private userReviewService: UserReviewService,
     private authService: AuthService,
-    private gameService: GameService,
     private _location: Location
   ) {
     this.userReviewForm = this.formBuilder.group({
       content: [this.userReview.content, [Validators.required, Validators.minLength(10)]],
-      score: [this.userReview.score, [Validators.required]],
-      isPositive: [this.userReview.rating, [Validators.required]]
+      score: [this.userReview.score, [Validators.required]]
     });
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
@@ -67,6 +61,16 @@ export class UserReviewFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.userReview.gameTitle = params['name'];
+      }
+      if (params['id']) {
+        this.userReviewService.getUserReviewById(params['id']).subscribe((userReview: UserReview) => {
+          this.userReview = userReview;
+
+          this.userReviewForm.setValue({
+            content: userReview.content,
+            score: userReview.score
+          });
+        });
       }
     });
   }
@@ -101,7 +105,7 @@ export class UserReviewFormComponent implements OnInit {
           },
           complete: () => {}
         };
-        //this.gameService.editGame(this.gameTitle, reviewData).subscribe(observer);
+        this.userReviewService.editUserReview(reviewData).subscribe(observer);
         return;
       }
 
