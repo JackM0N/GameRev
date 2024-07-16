@@ -21,14 +21,16 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
+    private final WebsiteUserService websiteUserService;
 
     public AuthenticationService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager,
-                                 RoleRepository roleRepository) {
+                                 RoleRepository roleRepository, WebsiteUserService websiteUserService) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
+        this.websiteUserService = websiteUserService;
     }
 
     public AuthenticationResponse register(WebsiteUser request) {
@@ -67,6 +69,7 @@ public class AuthenticationService {
 
         user = websiteUserRepository.findByUsernameOrEmail(login, login);
         String token = jwtService.generateToken(user);
+        websiteUserService.updateCurrentToken(user, token);
 
         return new AuthenticationResponse(token);
     }

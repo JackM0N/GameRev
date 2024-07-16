@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.model.UserReview;
+import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,12 @@ public class UserReviewService{
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) {
         UserReview userReview = new UserReview();
+        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
+
+        if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
+            throw new BadCredentialsException("You are not allowed to create this user review");
+        }
+
         userReview.setUser(websiteUserRepository.findByUsername(userReviewDTO.getUserUsername()));
         userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle()));
         userReview.setContent(userReviewDTO.getContent());
@@ -55,6 +63,7 @@ public class UserReviewService{
         userReview.setPostDate(LocalDate.now());
         userReview.setPositiveRating(0);
         userReview.setNegativeRating(0);
+        System.out.println(userReview);
 
         return mapToDTO(userReviewRepository.save(userReview));
     }
@@ -68,13 +77,20 @@ public class UserReviewService{
         if (userReviewDTO.getContent() != null){
             userReview.setContent(userReviewDTO.getContent());
         }
-        System.out.println(mapToDTO(userReview));
+
         return mapToDTO(userReviewRepository.save(userReview));
     }
 
-    public boolean deleteUserReview(Integer userReviewId) {
-        if (userReviewRepository.existsById(userReviewId)){
-            userReviewRepository.deleteById(userReviewId);
+    public boolean deleteUserReview(UserReviewDTO userReviewDTO) {
+        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
+        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
+
+        if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
+            throw new BadCredentialsException("You are not allowed to delete this user review");
+        }
+
+        if (userReview != null){
+            userReviewRepository.deleteById(Math.toIntExact(userReviewDTO.getId()));
             return true;
         }
         return false;

@@ -116,4 +116,9 @@ public class WebsiteUserService {
                 .collect(Collectors.toList()));
         return dto;
     }
+
+    public void updateCurrentToken(WebsiteUser websiteUser, String token) {
+        websiteUser.setCurrentToken(token);
+        websiteUserRepository.save(websiteUser);
+    }
 }
