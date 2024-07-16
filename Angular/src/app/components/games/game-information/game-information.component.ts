@@ -108,4 +108,33 @@ export class GameInformationComponent implements OnInit {
       this.userReviewService.deleteUserReview(review.id).subscribe(observerTag);
     }
   }
+
+  onToggleChange(review: UserReview, value: number) {
+    const likeStatus = value === 1 ? true : value === 0 ? false : null;
+
+    if (!review.id) {
+      return;
+    }
+
+    this.userReviewService.updateUserReviewLikeStatus(review.id, likeStatus).subscribe(
+      response => {
+        review.userLiked = likeStatus;
+        var toast: Toast = {
+          type: 'success',
+          title: 'Updated review successfully',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Updating review failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      }
+    );
+  }
 }

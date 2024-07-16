@@ -23,6 +23,11 @@
           <p>Dislikes: {{ review.negativeRating }}</p>
           <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
           <button mat-stroked-button (click)="editReview(review)">Edit review</button>
+
+          <mat-button-toggle-group name="likeDislike" [value]="review.userLiked ? 1 : review.userLiked === false ? 0 : null" (change)="onToggleChange(review, $event.value)">
+            <mat-button-toggle value="1">Like</mat-button-toggle>
+            <mat-button-toggle value="0">Dislike</mat-button-toggle>
+          </mat-button-toggle-group>
         </div>
     </div>
 

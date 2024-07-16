@@ -11,6 +11,7 @@ import { UserReview } from '../interfaces/userReview';
 export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
+  private likeStatusUrl = 'http://localhost:8080/users-reviews/like-status';
 
   constructor(
     private http: HttpClient,
@@ -40,5 +41,9 @@ export class UserReviewService {
 
   deleteUserReview(id: number): Observable<UserReview> {
     return this.http.delete<UserReview>(`${this.baseUrl}/${id}`);
+  }
+
+  updateUserReviewLikeStatus(id: number, likeStatus: boolean | null): Observable<UserReview> {
+    return this.http.put<UserReview>(`${this.likeStatusUrl}/${id}`, likeStatus);
   }
 }

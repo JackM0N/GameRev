@@ -9,4 +9,6 @@ export interface UserReview {
   score?: number;
   positiveRating?: number;
   negativeRating?: number;
+  
+  userLiked?: boolean | null;
 }
