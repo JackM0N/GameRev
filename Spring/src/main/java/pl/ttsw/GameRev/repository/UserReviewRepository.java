@@ -11,4 +11,5 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Integer>
     List<UserReview> findByGameTitle(String title);
     List<UserReview> findByUserId(Long id);
     UserReview findByUserUsernameAndGameTitle(String username, String title);
+    UserReview findById(Long id);
 }
