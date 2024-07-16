@@ -20,7 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from './components/user/account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
 import { ViewingGamesComponent } from './components/games/games-list/games-list.component';
-import { AddingGamesComponent } from './components/games/games-form/games-form.component';
+import { GameFormComponent } from './components/games/game-form/game-form.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,6 +31,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
 import { GameDeletionConfirmationDialogComponent } from './components/games/game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
+import { GameInformationComponent } from './components/games/game-information/game-information.component';
+import { UserReviewService } from './services/user-review.service';
+import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
+import { UserReviewDeletionConfirmationDialogComponent } from './components/user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -41,8 +46,11 @@ import { DatePipe } from '@angular/common';
     LogoutConfirmationDialogComponent,
     AccountDeletionConfirmationDialogComponent,
     GameDeletionConfirmationDialogComponent,
-    AddingGamesComponent,
-    ViewingGamesComponent
+    GameFormComponent,
+    ViewingGamesComponent,
+    GameInformationComponent,
+    UserReviewFormComponent,
+    UserReviewDeletionConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -60,6 +68,7 @@ import { DatePipe } from '@angular/common';
     MatSelectModule,
     MatTableModule,
     MatPaginatorModule,
+    MatButtonToggleModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
@@ -80,6 +89,7 @@ import { DatePipe } from '@angular/common';
     GameService,
     ReleaseStatusService,
     TagService,
+    UserReviewService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],

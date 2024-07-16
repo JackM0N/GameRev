@@ -10,9 +10,6 @@ import { Game } from '../interfaces/game';
 // Service for handling games
 export class GameService {
   private baseUrl = 'http://localhost:8080/games';
-  private postUrl = 'http://localhost:8080/games/create';
-  private editUrl = 'http://localhost:8080/games/edit';
-  private deleteUrl = 'http://localhost:8080/games/delete';
 
   constructor(
     private http: HttpClient,
@@ -29,14 +26,14 @@ export class GameService {
   }
 
   addGame(game: Game): Observable<Game> {
-    return this.http.post<Game>(this.postUrl, game);
+    return this.http.post<Game>(this.baseUrl, game);
   }
 
   editGame(title: string, game: Game): Observable<Game> {
-    return this.http.put<Game>(`${this.editUrl}/${title}`, game);
+    return this.http.put<Game>(`${this.baseUrl}/${title}`, game);
   }
 
   deleteGame(id: number): Observable<Game> {
-    return this.http.delete<Game>(`${this.deleteUrl}/${id}`);
+    return this.http.delete<Game>(`${this.baseUrl}/${id}`);
   }
 }

@@ -11,26 +11,28 @@ import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 
 @Component({
-  selector: 'app-games-form',
-  templateUrl: './games-form.component.html',
+  selector: 'app-game-form',
+  templateUrl: './game-form.component.html',
   styleUrl: '/src/app/styles/shared-form-styles.css'
 })
-export class AddingGamesComponent implements OnInit {
+export class GameFormComponent implements OnInit {
   addingGameForm: FormGroup;
   releaseStatuses: ReleaseStatus[] = [];
   isEditRoute: boolean;
   listTitle: string = 'Add new game';
   tagsList: Tag[] = [];
   gameTitle: string = '';
+  gameDate: Date = new Date();
 
   game: Game = {
     title: '',
     developer: '',
     publisher: '',
-    releaseDate: new Date(),
+    releaseDate: [],
     releaseStatus: undefined,
     description: '',
-    tags: []
+    tags: [],
+    usersScore: 0
   };
 
   constructor(
@@ -50,6 +52,7 @@ export class AddingGamesComponent implements OnInit {
       releaseStatus: [this.game.releaseStatus, [Validators.required, Validators.minLength(1)]],
       tags: [this.game.tags],
       description: [this.game.description, [Validators.required, Validators.minLength(1)]],
+      usersScore: [this.game.usersScore]
     });
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
@@ -87,12 +90,10 @@ export class AddingGamesComponent implements OnInit {
       if (params['name']) {
         this.gameTitle = params['name'];
         this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
-          this.game = game;
-
-          var fixedDate = game.releaseDate;
-          if(game.releaseDate) {
-            fixedDate = new Date(game.releaseDate);
+          if (game.releaseDate) {
+            this.gameDate = new Date(game.releaseDate[0], game.releaseDate[1] -1, game.releaseDate[2], 15);
           }
+          this.game = game;
 
           var releaseStatus = game.releaseStatus;
           if (game.releaseStatus) {
@@ -117,10 +118,11 @@ export class AddingGamesComponent implements OnInit {
             title: game.title,
             developer: game.developer,
             publisher: game.publisher,
-            releaseDate: fixedDate,
+            releaseDate: this.gameDate,
             releaseStatus: releaseStatus,
             tags: tags,
-            description: game.description
+            description: game.description,
+            usersScore: game.usersScore
           });
         });
       }
@@ -133,6 +135,8 @@ export class AddingGamesComponent implements OnInit {
         ...this.game,
         ...this.addingGameForm.value
       };
+
+      gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
 
       if (this.isEditRoute) {
         const observer: Observer<any> = {
