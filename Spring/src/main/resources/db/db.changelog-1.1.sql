@@ -82,3 +82,8 @@ CREATE TRIGGER trigger_update_user_review_ratings
     FOR EACH ROW
 EXECUTE FUNCTION update_user_review_ratings();
 
+
+
+--changeset Stanislaw:10 labels:schema,fix
+ALTER TABLE website_user
+    ADD COLUMN current_token TEXT;
