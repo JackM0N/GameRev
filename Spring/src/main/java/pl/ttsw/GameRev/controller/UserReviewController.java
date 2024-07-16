@@ -57,9 +57,9 @@ public class UserReviewController {
         return ResponseEntity.ok(userReviewService.updateUserReview(userReviewDTO));
     }
   
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserReview(@PathVariable Integer id) {
-        boolean gotRemoved = userReviewService.deleteUserReview(id);
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteUserReview(@RequestBody UserReviewDTO userReviewDTO) {
+        boolean gotRemoved = userReviewService.deleteUserReview(userReviewDTO);
         if (!gotRemoved) {
             return ResponseEntity.badRequest().body("There was an error deleting the user review");
         }
