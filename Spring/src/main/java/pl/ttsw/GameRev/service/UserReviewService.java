@@ -51,6 +51,7 @@ public class UserReviewService{
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) {
         UserReview userReview = new UserReview();
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
+        System.out.println(userReviewDTO);
 
         if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
             throw new BadCredentialsException("You are not allowed to create this user review");
@@ -63,7 +64,6 @@ public class UserReviewService{
         userReview.setPostDate(LocalDate.now());
         userReview.setPositiveRating(0);
         userReview.setNegativeRating(0);
-        System.out.println(userReview);
 
         return mapToDTO(userReviewRepository.save(userReview));
     }
