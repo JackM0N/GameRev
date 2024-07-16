@@ -24,4 +24,5 @@ public class WebsiteUserDTO implements Serializable {
     Boolean isBanned;
     Boolean isDeleted;
     List<RoleDTO> roles;
+    String currentToken;
 }

@@ -22,4 +22,5 @@ public class UserReviewDTO implements Serializable {
     Integer score;
     Integer positiveRating;
     Integer negativeRating;
+    String token;
 }
