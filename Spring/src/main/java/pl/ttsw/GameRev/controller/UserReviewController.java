@@ -39,4 +39,22 @@ public class UserReviewController {
         }
         return ResponseEntity.ok(userReviewService.createUserReview(userReviewDTO));
     }
+
+    @PutMapping("/edit/{title}")
+    public ResponseEntity<?> updateUserReview(@PathVariable String title, @RequestBody UserReviewDTO userReviewDTO) {
+        if (userReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There was an error updating the user review");
+        }
+        title = title.replaceAll("-", " ");
+        return ResponseEntity.ok(userReviewService.updateUserReview(title, userReviewDTO));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUserReview(@PathVariable Integer id) {
+        boolean gotRemoved = userReviewService.deleteUserReview(id);
+        if (!gotRemoved) {
+            return ResponseEntity.badRequest().body("There was an error deleting the user review");
+        }
+        return ResponseEntity.ok().build();
+    }
 }
