@@ -24,8 +24,8 @@
           <button mat-stroked-button (click)="editReview(review)">Edit review</button>
           
           <div>
-            <button mat-button [color]="likeColor" (click)="toggleLike()">Like</button>
-            <button mat-button [color]="dislikeColor" (click)="toggleDislike()">Dislike</button>
+            <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
+            <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
           </div>
         </div>
     </div>

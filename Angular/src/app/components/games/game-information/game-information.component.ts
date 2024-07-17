@@ -53,7 +53,14 @@ export class GameInformationComponent implements OnInit {
         this.gameService.getGameByName(gameTitle).subscribe((game: Game) => {
           this.game = game;
 
-          this.userReviewService.getUserReviewsForGame(gameTitle).subscribe((userReviews: UserReview[]) => {
+          const token = this.authService.getToken();
+
+          if (token === null) {
+            console.log("Token is null");
+            return;
+          }
+
+          this.userReviewService.getUserReviewsForGame(gameTitle, token).subscribe((userReviews: UserReview[]) => {
             this.reviewList = userReviews;
           });
 
@@ -114,21 +121,33 @@ export class GameInformationComponent implements OnInit {
     }
   }
 
-  toggleLike() {
-    if (this.likeColor === 'primary') {
-      this.likeColor = '';
+  toggleLike(review: UserReview) {
+    if (review.ownRatingIsPositive === true) {
+      review.ownRatingIsPositive = undefined;
+      if (review.positiveRating != undefined) {
+        review.positiveRating--;
+      }
+
     } else {
-      this.likeColor = 'primary';
-      this.dislikeColor = '';
+      review.ownRatingIsPositive = true;
+      if (review.positiveRating != undefined) {
+        review.positiveRating++;
+      }
     }
   }
 
-  toggleDislike() {
-    if (this.dislikeColor === 'warn') {
-      this.dislikeColor = '';
+  toggleDislike(review: UserReview) {
+    if (review.ownRatingIsPositive === false) {
+      review.ownRatingIsPositive = undefined;
+      if (review.negativeRating != undefined) {
+        review.negativeRating--;
+      }
+
     } else {
-      this.dislikeColor = 'warn';
-      this.likeColor = '';
+      review.ownRatingIsPositive = false;
+      if (review.negativeRating != undefined) {
+        review.negativeRating++;
+      }
     }
   }
 }

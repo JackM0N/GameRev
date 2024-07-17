@@ -1,5 +1,5 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserReview } from '../interfaces/userReview';
@@ -27,8 +27,11 @@ export class UserReviewService {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string): Observable<UserReview[]> {
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`);
+  getUserReviewsForGame(name: string, token: string): Observable<UserReview[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers });
   }
 
   addUserReview(userReview: UserReview): Observable<UserReview> {
