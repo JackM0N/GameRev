@@ -24,7 +24,7 @@ public class WebsiteUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${profile.pics.directory}")
-    private String profilePicsDirectory;
+    private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
 
     public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder) {
         this.websiteUserRepository = websiteUserRepository;
