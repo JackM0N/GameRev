@@ -39,8 +39,11 @@ export class UserReviewService {
     return this.http.put<UserReview>(this.baseUrl, userReview);
   }
 
-  deleteUserReview(id: number): Observable<UserReview> {
-    return this.http.delete<UserReview>(`${this.baseUrl}/${id}`);
+  deleteUserReview(userReview: UserReview): Observable<UserReview> {
+    const options = {
+      body: userReview
+    };
+    return this.http.delete<UserReview>(this.baseUrl, options);
   }
 
   updateUserReviewLikeStatus(id: number, likeStatus: boolean | null): Observable<UserReview> {

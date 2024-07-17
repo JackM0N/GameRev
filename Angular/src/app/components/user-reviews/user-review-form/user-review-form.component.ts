@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Toast, ToasterService } from 'angular-toaster';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
-import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { AuthService } from '../../../services/auth.service';
@@ -36,7 +35,6 @@ export class UserReviewFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private route: ActivatedRoute,
     private toasterService: ToasterService,
     private userReviewService: UserReviewService,
@@ -82,11 +80,12 @@ export class UserReviewFormComponent implements OnInit {
         ...this.userReviewForm.value
       };
 
-      console.log(reviewData);
+      reviewData.token = this.authService.getToken();
 
       if (this.isEditRoute) {
         const observer: Observer<any> = {
           next: response => {
+            this._location.back();
             var toast: Toast = {
               type: 'success',
               title: 'Edited review successfuly',
@@ -111,6 +110,7 @@ export class UserReviewFormComponent implements OnInit {
 
       const observer: Observer<any> = {
         next: response => {
+          this._location.back();
           var toast: Toast = {
             type: 'success',
             title: 'Added review successfuly',

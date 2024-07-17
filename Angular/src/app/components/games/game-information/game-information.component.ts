@@ -10,6 +10,7 @@ import { Toast, ToasterService } from 'angular-toaster';
 import { UserReviewDeletionConfirmationDialogComponent } from '../../user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDate } from '../../../util/formatDate';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-game-information',
@@ -19,6 +20,8 @@ import { formatDate } from '../../../util/formatDate';
 export class GameInformationComponent implements OnInit {
   reviewList: UserReview[] = [];
   formatDate = formatDate;
+  likeColor: 'primary' | '' = '';
+  dislikeColor: 'warn' | '' = '';
 
   game: Game = {
     title: '',
@@ -38,6 +41,7 @@ export class GameInformationComponent implements OnInit {
     private router: Router,
     private _location: Location,
     private toasterService: ToasterService,
+    private authService: AuthService,
     public dialog: MatDialog,
   ) {
   }
@@ -81,6 +85,8 @@ export class GameInformationComponent implements OnInit {
   }
 
   deleteReview(review: UserReview) {
+    review.token = this.authService.getToken();
+
     if (review.id) {
       const observerTag: Observer<any> = {
         next: response => {
@@ -101,11 +107,10 @@ export class GameInformationComponent implements OnInit {
           this.toasterService.pop(toast);
         },
         complete: () => {
-          console.log("complete")
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
         }
       };
-      this.userReviewService.deleteUserReview(review.id).subscribe(observerTag);
+      this.userReviewService.deleteUserReview(review).subscribe(observerTag);
     }
   }
 
@@ -116,12 +121,15 @@ export class GameInformationComponent implements OnInit {
       return;
     }
 
+    console.log(value);
+
+    /*
     this.userReviewService.updateUserReviewLikeStatus(review.id, likeStatus).subscribe(
       response => {
         review.userLiked = likeStatus;
         var toast: Toast = {
           type: 'success',
-          title: 'Updated review successfully',
+          title: 'Liked successfully',
           showCloseButton: true
         };
         this.toasterService.pop(toast);
@@ -136,5 +144,25 @@ export class GameInformationComponent implements OnInit {
         this.toasterService.pop(toast);
       }
     );
+
+    */
+  }
+
+  toggleLike() {
+    if (this.likeColor === 'primary') {
+      this.likeColor = '';
+    } else {
+      this.likeColor = 'primary';
+      this.dislikeColor = '';
+    }
+  }
+
+  toggleDislike() {
+    if (this.dislikeColor === 'warn') {
+      this.dislikeColor = '';
+    } else {
+      this.dislikeColor = 'warn';
+      this.likeColor = '';
+    }
   }
 }

@@ -9,6 +9,7 @@ import { GameService } from '../../../services/game.service';
 import { ReleaseStatusService } from '../../../services/release-status.service';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-game-form',
@@ -43,6 +44,7 @@ export class GameFormComponent implements OnInit {
     private gameService: GameService,
     private tagService: TagService,
     private releaseStatusService: ReleaseStatusService,
+    private _location: Location
   ) {
     this.addingGameForm = this.formBuilder.group({
       title: [this.game.title, [Validators.required, Validators.minLength(1)]],
@@ -141,7 +143,7 @@ export class GameFormComponent implements OnInit {
       if (this.isEditRoute) {
         const observer: Observer<any> = {
           next: response => {
-            this.router.navigate(['/games']);
+            this._location.back();
             var toast: Toast = {
               type: 'success',
               title: 'Edited game successfuly',
@@ -166,7 +168,7 @@ export class GameFormComponent implements OnInit {
 
       const observer: Observer<any> = {
         next: response => {
-          this.router.navigate(['/games']);
+          this._location.back();
           var toast: Toast = {
             type: 'success',
             title: 'Added game successfuly',
@@ -201,9 +203,5 @@ export class GameFormComponent implements OnInit {
     }
 
     return releaseStatusControl.hasError('required') && releaseStatusControl.touched
-  }
-
-  trackByFn(index: number, item: any): number {
-    return item.id;
   }
 }

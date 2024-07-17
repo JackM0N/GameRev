@@ -13,7 +13,6 @@
         </div>
     </div>
 
-
     <h3>Reviews</h3>
     <div class="review-container">
         <div class="review-item" *ngFor="let review of reviewList">
@@ -28,6 +27,11 @@
             <mat-button-toggle value="1">Like</mat-button-toggle>
             <mat-button-toggle value="0">Dislike</mat-button-toggle>
           </mat-button-toggle-group>
+          
+          <div>
+            <button mat-button [color]="likeColor" (click)="toggleLike()">Like</button>
+            <button mat-button [color]="dislikeColor" (click)="toggleDislike()">Dislike</button>
+          </div>
         </div>
     </div>
 
