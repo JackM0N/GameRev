@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GameDeletionConfirmationDialogComponent } from '../game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-games-list',
@@ -15,6 +16,7 @@ import { GameDeletionConfirmationDialogComponent } from '../game-deletion-confir
 })
 export class ViewingGamesComponent implements AfterViewInit, OnInit {
   gamesList: Game[] = [];
+  sortedData: Game[] = [];
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
   displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -87,5 +89,47 @@ export class ViewingGamesComponent implements AfterViewInit, OnInit {
 
   getTags(game: Game) {
     return game.tags.map(tag => tag.tagName).join(', ');
+  }
+
+  sortData(sort: Sort) {
+    const data = this.gamesList.slice();
+    if (!sort.active || sort.direction === '') {
+      this.sortedData = data;
+      return;
+    }
+
+    this.sortedData = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'id':
+          if(a.id && b.id) {
+            return this.compare(a.id, b.id, isAsc);
+          }
+          return 1;
+        case 'title':
+          return this.compare(a.title, b.title, isAsc);
+        case 'developer':
+          return this.compare(a.developer, b.developer, isAsc);
+        case 'publisher':
+          return this.compare(a.publisher, b.publisher, isAsc);
+        case 'releaseDate':
+          return this.compare(a.releaseDate, b.releaseDate, isAsc);
+          case 'releaseStatus':
+            if(a.releaseStatus && b.releaseStatus) {
+              return this.compare(a.releaseStatus.statusName, b.releaseStatus.statusName, isAsc);
+            }
+            return 1;
+          case 'usersScore':
+            return this.compare(a.usersScore, b.usersScore, isAsc);
+        default:
+          return 0;
+      }
+    });
+
+    this.dataSource = new MatTableDataSource<Game>(this.sortedData);
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 }

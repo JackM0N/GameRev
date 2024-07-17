@@ -36,6 +36,7 @@ import { UserReviewService } from './services/user-review.service';
 import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
 import { UserReviewDeletionConfirmationDialogComponent } from './components/user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatTableModule,
     MatPaginatorModule,
     MatButtonToggleModule,
+    MatSortModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
