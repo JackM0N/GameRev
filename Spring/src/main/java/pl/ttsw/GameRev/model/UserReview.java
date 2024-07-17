@@ -1,9 +1,12 @@
 package pl.ttsw.GameRev.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,4 +40,7 @@ public class UserReview {
 
     @Column(name = "negative_rating")
     private Integer negativeRating;
+
+    @OneToMany(mappedBy = "userReview", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Rating> ratings;
 }

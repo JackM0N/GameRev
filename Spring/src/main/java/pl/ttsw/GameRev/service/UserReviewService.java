@@ -2,14 +2,17 @@ package pl.ttsw.GameRev.service;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
+import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,18 +23,32 @@ public class UserReviewService{
     private final WebsiteUserRepository websiteUserRepository;
     private final GameRepository gameRepository;
     private final UserReviewRepository userReviewRepository;
+    private final RatingRepository ratingRepository;
+    private final WebsiteUserService websiteUserService;
 
-    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, GameService gameService, WebsiteUserService websiteUserService) {
+    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService) {
         this.userReviewRepository = userReviewRepository;
         this.websiteUserRepository = websiteUserRepository;
         this.gameRepository = gameRepository;
+        this.ratingRepository = ratingRepository;
+        this.websiteUserService = websiteUserService;
     }
 
     public List<UserReviewDTO> getUserReviewByGame(String title) {
         List<UserReview> userReviews = userReviewRepository.findByGameTitle(title);
-        return userReviews.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+
+        return userReviews.stream().map(userReview -> {
+            UserReviewDTO userReviewDTO = mapToDTO(userReview);
+
+            Optional<Rating> ratingOptional = ratingRepository.findByUserAndUserReview(currentUser, userReview);
+            ratingOptional.ifPresentOrElse(rating -> {
+                userReviewDTO.setOwnRatingIsPositive(rating.getIsPositive());
+            }, () -> userReviewDTO.setOwnRatingIsPositive(null));
+
+            System.out.println(userReviewDTO);
+            return userReviewDTO;
+        }).collect(Collectors.toList());
     }
 
     public List<UserReviewDTO> getUserReviewByUser(Long userId) {
@@ -43,14 +60,12 @@ public class UserReviewService{
 
     public UserReviewDTO getUserReviewById(Integer id) {
         Optional<UserReview> userReview = (userReviewRepository.findById(id));
-
         return userReview.map(this::mapToDTO).orElse(null);
     }
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) {
         UserReview userReview = new UserReview();
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
-        System.out.println(userReviewDTO);
 
         if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
             throw new BadCredentialsException("You are not allowed to create this user review");
@@ -105,6 +120,33 @@ public class UserReviewService{
         userReviewDTO.setScore(userReview.getScore());
         userReviewDTO.setPositiveRating(userReview.getPositiveRating());
         userReviewDTO.setNegativeRating(userReview.getNegativeRating());
+        userReviewDTO.setOwnRatingIsPositive(userReview.getRatings().stream().map(this::mapToDTO).findFirst().get().getIsPositive());
         return userReviewDTO;
+    }
+
+
+    public Rating findByUserAndReview(Long userId, Long userReviewId) {
+        Rating rating = ratingRepository.findByUserIdAndUserReviewId(userId, userReviewId);
+        if (rating == null){
+            return null;
+        }
+        return rating;
+    }
+
+    public RatingDTO findByUserAndMapToDTO(Long userId, Long userReviewId) {
+        Rating rating = ratingRepository.findByUserIdAndUserReviewId(userId, userReviewId);
+        if (rating == null){
+            return null;
+        }
+        return mapToDTO(rating);
+    }
+
+    public RatingDTO mapToDTO(Rating rating) {
+        RatingDTO ratingDTO = new RatingDTO();
+        ratingDTO.setId(rating.getId());
+        ratingDTO.setUser(rating.getUser());
+        ratingDTO.setUserReview(rating.getUserReview());
+        ratingDTO.setIsPositive(rating.getIsPositive());
+        return ratingDTO;
     }
 }
