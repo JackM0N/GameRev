@@ -45,8 +45,7 @@ public class UserReviewService{
             ratingOptional.ifPresentOrElse(rating -> {
                 userReviewDTO.setOwnRatingIsPositive(rating.getIsPositive());
             }, () -> userReviewDTO.setOwnRatingIsPositive(null));
-
-            System.out.println(userReviewDTO);
+            
             return userReviewDTO;
         }).collect(Collectors.toList());
     }
