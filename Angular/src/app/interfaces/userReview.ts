@@ -10,6 +10,6 @@ export interface UserReview {
   positiveRating?: number;
   negativeRating?: number;
   
-  userLiked?: boolean | null;
+  isPositiveRating?: boolean | null;
   token?: string | null;
 }

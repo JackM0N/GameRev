@@ -114,40 +114,6 @@ export class GameInformationComponent implements OnInit {
     }
   }
 
-  onToggleChange(review: UserReview, value: number) {
-    const likeStatus = value === 1 ? true : value === 0 ? false : null;
-
-    if (!review.id) {
-      return;
-    }
-
-    console.log(value);
-
-    /*
-    this.userReviewService.updateUserReviewLikeStatus(review.id, likeStatus).subscribe(
-      response => {
-        review.userLiked = likeStatus;
-        var toast: Toast = {
-          type: 'success',
-          title: 'Liked successfully',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Updating review failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      }
-    );
-
-    */
-  }
-
   toggleLike() {
     if (this.likeColor === 'primary') {
       this.likeColor = '';
