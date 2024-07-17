@@ -12,3 +12,5 @@ Angular/node_modules/
 .vscode/
 workspace.code-workspace
 .VSCodeCounter
+
+Spring/src/main/resources/static/
