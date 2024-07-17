@@ -21,7 +21,7 @@ public class Rating {
     @JoinColumn(name = "user_id", nullable = false)
     private WebsiteUser user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_review_id", nullable = false)
     private UserReview userReview;
 
