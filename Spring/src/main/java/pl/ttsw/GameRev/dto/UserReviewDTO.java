@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.UserReview}
@@ -23,4 +25,5 @@ public class UserReviewDTO implements Serializable {
     Integer positiveRating;
     Integer negativeRating;
     String token;
+    Boolean ownRatingIsPositive;
 }
