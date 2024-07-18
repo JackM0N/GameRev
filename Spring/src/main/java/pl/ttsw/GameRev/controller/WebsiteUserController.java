@@ -14,6 +14,7 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -22,6 +23,15 @@ public class WebsiteUserController {
 
     public WebsiteUserController(WebsiteUserService websiteUserService) {
         this.websiteUserService = websiteUserService;
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getUsers() {
+        List <WebsiteUserDTO> users = websiteUserService.getAllWebsiteUsers();
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/account/{username}")

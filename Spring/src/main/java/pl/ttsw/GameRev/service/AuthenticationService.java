@@ -69,7 +69,6 @@ public class AuthenticationService {
 
         user = websiteUserRepository.findByUsernameOrEmail(login, login);
         String token = jwtService.generateToken(user);
-        websiteUserService.updateCurrentToken(user, token);
 
         return new AuthenticationResponse(token);
     }

@@ -66,10 +66,6 @@ public class UserReviewService{
         UserReview userReview = new UserReview();
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
 
-        if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
-            throw new BadCredentialsException("You are not allowed to create this user review");
-        }
-
         userReview.setUser(websiteUserRepository.findByUsername(userReviewDTO.getUserUsername()));
         userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle()));
         userReview.setContent(userReviewDTO.getContent());
@@ -98,9 +94,6 @@ public class UserReviewService{
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
 
-        if (!Objects.equals(userReviewDTO.getToken(), websiteUser.getCurrentToken())){
-            throw new BadCredentialsException("You are not allowed to delete this user review");
-        }
 
         if (userReview != null){
             userReviewRepository.deleteById(Math.toIntExact(userReviewDTO.getId()));
