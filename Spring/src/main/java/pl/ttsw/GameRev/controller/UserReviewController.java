@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
@@ -42,7 +43,7 @@ public class UserReviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createUserReview(@RequestBody UserReviewDTO userReviewDTO) {
+    public ResponseEntity<?> createUserReview(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error creating the user review");
         }
@@ -50,7 +51,7 @@ public class UserReviewController {
     }
 
     @PutMapping("")
-    public ResponseEntity<?> updateUserReview(@RequestBody UserReviewDTO userReviewDTO) {
+    public ResponseEntity<?> updateUserReview(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error updating the user review");
         }
