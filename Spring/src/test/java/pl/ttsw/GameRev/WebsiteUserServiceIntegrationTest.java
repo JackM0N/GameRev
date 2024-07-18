@@ -10,13 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
-import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -87,7 +86,7 @@ public class WebsiteUserServiceIntegrationTest {
         user.setPassword(passwordEncoder.encode("currentPassword"));
         websiteUserRepository.save(user);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("currentPassword");
         request.setNewPassword("newPassword");
         request.setEmail("newEmail@test.com");
@@ -104,7 +103,7 @@ public class WebsiteUserServiceIntegrationTest {
         user.setPassword(passwordEncoder.encode("currentPassword"));
         websiteUserRepository.save(user);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("wrongPassword");
 
         assertThrows(BadRequestException.class, () -> {

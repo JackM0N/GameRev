@@ -8,21 +8,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
-import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,7 +75,7 @@ public class WebsiteUserServiceTest {
         when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(user_new);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("currentPassword");
         request.setEmail("newEmail@test.com");
 
@@ -91,7 +88,7 @@ public class WebsiteUserServiceTest {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("wrongPassword");
 
         assertThrows(BadRequestException.class, () -> {
