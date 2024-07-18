@@ -28,7 +28,7 @@ public class WebsiteUserService {
     private final IAuthenticationFacade authenticationFacade;
 
     @Value("${profile.pics.directory}")
-    private String profilePicsDirectory;
+    private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
 
     public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade) {
         this.websiteUserRepository = websiteUserRepository;
