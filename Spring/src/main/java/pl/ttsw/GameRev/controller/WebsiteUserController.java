@@ -55,9 +55,9 @@ public class WebsiteUserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/ban/{username}")
-    public ResponseEntity<?> banUser(@PathVariable String username) throws BadRequestException {
-        boolean gotBanned = websiteUserService.banUser(username);
+    @PutMapping("/ban")
+    public ResponseEntity<?> banUser(@RequestBody WebsiteUserDTO userDTO) throws BadRequestException {
+        boolean gotBanned = websiteUserService.banUser(userDTO);
         return ResponseEntity.ok(gotBanned);
     }
 

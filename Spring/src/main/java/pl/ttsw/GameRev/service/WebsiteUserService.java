@@ -12,6 +12,7 @@ import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
+import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.security.IAuthenticationFacade;
 
@@ -28,14 +29,16 @@ public class WebsiteUserService {
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAuthenticationFacade authenticationFacade;
+    private final RoleRepository roleRepository;
 
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
 
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade) {
+    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationFacade = authenticationFacade;
+        this.roleRepository = roleRepository;
     }
 
     public List<WebsiteUserDTO> getAllWebsiteUsers() {
@@ -91,16 +94,20 @@ public class WebsiteUserService {
         return mapToDTO(user);
     }
 
-    public boolean banUser(String username) {
-        WebsiteUser user = websiteUserRepository.findByUsername(username);
-        System.out.println(user);
+    public boolean banUser(WebsiteUserDTO userDTO) {
+        WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername());
+        WebsiteUser currentUser = getCurrentUser();
+
+        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin"))){
+            throw new BadCredentialsException("You dont have permission to perform this action");
+        }
         if (user == null) {
             throw new BadCredentialsException("This user does not exist");
         }
         if (user.getIsDeleted() != null && user.getIsDeleted()) {
             throw new BadCredentialsException("This user is deleted");
         }
-        user.setIsBanned(!user.getIsBanned());
+        user.setIsBanned(userDTO.getIsBanned());
         websiteUserRepository.save(user);
         return user.getIsBanned();
     }
