@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,12 +29,20 @@ public class WebsiteUserService {
     private final IAuthenticationFacade authenticationFacade;
 
     @Value("${profile.pics.directory}")
-    private String profilePicsDirectory;
+    private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
 
     public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationFacade = authenticationFacade;
+    }
+
+    public List<WebsiteUserDTO> getAllWebsiteUsers() {
+        List<WebsiteUser> websiteUsers = websiteUserRepository.findAll();
+        for (WebsiteUser websiteUser : websiteUsers) {
+            websiteUser.setPassword(null);
+        }
+        return websiteUsers.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public WebsiteUser findByUsername(String username) {
@@ -120,11 +129,6 @@ public class WebsiteUserService {
                 .map(role -> new RoleDTO(role.getId(), role.getRoleName()))
                 .collect(Collectors.toList()));
         return dto;
-    }
-
-    public void updateCurrentToken(WebsiteUser websiteUser, String token) {
-        websiteUser.setCurrentToken(token);
-        websiteUserRepository.save(websiteUser);
     }
 
     public WebsiteUser getCurrentUser() {
