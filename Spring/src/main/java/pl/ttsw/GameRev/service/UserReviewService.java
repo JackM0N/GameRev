@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RatingDTO;
@@ -62,9 +63,16 @@ public class UserReviewService{
         return userReview.map(this::mapToDTO).orElse(null);
     }
 
-    public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) {
+    public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = new UserReview();
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
+
+        if (websiteUser == null) {
+            throw new BadRequestException("Your user could not be found");
+        }
+        if (websiteUser != websiteUserService.getCurrentUser()){
+            throw new BadCredentialsException("You can only make reviews on your own behalf");
+        }
 
         userReview.setUser(websiteUserRepository.findByUsername(userReviewDTO.getUserUsername()));
         userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle()));
@@ -77,8 +85,16 @@ public class UserReviewService{
         return mapToDTO(userReviewRepository.save(userReview));
     }
 
-    public UserReviewDTO updateUserReview(UserReviewDTO userReviewDTO) {
+    public UserReviewDTO updateUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
+
+        if (userReview == null) {
+            throw new BadRequestException("This review doesn't exist");
+        }
+        if (userReview.getUser() != websiteUserService.getCurrentUser()) {
+            throw new BadCredentialsException("You cant update this review");
+        }
+
         userReview.setPostDate(LocalDate.now());
         if (userReviewDTO.getScore() != null){
             userReview.setScore(userReviewDTO.getScore());
@@ -94,6 +110,9 @@ public class UserReviewService{
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
 
+        if (websiteUser != websiteUserService.getCurrentUser()){
+            throw new BadCredentialsException("You cant delete a review that doesn't belong to you");
+        }
 
         if (userReview != null){
             userReviewRepository.deleteById(Math.toIntExact(userReviewDTO.getId()));
@@ -112,25 +131,10 @@ public class UserReviewService{
         userReviewDTO.setScore(userReview.getScore());
         userReviewDTO.setPositiveRating(userReview.getPositiveRating());
         userReviewDTO.setNegativeRating(userReview.getNegativeRating());
-        userReviewDTO.setOwnRatingIsPositive(userReview.getRatings().stream().map(this::mapToDTO).findFirst().get().getIsPositive());
+        if (userReview.getRatings() != null && userReview.getRatings().stream().map(this::mapToDTO).findFirst().isPresent()) {
+            userReviewDTO.setOwnRatingIsPositive(userReview.getRatings().stream().map(this::mapToDTO).findFirst().get().getIsPositive());
+        }
         return userReviewDTO;
-    }
-
-
-    public Rating findByUserAndReview(Long userId, Long userReviewId) {
-        Rating rating = ratingRepository.findByUserIdAndUserReviewId(userId, userReviewId);
-        if (rating == null){
-            return null;
-        }
-        return rating;
-    }
-
-    public RatingDTO findByUserAndMapToDTO(Long userId, Long userReviewId) {
-        Rating rating = ratingRepository.findByUserIdAndUserReviewId(userId, userReviewId);
-        if (rating == null){
-            return null;
-        }
-        return mapToDTO(rating);
     }
 
     public RatingDTO mapToDTO(Rating rating) {
