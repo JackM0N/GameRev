@@ -23,11 +23,9 @@ export class AuthService {
     public jwtHelper: JwtHelperService,
     @Inject(PLATFORM_ID) private platformId: any
   ) {
-    console.log('Platform ID:', this.platformId);
-    if (isPlatformBrowser(this.platformId)) {
-      console.log('Running in the browser');
-    } else {
+    if (!isPlatformBrowser(this.platformId)) {
       console.log('Not running in the browser');
+      console.log('Platform ID:', this.platformId);
     }
   }
 

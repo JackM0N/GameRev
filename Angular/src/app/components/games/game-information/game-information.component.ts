@@ -98,9 +98,15 @@ export class GameInformationComponent implements OnInit {
   }
 
   deleteReview(review: UserReview) {
-    review.token = this.authService.getToken();
 
     if (review.id) {
+      const token = this.authService.getToken();
+
+      if (token === null) {
+        console.log("Token is null");
+        return;
+      }
+
       const observerTag: Observer<any> = {
         next: response => {
           var toast: Toast = {
@@ -123,7 +129,7 @@ export class GameInformationComponent implements OnInit {
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
         }
       };
-      this.userReviewService.deleteUserReview(review).subscribe(observerTag);
+      this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
     }
   }
 
