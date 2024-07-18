@@ -46,15 +46,15 @@ public class WebsiteUserService {
         return websiteUsers.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public WebsiteUser findByUsername(String username) {
-        return websiteUserRepository.findByUsername(username);
+    public WebsiteUserDTO findByUsername(String username) {
+        return mapToDTO(websiteUserRepository.findByUsername(username));
     }
 
-    public WebsiteUser findByNickname(String nickname) {
-        return websiteUserRepository.findByNickname(nickname);
+    public WebsiteUserDTO findByNickname(String nickname) {
+        return mapToDTO(websiteUserRepository.findByNickname(nickname));
     }
 
-    public WebsiteUser updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
+    public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = getCurrentUser();
 
         if(user == null){
@@ -88,7 +88,21 @@ public class WebsiteUserService {
 
         user = websiteUserRepository.save(user);
 
-        return user;
+        return mapToDTO(user);
+    }
+
+    public boolean banUser(String username) {
+        WebsiteUser user = websiteUserRepository.findByUsername(username);
+        System.out.println(user);
+        if (user == null) {
+            throw new BadCredentialsException("This user does not exist");
+        }
+        if (user.getIsDeleted() != null && user.getIsDeleted()) {
+            throw new BadCredentialsException("This user is deleted");
+        }
+        user.setIsBanned(!user.getIsBanned());
+        websiteUserRepository.save(user);
+        return user.getIsBanned();
     }
 
     public void uploadProfilePicture(ProfilePictureDTO profilePictureDTO) throws IOException {

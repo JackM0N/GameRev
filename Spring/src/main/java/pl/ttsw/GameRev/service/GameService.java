@@ -26,7 +26,7 @@ public class GameService {
         this.tagRepository = tagRepository;
     }
 
-    public GameDTO getGameById(Integer id) {
+    public GameDTO getGameById(Long id) {
         return mapToDTO(gameRepository.findGameById(id));
     }
 

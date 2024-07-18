@@ -36,12 +36,11 @@ public class WebsiteUserController {
 
     @GetMapping("/account/{username}")
     public ResponseEntity<?> getAccount(@PathVariable String username) {
-        WebsiteUser user = websiteUserService.findByUsername(username);
+        WebsiteUserDTO user = websiteUserService.findByUsername(username);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        WebsiteUserDTO userDTO = websiteUserService.mapToDTO(user);
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/edit-profile/{username}")
@@ -52,9 +51,14 @@ public class WebsiteUserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only edit your own profile");
         }
 
-        WebsiteUser user = websiteUserService.updateUserProfile(username, request);
-        WebsiteUserDTO userDTO = websiteUserService.mapToDTO(user);
-        return ResponseEntity.ok(userDTO);
+        WebsiteUserDTO user = websiteUserService.updateUserProfile(username, request);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/ban/{username}")
+    public ResponseEntity<?> banUser(@PathVariable String username) throws BadRequestException {
+        boolean gotBanned = websiteUserService.banUser(username);
+        return ResponseEntity.ok(gotBanned);
     }
 
     @PostMapping("/{username}/profile-picture")

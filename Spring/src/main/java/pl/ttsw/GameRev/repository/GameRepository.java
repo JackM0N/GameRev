@@ -7,5 +7,5 @@ import pl.ttsw.GameRev.model.Game;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
     Game findGameByTitle(String title);
-    Game findGameById(int id);
+    Game findGameById(Long id);
 }
