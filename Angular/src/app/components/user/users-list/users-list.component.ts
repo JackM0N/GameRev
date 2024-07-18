@@ -7,6 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { UserService } from '../../../services/user.service';
+import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { Toast, ToasterService } from 'angular-toaster';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-users-list',
@@ -17,13 +20,14 @@ export class UsersListComponent implements AfterViewInit, OnInit {
   usersList: WebsiteUser[] = [];
   sortedData: WebsiteUser[] = [];
   dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>(this.usersList);
-  displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted'];
+  displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'options'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private userService: UserService,
-    private router: Router,
     public dialog: MatDialog,
+    private toasterService: ToasterService,
+    private authService: AuthService,
   ) {
   }
 
@@ -90,5 +94,99 @@ export class UsersListComponent implements AfterViewInit, OnInit {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  openBanDialog(user: WebsiteUser) {
+    const dialogTitle = 'User banning';
+    const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.banUser(user);
+      }
+    });
+  }
+
+  openUnbanDialog(user: WebsiteUser) {
+    const dialogTitle = 'User unbanning';
+    const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.unbanUser(user);
+      }
+    });
+  }
+
+  banUser(user: WebsiteUser) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.error('Token is null');
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'User banned successfuly!',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'User ban failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.userService.banUser(user, token).subscribe(observer);
+  }
+
+  unbanUser(user: WebsiteUser) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.error('Token is null');
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'User unbanned successfuly!',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'User unban failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.userService.unbanUser(user, token).subscribe(observer);
   }
 }
