@@ -24,7 +24,7 @@ export class UserService {
       'Authorization': `Bearer ${token}`
     });
     user.isBanned = true;
-    return this.http.post<WebsiteUser>(this.banUrl, user, { headers });
+    return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
   }
 
   unbanUser(user: WebsiteUser, token: string): Observable<WebsiteUser> {
@@ -32,6 +32,6 @@ export class UserService {
       'Authorization': `Bearer ${token}`
     });
     user.isBanned = false;
-    return this.http.post<WebsiteUser>(this.banUrl, user, { headers });
+    return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
   }
 }

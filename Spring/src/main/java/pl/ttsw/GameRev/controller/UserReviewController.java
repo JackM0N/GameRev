@@ -4,23 +4,16 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
-import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.UserReview;
-import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/users-reviews")
 public class UserReviewController {
     private final UserReviewService userReviewService;
-    private final GameRepository gameRepository;
 
-    public UserReviewController(UserReviewService userReviewService,
-                                GameRepository gameRepository) {
+    public UserReviewController(UserReviewService userReviewService) {
         this.userReviewService = userReviewService;
-        this.gameRepository = gameRepository;
     }
 
     @GetMapping("/id/{id}")
