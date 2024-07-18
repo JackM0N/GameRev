@@ -2,6 +2,7 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,10 +55,16 @@ public class WebsiteUserService {
     }
 
     public WebsiteUser updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
-        WebsiteUser user = websiteUserRepository.findByUsername(username);
+        WebsiteUser user = getCurrentUser();
 
+        if(user == null){
+            throw new BadRequestException("You need to login first");
+        }
+        if(!username.equals(user.getUsername())){
+            throw new BadCredentialsException("You can only edit your own profile");
+        }
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new BadRequestException("Passwords do not match");
+            throw new BadCredentialsException("Passwords do not match");
         }
 
         if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
@@ -89,6 +96,12 @@ public class WebsiteUserService {
         MultipartFile file = profilePictureDTO.getProfilePicture();
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
+        if(user == null){
+            throw new BadRequestException("This user does not exist");
+        }
+        if(user != getCurrentUser()){
+            throw new BadCredentialsException("You can only edit your own profile picture");
+        }
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
             Path oldFilepath = Paths.get(user.getProfilepic());
             Files.deleteIfExists(oldFilepath);

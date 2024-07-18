@@ -37,6 +37,9 @@ public class WebsiteUserController {
     @GetMapping("/account/{username}")
     public ResponseEntity<?> getAccount(@PathVariable String username) {
         WebsiteUser user = websiteUserService.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         WebsiteUserDTO userDTO = websiteUserService.mapToDTO(user);
         return ResponseEntity.ok(userDTO);
     }
