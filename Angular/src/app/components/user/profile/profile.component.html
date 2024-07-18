@@ -124,6 +124,20 @@
         </form>
     </div>
 
+    <div class="field-container">
+        <h3>Change profile picture</h3>
+
+        <img id="img-profile-picture" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
+
+        <form [formGroup]="changeProfilePictureForm" (ngSubmit)="onSubmitProfilePictureChange()">
+            <input type="file" id="profilePicture" (change)="onFileSelected($event)" formControlName="profilePicture">
+
+            <div class="centered-container">
+                <button mat-stroked-button [disabled]="!changeProfilePictureForm.valid">Change profile picture</button>
+            </div>
+        </form>
+    </div>
+
     <div class="centered-container" style="margin-bottom: 8px;">
         <button mat-stroked-button (click)="openLogoutDialog()">Logout</button>
     </div>

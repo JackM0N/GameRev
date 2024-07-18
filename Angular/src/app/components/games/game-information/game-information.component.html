@@ -13,7 +13,6 @@
         </div>
     </div>
 
-
     <h3>Reviews</h3>
     <div class="review-container">
         <div class="review-item" *ngFor="let review of reviewList">
@@ -23,6 +22,11 @@
           <p>Dislikes: {{ review.negativeRating }}</p>
           <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
           <button mat-stroked-button (click)="editReview(review)">Edit review</button>
+          
+          <div>
+            <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
+            <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
+          </div>
         </div>
     </div>
 

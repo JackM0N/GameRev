@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { UserReviewService } from '../../../services/user-review.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { Location } from '@angular/common';
@@ -21,7 +21,6 @@ export class GameInformationComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userReviewService: UserReviewService,
-    private router: Router,
     private _location: Location
   ) {
   }
@@ -29,7 +28,7 @@ export class GameInformationComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['id']) {
-        this.userReviewService.getUserReview(params['id']).subscribe((userReview: UserReview) => {
+        this.userReviewService.getUserReviewById(params['id']).subscribe((userReview: UserReview) => {
           this.userReview = userReview;
         });
       }

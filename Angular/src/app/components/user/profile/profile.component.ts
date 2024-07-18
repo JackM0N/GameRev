@@ -14,15 +14,22 @@ import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css'
+  styleUrls: [
+    '/src/app/styles/shared-form-styles.css',
+    './profile.component.css'
+  ]
 })
 export class ProfileComponent implements OnInit {
   changePasswordForm: FormGroup;
   changeEmailForm: FormGroup;
   changeProfileInformationForm: FormGroup;
+  changeProfilePictureForm: FormGroup;
+
   hidePassword = signal(true);
   passwordMismatchErrorMessage = signal('');
   emailErrorMessage = signal('');
+  selectedImage: File | null = null;
+  imageUrl: string = '';
 
   constructor(
     private authService: AuthService,
@@ -46,6 +53,10 @@ export class ProfileComponent implements OnInit {
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       nickname: ['', [Validators.minLength(3)]],
       description: [''],
+    });
+    
+    this.changeProfilePictureForm = this.formBuilder.group({
+      profilePicture: [null, [Validators.required]],
     });
 
     const email = this.changeEmailForm.get('email');
@@ -83,6 +94,18 @@ export class ProfileComponent implements OnInit {
       complete: () => {}
     };
     this.authService.getUserProfileInformation(userName, token).subscribe(observer);
+
+
+    const observerProfilePicture: Observer<any> = {
+      next: response => {
+        this.imageUrl = URL.createObjectURL(response);
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.authService.getProfilePicture(userName, token).subscribe(observerProfilePicture);
   }
 
   openLogoutDialog() {
@@ -332,5 +355,53 @@ export class ProfileComponent implements OnInit {
 
   isEmailInvalid() {
     return this.changeEmailForm.get('email')?.invalid && this.changeEmailForm.get('email')?.touched;
+  }
+
+  onSubmitProfilePictureChange() {
+    if (this.changeProfilePictureForm.valid && this.selectedImage) {
+      const userName = this.authService.getUserName();
+      const token = this.authService.getToken();
+
+      if (!userName || !token) {
+        console.error("Username or token not found");
+        var toast: Toast = {
+          type: 'error',
+          title: 'Profile picture change failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+        return;
+      }
+
+      const observer: Observer<any> = {
+        next: response => {
+          //location.reload();
+          var toast: Toast = {
+            type: 'success',
+            title: 'Profile picture change successful!',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
+        },
+        error: error => {
+          console.error(error);
+          var toast: Toast = {
+            type: 'error',
+            title: 'Profile picture change failed',
+            showCloseButton: true
+          };
+          this.toasterService.pop(toast);
+        },
+        complete: () => {}
+      };
+      this.authService.changeProfilePicture(userName, this.selectedImage, token).subscribe(observer);
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedImage = file;
+    }
   }
 }

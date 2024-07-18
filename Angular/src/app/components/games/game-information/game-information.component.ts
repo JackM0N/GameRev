@@ -10,6 +10,7 @@ import { Toast, ToasterService } from 'angular-toaster';
 import { UserReviewDeletionConfirmationDialogComponent } from '../../user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDate } from '../../../util/formatDate';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-game-information',
@@ -19,6 +20,8 @@ import { formatDate } from '../../../util/formatDate';
 export class GameInformationComponent implements OnInit {
   reviewList: UserReview[] = [];
   formatDate = formatDate;
+  likeColor: 'primary' | '' = '';
+  dislikeColor: 'warn' | '' = '';
 
   game: Game = {
     title: '',
@@ -38,6 +41,7 @@ export class GameInformationComponent implements OnInit {
     private router: Router,
     private _location: Location,
     private toasterService: ToasterService,
+    private authService: AuthService,
     public dialog: MatDialog,
   ) {
   }
@@ -49,7 +53,14 @@ export class GameInformationComponent implements OnInit {
         this.gameService.getGameByName(gameTitle).subscribe((game: Game) => {
           this.game = game;
 
-          this.userReviewService.getUserReviewsForGame(gameTitle).subscribe((userReviews: UserReview[]) => {
+          const token = this.authService.getToken();
+
+          if (token === null) {
+            console.log("Token is null");
+            return;
+          }
+
+          this.userReviewService.getUserReviewsForGame(gameTitle, token).subscribe((userReviews: UserReview[]) => {
             this.reviewList = userReviews;
           });
 
@@ -81,6 +92,8 @@ export class GameInformationComponent implements OnInit {
   }
 
   deleteReview(review: UserReview) {
+    review.token = this.authService.getToken();
+
     if (review.id) {
       const observerTag: Observer<any> = {
         next: response => {
@@ -101,11 +114,40 @@ export class GameInformationComponent implements OnInit {
           this.toasterService.pop(toast);
         },
         complete: () => {
-          console.log("complete")
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
         }
       };
-      this.userReviewService.deleteUserReview(review.id).subscribe(observerTag);
+      this.userReviewService.deleteUserReview(review).subscribe(observerTag);
+    }
+  }
+
+  toggleLike(review: UserReview) {
+    if (review.ownRatingIsPositive === true) {
+      review.ownRatingIsPositive = undefined;
+      if (review.positiveRating != undefined) {
+        review.positiveRating--;
+      }
+
+    } else {
+      review.ownRatingIsPositive = true;
+      if (review.positiveRating != undefined) {
+        review.positiveRating++;
+      }
+    }
+  }
+
+  toggleDislike(review: UserReview) {
+    if (review.ownRatingIsPositive === false) {
+      review.ownRatingIsPositive = undefined;
+      if (review.negativeRating != undefined) {
+        review.negativeRating--;
+      }
+
+    } else {
+      review.ownRatingIsPositive = false;
+      if (review.negativeRating != undefined) {
+        review.negativeRating++;
+      }
     }
   }
 }

@@ -2,15 +2,18 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.RoleDTO;
-import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
+import pl.ttsw.GameRev.security.IAuthenticationFacade;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,13 +25,15 @@ public class WebsiteUserService {
 
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IAuthenticationFacade authenticationFacade;
 
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
 
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder) {
+    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationFacade = authenticationFacade;
     }
 
     public WebsiteUser findByUsername(String username) {
@@ -39,7 +44,7 @@ public class WebsiteUserService {
         return websiteUserRepository.findByNickname(nickname);
     }
 
-    public WebsiteUser updateUserProfile(String username, UpdateWebsiteUserDto request) throws BadRequestException {
+    public WebsiteUser updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -120,5 +125,14 @@ public class WebsiteUserService {
     public void updateCurrentToken(WebsiteUser websiteUser, String token) {
         websiteUser.setCurrentToken(token);
         websiteUserRepository.save(websiteUser);
+    }
+
+    public WebsiteUser getCurrentUser() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        String username = authentication.getName();
+        if (websiteUserRepository.findByUsername(username) == null) {
+            return null;
+        }
+        return websiteUserRepository.findByUsername(username);
     }
 }

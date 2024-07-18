@@ -16,6 +16,7 @@ export class AuthService {
   private loginUrl = 'http://localhost:8080/login';
   private profileChangeUrl = 'http://localhost:8080/user/edit-profile';
   private profileInformationUrl = 'http://localhost:8080/user/account';
+  private profileChangePictureUrl = 'http://localhost:8080/user';
 
   constructor(
     private http: HttpClient,
@@ -107,6 +108,33 @@ export class AuthService {
       'Content-Type': 'application/json'
     });
     return this.http.put<WebsiteUser>(url, userData, { headers });
+  }
+
+  getProfilePicture(username: string, token: string): Observable<Blob> {
+    const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get<Blob>(url, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+     });
+  }
+
+  changeProfilePicture(username: string, profilePicture: File, token: string): Observable<any> {
+    const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+
+    const formData = new FormData();
+    formData.append('file', profilePicture, profilePicture.name);
+
+    return this.http.post<any>(url, formData, {
+      headers: headers
+    });
   }
 
   deleteOwnAccount(userData: NewCredentials, token: string): Observable<any> {

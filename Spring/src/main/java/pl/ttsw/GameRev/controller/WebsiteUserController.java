@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
-import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.service.WebsiteUserService;
@@ -32,7 +32,7 @@ public class WebsiteUserController {
     }
 
     @PutMapping("/edit-profile/{username}")
-    public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDto request, Principal principal) throws BadRequestException {
+    public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
         String currentUsername = principal.getName();
 
         if (!currentUsername.equals(username)) {

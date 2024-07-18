@@ -9,4 +9,7 @@ export interface UserReview {
   score?: number;
   positiveRating?: number;
   negativeRating?: number;
+  
+  ownRatingIsPositive?: boolean | null;
+  token?: string | null;
 }

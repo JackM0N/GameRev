@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @Setter
 @Getter
-public class UpdateWebsiteUserDto implements Serializable {
+public class UpdateWebsiteUserDTO implements Serializable {
     Long id;
     String currentPassword;
     String newPassword;
