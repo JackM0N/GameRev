@@ -22,7 +22,12 @@ export class AuthService {
     private http: HttpClient,
     public jwtHelper: JwtHelperService,
     @Inject(PLATFORM_ID) private platformId: any
-  ) { }
+  ) {
+    if (!isPlatformBrowser(this.platformId)) {
+      console.log('Not running in the browser');
+      console.log('Platform ID:', this.platformId);
+    }
+  }
 
   registerUser(userData: WebsiteUser): Observable<any> {
     return this.http.post<any>(this.registerUrl, userData)

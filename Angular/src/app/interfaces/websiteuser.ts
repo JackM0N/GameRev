@@ -1,7 +1,7 @@
 
 // User model
 export interface WebsiteUser {
-  user_id?: number;
+  id?: number;
   
   username?: string;
   password?: string;
@@ -10,7 +10,8 @@ export interface WebsiteUser {
   nickname?: string;
   profilepic?: string;
   description?: string;
-  join_date?: string;
-  is_banned?: boolean;
-  is_deleted?: boolean;
+  joinDate?: string;
+  isBanned?: boolean;
+  isDeleted?: boolean;
+  lastActionDate?: string;
 }

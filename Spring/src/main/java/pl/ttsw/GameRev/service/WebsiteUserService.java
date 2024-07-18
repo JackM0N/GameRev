@@ -15,7 +15,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.security.IAuthenticationFacade;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -11,5 +11,4 @@ export interface UserReview {
   negativeRating?: number;
   
   ownRatingIsPositive?: boolean | null;
-  token?: string | null;
 }

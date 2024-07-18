@@ -14,12 +14,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
 import { ProfileComponent } from './components/user/profile/profile.component';
-import { LogoutConfirmationDialogComponent } from './components/user/logout-confirmation-dialog/logout-confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from './components/user/account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
-import { ViewingGamesComponent } from './components/games/games-list/games-list.component';
+import { GamesListComponent } from './components/games/games-list/games-list.component';
 import { GameFormComponent } from './components/games/game-form/game-form.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
@@ -34,9 +33,10 @@ import { DatePipe } from '@angular/common';
 import { GameInformationComponent } from './components/games/game-information/game-information.component';
 import { UserReviewService } from './services/user-review.service';
 import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
-import { UserReviewDeletionConfirmationDialogComponent } from './components/user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
+import { UsersListComponent } from './components/user/users-list/users-list.component';
+import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,14 +44,14 @@ import { MatSortModule } from '@angular/material/sort';
     LoginComponent,
     RegistrationComponent,
     ProfileComponent,
-    LogoutConfirmationDialogComponent,
     AccountDeletionConfirmationDialogComponent,
     GameDeletionConfirmationDialogComponent,
     GameFormComponent,
-    ViewingGamesComponent,
+    GamesListComponent,
     GameInformationComponent,
     UserReviewFormComponent,
-    UserReviewDeletionConfirmationDialogComponent
+    UsersListComponent,
+    PopupDialogComponent
   ],
   imports: [
     BrowserModule,

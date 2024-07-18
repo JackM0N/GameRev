@@ -14,7 +14,7 @@ import { Sort } from '@angular/material/sort';
   templateUrl: './games-list.component.html',
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
-export class ViewingGamesComponent implements AfterViewInit, OnInit {
+export class GamesListComponent implements AfterViewInit, OnInit {
   gamesList: Game[] = [];
   sortedData: Game[] = [];
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);

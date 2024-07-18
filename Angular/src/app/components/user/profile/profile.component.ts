@@ -7,9 +7,9 @@ import { NewCredentials } from '../../../interfaces/newCredentials';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { LogoutConfirmationDialogComponent } from '../logout-confirmation-dialog/logout-confirmation-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
+import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -109,7 +109,13 @@ export class ProfileComponent implements OnInit {
   }
 
   openLogoutDialog() {
-    const dialogRef = this.dialog.open(LogoutConfirmationDialogComponent);
+    const dialogTitle = 'Confirm logout';
+    const dialogContent = 'Are you sure you want to log out?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
