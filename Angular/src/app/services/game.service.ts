@@ -1,7 +1,6 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { Game } from '../interfaces/game';
 
 @Injectable({
@@ -13,8 +12,6 @@ export class GameService {
 
   constructor(
     private http: HttpClient,
-    public jwtHelper: JwtHelperService,
-    @Inject(PLATFORM_ID) private platformId: any
   ) { }
 
   getGames(): Observable<Game> {

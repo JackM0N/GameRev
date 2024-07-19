@@ -7,10 +7,10 @@ import { UserReviewService } from '../../../services/user-review.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { Observer } from 'rxjs';
 import { Toast, ToasterService } from 'angular-toaster';
-import { UserReviewDeletionConfirmationDialogComponent } from '../../user-reviews/user-review-deletion-confirmation-dialog/user-review-deletion-confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDate } from '../../../util/formatDate';
 import { AuthService } from '../../../services/auth.service';
+import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 
 @Component({
   selector: 'app-game-information',
@@ -82,7 +82,13 @@ export class GameInformationComponent implements OnInit {
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
-    const dialogRef = this.dialog.open(UserReviewDeletionConfirmationDialogComponent);
+    const dialogTitle = 'Confirm review deletion';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
@@ -92,9 +98,15 @@ export class GameInformationComponent implements OnInit {
   }
 
   deleteReview(review: UserReview) {
-    review.token = this.authService.getToken();
 
     if (review.id) {
+      const token = this.authService.getToken();
+
+      if (token === null) {
+        console.log("Token is null");
+        return;
+      }
+
       const observerTag: Observer<any> = {
         next: response => {
           var toast: Toast = {
@@ -117,7 +129,7 @@ export class GameInformationComponent implements OnInit {
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
         }
       };
-      this.userReviewService.deleteUserReview(review).subscribe(observerTag);
+      this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
     }
   }
 

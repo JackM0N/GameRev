@@ -80,7 +80,12 @@ export class UserReviewFormComponent implements OnInit {
         ...this.userReviewForm.value
       };
 
-      reviewData.token = this.authService.getToken();
+      const token = this.authService.getToken();
+
+      if (token === null) {
+        console.log("Token is null");
+        return;
+      }
 
       if (this.isEditRoute) {
         const observer: Observer<any> = {
@@ -104,7 +109,7 @@ export class UserReviewFormComponent implements OnInit {
           },
           complete: () => {}
         };
-        this.userReviewService.editUserReview(reviewData).subscribe(observer);
+        this.userReviewService.editUserReview(reviewData, token).subscribe(observer);
         return;
       }
 
@@ -129,7 +134,7 @@ export class UserReviewFormComponent implements OnInit {
         },
         complete: () => {}
       };
-      this.userReviewService.addUserReview(reviewData).subscribe(observer);
+      this.userReviewService.addUserReview(reviewData, token).subscribe(observer);
     }
   }
 
