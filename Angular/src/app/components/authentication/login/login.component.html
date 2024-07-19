@@ -1,32 +1,64 @@
-<div class="form-container">
+<div class="flex justify-center items-center w-full h-screen bg-repeat pinkStars">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-        <div class="field-container">
-            <p>Login</p>
+        <div class="w-80 h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
+            border-2 border-arcadeBigLines">
 
-            <mat-form-field>
-                <mat-label>Enter your username or email</mat-label>
-                <input matInput placeholder="Input username or email" formControlName="usernameOrEmail" required/>
-            </mat-form-field>
+            <div class="w-11/12 h-24 flex justify-center items-center bg-titleTextBackground my-4 border-2 
+            border-fuchsia-900 border-opacity-50 text-6xl text-white font-arcade">GAMEREV</div>
 
-            <mat-form-field>
-                <mat-label>Enter your password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
-                <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (mousedown)="hidePasswordClickEvent($event)"
-                [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hidePassword()"
-                >
-                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-            </mat-form-field>
+            <!--radial gradient-->
+            <div class="bg-arcade-radial-bg w-11/12 h-64 mb-4">
+
+                <!--monitor edges-->
+                <div class="bg-arcade-internal-edge w-full h-full border-2 
+                border-arcadeLines items-center justify-center flex">
+
+                    <!--blue light outside-->
+                    <div class="w-5/6 h-5/6 border-2 border-arcadeBlueLight shadow-arcadeScreenShadow">
+
+                        <!--screen-->
+                        <div class="h-full shadow-arcadeScreenInnerShadow bg-arcadeScreenBackground py-2 px-3">
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Login</label>
+                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow" formControlName="usernameOrEmail" required/>
+                            </div>
+                
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Password</label>
+                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow">
+                                    <input class="px-2 h-full w-5/6 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                                    <button class="px-1 flex items-center"
+                                    matSuffix
+                                    type="button"
+                                    (mousedown)="hidePasswordClickEvent($event)"
+                                    [attr.aria-label]="'Hide password'"
+                                    [attr.aria-pressed]="hidePassword()"
+                                    >
+                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="h-8 flex justify-center my-4 text-white bg-arcadeBlueLight shadow-arcadeScreenShadow font-arcade">
+                                <button class="w-full h-full" [disabled]="!loginForm.valid">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-20 w-full border-2 border-arcadeBigLines bg-gradient-to-t from-arcadeGradient1 to-arcadeGradient2">
+
+            </div>
+
+            <div class="h-40">
+
+            </div>
+
         </div>
+            
 
-        <div class="centered-container">
-            <button mat-stroked-button [disabled]="!loginForm.valid">Submit and Login</button>
-        </div>
+            
     </form>
 </div>
