@@ -143,8 +143,12 @@ public class WebsiteUserService {
         websiteUserRepository.save(user);
     }
 
-    public byte[] getProfilePicture(String username) throws IOException {
-        WebsiteUser user = websiteUserRepository.findByUsername(username);
+    public byte[] getProfilePicture(String nickname) throws IOException {
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
+
+        if (user == null) {
+            throw new BadCredentialsException("This user does not exist");
+        }
 
         if (user.getProfilepic() == null) {
             throw new IOException("Users profile picture not found");
