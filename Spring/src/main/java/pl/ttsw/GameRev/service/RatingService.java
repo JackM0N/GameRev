@@ -29,6 +29,7 @@ public class RatingService {
         this.websiteUserService = websiteUserService;
     }
 
+    // TODO: Fix issue with json: InvalidDefinitionException (disabling SerializationFeature.FAIL_ON_EMPTY_BEANS doesnt work)
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
         Rating rating = new Rating();
