@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -25,26 +25,30 @@ export class ProfileComponent implements OnInit {
   }
 
   constructor(
-    public dialog: MatDialog,
     private userService: UserService,
+    private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    const observer: Observer<WebsiteUser> = {
-      next: response => {
-        this.user = response;
-        console.log(this.user);
-
-        if (this.user.profilepic) {
-          this.imageUrl = this.user.profilepic;
-        }
-      },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.userService.getUser().subscribe(observer);
+    this.route.params.subscribe(params => {
+      if (params['name']) {
+        const observer: Observer<WebsiteUser> = {
+          next: response => {
+            this.user = response;
+            console.log(this.user);
+    
+            if (this.user.profilepic) {
+              this.imageUrl = this.user.profilepic;
+            }
+          },
+          error: error => {
+            console.error(error);
+          },
+          complete: () => {}
+        };
+        this.userService.getUser(params['name']).subscribe(observer);
+      }
+    });
   }
 }

@@ -20,8 +20,8 @@ export class UserService {
     return this.http.get<WebsiteUser>(this.baseUrl);
   }
 
-  getUser(): Observable<WebsiteUser> {
-    return this.http.get<WebsiteUser>(this.profileUrl);
+  getUser(nickname: string): Observable<WebsiteUser> {
+    return this.http.get<WebsiteUser>(`${this.profileUrl}/${nickname}`);
   }
 
   banUser(user: WebsiteUser, token: string): Observable<WebsiteUser> {

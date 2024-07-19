@@ -81,6 +81,17 @@ export class OwnProfileComponent implements OnInit {
         this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
         this.changeProfileInformationForm.get('description')?.setValue(response.description);
         this.changeEmailForm.get('email')?.setValue(response.email);
+
+        const observerProfilePicture: Observer<any> = {
+          next: response2 => {
+            this.imageUrl = URL.createObjectURL(response2);
+          },
+          error: error => {
+            console.error(error);
+          },
+          complete: () => {}
+        };
+        this.authService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
       },
       error: error => {
         console.error(error);
@@ -94,18 +105,6 @@ export class OwnProfileComponent implements OnInit {
       complete: () => {}
     };
     this.authService.getUserProfileInformation(userName, token).subscribe(observer);
-
-
-    const observerProfilePicture: Observer<any> = {
-      next: response => {
-        this.imageUrl = URL.createObjectURL(response);
-      },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.authService.getProfilePicture(userName, token).subscribe(observerProfilePicture);
   }
 
   openLogoutDialog() {
