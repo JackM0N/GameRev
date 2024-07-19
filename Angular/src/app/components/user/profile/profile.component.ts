@@ -3,6 +3,7 @@ import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +26,7 @@ export class ProfileComponent implements OnInit {
   }
 
   constructor(
+    private authService: AuthService,
     private userService: UserService,
     private route: ActivatedRoute,
   ) {
@@ -37,9 +39,21 @@ export class ProfileComponent implements OnInit {
           next: response => {
             this.user = response;
             console.log(this.user);
+
+            const token = this.authService.getToken();
     
-            if (this.user.profilepic) {
-              this.imageUrl = this.user.profilepic;
+            if (this.user.profilepic && response.nickname && token) {
+              //this.imageUrl = this.user.profilepic;
+              const observerProfilePicture: Observer<any> = {
+                next: response2 => {
+                  this.imageUrl = URL.createObjectURL(response2);
+                },
+                error: error => {
+                  console.error(error);
+                },
+                complete: () => {}
+              };
+              this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
             }
           },
           error: error => {

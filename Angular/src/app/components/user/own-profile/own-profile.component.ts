@@ -10,6 +10,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Toast, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-own-profile',
@@ -33,6 +34,7 @@ export class OwnProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -91,7 +93,7 @@ export class OwnProfileComponent implements OnInit {
           },
           complete: () => {}
         };
-        this.authService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+        this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
       },
       error: error => {
         console.error(error);

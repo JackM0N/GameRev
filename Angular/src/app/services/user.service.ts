@@ -39,4 +39,16 @@ export class UserService {
     user.isBanned = false;
     return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
   }
+
+  getProfilePicture(nickname: string, token: string): Observable<Blob> {
+    const url = `${this.profileUrl}/${nickname}/profile-picture`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get<Blob>(url, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+     });
+  }
 }
