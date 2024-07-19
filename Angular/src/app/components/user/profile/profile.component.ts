@@ -4,6 +4,7 @@ import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { formatDate } from '../../../util/formatDate';
 
 @Component({
   selector: 'app-profile',
@@ -16,12 +17,13 @@ import { AuthService } from '../../../services/auth.service';
 export class ProfileComponent implements OnInit {
   selectedImage: File | null = null;
   imageUrl: string = '';
+  formatDate = formatDate;
 
   user: WebsiteUser = {
     nickname: '',
     profilepic: '',
     description: '',
-    joinDate: '',
+    joinDate: [],
     isBanned: false
   }
 
