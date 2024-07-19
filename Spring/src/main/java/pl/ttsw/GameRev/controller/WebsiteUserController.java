@@ -83,13 +83,13 @@ public class WebsiteUserController {
         }
     }
 
-    @GetMapping("/{username}/profile-picture")
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String username) {
+    @GetMapping("/{nickname}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String nickname) {
         try {
-            byte[] image = websiteUserService.getProfilePicture(username);
+            byte[] image = websiteUserService.getProfilePicture(nickname);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + username + "_profile_pic\"")
+                            "attachment; filename=\"" + nickname + "_profile_pic\"")
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(image);
         } catch (IOException e) {
