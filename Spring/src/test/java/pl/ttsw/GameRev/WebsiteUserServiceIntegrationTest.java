@@ -8,11 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import pl.ttsw.GameRev.controller.AuthenticationController;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
+import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
+import pl.ttsw.GameRev.security.AuthenticationResponse;
+import pl.ttsw.GameRev.service.AuthenticationService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +45,10 @@ public class WebsiteUserServiceIntegrationTest {
     private String profilePicsDirectory;
 
     private final String username = "testuser";
+    @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationController authenticationController;
 
     @BeforeEach
     public void setUp() {
@@ -49,22 +59,28 @@ public class WebsiteUserServiceIntegrationTest {
         try {
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_newPic.jpg"));
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_profilePic.jpg"));
-            WebsiteUser user = websiteUserService.findByUsername(username + "2");
-            if (user != null) {
-                websiteUserRepository.delete(user);
+            if (websiteUserRepository.findByUsername(username + "2")!= null){
+                WebsiteUserDTO userDTO = websiteUserService.findByUsername(username + "2");
+                if (userDTO != null) {
+                    WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername());
+                    if (user != null) {
+                        websiteUserRepository.delete(user);
+                    }
+                }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private WebsiteUser copyForTesting() {
-        WebsiteUser user_old = websiteUserService.findByUsername(username);
+        WebsiteUser user_old = websiteUserRepository.findByUsername(username);
         WebsiteUser user_new = new WebsiteUser();
         user_new.setUsername(username + "2");
         user_new.setPassword(user_old.getPassword());
-        user_new.setNickname(user_old.getNickname()+"2");
-        user_new.setEmail(user_old.getEmail()+"2");
+        user_new.setNickname(user_old.getNickname() + "2");
+        user_new.setEmail(user_old.getEmail() + "2");
         user_new.setJoinDate(user_old.getJoinDate());
         user_new.setLastActionDate(user_old.getLastActionDate());
         return user_new;
@@ -75,12 +91,13 @@ public class WebsiteUserServiceIntegrationTest {
         WebsiteUser user = copyForTesting();
         websiteUserRepository.save(user);
 
-        WebsiteUser result = websiteUserService.findByUsername("testuser2");
+        WebsiteUserDTO result = websiteUserService.findByUsername("testuser2");
 
         assertEquals("testuser2", result.getUsername());
     }
 
     @Test
+    @WithMockUser(username = "testuser2")
     public void testUpdateUserProfile_Success() throws BadRequestException {
         WebsiteUser user = copyForTesting();
         user.setPassword(passwordEncoder.encode("currentPassword"));
@@ -91,13 +108,14 @@ public class WebsiteUserServiceIntegrationTest {
         request.setNewPassword("newPassword");
         request.setEmail("newEmail@test.com");
 
-        WebsiteUser result = websiteUserService.updateUserProfile("testuser2", request);
+        WebsiteUserDTO result = websiteUserService.updateUserProfile("testuser2", request);
 
         assertEquals("newEmail@test.com", result.getEmail());
         assertTrue(passwordEncoder.matches("newPassword", result.getPassword()));
     }
 
     @Test
+    @WithMockUser(username = "testuser2")
     public void testUpdateUserProfile_PasswordMismatch() {
         WebsiteUser user = copyForTesting();
         user.setPassword(passwordEncoder.encode("currentPassword"));
@@ -106,12 +124,13 @@ public class WebsiteUserServiceIntegrationTest {
         UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("wrongPassword");
 
-        assertThrows(BadRequestException.class, () -> {
+        assertThrows(BadCredentialsException.class, () -> {
             websiteUserService.updateUserProfile("testuser2", request);
         });
     }
 
     @Test
+    @WithMockUser(username = "testuser2")
     public void testUploadProfilePicture_Success() throws IOException {
         WebsiteUser user = copyForTesting();
         user.setProfilepic("oldPic.jpg");
