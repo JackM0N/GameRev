@@ -26,5 +26,4 @@ public class Rating {
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "user_review_id", nullable = false)
     private UserReview userReview;
-
 }

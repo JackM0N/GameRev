@@ -32,13 +32,13 @@ public class RatingService {
     // TODO: Fix issue with json: InvalidDefinitionException (disabling SerializationFeature.FAIL_ON_EMPTY_BEANS doesnt work)
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
-        Rating rating = new Rating();
+        Rating rating;
         if (userReview == null) {
             throw new BadRequestException("This review doesnt exist");
         }
         Optional <Rating> ratingOptional = ratingRepository.findByUserAndUserReview(websiteUserService.getCurrentUser(), userReview);
 
-        if (userReviewDTO.getOwnRatingIsPositive() == null){
+        if (userReviewDTO.getOwnRatingIsPositive() == null) {
             if (ratingOptional.isPresent()) {
                 rating = ratingOptional.get();
                 ratingRepository.delete(rating);
@@ -46,7 +46,7 @@ public class RatingService {
             } else {
                 throw new BadRequestException("Something went wrong");
             }
-        }else {
+        } else {
             if (ratingOptional.isPresent()) {
                 rating = ratingOptional.get();
                 rating.setIsPositive(userReviewDTO.getOwnRatingIsPositive());

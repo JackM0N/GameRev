@@ -11,7 +11,7 @@ import { UserReview } from '../interfaces/userReview';
 export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
-  private likeStatusUrl = 'http://localhost:8080/users-reviews/like-status';
+  private likeStatusUrl = 'http://localhost:8080/users-reviews/add-rating';
 
   constructor(
     private http: HttpClient,
