@@ -16,5 +16,4 @@ public class ReviewStatus {
 
     @Column(name = "status_name", nullable = false)
     private String statusName;
-
 }
