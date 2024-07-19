@@ -13,9 +13,7 @@ import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

@@ -3,11 +3,8 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.UserReview}
