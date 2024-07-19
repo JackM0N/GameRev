@@ -1,6 +1,8 @@
 spring:
   jackson:
     time-zone: Europe/Warsaw
+    serialization:
+      fail-on-empty-beans: false
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres

@@ -3,7 +3,9 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.service.RatingService;
 import pl.ttsw.GameRev.service.UserReviewService;
 import java.util.List;
 
@@ -11,9 +13,11 @@ import java.util.List;
 @RequestMapping("/users-reviews")
 public class UserReviewController {
     private final UserReviewService userReviewService;
+    private final RatingService ratingService;
 
-    public UserReviewController(UserReviewService userReviewService) {
+    public UserReviewController(UserReviewService userReviewService, RatingService ratingService) {
         this.userReviewService = userReviewService;
+        this.ratingService = ratingService;
     }
 
     @GetMapping("/id/{id}")
@@ -58,5 +62,13 @@ public class UserReviewController {
             return ResponseEntity.badRequest().body("There was an error deleting the user review");
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/add-rating")
+    public ResponseEntity<?> addUserReviewRating(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
+        if (userReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There was an error rating the user review");
+        }
+        return ResponseEntity.ok(ratingService.updateRating(userReviewDTO));
     }
 }
