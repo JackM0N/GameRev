@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -55,4 +56,29 @@ public class WebsiteUser {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     )
     private List<Role> roles = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WebsiteUser that = (WebsiteUser) o;
+
+        return Objects.equals(id, that.id) &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(profilepic, that.profilepic) &&
+                Objects.equals(nickname, that.nickname) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(lastActionDate, that.lastActionDate) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(joinDate, that.joinDate) &&
+                Objects.equals(isBanned, that.isBanned) &&
+                Objects.equals(isDeleted, that.isDeleted);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, profilepic, nickname, email, lastActionDate, description, joinDate, isBanned, isDeleted, roles);
+    }
 }

@@ -127,7 +127,7 @@ public class WebsiteUserService {
         if(user == null){
             throw new BadRequestException("This user does not exist");
         }
-        if(user != getCurrentUser()){
+        if(!user.equals(getCurrentUser())){
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
