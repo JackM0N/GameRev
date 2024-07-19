@@ -10,6 +10,7 @@ import { WebsiteUser } from '../interfaces/websiteUser';
 export class UserService {
   private baseUrl = 'http://localhost:8080/user/list';
   private banUrl = 'http://localhost:8080/user/ban';
+  private profileUrl = 'http://localhost:8080/user';
 
   constructor(
     private http: HttpClient,
@@ -17,6 +18,10 @@ export class UserService {
 
   getUsers(): Observable<WebsiteUser> {
     return this.http.get<WebsiteUser>(this.baseUrl);
+  }
+
+  getUser(): Observable<WebsiteUser> {
+    return this.http.get<WebsiteUser>(this.profileUrl);
   }
 
   banUser(user: WebsiteUser, token: string): Observable<WebsiteUser> {

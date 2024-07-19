@@ -1,0 +1,8 @@
+
+<div class="profile-container">
+    <p>Nickname: {{this.user.nickname}}</p>
+    <img id="img-profile-picture" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
+    <p>Description: {{this.user.description}}</p>
+    <p>Join date: {{this.user.joinDate}}</p>
+    <p>Is banned: {{this.user.isBanned}}</p>
+</div>
