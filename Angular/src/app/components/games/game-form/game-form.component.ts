@@ -77,7 +77,7 @@ export class GameFormComponent implements OnInit {
     const observerTag: Observer<any> = {
       next: response => {
         this.tagsList = response;
-        this.tagsList.sort((a, b) => a.priority - b.priority);
+        this.tagsList.sort((a, b) => b.priority - a.priority);
       },
       error: error => {
         console.error(error);

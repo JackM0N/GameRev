@@ -11,7 +11,7 @@ import { UserReview } from '../interfaces/userReview';
 export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
-  private likeStatusUrl = 'http://localhost:8080/users-reviews/add-rating';
+  private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
 
   constructor(
     private http: HttpClient,
@@ -58,7 +58,10 @@ export class UserReviewService {
     return this.http.delete<UserReview>(this.baseUrl, options);
   }
 
-  updateUserReviewLikeStatus(id: number, likeStatus: boolean | null): Observable<UserReview> {
-    return this.http.put<UserReview>(`${this.likeStatusUrl}/${id}`, likeStatus);
+  updateUserReviewRating(userReview: UserReview, token: string): Observable<UserReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
   }
 }
