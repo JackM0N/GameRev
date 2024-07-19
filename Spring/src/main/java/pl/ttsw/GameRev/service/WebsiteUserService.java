@@ -53,7 +53,15 @@ public class WebsiteUserService {
     }
 
     public WebsiteUserDTO findByNickname(String nickname) {
-        return mapToDTO(websiteUserRepository.findByNickname(nickname));
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
+        if (user == null) {
+            throw new BadCredentialsException("Invalid nickname");
+        }
+        user.setId(null);
+        user.setUsername(null);
+        user.setPassword(null);
+        user.setIsDeleted(null);
+        return mapToDTO(user);
     }
 
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {

@@ -43,6 +43,15 @@ public class WebsiteUserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/{nickname}")
+    public ResponseEntity<?> getUser(@PathVariable String nickname) {
+        WebsiteUserDTO user = websiteUserService.findByNickname(nickname);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/edit-profile/{username}")
     public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
         String currentUsername = principal.getName();
