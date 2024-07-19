@@ -8,21 +8,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
-import pl.ttsw.GameRev.dto.UpdateWebsiteUserDto;
+import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
+import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.WebsiteUserService;
+import pl.ttsw.GameRev.security.IAuthenticationFacade;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,23 +38,35 @@ public class WebsiteUserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private IAuthenticationFacade authenticationFacade;
+
     @InjectMocks
     private WebsiteUserService websiteUserService;
 
-    @Value("${profile.pics.directory}") // this is not set in unit testing..?
+    @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
     private final String username = "testuser";
 
-    private WebsiteUser user_old;
+    private WebsiteUserDTO userDTO_old;
+    private WebsiteUserDTO userDTO_new;
     private WebsiteUser user_new;
+    private Authentication authentication;
 
     @BeforeEach
     public void setUp() {
-        user_old = new WebsiteUser();
-        user_old.setUsername(username);
-        user_old.setPassword("encodedPassword");
-        user_old.setNickname("nickname");
-        user_old.setEmail("email@test.com");
+        userDTO_old = new WebsiteUserDTO();
+        userDTO_old.setUsername(username);
+        userDTO_old.setPassword("encodedPassword");
+        userDTO_old.setNickname("nickname");
+        userDTO_old.setEmail("email@test.com");
+
+        userDTO_new = new WebsiteUserDTO();
+        userDTO_new.setUsername(username + "2");
+        userDTO_new.setPassword("encodedPassword");
+        userDTO_new.setNickname("nickname2");
+        userDTO_new.setEmail("email2@test.com");
+        userDTO_new.setProfilepic("oldPic.jpg");
 
         user_new = new WebsiteUser();
         user_new.setUsername(username + "2");
@@ -61,14 +74,18 @@ public class WebsiteUserServiceTest {
         user_new.setNickname("nickname2");
         user_new.setEmail("email2@test.com");
         user_new.setProfilepic("oldPic.jpg");
+
+        // lenient() - so mockito stops throwing UnnecessaryStubbingException for tests where it is not needed
+        // it IS needed for some other tests here
+        authentication = mock(Authentication.class);
+        lenient().when(authentication.getName()).thenReturn(username + "2");
+        lenient().when(authenticationFacade.getAuthentication()).thenReturn(authentication);
     }
 
     @Test
     public void testFindByUsername() {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
-
-        WebsiteUser result = websiteUserService.findByUsername(username + "2");
-
+        WebsiteUserDTO result = websiteUserService.findByUsername(username + "2");
         assertEquals(username + "2", result.getUsername());
     }
 
@@ -78,11 +95,11 @@ public class WebsiteUserServiceTest {
         when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(user_new);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("currentPassword");
         request.setEmail("newEmail@test.com");
 
-        WebsiteUser result = websiteUserService.updateUserProfile(username + "2", request);
+        WebsiteUserDTO result = websiteUserService.updateUserProfile(username + "2", request);
         assertEquals("newEmail@test.com", result.getEmail());
     }
 
@@ -91,10 +108,10 @@ public class WebsiteUserServiceTest {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-        UpdateWebsiteUserDto request = new UpdateWebsiteUserDto();
+        UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("wrongPassword");
 
-        assertThrows(BadRequestException.class, () -> {
+        assertThrows(BadCredentialsException.class, () -> {
             websiteUserService.updateUserProfile(username + "2", request);
         });
     }
@@ -118,8 +135,8 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testGetProfilePicture_Success() throws IOException {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
         user_new.setProfilepic(profilePicsDirectory + "/testuser2_profilePic.jpg");
+        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
 
         Path filePath = Paths.get(profilePicsDirectory, "testuser2_profilePic.jpg");
         Files.createDirectories(filePath.getParent());
