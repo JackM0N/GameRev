@@ -33,7 +33,7 @@ module.exports = {
         'arcadeScreenShadow': '0px 0px 15px -1px rgba(0, 240, 255, 1)',
         'arcadeScreenShadowOrange': '0px 0px 15px -1px #FF3D00',
         'arcadeScreenInnerShadow': 'inset 0px 0px 15px -1px rgba(0, 240, 255, 1)',
-        'arcadeScreenInnerShadow': 'inset 0px 0px 15px -1px #FF3D00',
+        'arcadeScreenInnerShadowOrange': 'inset 0px 0px 15px -1px #FF3D00',
       },
       keyframes: {
         wiggle: {
