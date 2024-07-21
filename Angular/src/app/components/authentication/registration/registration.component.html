@@ -1,55 +1,92 @@
-<div class="form-container">
-    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+<div class="w-full h-fit bg-repeat pinkStars py-12 2xl:h-full">
+    <form class="w-full flex justify-center items-center " [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
 
-        <div class="field-container">
-            <p>Register</p>
+        <div class="w-7/12 h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
+            border-2 border-arcadeBigLines">
 
-            <mat-form-field>
-                <mat-label>Login username</mat-label>
-                <input matInput placeholder="Input username" formControlName="username" required/>
-            </mat-form-field>
+            <div class="w-11/12 h-24 flex justify-center items-center bg-titleTextBackground my-4 border-2 
+            border-fuchsia-900 border-opacity-50 text-8xl text-white font-arcade titleShadow">GAMEREV</div>
 
-            <mat-form-field>
-                <mat-label>Enter your email</mat-label>
-                <input matInput placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
-                <mat-error *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
-            </mat-form-field>
+            <!--radial gradient-->
+            <div class="bg-arcade-radial-bg-orange w-11/12 h-fit mb-4">
 
-            <mat-form-field>
-                <mat-label>Enter your password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
-                <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (mousedown)="hidePasswordClickEvent($event)"
-                [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hidePassword()"
-                >
-                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-            </mat-form-field>
+                <!--monitor edges-->
+                <div class="bg-arcade-internal-edge w-full h-fit py-6 border-2 
+                border-arcadeLines items-center justify-center flex">
 
-            <mat-form-field>
-                <mat-label>Confirm your password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
-                <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (mousedown)="hidePasswordClickEvent($event)"
-                [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hidePassword()"
-                >
-                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-            </mat-form-field>
+                    <!--orange light outside-->
+                    <div class="mx-8 w-full h-5/6 border-2 border-arcadeOrangeLight shadow-arcadeScreenShadowOrange">
 
-            <mat-error class="bottom-mat-error" *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
+                        <!--screen-->
+                        <div class="h-full shadow-arcadeScreenInnerShadow py-2 px-3 bg-repeat screenBg">
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Login</label>
+                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="username" required/>
+                            </div>
+                
+                            <div>
+                                <label class="text-white font-arcade">Email</label>
+                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                                <mat-error class="text-red-600 font-arcade" *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+                            </div>
+                
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Password</label>
+                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
+                                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                                    <button class="px-1 flex items-center"
+                                    matSuffix
+                                    type="button"
+                                    (mousedown)="hidePasswordClickEvent($event)"
+                                    [attr.aria-label]="'Hide password'"
+                                    [attr.aria-pressed]="hidePassword()"
+                                    >
+                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Confirm your password</label>
+                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
+                                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
+                                    <button class="px-1 flex items-center"
+                                    matSuffix
+                                    type="button"
+                                    (mousedown)="hidePasswordClickEvent($event)"
+                                    [attr.aria-label]="'Hide password'"
+                                    [attr.aria-pressed]="hidePassword()"
+                                    >
+                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
 
-            <div class="centered-container">
-                <button mat-stroked-button [disabled]="!registrationForm.valid">Submit and Register</button>
+
+                            <div class="h-8 flex justify-between items-center my-2">
+                                <div class="h-full w-full flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade">
+                                    <button class="w-full h-full" [disabled]="!registrationForm.valid">Register</button>
+                                </div>
+                            </div>
+
+                            <div class="font-arcade underline mb-2 text-white">
+                                <a routerLink="/login" routerLinkActive="active">Already have an account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="h-20 w-full flex justify-between items-center px-10 border-2 border-arcadeBigLines bg-gradient-to-t from-arcadeGradient1 to-arcadeOrangeGradient2">
+                <div class="w-20 h-14 arcadeButtons"></div>
+                <div class="w-14 h-14 arcadeJoystick mr-2"></div>
+            </div>
+
+            <div class="h-40 w-full p-1 pt-0">
+                <div class="w-full h-full bg-arcade-rainbow"></div>
+            </div>
+
         </div>
+
     </form>
 </div>
