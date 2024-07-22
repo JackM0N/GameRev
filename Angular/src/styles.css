@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html, body {
     margin: 0;
@@ -9,4 +12,120 @@ html, body {
 html, body { height: 100%; }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+@font-face {
+    font-family: 'arcade';
+    font-weight: 400;
+    src: url(./app/fonts/ARCADECLASSIC.ttf) format('truetype');
+}
+
+.pinkStars{
+    background-image: url(./app/images/pinkStars-bg.png);
+}
+
+.titleShadow{
+    text-shadow: 0px 0px 30px white;
+}
+
+.screenBg{
+    background-image: url(./app/images/screen-bg.png);
+    background-size: 6px 6px;
+}
+
+.arcadeButtons{
+    background-image: url(./app/images/arcadeButtons.png);
+    background-repeat: no-repeat;
+    background-size: 70px 60px;
+}
+
+.arcadeJoystick{
+    background-image: url(./app/images/arcadeJoystick.png);
+    background-repeat: no-repeat;
+    background-size: 60px 60px;
+}
+
+/*practical joke until later solution*/
+.smallBgImageSize{
+    background-repeat: no-repeat;
+    background-size: 40px 32px;
+}
+
+.smallBgImage1{
+    background-image: url(./app/images/arcade/56.png);
+}
+
+.smallBgImage2{
+    background-image: url(./app/images/arcade/19.png);
+}
+
+.smallBgImage3{
+    background-image: url(./app/images/arcade/6.png);
+}
+
+.smallBgImage4{
+    background-image: url(./app/images/arcade/7.png);
+}
+
+.smallBgImage5{
+    background-image: url(./app/images/arcade/10.png);
+}
+
+.smallBgImage6{
+    background-image: url(./app/images/arcade/13.png);
+}
+
+.smallBgImage7{
+    background-image: url(./app/images/arcade/20.png);
+}
+
+.smallBgImage8{
+    background-image: url(./app/images/arcade/22.png);
+}
+
+.smallBgImage9{
+    background-image: url(./app/images/arcade/23.png);
+}
+
+.smallBgImage10{
+    background-image: url(./app/images/arcade/24.png);
+}
+
+.smallBgImage11{
+    background-image: url(./app/images/arcade/25.png);
+}
+
+.smallBgImage12{
+    background-image: url(./app/images/arcade/26.png);
+}
+
+.smallBgImage13{
+    background-image: url(./app/images/arcade/50.png);
+}
+
+.smallBgImage14{
+    background-image: url(./app/images/arcade/28.png);
+}
+
+.smallBgImage15{
+    background-image: url(./app/images/arcade/36.png);
+}
+
+.smallBgImage16{
+    background-image: url(./app/images/arcade/37.png);
+}
+
+.smallBgImage17{
+    background-image: url(./app/images/arcade/42.png);
+}
+
+.smallBgImage18{
+    background-image: url(./app/images/arcade/46.png);
+}
+
+.smallBgImage19{
+    background-image: url(./app/images/arcade/52.png);
+}
