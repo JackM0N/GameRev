@@ -10,7 +10,7 @@ export interface WebsiteUser {
   nickname?: string;
   profilepic?: string;
   description?: string;
-  joinDate?: string;
+  joinDate?: number[];
   isBanned?: boolean;
   isDeleted?: boolean;
   lastActionDate?: string;

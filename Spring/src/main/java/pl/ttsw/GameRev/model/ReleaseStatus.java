@@ -16,5 +16,4 @@ public class ReleaseStatus {
 
     @Column(name = "status_name", nullable = false)
     private String statusName;
-
 }

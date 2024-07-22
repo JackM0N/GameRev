@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
-import { ProfileComponent } from './components/user/profile/profile.component';
+import { OwnProfileComponent } from './components/user/own-profile/own-profile.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService } from 'angular-toaster';
@@ -37,13 +37,14 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { UsersListComponent } from './components/user/users-list/users-list.component';
 import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    ProfileComponent,
+    OwnProfileComponent,
     AccountDeletionConfirmationDialogComponent,
     GameDeletionConfirmationDialogComponent,
     GameFormComponent,
@@ -51,7 +52,8 @@ import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.com
     GameInformationComponent,
     UserReviewFormComponent,
     UsersListComponent,
-    PopupDialogComponent
+    PopupDialogComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
