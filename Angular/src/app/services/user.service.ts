@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteUser';
 
@@ -16,8 +16,13 @@ export class UserService {
     private http: HttpClient,
   ) { }
 
-  getUsers(): Observable<WebsiteUser> {
-    return this.http.get<WebsiteUser>(this.baseUrl);
+  getUsers(page: number, size: number, sortBy: string, sortDir: string): Observable<WebsiteUser> {
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+    return this.http.get<WebsiteUser>(this.baseUrl, {params});
   }
 
   getUser(nickname: string): Observable<WebsiteUser> {
@@ -49,6 +54,6 @@ export class UserService {
     return this.http.get<Blob>(url, {
       headers: headers,
       responseType: 'blob' as 'json'
-     });
+    });
   }
 }
