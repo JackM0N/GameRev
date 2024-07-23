@@ -43,6 +43,15 @@ public class WebsiteUserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/{nickname}")
+    public ResponseEntity<?> getUser(@PathVariable String nickname) {
+        WebsiteUserDTO user = websiteUserService.findByNickname(nickname);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/edit-profile/{username}")
     public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
         String currentUsername = principal.getName();
@@ -74,13 +83,13 @@ public class WebsiteUserController {
         }
     }
 
-    @GetMapping("/{username}/profile-picture")
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String username) {
+    @GetMapping("/{nickname}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String nickname) {
         try {
-            byte[] image = websiteUserService.getProfilePicture(username);
+            byte[] image = websiteUserService.getProfilePicture(nickname);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + username + "_profile_pic\"")
+                            "attachment; filename=\"" + nickname + "_profile_pic\"")
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(image);
         } catch (IOException e) {

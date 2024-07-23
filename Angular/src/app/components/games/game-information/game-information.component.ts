@@ -22,6 +22,7 @@ export class GameInformationComponent implements OnInit {
   formatDate = formatDate;
   likeColor: 'primary' | '' = '';
   dislikeColor: 'warn' | '' = '';
+  usersScoreText: string = '';
 
   game: Game = {
     title: '',
@@ -53,6 +54,14 @@ export class GameInformationComponent implements OnInit {
         this.gameService.getGameByName(gameTitle).subscribe((game: Game) => {
           this.game = game;
 
+          this.updateUsersScoreText();
+
+          if (this.game.usersScore > 0) {
+            this.usersScoreText = "Users score: " + this.game.usersScore;
+          } else {
+            this.usersScoreText = "No reviews yet";
+          }
+
           const token = this.authService.getToken();
 
           if (token === null) {
@@ -63,7 +72,6 @@ export class GameInformationComponent implements OnInit {
           this.userReviewService.getUserReviewsForGame(gameTitle, token).subscribe((userReviews: UserReview[]) => {
             this.reviewList = userReviews;
           });
-
         });
       }
     });
@@ -98,7 +106,6 @@ export class GameInformationComponent implements OnInit {
   }
 
   deleteReview(review: UserReview) {
-
     if (review.id) {
       const token = this.authService.getToken();
 
@@ -127,9 +134,25 @@ export class GameInformationComponent implements OnInit {
         },
         complete: () => {
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
+
+          this.updateUsersScoreText(review);
         }
       };
       this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
+    }
+  }
+
+  updateUsersScoreText(review?: UserReview) {
+    var calculatedScore = this.game.usersScore;
+
+    if (review && review.score) {
+      calculatedScore = calculatedScore - review.score;
+    }
+
+    if (calculatedScore > 0) {
+      this.usersScoreText = "Users score: " + calculatedScore;
+    } else {
+      this.usersScoreText = "No reviews yet";
     }
   }
 
@@ -146,6 +169,8 @@ export class GameInformationComponent implements OnInit {
         review.positiveRating++;
       }
     }
+
+    this.sendRatingInformation(review);
   }
 
   toggleDislike(review: UserReview) {
@@ -161,5 +186,27 @@ export class GameInformationComponent implements OnInit {
         review.negativeRating++;
       }
     }
+
+    this.sendRatingInformation(review);
+  }
+
+  sendRatingInformation(review: UserReview) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {
+      }
+    };
+    this.userReviewService.updateUserReviewRating(review, token).subscribe(observer);
   }
 }

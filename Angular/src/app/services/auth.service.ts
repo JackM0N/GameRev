@@ -115,18 +115,6 @@ export class AuthService {
     return this.http.put<WebsiteUser>(url, userData, { headers });
   }
 
-  getProfilePicture(username: string, token: string): Observable<Blob> {
-    const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get<Blob>(url, {
-      headers: headers,
-      responseType: 'blob' as 'json'
-     });
-  }
-
   changeProfilePicture(username: string, profilePicture: File, token: string): Observable<any> {
     const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
 
