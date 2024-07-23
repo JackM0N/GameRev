@@ -1,6 +1,9 @@
 package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RatingDTO;
@@ -33,20 +36,22 @@ public class UserReviewService{
         this.websiteUserService = websiteUserService;
     }
 
-    public List<UserReviewDTO> getUserReviewByGame(String title) {
-        List<UserReview> userReviews = userReviewRepository.findByGameTitle(title);
+    public Page<UserReviewDTO> getUserReviewByGame(String title, Pageable pageable) {
+        Page<UserReview> userReviews = userReviewRepository.findByGameTitle(title, pageable);
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        return userReviews.stream().map(userReview -> {
+        List<UserReviewDTO> userReviewDTOList = userReviews.stream().map(userReview -> {
             UserReviewDTO userReviewDTO = mapToDTO(userReview);
 
             Optional<Rating> ratingOptional = ratingRepository.findByUserAndUserReview(currentUser, userReview);
             ratingOptional.ifPresentOrElse(rating -> {
                 userReviewDTO.setOwnRatingIsPositive(rating.getIsPositive());
             }, () -> userReviewDTO.setOwnRatingIsPositive(null));
-            
+
             return userReviewDTO;
-        }).collect(Collectors.toList());
+        }).toList();
+
+        return new PageImpl<>(userReviewDTOList, pageable, userReviews.getTotalElements());
     }
 
     public List<UserReviewDTO> getUserReviewByUser(Long userId) {
