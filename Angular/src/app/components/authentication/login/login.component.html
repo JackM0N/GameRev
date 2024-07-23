@@ -1,32 +1,93 @@
-<div class="form-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<div class="flex justify-center items-center w-full h-fit bg-repeat pinkStars py-12 2xl:h-full">
+    <form class="z-20" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-        <div class="field-container">
-            <p>Login</p>
+        <div class="w-80 h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
+            border-2 border-arcadeBigLines">
 
-            <mat-form-field>
-                <mat-label>Enter your username or email</mat-label>
-                <input matInput placeholder="Input username or email" formControlName="usernameOrEmail" required/>
-            </mat-form-field>
+            <div class="w-11/12 h-24 flex justify-center items-center bg-titleTextBackground my-4 border-2 
+            border-fuchsia-900 border-opacity-50 text-6xl text-white font-arcade titleShadow">GAMEREV</div>
 
-            <mat-form-field>
-                <mat-label>Enter your password</mat-label>
-                <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
-                <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (mousedown)="hidePasswordClickEvent($event)"
-                [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hidePassword()"
-                >
-                    <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-            </mat-form-field>
+            <!--radial gradient-->
+            <div class="bg-arcade-radial-bg w-11/12 h-fit mb-4">
+
+                <!--monitor edges-->
+                <div class="bg-arcade-internal-edge w-full h-fit py-6 border-2 
+                border-arcadeLines items-center justify-center flex">
+
+                    <!--blue light outside-->
+                    <div class="w-5/6 h-5/6 border-2 border-arcadeBlueLight shadow-arcadeScreenShadow">
+
+                        <!--screen-->
+                        <div class="h-full shadow-arcadeScreenInnerShadow py-2 px-3 bg-repeat screenBg">
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Login</label>
+                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow" formControlName="usernameOrEmail" required/>
+                            </div>
+                
+                            <div class="my-2">
+                                <label class="text-white font-arcade">Password</label>
+                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow">
+                                    <input class="px-2 h-full w-5/6 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                                    <button class="px-1 flex items-center"
+                                    matSuffix
+                                    type="button"
+                                    (mousedown)="hidePasswordClickEvent($event)"
+                                    [attr.aria-label]="'Hide password'"
+                                    [attr.aria-pressed]="hidePassword()"
+                                    >
+                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="h-8 flex justify-between items-center my-2">
+                                <div class="h-full w-1/2 mr-1 flex justify-center text-white bg-arcadeBlueLight shadow-arcadeScreenShadow font-arcade">
+                                    <button class="w-full h-full" [disabled]="!loginForm.valid">Login</button>
+                                </div>
+                                <div class="h-full w-1/2 ml-1 flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade">
+                                    <a class="w-full" routerLink="/register" routerLinkActive="active"><button class="w-full h-full">Register</button></a>
+                                </div>
+                            </div>
+
+                            <!--TODO: add proper link after creating route-->
+                            <div class="font-arcade underline mb-2 text-white">
+                                <a routerLink="/" routerLinkActive="active">Forgot password</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-20 w-full flex justify-between items-center px-10 border-2 border-arcadeBigLines bg-gradient-to-t from-arcadeGradient1 to-arcadeGradient2">
+                <div class="w-20 h-14 arcadeButtons"></div>
+                <div class="w-14 h-14 arcadeJoystick mr-2"></div>
+            </div>
+
+            <div class="h-40 w-full p-1 pt-0">
+                <div class="w-full h-full bg-arcade-rainbow"></div>
+            </div>
+
         </div>
+            
 
-        <div class="centered-container">
-            <button mat-stroked-button [disabled]="!loginForm.valid">Submit and Login</button>
-        </div>
+            
     </form>
+    <!--small images on the sides-->
+    <!-- needs a little fix for responsivness
+    <div class="z-10">
+        <div class="smallBgImageSize smallBgImage1 h-20 w-20 absolute top-96 right-72 animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage2 h-20 w-20 absolute top-36 right-52 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage3 h-20 w-20 absolute top-64 left-52 animate-wiggle"></div>
+        <div class="smallBgImageSize smallBgImage4 h-20 w-20 absolute top-40 left-80 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage5 h-20 w-20 absolute top-28 left-24 animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage6 h-16 w-16 absolute top-80 left-96 animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage7 h-20 w-20 absolute bottom-40 left-36 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage8 h-20 w-20 absolute bottom-24 left-72 animate-wiggle-reverse"></div>
+    </div>
+    -->
+
+    
+
+
+
 </div>

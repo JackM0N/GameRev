@@ -136,13 +136,13 @@ public class WebsiteUserServiceTest {
     @Test
     public void testGetProfilePicture_Success() throws IOException {
         user_new.setProfilepic(profilePicsDirectory + "/testuser2_profilePic.jpg");
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname("nickname2")).thenReturn(user_new);
 
         Path filePath = Paths.get(profilePicsDirectory, "testuser2_profilePic.jpg");
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, "Test Image Content".getBytes());
 
-        byte[] result = websiteUserService.getProfilePicture(username + "2");
+        byte[] result = websiteUserService.getProfilePicture("nickname2");
 
         assertArrayEquals("Test Image Content".getBytes(), result);
 
@@ -151,10 +151,10 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testGetProfilePicture_NotFound() {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname("nickname2")).thenReturn(user_new);
 
         assertThrows(IOException.class, () -> {
-            websiteUserService.getProfilePicture(username + "2");
+            websiteUserService.getProfilePicture("nickname2");
         });
     }
 }
