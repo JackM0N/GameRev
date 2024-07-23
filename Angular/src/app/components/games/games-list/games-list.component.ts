@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { GameDeletionConfirmationDialogComponent } from '../game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
 import { Sort } from '@angular/material/sort';
+import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 
 @Component({
   selector: 'app-games-list',
@@ -59,7 +59,15 @@ export class GamesListComponent implements AfterViewInit, OnInit {
   }
 
   openGameDeletionConfirmationDialog(game: Game) {
-    const dialogRef = this.dialog.open(GameDeletionConfirmationDialogComponent);
+    const dialogTitle = 'Game deletion';
+    const dialogContent = 'Are you sure you want to delete the game ' + game.title + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
