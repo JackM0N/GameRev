@@ -1,6 +1,10 @@
 package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ReportDTO;
@@ -33,9 +37,17 @@ public class UserReviewController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getUserReviewByGame(@PathVariable String title) {
+    public ResponseEntity<?> getUserReviewByGame(
+            @PathVariable String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
         title = title.replaceAll("-", " ");
-        List<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title,pageable);
         if (userReviewDTO == null || userReviewDTO.isEmpty()) {
             return ResponseEntity.badRequest().body("There are no user reviews for this title");
         }
