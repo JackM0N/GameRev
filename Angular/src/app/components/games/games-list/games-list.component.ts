@@ -29,10 +29,13 @@ export class GamesListComponent implements AfterViewInit, OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadGames();
   }
 
   ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+
+    this.loadGames();
+
     this.paginator.page.subscribe(() => this.loadGames());
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
@@ -48,9 +51,9 @@ export class GamesListComponent implements AfterViewInit, OnInit {
 
     const observer: Observer<any> = {
       next: response => {
-        console.log(response);
         this.gamesList = response.content;
         this.totalGames = response.totalElements;
+        this.dataSource = new MatTableDataSource<Game>(this.gamesList);
         this.dataSource.data = this.gamesList;
       },
       error: error => {
