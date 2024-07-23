@@ -13,5 +13,5 @@ public interface WebsiteUserRepository extends JpaRepository<WebsiteUser, Intege
     WebsiteUser findByUsernameOrEmail(String username, String email);
     WebsiteUser findByNickname(String nickname);
     WebsiteUser findByUsernameOrNickname(String username, String nickname);
-    Page<WebsiteUser> findAll(Pageable pageable);
+    Page<WebsiteUser> findAllUsers(Pageable pageable);
 }

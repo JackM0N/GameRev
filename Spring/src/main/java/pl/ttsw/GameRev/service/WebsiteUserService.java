@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +42,7 @@ public class WebsiteUserService {
     }
 
     public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
-        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(pageable);
+        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAllUsers(pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }
