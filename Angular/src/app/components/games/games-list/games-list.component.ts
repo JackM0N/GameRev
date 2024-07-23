@@ -46,13 +46,19 @@ export class GamesListComponent implements AfterViewInit, OnInit {
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    this.gameService.getGames(page, size, sortBy, sortDir).subscribe(response => {
-      this.gamesList = response.content;
-      this.totalGames = response.totalElements;
-      this.dataSource.data = this.gamesList;
-    }, error => {
-      console.error(error);
-    });
+    const observer: Observer<any> = {
+      next: response => {
+        console.log(response);
+        this.gamesList = response.content;
+        this.totalGames = response.totalElements;
+        this.dataSource.data = this.gamesList;
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.gameService.getGames(page, size, sortBy, sortDir).subscribe(observer);
   }
 
   routeToAddNewGame() {

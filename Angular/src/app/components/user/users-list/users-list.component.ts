@@ -43,7 +43,7 @@ export class UsersListComponent implements AfterViewInit, OnInit {
       },
       complete: () => {}
     };
-    this.userService.getUsers().subscribe(observer);
+    this.userService.getUsers(undefined, undefined, undefined, undefined).subscribe(observer);
   }
 
   ngAfterViewInit() {
