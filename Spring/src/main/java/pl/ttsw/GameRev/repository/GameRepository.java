@@ -11,5 +11,5 @@ import pl.ttsw.GameRev.model.Game;
 public interface GameRepository extends JpaRepository<Game, Integer> {
     Game findGameByTitle(String title);
     Game findGameById(Long id);
-    Page<Game> findAllGames(Pageable pageable);
+    Page<Game> findAll(Pageable pageable);
 }

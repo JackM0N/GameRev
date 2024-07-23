@@ -29,7 +29,7 @@ public class GameService {
     }
 
     public Page<GameDTO> getAllGames(Pageable pageable) {
-        Page<Game> games = gameRepository.findAllGames(pageable);
+        Page<Game> games = gameRepository.findAll(pageable);
         return games.map(this::mapToDTO);
     }
 

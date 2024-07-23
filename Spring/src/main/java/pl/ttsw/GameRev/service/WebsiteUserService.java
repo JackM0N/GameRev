@@ -42,7 +42,7 @@ public class WebsiteUserService {
     }
 
     public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
-        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAllUsers(pageable);
+        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }
