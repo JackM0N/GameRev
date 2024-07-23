@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class WebsiteUserService {
-
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAuthenticationFacade authenticationFacade;
@@ -68,10 +67,10 @@ public class WebsiteUserService {
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = getCurrentUser();
 
-        if(user == null){
+        if (user == null){
             throw new BadRequestException("You need to login first");
         }
-        if(!username.equals(user.getUsername())){
+        if (!username.equals(user.getUsername())){
             throw new BadCredentialsException("You can only edit your own profile");
         }
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -125,10 +124,10 @@ public class WebsiteUserService {
         MultipartFile file = profilePictureDTO.getProfilePicture();
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
-        if(user == null){
+        if (user == null){
             throw new BadRequestException("This user does not exist");
         }
-        if(!user.equals(getCurrentUser())){
+        if (!user.equals(getCurrentUser())){
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
@@ -150,7 +149,6 @@ public class WebsiteUserService {
         if (user == null) {
             throw new BadCredentialsException("This user does not exist");
         }
-
         if (user.getProfilepic() == null) {
             throw new IOException("Users profile picture not found");
         }

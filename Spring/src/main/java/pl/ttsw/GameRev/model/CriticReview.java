@@ -39,5 +39,4 @@ public class CriticReview {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by")
     private WebsiteUser approvedBy;
-
 }

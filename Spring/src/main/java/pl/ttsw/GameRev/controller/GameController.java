@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
-import java.util.List;
 
 @RestController
 @RequestMapping("/games")

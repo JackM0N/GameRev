@@ -1,7 +1,5 @@
 package pl.ttsw.GameRev.service;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import lombok.extern.jackson.Jacksonized;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RatingDTO;
@@ -11,7 +9,6 @@ import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.util.Optional;
 
 @Service

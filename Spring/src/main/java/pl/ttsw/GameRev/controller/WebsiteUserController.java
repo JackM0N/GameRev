@@ -14,11 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -99,10 +97,10 @@ public class WebsiteUserController {
         try {
             byte[] image = websiteUserService.getProfilePicture(nickname);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + nickname + "_profile_pic\"")
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(image);
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + nickname + "_profile_pic\"")
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
         } catch (IOException e) {
             return ResponseEntity.status(404).body(null);
         }

@@ -13,11 +13,9 @@ import pl.ttsw.GameRev.service.WebsiteUserService;
 public class AuthenticationController {
 
     private AuthenticationService authenticationService;
-    private WebsiteUserService websiteUserService;
 
-    public AuthenticationController(AuthenticationService authenticationService, WebsiteUserService websiteUserService) {
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.websiteUserService = websiteUserService;
     }
 
     @PostMapping("/register")
