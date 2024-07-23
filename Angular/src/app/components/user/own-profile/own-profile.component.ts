@@ -112,10 +112,12 @@ export class OwnProfileComponent implements OnInit {
   openLogoutDialog() {
     const dialogTitle = 'Confirm logout';
     const dialogContent = 'Are you sure you want to log out?';
+    const submitText = 'Logout';
+    const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',
-      data: { dialogTitle, dialogContent }
+      data: { dialogTitle, dialogContent, submitText, cancelText }
     });
 
     dialogRef.afterClosed().subscribe(result => {
