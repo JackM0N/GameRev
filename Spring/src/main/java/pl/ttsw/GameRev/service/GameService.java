@@ -1,5 +1,7 @@
 package pl.ttsw.GameRev.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
@@ -24,6 +26,11 @@ public class GameService {
         this.gameRepository = gameRepository;
         this.statusRepository = statusRepository;
         this.tagRepository = tagRepository;
+    }
+
+    public Page<GameDTO> getAllGames(Pageable pageable) {
+        Page<Game> games = gameRepository.findAll(pageable);
+        return games.map(this::mapToDTO);
     }
 
     public GameDTO getGameById(Long id) {
@@ -93,11 +100,6 @@ public class GameService {
             return true;
         }
         return false;
-    }
-
-    public List<GameDTO> getAllGames() {
-        List<Game> games = gameRepository.findAll();
-        return games.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public GameDTO mapToDTO(Game game) {

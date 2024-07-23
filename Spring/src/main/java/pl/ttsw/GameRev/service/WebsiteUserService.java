@@ -2,6 +2,8 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,12 +41,12 @@ public class WebsiteUserService {
         this.roleRepository = roleRepository;
     }
 
-    public List<WebsiteUserDTO> getAllWebsiteUsers() {
-        List<WebsiteUser> websiteUsers = websiteUserRepository.findAll();
+    public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
+        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }
-        return websiteUsers.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return websiteUsers.map(this::mapToDTO);
     }
 
     public WebsiteUserDTO findByUsername(String username) {

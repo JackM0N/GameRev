@@ -25,4 +25,7 @@ public class Report {
     @Column(name = "approved")
     private Boolean approved;
 
+    @Column(name = "content")
+    private String content;
+
 }
