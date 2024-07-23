@@ -28,6 +28,7 @@ export class UsersListComponent implements AfterViewInit, OnInit {
     public dialog: MatDialog,
     private toasterService: ToasterService,
     private authService: AuthService,
+    private router: Router,
   ) {
   }
 
@@ -188,5 +189,9 @@ export class UsersListComponent implements AfterViewInit, OnInit {
       complete: () => {}
     };
     this.userService.unbanUser(user, token).subscribe(observer);
+  }
+
+  openProfile(user: WebsiteUser) {
+    this.router.navigate(['/profile/' + user.nickname]);
   }
 }

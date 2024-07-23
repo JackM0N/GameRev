@@ -2,3 +2,8 @@
 #img-profile-picture {
     height: 200px;
 }
+
+.profile-container {
+    margin: 0 auto;
+    text-align: center;
+}

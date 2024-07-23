@@ -53,7 +53,15 @@ public class WebsiteUserService {
     }
 
     public WebsiteUserDTO findByNickname(String nickname) {
-        return mapToDTO(websiteUserRepository.findByNickname(nickname));
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
+        if (user == null) {
+            throw new BadCredentialsException("Invalid nickname");
+        }
+        user.setId(null);
+        user.setUsername(null);
+        user.setPassword(null);
+        user.setIsDeleted(null);
+        return mapToDTO(user);
     }
 
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
@@ -119,7 +127,7 @@ public class WebsiteUserService {
         if(user == null){
             throw new BadRequestException("This user does not exist");
         }
-        if(user != getCurrentUser()){
+        if(!user.equals(getCurrentUser())){
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
@@ -135,8 +143,12 @@ public class WebsiteUserService {
         websiteUserRepository.save(user);
     }
 
-    public byte[] getProfilePicture(String username) throws IOException {
-        WebsiteUser user = websiteUserRepository.findByUsername(username);
+    public byte[] getProfilePicture(String nickname) throws IOException {
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
+
+        if (user == null) {
+            throw new BadCredentialsException("This user does not exist");
+        }
 
         if (user.getProfilepic() == null) {
             throw new IOException("Users profile picture not found");

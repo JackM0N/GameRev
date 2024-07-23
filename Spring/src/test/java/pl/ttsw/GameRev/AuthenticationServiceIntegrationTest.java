@@ -1,15 +1,13 @@
 package pl.ttsw.GameRev;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -24,7 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AuthenticationServiceIntegrationTest {
@@ -41,7 +38,7 @@ public class AuthenticationServiceIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         WebsiteUser user = websiteUserRepository.findByUsername("testuser2");
         if (user != null){
@@ -86,7 +83,7 @@ public class AuthenticationServiceIntegrationTest {
                 .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         websiteUserRepository.delete(websiteUserRepository.findByUsername("testuser2"));
     }

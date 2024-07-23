@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -11,12 +11,11 @@ import { UserReview } from '../interfaces/userReview';
 export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
-  private likeStatusUrl = 'http://localhost:8080/users-reviews/like-status';
+  private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
 
   constructor(
     private http: HttpClient,
-    public jwtHelper: JwtHelperService,
-    @Inject(PLATFORM_ID) private platformId: any
+    public jwtHelper: JwtHelperService
   ) { }
 
   getUserReviews(): Observable<UserReview[]> {
@@ -59,7 +58,10 @@ export class UserReviewService {
     return this.http.delete<UserReview>(this.baseUrl, options);
   }
 
-  updateUserReviewLikeStatus(id: number, likeStatus: boolean | null): Observable<UserReview> {
-    return this.http.put<UserReview>(`${this.likeStatusUrl}/${id}`, likeStatus);
+  updateUserReviewRating(userReview: UserReview, token: string): Observable<UserReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
   }
 }
