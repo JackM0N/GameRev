@@ -9,6 +9,7 @@ import org.junit.platform.suite.api.Suite;
 		AuthenticationServiceIntegrationTest.class,
 		WebsiteUserServiceTest.class,
 		WebsiteUserServiceIntegrationTest.class,
+		GameServiceTest.class,
 })
 public class AllTestsSuite {
 	// yes, this should be empty

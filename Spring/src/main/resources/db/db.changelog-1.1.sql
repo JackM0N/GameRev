@@ -94,3 +94,8 @@ ALTER TABLE website_user
 ALTER TABLE website_user
     DROP COLUMN current_token;
 
+
+--changeset Stanislaw:12 labels:schema,fix
+ALTER TABLE report
+    ADD COLUMN content TEXT NOT NULL default 'Old report that was created before reason was possible to give' 
+
