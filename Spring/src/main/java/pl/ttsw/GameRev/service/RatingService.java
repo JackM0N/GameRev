@@ -29,7 +29,6 @@ public class RatingService {
         this.ratingMapper = ratingMapper;
     }
 
-    // TODO: Fix issue with json: InvalidDefinitionException (disabling SerializationFeature.FAIL_ON_EMPTY_BEANS doesnt work)
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
         Rating rating;
