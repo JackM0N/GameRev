@@ -93,7 +93,7 @@ public class GameService {
         return mapToDTO(gameRepository.save(updatedGame));
     }
 
-    public boolean deleteGame(Integer id) {
+    public boolean deleteGame(Long id) {
         if (gameRepository.existsById(id)){
             gameRepository.deleteById(id);
             return true;

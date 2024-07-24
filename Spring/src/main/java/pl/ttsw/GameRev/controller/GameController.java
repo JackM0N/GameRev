@@ -49,7 +49,7 @@ public class GameController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGame(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
         boolean gotRemoved = gameService.deleteGame(id);
         if (!gotRemoved) {
             return ResponseEntity.notFound().build();
