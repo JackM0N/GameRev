@@ -54,7 +54,6 @@ public class GameService {
                 .collect(Collectors.toList());
         newGame.setTags(tags);
 
-
         return gameRepository.save(newGame);
     }
 

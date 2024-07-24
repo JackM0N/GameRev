@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
 
@@ -14,8 +14,13 @@ export class GameService {
     private http: HttpClient,
   ) { }
 
-  getGames(): Observable<Game> {
-    return this.http.get<Game>(this.baseUrl);
+  getGames(page: number, size: number, sortBy: string, sortDir: string): Observable<Game> {
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+    return this.http.get<Game>(this.baseUrl, {params});
   }
 
   getGameByName(name: string): Observable<Game> {

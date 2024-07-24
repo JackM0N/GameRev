@@ -4,12 +4,10 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.mapper.ReportMapper;
-import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.repository.ReportRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
-
 import java.util.Optional;
 
 @Service

@@ -1,5 +1,4 @@
 
-// User model
 export interface WebsiteUser {
   id?: number;
   

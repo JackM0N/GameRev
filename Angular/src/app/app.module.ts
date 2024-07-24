@@ -28,7 +28,6 @@ import { ReleaseStatusService } from './services/release-status.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
-import { GameDeletionConfirmationDialogComponent } from './components/games/game-deletion-confirmation-dialog/game-deletion-confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
 import { GameInformationComponent } from './components/games/game-information/game-information.component';
 import { UserReviewService } from './services/user-review.service';
@@ -38,6 +37,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { UsersListComponent } from './components/user/users-list/users-list.component';
 import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
+import { ReviewReportDialogComponent } from './components/games/review-report-dialog/review-report-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,14 +46,14 @@ import { ProfileComponent } from './components/user/profile/profile.component';
     RegistrationComponent,
     OwnProfileComponent,
     AccountDeletionConfirmationDialogComponent,
-    GameDeletionConfirmationDialogComponent,
     GameFormComponent,
     GamesListComponent,
     GameInformationComponent,
     UserReviewFormComponent,
     UsersListComponent,
     PopupDialogComponent,
-    ProfileComponent
+    ProfileComponent,
+    ReviewReportDialogComponent
   ],
   imports: [
     BrowserModule,

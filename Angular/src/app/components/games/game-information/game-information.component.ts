@@ -7,10 +7,12 @@ import { UserReviewService } from '../../../services/user-review.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { Observer } from 'rxjs';
 import { Toast, ToasterService } from 'angular-toaster';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { formatDate } from '../../../util/formatDate';
 import { AuthService } from '../../../services/auth.service';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { ReviewReportDialogComponent } from '../review-report-dialog/review-report-dialog.component';
+import { Report } from '../../../interfaces/report';
 
 @Component({
   selector: 'app-game-information',
@@ -23,6 +25,11 @@ export class GameInformationComponent implements OnInit {
   likeColor: 'primary' | '' = '';
   dislikeColor: 'warn' | '' = '';
   usersScoreText: string = '';
+
+  report: Report = {
+    content: '',
+    reviewId: 0
+  }
 
   game: Game = {
     title: '',
@@ -92,10 +99,12 @@ export class GameInformationComponent implements OnInit {
   openReviewDeletionConfirmationDialog(review: UserReview) {
     const dialogTitle = 'Confirm review deletion';
     const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',
-      data: { dialogTitle, dialogContent }
+      data: { dialogTitle, dialogContent, submitText, cancelText }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -208,5 +217,71 @@ export class GameInformationComponent implements OnInit {
       }
     };
     this.userReviewService.updateUserReviewRating(review, token).subscribe(observer);
+  }
+
+  sendReportInformation(review: UserReview, dialogRef: MatDialogRef<ReviewReportDialogComponent>) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    if (!dialogRef || !dialogRef.componentRef) {
+      return;
+    }
+
+    if (review.id) {
+      this.report.reviewId = review.id;
+    }
+
+    const content = dialogRef.componentRef.instance.reportForm.get('content')?.value;
+
+    if (content) {
+      this.report.content = content;
+    } else {
+      console.log("Content is null");
+      return;
+    }
+
+    console.log(this.report);
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Report sent successfully',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Report submission failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {
+      }
+    };
+    this.userReviewService.reportReview(this.report, token).subscribe(observer);
+  }
+
+  reportReview(review: UserReview) {
+    const dialogContent = 'Are you sure you want to report this review by ' + review.userUsername + '?';
+
+    const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
+      width: '300px',
+      data: { dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.sendReportInformation(review, dialogRef);
+      }
+    });
   }
 }

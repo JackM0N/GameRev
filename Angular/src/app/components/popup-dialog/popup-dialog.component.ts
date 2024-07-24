@@ -8,7 +8,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class PopupDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<PopupDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { dialogTitle: string; dialogContent: string }
+    @Inject(MAT_DIALOG_DATA) public data: { dialogTitle: string; dialogContent: string; submitText: string; cancelText: string; }
   ) {
   }
 

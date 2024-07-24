@@ -22,6 +22,7 @@
           <p>Dislikes: {{ review.negativeRating }}</p>
           <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
           <button mat-stroked-button (click)="editReview(review)">Edit review</button>
+          <button mat-stroked-button (click)="reportReview(review)">Report review</button>
           
           <div>
             <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>

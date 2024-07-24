@@ -12,7 +12,6 @@ import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.service.RatingService;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users-reviews")

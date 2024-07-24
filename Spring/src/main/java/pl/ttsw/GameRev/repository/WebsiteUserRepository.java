@@ -6,7 +6,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 @Repository
 public interface WebsiteUserRepository extends JpaRepository<WebsiteUser, Integer> {
     WebsiteUser findByUsername(String username);
