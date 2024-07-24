@@ -1,20 +1,20 @@
 package pl.ttsw.GameRev.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.model.Report;
 
-@Mapper()
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReportMapper {
-    ReportMapper INSTANCE = Mappers.getMapper(ReportMapper.class);
 
     @Mapping(source = "userReview", target = "userReview")
     @Mapping(source = "user", target = "user")
-    ReportDTO reportToReportDTO(Report report);
+    Report toEntity(ReportDTO reportDTO);
 
     @Mapping(source = "userReview", target = "userReview")
     @Mapping(source = "user", target = "user")
-    Report reportDTOToReport(ReportDTO reportDTO);
+    ReportDTO toDto(Report report);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Report partialUpdate(ReportDTO reportDTO, @MappingTarget Report report);
 }

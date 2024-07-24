@@ -15,11 +15,13 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserReviewRepository userReviewRepository;
     private final WebsiteUserService websiteUserService;
+    private final ReportMapper reportMapper;
 
-    public ReportService(ReportRepository reportRepository, UserReviewRepository userReviewRepository, WebsiteUserService websiteUserService) {
+    public ReportService(ReportRepository reportRepository, UserReviewRepository userReviewRepository, WebsiteUserService websiteUserService, ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
         this.userReviewRepository = userReviewRepository;
         this.websiteUserService = websiteUserService;
+        this.reportMapper = reportMapper;
     }
 
     public ReportDTO createReport(ReportDTO reportDTO) throws BadRequestException {
@@ -40,7 +42,6 @@ public class ReportService {
 
 
         if (reportOptional.isPresent()) {
-            System.out.println("This report already exists");
             throw new BadRequestException("You've already reported this review");
         }
 
@@ -49,9 +50,6 @@ public class ReportService {
         report.setUserReview(userReview);
         report.setContent(reportDTO.getContent());
 
-
-        ReportDTO newReport = ReportMapper.INSTANCE.reportToReportDTO(report);
-
-        return ReportMapper.INSTANCE.reportToReportDTO(reportRepository.save(report));
+        return reportMapper.toDto(reportRepository.save(report));
     }
 }

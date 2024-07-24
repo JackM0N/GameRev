@@ -5,5 +5,4 @@ import pl.ttsw.GameRev.model.Tag;
 import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    List<Tag> findTagsByIdIn(List<Long> id);
 }
