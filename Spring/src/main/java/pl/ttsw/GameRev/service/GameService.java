@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
+import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
@@ -58,7 +59,7 @@ public class GameService {
     }
 
     public GameDTO getGameByTitle(String title) {
-        return mapToDTO(gameRepository.findGameByTitle(title));
+        return GameMapper.INSTANCE.toDto(gameRepository.findGameByTitle(title));
     }
 
     public GameDTO updateGame(String title, GameDTO game) {

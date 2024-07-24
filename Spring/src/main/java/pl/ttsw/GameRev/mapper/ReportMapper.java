@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.model.Report;
 
-@Mapper(componentModel = "spring")
+@Mapper()
 public interface ReportMapper {
     ReportMapper INSTANCE = Mappers.getMapper(ReportMapper.class);
 

@@ -40,6 +40,7 @@ public class ReportService {
 
 
         if (reportOptional.isPresent()) {
+            System.out.println("This report already exists");
             throw new BadRequestException("You've already reported this review");
         }
 
@@ -50,7 +51,6 @@ public class ReportService {
 
 
         ReportDTO newReport = ReportMapper.INSTANCE.reportToReportDTO(report);
-        System.out.println(newReport);
 
         return ReportMapper.INSTANCE.reportToReportDTO(reportRepository.save(report));
     }
