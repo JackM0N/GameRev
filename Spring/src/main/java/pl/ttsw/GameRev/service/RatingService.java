@@ -4,6 +4,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.mapper.RatingMapper;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.repository.RatingRepository;
@@ -17,16 +18,17 @@ public class RatingService {
     private final WebsiteUserRepository websiteUserRepository;
     private final WebsiteUserService websiteUserService;
     private final RatingRepository ratingRepository;
+    private final RatingMapper ratingMapper;
 
     public RatingService(RatingRepository ratingRepository, UserReviewRepository userReviewRepository,
-                         WebsiteUserRepository websiteUserRepository, WebsiteUserService websiteUserService) {
+                         WebsiteUserRepository websiteUserRepository, WebsiteUserService websiteUserService, RatingMapper ratingMapper) {
         this.ratingRepository = ratingRepository;
         this.userReviewRepository = userReviewRepository;
         this.websiteUserRepository = websiteUserRepository;
         this.websiteUserService = websiteUserService;
+        this.ratingMapper = ratingMapper;
     }
 
-    // TODO: Fix issue with json: InvalidDefinitionException (disabling SerializationFeature.FAIL_ON_EMPTY_BEANS doesnt work)
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
         Rating rating;
@@ -54,16 +56,6 @@ public class RatingService {
                 rating.setUserReview(userReviewRepository.findById(userReviewDTO.getId()));
             }
         }
-        ratingRepository.save(rating);
-        return mapToDTO(rating);
-    }
-
-    public RatingDTO mapToDTO(Rating rating) {
-        RatingDTO ratingDTO = new RatingDTO();
-        ratingDTO.setId(rating.getId());
-        ratingDTO.setUser(rating.getUser());
-        ratingDTO.setUserReview(rating.getUserReview());
-        ratingDTO.setIsPositive(rating.getIsPositive());
-        return ratingDTO;
+        return ratingMapper.toDto(ratingRepository.save(rating));
     }
 }
