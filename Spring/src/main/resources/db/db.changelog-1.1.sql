@@ -97,5 +97,10 @@ ALTER TABLE website_user
 
 --changeset Stanislaw:12 labels:schema,fix
 ALTER TABLE report
-    ADD COLUMN content TEXT NOT NULL default 'Old report that was created before reason was possible to give' 
+    ADD COLUMN content TEXT NOT NULL default 'Old report that was created before reason was possible to give'
+
+
+--changeset Stanislaw:13 labels:schema,fix
+ALTER TABLE game
+    ADD CONSTRAINT unique_game_title UNIQUE (title);
 
