@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.RatingMapper;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
@@ -29,16 +28,14 @@ public class UserReviewService{
     private final UserReviewRepository userReviewRepository;
     private final RatingRepository ratingRepository;
     private final WebsiteUserService websiteUserService;
-    private final RatingMapper ratingMapper;
     private final UserReviewMapper userReviewMapper;
 
-    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService, RatingMapper ratingMapper, UserReviewMapper userReviewMapper) {
+    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService, UserReviewMapper userReviewMapper) {
         this.userReviewRepository = userReviewRepository;
         this.websiteUserRepository = websiteUserRepository;
         this.gameRepository = gameRepository;
         this.ratingRepository = ratingRepository;
         this.websiteUserService = websiteUserService;
-        this.ratingMapper = ratingMapper;
         this.userReviewMapper = userReviewMapper;
     }
 
