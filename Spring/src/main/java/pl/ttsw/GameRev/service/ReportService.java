@@ -1,8 +1,11 @@
 package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ReportDTO;
+import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.ReportMapper;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
@@ -22,6 +25,19 @@ public class ReportService {
         this.userReviewRepository = userReviewRepository;
         this.websiteUserService = websiteUserService;
         this.reportMapper = reportMapper;
+    }
+
+    public ReportDTO getReportById(Long id) {
+        Optional<Report> reportOptional = reportRepository.findById(id);
+        return reportOptional.map(reportMapper::toDto).orElse(null);
+    }
+
+    public Page<ReportDTO> getReportsByReview(UserReviewDTO userReviewDTO, Pageable pageable) {
+        Page<Report> reports = reportRepository.findAllByUserReviewIdAndApproved(userReviewDTO.getId(),null, pageable);
+        if (reports.isEmpty()) {
+            return null;
+        }
+        return reports.map(reportMapper::toDto);
     }
 
     public ReportDTO createReport(ReportDTO reportDTO) throws BadRequestException {
@@ -50,6 +66,15 @@ public class ReportService {
         report.setUserReview(userReview);
         report.setContent(reportDTO.getContent());
 
+        return reportMapper.toDto(reportRepository.save(report));
+    }
+
+    public ReportDTO updateReport(ReportDTO reportDTO) throws BadRequestException {
+        Report report = reportRepository.findById(reportDTO.getId()).orElse(null);
+        if (report == null) {
+            throw new BadRequestException("This report doesnt exist");
+        }
+        report.setApproved(reportDTO.getApproved());
         return reportMapper.toDto(reportRepository.save(report));
     }
 }
