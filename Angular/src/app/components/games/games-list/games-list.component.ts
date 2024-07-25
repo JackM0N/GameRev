@@ -13,7 +13,7 @@ import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component'
   selector: 'app-games-list',
   templateUrl: './games-list.component.html'
 })
-export class GamesListComponent implements AfterViewInit, OnInit {
+export class GamesListComponent implements AfterViewInit {
   gamesList: Game[] = [];
   totalGames: number = 0;
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
@@ -27,9 +27,6 @@ export class GamesListComponent implements AfterViewInit, OnInit {
     private router: Router,
     public dialog: MatDialog,
   ) {}
-
-  ngOnInit() {
-  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

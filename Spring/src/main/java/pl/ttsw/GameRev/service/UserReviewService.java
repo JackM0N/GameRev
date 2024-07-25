@@ -71,14 +71,14 @@ public class UserReviewService{
     public Page<UserReviewDTO> getUserReviewsWithReports(Pageable pageable) {
         Page<UserReview> userReviews = userReviewRepository.findWithReports(pageable);
         return userReviews.map(userReview -> {
-                    UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
-                    long totalReports = userReview.getReports().size();
-                    long approvedReports = userReview.getReports().stream()
-                            .filter(report -> report.getApproved() != null && report.getApproved())
-                            .count();
-                    userReviewDTO.setTotalReports(totalReports);
-                    userReviewDTO.setApprovedReports(approvedReports);
-                    return userReviewDTO;
+            UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
+            long totalReports = userReview.getReports().size();
+            long approvedReports = userReview.getReports().stream()
+                    .filter(report -> report.getApproved() != null && report.getApproved())
+                    .count();
+            userReviewDTO.setTotalReports(totalReports);
+            userReviewDTO.setApprovedReports(approvedReports);
+            return userReviewDTO;
         });
     }
 
