@@ -10,6 +10,7 @@ import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.RatingMapper;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Rating;
+import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
@@ -67,6 +68,20 @@ public class UserReviewService{
     public UserReviewDTO getUserReviewById(Integer id) {
         Optional<UserReview> userReview = (userReviewRepository.findById(id));
         return userReview.map(userReviewMapper::toDto).orElse(null);
+    }
+
+    public Page<UserReviewDTO> getUserReviewsWithReports(Pageable pageable) {
+        Page<UserReview> userReviews = userReviewRepository.findWithReports(pageable);
+        return userReviews.map(userReview -> {
+                    UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
+                    long totalReports = userReview.getReports().size();
+                    long approvedReports = userReview.getReports().stream()
+                            .filter(report -> report.getApproved() != null && report.getApproved())
+                            .count();
+                    userReviewDTO.setTotalReports(totalReports);
+                    userReviewDTO.setApprovedReports(approvedReports);
+                    return userReviewDTO;
+        });
     }
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {

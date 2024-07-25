@@ -15,16 +15,14 @@ import java.util.Optional;
 @Service
 public class RatingService {
     private final UserReviewRepository userReviewRepository;
-    private final WebsiteUserRepository websiteUserRepository;
     private final WebsiteUserService websiteUserService;
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
 
     public RatingService(RatingRepository ratingRepository, UserReviewRepository userReviewRepository,
-                         WebsiteUserRepository websiteUserRepository, WebsiteUserService websiteUserService, RatingMapper ratingMapper) {
+                         WebsiteUserService websiteUserService, RatingMapper ratingMapper) {
         this.ratingRepository = ratingRepository;
         this.userReviewRepository = userReviewRepository;
-        this.websiteUserRepository = websiteUserRepository;
         this.websiteUserService = websiteUserService;
         this.ratingMapper = ratingMapper;
     }
