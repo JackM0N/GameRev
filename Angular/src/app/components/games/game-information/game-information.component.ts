@@ -31,6 +31,7 @@ export class GameInformationComponent implements OnInit {
   reviewList: UserReview[] = [];
   totalReviews: number = 0;
   dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewList);
+  gameTitle: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -66,8 +67,9 @@ export class GameInformationComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
-        const gameTitle = params['name'].replace(' ', '-');
-        this.gameService.getGameByName(gameTitle).subscribe((game: Game) => {
+        this.gameTitle = params['name'].replace(' ', '-');
+
+        this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
           this.game = game;
 
           this.updateUsersScoreText();
@@ -109,9 +111,20 @@ export class GameInformationComponent implements OnInit {
     const sortBy = 'id';
     const sortDir = 'asc';
 
-    this.userReviewService.getUserReviewsForGame(this.game.title, token, page, size, sortBy, sortDir).subscribe((userReviews: UserReview[]) => {
-      this.reviewList = userReviews;
-    });
+    const observer: Observer<any> = {
+      next: response => {
+        console.log(response);
+        this.reviewList = response.content;
+        this.totalReviews = response.totalElements;
+        this.dataSource = new MatTableDataSource<UserReview>(this.reviewList);
+        this.dataSource.data = this.reviewList;
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.userReviewService.getUserReviewsForGame(this.gameTitle, token, page, size, sortBy, sortDir).subscribe(observer);
   }
 
   sortData(sort: Sort) {
