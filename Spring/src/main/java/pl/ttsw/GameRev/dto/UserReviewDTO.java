@@ -22,4 +22,6 @@ public class UserReviewDTO implements Serializable {
     Integer positiveRating;
     Integer negativeRating;
     Boolean ownRatingIsPositive;
+    Long totalReports;
+    Long approvedReports;
 }

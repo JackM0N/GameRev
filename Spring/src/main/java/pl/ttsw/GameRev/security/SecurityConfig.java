@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 "release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
                                 "/user/**").permitAll()
                         .requestMatchers("/user/edit-profile/**").authenticated()
-                        .requestMatchers("/user/ban").hasRole("Admin")
+                        .requestMatchers("/user/ban", "/reports/**").hasRole("Admin")
                         .anyRequest()
                         .authenticated())
                 .userDetailsService(userDetails)
