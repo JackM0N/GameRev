@@ -71,7 +71,7 @@ public class UserReviewController {
   
     @DeleteMapping("")
     public ResponseEntity<?> deleteUserReview(@RequestBody UserReviewDTO userReviewDTO) {
-        boolean gotRemoved = userReviewService.deleteUserReview(userReviewDTO);
+        boolean gotRemoved = userReviewService.deleteUserReviewByOwner(userReviewDTO);
         if (!gotRemoved) {
             return ResponseEntity.badRequest().body("There was an error deleting the user review");
         }

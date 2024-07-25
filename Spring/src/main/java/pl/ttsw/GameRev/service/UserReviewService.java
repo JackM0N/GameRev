@@ -7,10 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
-import pl.ttsw.GameRev.mapper.RatingMapper;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Rating;
-import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
@@ -127,7 +125,7 @@ public class UserReviewService{
         return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }
 
-    public boolean deleteUserReview(UserReviewDTO userReviewDTO) {
+    public boolean deleteUserReviewByOwner(UserReviewDTO userReviewDTO) {
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
 
@@ -140,5 +138,14 @@ public class UserReviewService{
             return true;
         }
         return false;
+    }
+
+    public boolean deleteUserReviewById(Long id) throws BadRequestException {
+        UserReview userReview = userReviewRepository.findById(id);
+        if (userReview == null){
+            throw new BadRequestException("This review doesn't exist");
+        }
+        userReviewRepository.delete(userReview);
+        return true;
     }
 }
