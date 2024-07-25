@@ -16,6 +16,6 @@ import java.io.Serializable;
 public class RatingDTO implements Serializable {
     Long id;
     Boolean isPositive;
-    WebsiteUser user;
-    UserReview userReview;
+    WebsiteUserDTO user;
+    UserReviewDTO userReview;
 }

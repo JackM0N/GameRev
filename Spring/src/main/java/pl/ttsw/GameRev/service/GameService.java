@@ -1,9 +1,13 @@
 package pl.ttsw.GameRev.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
+import pl.ttsw.GameRev.mapper.GameMapper;
+import pl.ttsw.GameRev.mapper.TagMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
@@ -18,16 +22,23 @@ public class GameService {
     private final GameRepository gameRepository;
     private final ReleaseStatusRepository statusRepository;
     private final TagRepository tagRepository;
+    private final GameMapper gameMapper;
 
     public GameService(GameRepository gameRepository, ReleaseStatusRepository statusRepository,
-                       TagRepository tagRepository) {
+                       TagRepository tagRepository, GameMapper gameMapper) {
         this.gameRepository = gameRepository;
         this.statusRepository = statusRepository;
         this.tagRepository = tagRepository;
+        this.gameMapper = gameMapper;
+    }
+
+    public Page<GameDTO> getAllGames(Pageable pageable) {
+        Page<Game> games = gameRepository.findAll(pageable);
+        return games.map(gameMapper::toDto);
     }
 
     public GameDTO getGameById(Long id) {
-        return mapToDTO(gameRepository.findGameById(id));
+        return gameMapper.toDto(gameRepository.findGameById(id));
     }
 
     public Game createGame(GameDTO game) {
@@ -47,12 +58,11 @@ public class GameService {
                 .collect(Collectors.toList());
         newGame.setTags(tags);
 
-
         return gameRepository.save(newGame);
     }
 
     public GameDTO getGameByTitle(String title) {
-        return mapToDTO(gameRepository.findGameByTitle(title));
+        return gameMapper.toDto(gameRepository.findGameByTitle(title));
     }
 
     public GameDTO updateGame(String title, GameDTO game) {
@@ -84,10 +94,10 @@ public class GameService {
                     .collect(Collectors.toList());
             updatedGame.setTags(tags);
         }
-        return mapToDTO(gameRepository.save(updatedGame));
+        return gameMapper.toDto(gameRepository.save(updatedGame));
     }
 
-    public boolean deleteGame(Integer id) {
+    public boolean deleteGame(Long id) {
         if (gameRepository.existsById(id)){
             gameRepository.deleteById(id);
             return true;
@@ -95,42 +105,4 @@ public class GameService {
         return false;
     }
 
-    public List<GameDTO> getAllGames() {
-        List<Game> games = gameRepository.findAll();
-        return games.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
-    public GameDTO mapToDTO(Game game) {
-        GameDTO gameDTO = new GameDTO();
-        gameDTO.setId(game.getId());
-        gameDTO.setTitle(game.getTitle());
-        gameDTO.setDeveloper(game.getDeveloper());
-        gameDTO.setPublisher(game.getPublisher());
-        gameDTO.setReleaseDate(game.getReleaseDate());
-        gameDTO.setDescription(game.getDescription());
-        gameDTO.setUsersScore(game.getUsersScore());
-
-        gameDTO.setReleaseStatus(mapReleaseStatusToDTO(game.getReleaseStatus()));
-
-        gameDTO.setTags(game.getTags().stream()
-                .map(this::mapTagToDTO)
-                .collect(Collectors.toList()));
-
-        return gameDTO;
-    }
-
-    private ReleaseStatusDTO mapReleaseStatusToDTO(ReleaseStatus releaseStatus) {
-        ReleaseStatusDTO statusDTO = new ReleaseStatusDTO();
-        statusDTO.setId(releaseStatus.getId());
-        statusDTO.setStatusName(releaseStatus.getStatusName());
-        return statusDTO;
-    }
-
-    private TagDTO mapTagToDTO(Tag tag) {
-        TagDTO tagDTO = new TagDTO();
-        tagDTO.setId(tag.getId());
-        tagDTO.setTagName(tag.getTagName());
-        tagDTO.setPriority(tag.getPriority());
-        return tagDTO;
-    }
 }

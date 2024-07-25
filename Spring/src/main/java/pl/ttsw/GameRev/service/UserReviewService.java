@@ -1,10 +1,13 @@
 package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
-import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -24,41 +27,59 @@ public class UserReviewService{
     private final UserReviewRepository userReviewRepository;
     private final RatingRepository ratingRepository;
     private final WebsiteUserService websiteUserService;
+    private final UserReviewMapper userReviewMapper;
 
-    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService) {
+    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService, UserReviewMapper userReviewMapper) {
         this.userReviewRepository = userReviewRepository;
         this.websiteUserRepository = websiteUserRepository;
         this.gameRepository = gameRepository;
         this.ratingRepository = ratingRepository;
         this.websiteUserService = websiteUserService;
+        this.userReviewMapper = userReviewMapper;
     }
 
-    public List<UserReviewDTO> getUserReviewByGame(String title) {
-        List<UserReview> userReviews = userReviewRepository.findByGameTitle(title);
+    public Page<UserReviewDTO> getUserReviewByGame(String title, Pageable pageable) {
+        Page<UserReview> userReviews = userReviewRepository.findByGameTitle(title, pageable);
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        return userReviews.stream().map(userReview -> {
-            UserReviewDTO userReviewDTO = mapToDTO(userReview);
+        List<UserReviewDTO> userReviewDTOList = userReviews.stream().map(userReview -> {
+            UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
 
             Optional<Rating> ratingOptional = ratingRepository.findByUserAndUserReview(currentUser, userReview);
             ratingOptional.ifPresentOrElse(rating -> {
                 userReviewDTO.setOwnRatingIsPositive(rating.getIsPositive());
             }, () -> userReviewDTO.setOwnRatingIsPositive(null));
-            
+
             return userReviewDTO;
-        }).collect(Collectors.toList());
+        }).toList();
+
+        return new PageImpl<>(userReviewDTOList, pageable, userReviews.getTotalElements());
     }
 
     public List<UserReviewDTO> getUserReviewByUser(Long userId) {
         List<UserReview> userReviews = (userReviewRepository.findByUserId(userId));
         return userReviews.stream()
-                .map(this::mapToDTO)
+                .map(userReviewMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public UserReviewDTO getUserReviewById(Integer id) {
         Optional<UserReview> userReview = (userReviewRepository.findById(id));
-        return userReview.map(this::mapToDTO).orElse(null);
+        return userReview.map(userReviewMapper::toDto).orElse(null);
+    }
+
+    public Page<UserReviewDTO> getUserReviewsWithReports(Pageable pageable) {
+        Page<UserReview> userReviews = userReviewRepository.findWithReports(pageable);
+        return userReviews.map(userReview -> {
+                    UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
+                    long totalReports = userReview.getReports().size();
+                    long approvedReports = userReview.getReports().stream()
+                            .filter(report -> report.getApproved() != null && report.getApproved())
+                            .count();
+                    userReviewDTO.setTotalReports(totalReports);
+                    userReviewDTO.setApprovedReports(approvedReports);
+                    return userReviewDTO;
+        });
     }
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
@@ -80,7 +101,7 @@ public class UserReviewService{
         userReview.setPositiveRating(0);
         userReview.setNegativeRating(0);
 
-        return mapToDTO(userReviewRepository.save(userReview));
+        return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }
 
     public UserReviewDTO updateUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
@@ -101,10 +122,10 @@ public class UserReviewService{
             userReview.setContent(userReviewDTO.getContent());
         }
 
-        return mapToDTO(userReviewRepository.save(userReview));
+        return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }
 
-    public boolean deleteUserReview(UserReviewDTO userReviewDTO) {
+    public boolean deleteUserReviewByOwner(UserReviewDTO userReviewDTO) {
         WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
 
@@ -119,28 +140,12 @@ public class UserReviewService{
         return false;
     }
 
-    public UserReviewDTO mapToDTO(UserReview userReview) {
-        UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setId(userReview.getId());
-        userReviewDTO.setGameTitle(userReview.getGame().getTitle());
-        userReviewDTO.setUserUsername(userReview.getUser().getUsername());
-        userReviewDTO.setContent(userReview.getContent());
-        userReviewDTO.setPostDate(userReview.getPostDate());
-        userReviewDTO.setScore(userReview.getScore());
-        userReviewDTO.setPositiveRating(userReview.getPositiveRating());
-        userReviewDTO.setNegativeRating(userReview.getNegativeRating());
-        if (userReview.getRatings() != null && userReview.getRatings().stream().map(this::mapToDTO).findFirst().isPresent()) {
-            userReviewDTO.setOwnRatingIsPositive(userReview.getRatings().stream().map(this::mapToDTO).findFirst().get().getIsPositive());
+    public boolean deleteUserReviewById(Long id) throws BadRequestException {
+        UserReview userReview = userReviewRepository.findById(id);
+        if (userReview == null){
+            throw new BadRequestException("This review doesn't exist");
         }
-        return userReviewDTO;
-    }
-
-    public RatingDTO mapToDTO(Rating rating) {
-        RatingDTO ratingDTO = new RatingDTO();
-        ratingDTO.setId(rating.getId());
-        ratingDTO.setUser(rating.getUser());
-        ratingDTO.setUserReview(rating.getUserReview());
-        ratingDTO.setIsPositive(rating.getIsPositive());
-        return ratingDTO;
+        userReviewRepository.delete(userReview);
+        return true;
     }
 }

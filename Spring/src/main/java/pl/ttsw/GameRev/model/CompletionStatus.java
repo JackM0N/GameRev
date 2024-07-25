@@ -16,5 +16,4 @@ public class CompletionStatus {
 
     @Column(name = "completion_name", nullable = false)
     private String completionName;
-
 }

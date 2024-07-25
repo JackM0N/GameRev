@@ -43,7 +43,7 @@ export class UsersListComponent implements AfterViewInit, OnInit {
       },
       complete: () => {}
     };
-    this.userService.getUsers().subscribe(observer);
+    this.userService.getUsers(undefined, undefined, undefined, undefined).subscribe(observer);
   }
 
   ngAfterViewInit() {
@@ -100,10 +100,12 @@ export class UsersListComponent implements AfterViewInit, OnInit {
   openBanDialog(user: WebsiteUser) {
     const dialogTitle = 'User banning';
     const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
+    const submitText = 'Ban';
+    const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',
-      data: { dialogTitle, dialogContent }
+      data: { dialogTitle, dialogContent, submitText, cancelText }
     });
 
     dialogRef.afterClosed().subscribe(result => {
