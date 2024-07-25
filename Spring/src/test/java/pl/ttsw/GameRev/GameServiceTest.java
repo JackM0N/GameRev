@@ -204,21 +204,21 @@ public class GameServiceTest {
 
     @Test
     public void testDeleteGame() {
-        when(gameRepository.existsById(1)).thenReturn(true);
+        when(gameRepository.existsById(1L)).thenReturn(true);
 
-        boolean result = gameService.deleteGame(1);
+        boolean result = gameService.deleteGame(1L);
 
         assertTrue(result);
-        verify(gameRepository, times(1)).deleteById(1);
+        verify(gameRepository, times(1)).deleteById(1L);
     }
 
     @Test
     public void testDeleteGameNotFound() {
-        when(gameRepository.existsById(1)).thenReturn(false);
+        when(gameRepository.existsById(1L)).thenReturn(false);
 
-        boolean result = gameService.deleteGame(1);
+        boolean result = gameService.deleteGame(1L);
 
         assertFalse(result);
-        verify(gameRepository, never()).deleteById(1);
+        verify(gameRepository, never()).deleteById(1L);
     }
 }
