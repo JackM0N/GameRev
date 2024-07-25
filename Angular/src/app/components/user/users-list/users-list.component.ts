@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { Sort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { UserService } from '../../../services/user.service';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
@@ -16,12 +16,14 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './users-list.component.html',
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
-export class UsersListComponent implements AfterViewInit, OnInit {
+export class UsersListComponent implements AfterViewInit {
   usersList: WebsiteUser[] = [];
-  sortedData: WebsiteUser[] = [];
+  totalUsers: number = 0;
   dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>(this.usersList);
   displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'options'];
+  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private userService: UserService,
@@ -32,65 +34,41 @@ export class UsersListComponent implements AfterViewInit, OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+
+    this.loadUsers();
+
+    this.paginator.page.subscribe(() => this.loadUsers());
+    this.sort.sortChange.subscribe(() => {
+      this.paginator.pageIndex = 0;
+      this.loadUsers();
+    });
+  }
+
+  loadUsers() {
+    const page = this.paginator.pageIndex + 1;
+    const size = this.paginator.pageSize;
+    const sortBy = this.sort.active || 'id';
+    const sortDir = this.sort.direction || 'asc';
+
     const observer: Observer<any> = {
       next: response => {
-        this.usersList = response;
+        this.usersList = response.content;
+        this.totalUsers = response.totalElements;
         this.dataSource = new MatTableDataSource<WebsiteUser>(this.usersList);
+        this.dataSource.data = this.usersList;
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    this.userService.getUsers(undefined, undefined, undefined, undefined).subscribe(observer);
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    this.userService.getUsers(page, size, sortBy, sortDir).subscribe(observer);
   }
 
   sortData(sort: Sort) {
-    const data = this.usersList.slice();
-    if (!sort.active || sort.direction === '') {
-      this.sortedData = data;
-      return;
-    }
-
-    this.sortedData = data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        case 'id':
-          if(a.id && b.id) {
-            return this.compare(a.id, b.id, isAsc);
-          }
-          return 1;
-        case 'username':
-          if (a.username && b.username) {
-            return this.compare(a.username, b.username, isAsc);
-          }
-          return 1;
-        case 'nickname':
-          if (a.username && b.username) {
-            return this.compare(a.username, b.username, isAsc);
-          }
-          return 1;
-        case 'email':
-          if (a.username && b.username) {
-            return this.compare(a.username, b.username, isAsc);
-          }
-          return 1;
-        case 'lastActionDate':
-          if (a.lastActionDate && b.lastActionDate) {
-            return this.compare(a.lastActionDate, b.lastActionDate, isAsc);
-          }
-          return 1;
-        default:
-          return 0;
-      }
-    });
-
-    this.dataSource = new MatTableDataSource<WebsiteUser>(this.sortedData);
+    this.loadUsers();
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

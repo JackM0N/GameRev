@@ -16,22 +16,12 @@ export class UserService {
     private http: HttpClient,
   ) { }
 
-  getUsers(page?: number, size?: number, sortBy?: string, sortDir?: string): Observable<WebsiteUser> {
-    const params = new HttpParams();
-
-    if (page) {
-      params.set('page', (page - 1).toString());
-    }
-    if (size) {
-      params.set('size', size.toString());
-    }
-    if (sortBy) {
-      params.set('sortBy', sortBy);
-    }
-    if (sortDir) {
-      params.set('sortDir', sortDir);
-    }
-    
+  getUsers(page: number, size: number, sortBy: string, sortDir: string): Observable<WebsiteUser> {
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
     return this.http.get<WebsiteUser>(this.baseUrl, {params});
   }
 

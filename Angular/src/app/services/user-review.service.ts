@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserReview } from '../interfaces/userReview';
@@ -28,11 +28,16 @@ export class UserReviewService {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string, token: string): Observable<UserReview[]> {
+  getUserReviewsForGame(name: string, token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers });
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers, params });
   }
 
   addUserReview(userReview: UserReview, token: string): Observable<UserReview> {

@@ -1,36 +1,43 @@
 
 <div class="container">
-    <h3>{{this.game.title}}</h3>
-    <p>Developer: {{this.game.developer}}</p>
-    <p>Publisher: {{this.game.publisher}}</p>
-    <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
-    <p>Release status: {{this.game.releaseStatus?.statusName}}</p>
-    <p>Description: {{this.game.description}}</p>
-    <p>{{this.usersScoreText}}</p>
-    <div class="grid-container">
-        <div class="grid-item" *ngFor="let tag of game.tags">
-          {{ tag.tagName }}
-        </div>
-    </div>
+  <h3>{{this.game.title}}</h3>
+  <p>Developer: {{this.game.developer}}</p>
+  <p>Publisher: {{this.game.publisher}}</p>
+  <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
+  <p>Release status: {{this.game.releaseStatus?.statusName}}</p>
+  <p>Description: {{this.game.description}}</p>
+  <p>{{this.usersScoreText}}</p>
+  <div class="grid-container">
+      <div class="grid-item" *ngFor="let tag of game.tags">
+        {{ tag.tagName }}
+      </div>
+  </div>
 
-    <h3>Reviews</h3>
-    <div class="review-container">
-        <div class="review-item" *ngFor="let review of reviewList">
-          <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
-          <p>{{ review.content }}</p>
-          <p>Likes: {{ review.positiveRating }}</p>
-          <p>Dislikes: {{ review.negativeRating }}</p>
-          <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
-          <button mat-stroked-button (click)="editReview(review)">Edit review</button>
-          <button mat-stroked-button (click)="reportReview(review)">Report review</button>
-          
-          <div>
-            <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
-            <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
-          </div>
-        </div>
+  <h3>Reviews</h3>
+  <div class="review-container">
+    <div class="review-item" *ngFor="let review of reviewList">
+      <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
+      <p>{{ review.content }}</p>
+      <p>Likes: {{ review.positiveRating }}</p>
+      <p>Dislikes: {{ review.negativeRating }}</p>
+      <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
+      <button mat-stroked-button (click)="editReview(review)">Edit review</button>
+      <button mat-stroked-button (click)="reportReview(review)">Report review</button>
+      
+      <div>
+        <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
+        <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
+      </div>
     </div>
+  </div>
 
-    <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()">Add review</button>
-    <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
+  <mat-paginator
+    [length]="totalReviews"
+    [pageSize]="5"
+    [pageSizeOptions]="[2, 5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+
+  <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()">Add review</button>
+  <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
 </div>
