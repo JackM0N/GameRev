@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Game } from '../../../interfaces/game';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../services/game.service';
@@ -13,6 +13,9 @@ import { AuthService } from '../../../services/auth.service';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { ReviewReportDialogComponent } from '../review-report-dialog/review-report-dialog.component';
 import { Report } from '../../../interfaces/report';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-game-information',
@@ -20,11 +23,17 @@ import { Report } from '../../../interfaces/report';
   styleUrl: './game-information.component.css'
 })
 export class GameInformationComponent implements OnInit {
-  reviewList: UserReview[] = [];
   formatDate = formatDate;
   likeColor: 'primary' | '' = '';
   dislikeColor: 'warn' | '' = '';
   usersScoreText: string = '';
+  
+  reviewList: UserReview[] = [];
+  totalReviews: number = 0;
+  dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewList);
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   report: Report = {
     content: '',
@@ -68,20 +77,45 @@ export class GameInformationComponent implements OnInit {
           } else {
             this.usersScoreText = "No reviews yet";
           }
-
-          const token = this.authService.getToken();
-
-          if (token === null) {
-            console.log("Token is null");
-            return;
-          }
-
-          this.userReviewService.getUserReviewsForGame(gameTitle, token).subscribe((userReviews: UserReview[]) => {
-            this.reviewList = userReviews;
-          });
         });
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+
+    this.loadReviews();
+
+    this.paginator.page.subscribe(() => this.loadReviews());
+    /*
+    this.sort.sortChange.subscribe(() => {
+      this.paginator.pageIndex = 0;
+      this.loadReviews();
+    });
+    */
+  }
+
+  loadReviews() {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const page = this.paginator.pageIndex + 1;
+    const size = this.paginator.pageSize;
+    const sortBy = 'id';
+    const sortDir = 'asc';
+
+    this.userReviewService.getUserReviewsForGame(this.game.title, token, page, size, sortBy, sortDir).subscribe((userReviews: UserReview[]) => {
+      this.reviewList = userReviews;
+    });
+  }
+
+  sortData(sort: Sort) {
+    this.loadReviews();
   }
 
   goBack() {
