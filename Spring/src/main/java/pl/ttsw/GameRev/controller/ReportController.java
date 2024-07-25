@@ -69,6 +69,14 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(reportDTO));
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws BadRequestException {
+        if (reviewId == null) {
+            return ResponseEntity.badRequest().body("This review doesn't exists");
+        }
+        return ResponseEntity.ok(userReviewService.deleteUserReviewById(reviewId));
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
