@@ -72,8 +72,6 @@ public class UserReviewService{
         Page<UserReview> userReviews = userReviewRepository.findWithReports(pageable);
         return userReviews.map(userReview -> {
             UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
-            userReviewDTO.setUserUsername(userReview.getUser().getUsername());
-            userReviewDTO.setGameTitle(userReview.getGame().getTitle());
             long totalReports = userReview.getReports().size();
             long approvedReports = userReview.getReports().stream()
                     .filter(report -> report.getApproved() != null && report.getApproved())
