@@ -45,7 +45,7 @@ public class AuthenticationService {
         user.setIsDeleted(false);
         user.setProfilepic(null);
 
-        Role role = roleRepository.findByRoleName("USER");
+        Role role = roleRepository.findByRoleName("User");
         user.setRoles(Collections.singletonList(role));
         user = websiteUserRepository.save(user);
         String token = jwtService.generateToken(user);
