@@ -45,7 +45,7 @@ public class WebsiteUserServiceTest {
     private WebsiteUserService websiteUserService;
 
     @Value("${profile.pics.directory}")
-    private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
+    private String profilePicsDirectory = "../Pictures/profile_pics/";
     private final String username = "testuser";
 
     private WebsiteUserDTO userDTO_old;
@@ -125,6 +125,7 @@ public class WebsiteUserServiceTest {
 
         MockMultipartFile file = new MockMultipartFile("newPic.jpg", "newPic.jpg", "image/jpeg", "Test Image Content".getBytes());
         profilePictureDTO.setProfilePicture(file);
+        Files.createDirectories(Paths.get(profilePicsDirectory));
         websiteUserService.uploadProfilePicture(profilePictureDTO);
 
         Path newFilePath = Paths.get(profilePicsDirectory, "testuser2_newPic.jpg");

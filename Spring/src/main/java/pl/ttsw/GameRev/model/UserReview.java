@@ -42,4 +42,7 @@ public class UserReview {
 
     @OneToMany(mappedBy = "userReview", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Rating> ratings;
+
+    @OneToMany(mappedBy = "userReview", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Report> reports;
 }

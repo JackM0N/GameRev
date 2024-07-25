@@ -1,6 +1,10 @@
 package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,11 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -26,8 +28,15 @@ public class WebsiteUserController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getUsers() {
-        List <WebsiteUserDTO> users = websiteUserService.getAllWebsiteUsers();
+    public ResponseEntity<?> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<WebsiteUserDTO> users = websiteUserService.getAllWebsiteUsers(pageable);
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -88,10 +97,10 @@ public class WebsiteUserController {
         try {
             byte[] image = websiteUserService.getProfilePicture(nickname);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + nickname + "_profile_pic\"")
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(image);
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + nickname + "_profile_pic\"")
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
         } catch (IOException e) {
             return ResponseEntity.status(404).body(null);
         }

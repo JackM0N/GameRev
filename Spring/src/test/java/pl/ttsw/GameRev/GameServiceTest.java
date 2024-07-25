@@ -5,9 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
+import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
@@ -20,9 +25,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class GameServiceTest {
+class GameServiceTest {
+
+    @Mock
+    private GameMapper gameMapper;
 
     @InjectMocks
     private GameService gameService;
@@ -41,7 +50,7 @@ public class GameServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private Game createGameForTesting(){
+    private Game createGameForTesting() {
         Game game = new Game();
         game.setId(1L);
         game.setTitle("Limbus Company");
@@ -61,6 +70,39 @@ public class GameServiceTest {
     }
 
     @Test
+    public void testGetAllGames() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Game game = createGameForTesting();
+        GameDTO gameDTO = new GameDTO();
+        Page<Game> gamesPage = new PageImpl<>(Collections.singletonList(game));
+
+        when(gameRepository.findAll(pageable)).thenReturn(gamesPage);
+        when(gameMapper.toDto(game)).thenReturn(gameDTO);
+
+        Page<GameDTO> result = gameService.getAllGames(pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        verify(gameRepository, times(1)).findAll(pageable);
+        verify(gameMapper, times(1)).toDto(game);
+    }
+
+    @Test
+    public void testGetGameById() {
+        Game game = createGameForTesting();
+        GameDTO gameDTO = new GameDTO();
+
+        when(gameRepository.findGameById(1L)).thenReturn(game);
+        when(gameMapper.toDto(game)).thenReturn(gameDTO);
+
+        GameDTO result = gameService.getGameById(1L);
+
+        assertNotNull(result);
+        verify(gameRepository, times(1)).findGameById(1L);
+        verify(gameMapper, times(1)).toDto(game);
+    }
+
+    @Test
     public void testCreateGame() {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Limbus Company");
@@ -68,41 +110,22 @@ public class GameServiceTest {
         gameDTO.setPublisher("Project Moon");
         gameDTO.setReleaseDate(LocalDate.now());
         gameDTO.setDescription("Nice game");
-
         ReleaseStatusDTO releaseStatusDTO = new ReleaseStatusDTO();
         releaseStatusDTO.setId(1L);
-        releaseStatusDTO.setStatusName("Released");
         gameDTO.setReleaseStatus(releaseStatusDTO);
-
         TagDTO tagDTO = new TagDTO();
         tagDTO.setId(1L);
-        tagDTO.setTagName("RPG");
-        gameDTO.setTags(new ArrayList<>(List.of(tagDTO)));
+        gameDTO.setTags(Collections.singletonList(tagDTO));
 
-        ReleaseStatus releaseStatus = new ReleaseStatus();
-        releaseStatus.setId(1L);
-        when(statusRepository.findReleaseStatusById(1L)).thenReturn(releaseStatus);
+        Game game = createGameForTesting();
 
-        Tag tag = new Tag();
-        tag.setId(1L);
-        tag.setTagName("RPG");
-        when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
+        when(statusRepository.findReleaseStatusById(1L)).thenReturn(game.getReleaseStatus());
+        when(tagRepository.findById(1L)).thenReturn(Optional.of(game.getTags().get(0)));
+        when(gameRepository.save(any(Game.class))).thenReturn(game);
 
-        Game gameToReturn = createGameForTesting();
-        when(gameRepository.save(any(Game.class))).thenReturn(gameToReturn);
-        Game createdGame = gameService.createGame(gameDTO);
+        Game result = gameService.createGame(gameDTO);
 
-        assertNotNull(createdGame);
-        assertEquals("Limbus Company", createdGame.getTitle());
-        assertEquals("Project Moon", createdGame.getDeveloper());
-        assertEquals("Project Moon", createdGame.getPublisher());
-        assertEquals("Nice game", createdGame.getDescription());
-        assertEquals(1L, createdGame.getReleaseStatus().getId());
-        assertEquals("Released", createdGame.getReleaseStatus().getStatusName());
-        assertEquals(1, createdGame.getTags().size());
-        assertEquals(1L, createdGame.getTags().get(0).getId());
-        assertEquals("RPG", createdGame.getTags().get(0).getTagName());
-
+        assertNotNull(result);
         verify(statusRepository, times(1)).findReleaseStatusById(1L);
         verify(tagRepository, times(1)).findById(1L);
         verify(gameRepository, times(1)).save(any(Game.class));
@@ -111,114 +134,56 @@ public class GameServiceTest {
     @Test
     public void testGetGameByTitle() {
         Game game = createGameForTesting();
-        GameDTO expectedGameDTO = gameService.mapToDTO(game);
+        GameDTO gameDTO = new GameDTO();
+
         when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(game);
-        GameDTO actualGameDTO = gameService.getGameByTitle("Limbus Company");
+        when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
-        assertNotNull(actualGameDTO);
-        assertEquals(expectedGameDTO.getTitle(), actualGameDTO.getTitle());
-        assertEquals(expectedGameDTO.getDeveloper(), actualGameDTO.getDeveloper());
-        assertEquals(expectedGameDTO.getPublisher(), actualGameDTO.getPublisher());
-        assertEquals(expectedGameDTO.getReleaseDate(), actualGameDTO.getReleaseDate());
-        assertEquals(expectedGameDTO.getDescription(), actualGameDTO.getDescription());
-        assertEquals(expectedGameDTO.getReleaseStatus().getId(), actualGameDTO.getReleaseStatus().getId());
-        assertEquals(expectedGameDTO.getReleaseStatus().getStatusName(), actualGameDTO.getReleaseStatus().getStatusName());
-        assertEquals(expectedGameDTO.getTags().size(), actualGameDTO.getTags().size());
-        assertEquals(expectedGameDTO.getTags().get(0).getId(), actualGameDTO.getTags().get(0).getId());
-        assertEquals(expectedGameDTO.getTags().get(0).getTagName(), actualGameDTO.getTags().get(0).getTagName());
+        GameDTO result = gameService.getGameByTitle("Limbus Company");
 
+        assertNotNull(result);
         verify(gameRepository, times(1)).findGameByTitle("Limbus Company");
+        verify(gameMapper, times(1)).toDto(game);
     }
 
     @Test
-    public void testGetGameById() {
+    void testUpdateGame() {
         Game game = createGameForTesting();
-        when(gameRepository.findGameById(1L)).thenReturn(game);
-        GameDTO gameDTO = gameService.getGameById(1L);
+        GameDTO gameDTO = new GameDTO();
+        gameDTO.setTitle("Updated Title");
 
-        assertNotNull(gameDTO);
-        assertEquals(1L, gameDTO.getId());
-        verify(gameRepository, times(1)).findGameById(1L);
-    }
+        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(game);
+        when(gameRepository.save(game)).thenReturn(game);
+        when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
+        GameDTO result = gameService.updateGame("Limbus Company", gameDTO);
 
-    @Test
-    public void testUpdateGame() {
-        Game existingGame = createGameForTesting();
-        GameDTO updateGameDTO = new GameDTO();
-        updateGameDTO.setTitle("Limbus Company Updated");
-        updateGameDTO.setDeveloper("Project Moon Updated");
-        updateGameDTO.setPublisher("Project Moon Updated");
-        updateGameDTO.setReleaseDate(LocalDate.of(2024, 1, 1));
-        updateGameDTO.setDescription("Updated description");
-
-        ReleaseStatusDTO updatedStatusDTO = new ReleaseStatusDTO();
-        updatedStatusDTO.setId(1L);
-        updatedStatusDTO.setStatusName("Updated");
-        updateGameDTO.setReleaseStatus(updatedStatusDTO);
-
-        TagDTO updatedTagDTO = new TagDTO();
-        updatedTagDTO.setId(1L);
-        updatedTagDTO.setTagName("Adventure");
-        updateGameDTO.setTags(new ArrayList<>(List.of(updatedTagDTO)));
-
-        Game updatedGame = createGameForTesting();
-        updatedGame.setTitle("Limbus Company Updated");
-        updatedGame.setDeveloper("Project Moon Updated");
-        updatedGame.setPublisher("Project Moon Updated");
-        updatedGame.setReleaseDate(LocalDate.of(2024, 1, 1));
-        updatedGame.setDescription("Updated description");
-        ReleaseStatus updatedStatus = new ReleaseStatus();
-        updatedStatus.setId(1L);
-        updatedStatus.setStatusName("Updated");
-        updatedGame.setReleaseStatus(updatedStatus);
-        Tag updatedTag = new Tag();
-        updatedTag.setId(1L);
-        updatedTag.setTagName("Adventure");
-        updatedGame.setTags(new ArrayList<>(List.of(updatedTag)));
-
-        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(existingGame);
-        when(statusRepository.findById(1L)).thenReturn(Optional.of(updatedStatus));
-        when(tagRepository.findById(1L)).thenReturn(Optional.of(updatedTag));
-        when(gameRepository.save(any(Game.class))).thenReturn(updatedGame);
-
-        GameDTO resultGameDTO = gameService.updateGame("Limbus Company", updateGameDTO);
-        assertNotNull(resultGameDTO);
-        assertEquals("Limbus Company Updated", resultGameDTO.getTitle());
-        assertEquals("Project Moon Updated", resultGameDTO.getDeveloper());
-        assertEquals("Project Moon Updated", resultGameDTO.getPublisher());
-        assertEquals(LocalDate.of(2024, 1, 1), resultGameDTO.getReleaseDate());
-        assertEquals("Updated description", resultGameDTO.getDescription());
-        assertEquals(1L, resultGameDTO.getReleaseStatus().getId());
-        assertEquals("Updated", resultGameDTO.getReleaseStatus().getStatusName());
-        assertEquals(1, resultGameDTO.getTags().size());
-        assertEquals(1L, resultGameDTO.getTags().get(0).getId());
-        assertEquals("Adventure", resultGameDTO.getTags().get(0).getTagName());
-
+        assertNotNull(result);
+        assertEquals("Updated Title", result.getTitle());
         verify(gameRepository, times(1)).findGameByTitle("Limbus Company");
-        verify(statusRepository, times(1)).findById(1L);
-        verify(tagRepository, times(1)).findById(1L);
-        verify(gameRepository, times(1)).save(any(Game.class));
+        verify(gameRepository, times(1)).save(game);
+        verify(gameMapper, times(1)).toDto(game);
     }
-
 
     @Test
     public void testDeleteGame() {
-        when(gameRepository.existsById(1)).thenReturn(true);
+        when(gameRepository.existsById(1L)).thenReturn(true);
 
-        boolean result = gameService.deleteGame(1);
+        boolean result = gameService.deleteGame(1L);
 
         assertTrue(result);
-        verify(gameRepository, times(1)).deleteById(1);
+        verify(gameRepository, times(1)).existsById(1L);
+        verify(gameRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    public void testDeleteGameNotFound() {
-        when(gameRepository.existsById(1)).thenReturn(false);
+    public void testDeleteGameNotExists() {
+        when(gameRepository.existsById(1L)).thenReturn(false);
 
-        boolean result = gameService.deleteGame(1);
+        boolean result = gameService.deleteGame(1L);
 
         assertFalse(result);
-        verify(gameRepository, never()).deleteById(1);
+        verify(gameRepository, times(1)).existsById(1L);
+        verify(gameRepository, times(0)).deleteById(1L);
     }
 }

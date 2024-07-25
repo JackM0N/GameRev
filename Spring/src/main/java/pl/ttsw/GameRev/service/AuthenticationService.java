@@ -21,16 +21,15 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
-    private final WebsiteUserService websiteUserService;
 
-    public AuthenticationService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager,
-                                 RoleRepository roleRepository, WebsiteUserService websiteUserService) {
+    public AuthenticationService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder,
+                                 JWTService jwtService, AuthenticationManager authenticationManager,
+                                 RoleRepository roleRepository) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
-        this.websiteUserService = websiteUserService;
     }
 
     public AuthenticationResponse register(WebsiteUser request) {
@@ -46,13 +45,10 @@ public class AuthenticationService {
         user.setIsDeleted(false);
         user.setProfilepic(null);
 
-        Role role = roleRepository.findByRoleName("USER");
+        Role role = roleRepository.findByRoleName("User");
         user.setRoles(Collections.singletonList(role));
-
         user = websiteUserRepository.save(user);
-
         String token = jwtService.generateToken(user);
-
         return new AuthenticationResponse(token);
     }
 
@@ -61,10 +57,10 @@ public class AuthenticationService {
         String login = request.getUsername() != null ? request.getUsername() : request.getEmail();
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        login,
-                        request.getPassword()
-                )
+            new UsernamePasswordAuthenticationToken(
+                login,
+                request.getPassword()
+            )
         );
 
         user = websiteUserRepository.findByUsernameOrEmail(login, login);

@@ -2,6 +2,8 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,19 +21,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class WebsiteUserService {
-
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAuthenticationFacade authenticationFacade;
     private final RoleRepository roleRepository;
 
     @Value("${profile.pics.directory}")
-    private String profilePicsDirectory = "src/main/resources/static/profile_pics/";
+    private String profilePicsDirectory = "../Pictures/profile_pics";
 
     public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository) {
         this.websiteUserRepository = websiteUserRepository;
@@ -40,12 +40,12 @@ public class WebsiteUserService {
         this.roleRepository = roleRepository;
     }
 
-    public List<WebsiteUserDTO> getAllWebsiteUsers() {
-        List<WebsiteUser> websiteUsers = websiteUserRepository.findAll();
+    public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
+        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }
-        return websiteUsers.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return websiteUsers.map(this::mapToDTO);
     }
 
     public WebsiteUserDTO findByUsername(String username) {
@@ -67,10 +67,10 @@ public class WebsiteUserService {
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = getCurrentUser();
 
-        if(user == null){
+        if (user == null){
             throw new BadRequestException("You need to login first");
         }
-        if(!username.equals(user.getUsername())){
+        if (!username.equals(user.getUsername())){
             throw new BadCredentialsException("You can only edit your own profile");
         }
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -124,10 +124,10 @@ public class WebsiteUserService {
         MultipartFile file = profilePictureDTO.getProfilePicture();
         WebsiteUser user = websiteUserRepository.findByUsername(username);
 
-        if(user == null){
+        if (user == null){
             throw new BadRequestException("This user does not exist");
         }
-        if(!user.equals(getCurrentUser())){
+        if (!user.equals(getCurrentUser())){
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
@@ -149,7 +149,6 @@ public class WebsiteUserService {
         if (user == null) {
             throw new BadCredentialsException("This user does not exist");
         }
-
         if (user.getProfilepic() == null) {
             throw new IOException("Users profile picture not found");
         }

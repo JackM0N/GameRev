@@ -1,11 +1,14 @@
 package pl.ttsw.GameRev.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
-import java.util.List;
 
 @RestController
 @RequestMapping("/games")
@@ -46,7 +49,7 @@ public class GameController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGame(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
         boolean gotRemoved = gameService.deleteGame(id);
         if (!gotRemoved) {
             return ResponseEntity.notFound().build();
@@ -55,8 +58,15 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllGames() {
-        List<GameDTO> games = gameService.getAllGames();
+    public ResponseEntity<?> getAllGames(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<GameDTO> games = gameService.getAllGames(pageable);
         return ResponseEntity.ok(games);
     }
 }
