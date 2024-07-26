@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/**", "/register/**", "games/**","tags/**",
                                 "release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
                                 "/user/**").permitAll()
-                        .requestMatchers("/user/edit-profile/**").authenticated()
+                        .requestMatchers("/user/edit-profile/**", "library/**").authenticated()
                         .requestMatchers("/user/ban", "/reports/**").hasRole("Admin")
                         .anyRequest()
                         .authenticated())

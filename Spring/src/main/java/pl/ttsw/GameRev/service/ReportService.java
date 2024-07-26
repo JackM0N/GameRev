@@ -56,7 +56,6 @@ public class ReportService {
                 userReview
         );
 
-
         if (reportOptional.isPresent()) {
             throw new BadRequestException("You've already reported this review");
         }
