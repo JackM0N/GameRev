@@ -13,7 +13,7 @@ export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
   private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
-  private reportUrl = 'http://localhost:8080/users-reviews/report';
+  private reviewsWithReportsUrl = 'http://localhost:8080/reports';
 
   constructor(
     private http: HttpClient,
@@ -72,10 +72,15 @@ export class UserReviewService {
     return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
   }
 
-  reportReview(report: Report, token: string): Observable<UserReview> {
+  getReviewsWithReports(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.put<UserReview>(this.reportUrl, report, { headers: headers });
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+    return this.http.get<UserReview[]>(this.reviewsWithReportsUrl, { headers, params });
   }
 }

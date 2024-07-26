@@ -16,6 +16,7 @@ import { Report } from '../../../interfaces/report';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ReportService } from '../../../services/report.service';
 
 @Component({
   selector: 'app-game-information',
@@ -38,7 +39,9 @@ export class GameInformationComponent implements OnInit {
 
   report: Report = {
     content: '',
-    reviewId: 0
+    userReview: {
+      id: -1
+    }
   }
 
   game: Game = {
@@ -56,10 +59,11 @@ export class GameInformationComponent implements OnInit {
     private route: ActivatedRoute,
     private gameService: GameService,
     private userReviewService: UserReviewService,
-    private router: Router,
-    private _location: Location,
     private toasterService: ToasterService,
     private authService: AuthService,
+    private reportService: ReportService,
+    private router: Router,
+    private _location: Location,
     public dialog: MatDialog,
   ) {
   }
@@ -113,7 +117,6 @@ export class GameInformationComponent implements OnInit {
 
     const observer: Observer<any> = {
       next: response => {
-        console.log(response);
         this.reviewList = response.content;
         this.totalReviews = response.totalElements;
         this.dataSource = new MatTableDataSource<UserReview>(this.reviewList);
@@ -279,7 +282,7 @@ export class GameInformationComponent implements OnInit {
     }
 
     if (review.id) {
-      this.report.reviewId = review.id;
+      this.report.userReview.id = review.id;
     }
 
     const content = dialogRef.componentRef.instance.reportForm.get('content')?.value;
@@ -290,8 +293,6 @@ export class GameInformationComponent implements OnInit {
       console.log("Content is null");
       return;
     }
-
-    console.log(this.report);
 
     const observer: Observer<any> = {
       next: response => {
@@ -314,7 +315,7 @@ export class GameInformationComponent implements OnInit {
       complete: () => {
       }
     };
-    this.userReviewService.reportReview(this.report, token).subscribe(observer);
+    this.reportService.reportReview(this.report, token).subscribe(observer);
   }
 
   reportReview(review: UserReview) {

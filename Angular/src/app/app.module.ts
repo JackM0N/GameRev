@@ -38,6 +38,8 @@ import { UsersListComponent } from './components/user/users-list/users-list.comp
 import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { ReviewReportDialogComponent } from './components/games/review-report-dialog/review-report-dialog.component';
+import { ReportService } from './services/report.service';
+import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
     UsersListComponent,
     PopupDialogComponent,
     ProfileComponent,
-    ReviewReportDialogComponent
+    ReviewReportDialogComponent,
+    ReportsListComponent
   ],
   imports: [
     BrowserModule,
@@ -94,6 +97,7 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
     ReleaseStatusService,
     TagService,
     UserReviewService,
+    ReportService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],

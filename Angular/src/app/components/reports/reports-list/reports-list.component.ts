@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,22 +7,30 @@ import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { ReportService } from '../../../services/report.service';
+import { Report } from '../../../interfaces/report';
+import { AuthService } from '../../../services/auth.service';
+import { UserReview } from '../../../interfaces/userReview';
+import { UserReviewService } from '../../../services/user-review.service';
 
 @Component({
-  selector: 'app-games-list',
-  templateUrl: './games-list.component.html'
+  selector: 'app-reports-list',
+  templateUrl: './reports-list.component.html'
 })
-export class GamesListComponent implements AfterViewInit {
-  gamesList: Game[] = [];
-  totalGames: number = 0;
-  dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+export class ReportsListComponent implements AfterViewInit {
+  reviewsList: Report[] = [];
+  totalReviews: number = 0;
+  dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewsList);
+  displayedColumns: string[] = ['id', 'gameTitle', 'userUsername', 'content', 'postDate', 'score', 'positiveRating', 'negativeRating', 'options'];
+  //displayedColumns: string[] = ['id', 'content', 'userReview', 'userId', 'approved', 'options'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private gameService: GameService,
+    private reportService: ReportService,
+    private userReviewService: UserReviewService,
+    private authService: AuthService,
     private router: Router,
     public dialog: MatDialog,
   ) {}
@@ -31,16 +38,23 @@ export class GamesListComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
 
-    this.loadGames();
+    this.loadReports();
 
-    this.paginator.page.subscribe(() => this.loadGames());
+    this.paginator.page.subscribe(() => this.loadReports());
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
-      this.loadGames();
+      this.loadReports();
     });
   }
 
-  loadGames() {
+  loadReports() {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -48,17 +62,20 @@ export class GamesListComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.gamesList = response.content;
-        this.totalGames = response.totalElements;
-        this.dataSource = new MatTableDataSource<Game>(this.gamesList);
-        this.dataSource.data = this.gamesList;
+        console.log("response");
+        console.log(response);
+
+        this.reviewsList = response.content;
+        this.totalReviews = response.totalElements;
+        this.dataSource = new MatTableDataSource<UserReview>(this.reviewsList);
+        this.dataSource.data = this.reviewsList;
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    this.gameService.getGames(page, size, sortBy, sortDir).subscribe(observer);
+    this.userReviewService.getReviewsWithReports(token, page, size, sortBy, sortDir).subscribe(observer);
   }
 
   routeToAddNewGame() {
@@ -99,9 +116,9 @@ export class GamesListComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.gamesList = response;
-        this.dataSource.data = this.gamesList;
-        this.loadGames();
+        this.reviewsList = response;
+        this.dataSource.data = this.reviewsList;
+        this.loadReports();
       },
       error: error => {
         console.error(error);
@@ -109,15 +126,11 @@ export class GamesListComponent implements AfterViewInit {
       complete: () => {}
     };
 
-    this.gameService.deleteGame(game.id).subscribe(observer);
-  }
-
-  getTags(game: Game) {
-    return game.tags.map(tag => tag.tagName).join(', ');
+    //this.gameService.deleteGame(game.id).subscribe(observer);
   }
 
   sortData(sort: Sort) {
-    this.loadGames();
+    this.loadReports();
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
