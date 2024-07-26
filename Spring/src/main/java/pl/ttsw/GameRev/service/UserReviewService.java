@@ -93,7 +93,7 @@ public class UserReviewService{
             throw new BadCredentialsException("You can only make reviews on your own behalf");
         }
 
-        userReview.setUser(websiteUserRepository.findByUsername(userReviewDTO.getUserUsername()));
+        userReview.setUser(websiteUser);
         userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle()));
         userReview.setContent(userReviewDTO.getContent());
         userReview.setScore(userReviewDTO.getScore());
