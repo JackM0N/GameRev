@@ -32,8 +32,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login/**", "/register/**", "games/**","tags/**",
                                 "release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
-                                "/user/**").permitAll()
-                        .requestMatchers("/user/edit-profile/**", "library/**").authenticated()
+                                "/user/**", "/library/**").permitAll()
+                        .requestMatchers("/user/edit-profile/**", "/library").authenticated()
                         .requestMatchers("/user/ban", "/reports/**").hasRole("Admin")
                         .anyRequest()
                         .authenticated())
