@@ -33,7 +33,7 @@ public class ReportService {
     }
 
     public Page<ReportDTO> getReportsByReview(UserReviewDTO userReviewDTO, Pageable pageable) {
-        Page<Report> reports = reportRepository.findAllByUserReviewIdAndApproved(userReviewDTO.getId(),null, pageable);
+        Page<Report> reports = reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(userReviewDTO.getId(), pageable);
         if (reports.isEmpty()) {
             return null;
         }
@@ -55,7 +55,6 @@ public class ReportService {
                 websiteUserService.getCurrentUser(),
                 userReview
         );
-
 
         if (reportOptional.isPresent()) {
             throw new BadRequestException("You've already reported this review");

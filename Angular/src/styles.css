@@ -48,6 +48,18 @@ body {
     background-size: 60px 60px;
 }
 
+.arcadeButtonsOrange{
+    background-image: url(./app/images/arcadeButtonsOrange.png);
+    background-repeat: no-repeat;
+    background-size: 70px 60px;
+}
+
+.arcadeJoystickOrange{
+    background-image: url(./app/images/arcadeJoystickOrange.png);
+    background-repeat: no-repeat;
+    background-size: 60px 60px;
+}
+
 /*practical joke until later solution*/
 .smallBgImageSize{
     background-repeat: no-repeat;

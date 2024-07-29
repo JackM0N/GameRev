@@ -46,4 +46,7 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGame> userGames = new ArrayList<>();
 }

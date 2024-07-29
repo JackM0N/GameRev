@@ -13,5 +13,5 @@ import java.util.Optional;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
     Optional<Report> findByUserAndUserReview(WebsiteUser user, UserReview userReview);
-    Page<Report> findAllByUserReviewIdAndApproved(Long userReviewId, Boolean approved, Pageable pageable);
+    Page<Report> findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(Long userReviewId, Pageable pageable);
 }
