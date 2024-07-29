@@ -1,53 +1,55 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { Game } from '../../../interfaces/game';
+import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { Sort, MatSort } from '@angular/material/sort';
-import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
 import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
+import { formatDate } from '../../../util/formatDate';
+import { Toast, ToasterService } from 'angular-toaster';
+import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+
+class ReportInformation {
+  reports: Report[] = [];
+  totalReports: number = 0;
+  dataSource: MatTableDataSource<Report> = new MatTableDataSource<Report>([]);
+}
 
 @Component({
   selector: 'app-reports-list',
-  templateUrl: './reports-list.component.html'
+  templateUrl: './reports-list.component.html',
+  styleUrl: './reports-list.component.css'
 })
 export class ReportsListComponent implements AfterViewInit {
-  reviewsList: Report[] = [];
+  reviewsList: UserReview[] = [];
   totalReviews: number = 0;
-  dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewsList);
-  displayedColumns: string[] = ['id', 'gameTitle', 'userUsername', 'content', 'postDate', 'score', 'positiveRating', 'negativeRating', 'options'];
-  //displayedColumns: string[] = ['id', 'content', 'userReview', 'userId', 'approved', 'options'];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  reportsList: ReportInformation[] = [];
+  displayedColumns: string[] = ['id', 'content', 'options'];
+  formatDate = formatDate;
+
+  @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
+  @ViewChildren(MatPaginator) paginators!: QueryList<MatPaginator>;
+  @ViewChildren(MatPaginator, { read: ElementRef }) paginatorElements!: QueryList<ElementRef>;
 
   constructor(
     private reportService: ReportService,
     private userReviewService: UserReviewService,
     private authService: AuthService,
-    private router: Router,
     public dialog: MatDialog,
+    private toasterService: ToasterService,
   ) {}
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    this.loadReviews();
 
-    this.loadReports();
-
-    this.paginator.page.subscribe(() => this.loadReports());
-    this.sort.sortChange.subscribe(() => {
-      this.paginator.pageIndex = 0;
-      this.loadReports();
-    });
+    this.reviewsPaginator.page.subscribe(() => this.loadReviews());
   }
 
-  loadReports() {
+  loadReviews() {
     const token = this.authService.getToken();
 
     if (token === null) {
@@ -55,44 +57,163 @@ export class ReportsListComponent implements AfterViewInit {
       return;
     }
 
-    const page = this.paginator.pageIndex + 1;
-    const size = this.paginator.pageSize;
-    const sortBy = this.sort.active || 'id';
-    const sortDir = this.sort.direction || 'asc';
+    const page = this.reviewsPaginator.pageIndex + 1;
+    const size = this.reviewsPaginator.pageSize;
 
     const observer: Observer<any> = {
       next: response => {
-        console.log("response");
-        console.log(response);
-
-        this.reviewsList = response.content;
-        this.totalReviews = response.totalElements;
-        this.dataSource = new MatTableDataSource<UserReview>(this.reviewsList);
-        this.dataSource.data = this.reviewsList;
+        if (response) {
+          this.reviewsList = response.content;
+          this.totalReviews = response.totalElements;
+          this.reportsList = [];
+        }
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    this.userReviewService.getReviewsWithReports(token, page, size, sortBy, sortDir).subscribe(observer);
+    this.userReviewService.getReviewsWithReports(token, page, size, "id", "asc").subscribe(observer);
   }
 
-  routeToAddNewGame() {
-    this.router.navigate(['/games/add']);
+  loadReportsForReview(review: UserReview, refreshing: boolean = false) {
+    if (!refreshing && review.id != undefined && this.reportsList[review.id] !== undefined) {
+      return;
+    }
+
+    const token = this.authService.getToken();
+
+    if (!review.id) {
+      console.log("Review id is null");
+      return;
+    }
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    var page = undefined;
+    var size = undefined;
+    const sortBy = 'id';
+    const sortDir = 'asc';
+
+    this.paginators.forEach((paginator, index) => {
+      const paginatorElement = this.paginatorElements.toArray()[index];
+
+      if (paginatorElement.nativeElement.id == review.id) {
+        page = paginator.pageIndex + 1;
+        size = paginator.pageSize;
+      }
+    });
+
+    const observer: Observer<any> = {
+      next: response => {
+        if (response && review.id) {
+          this.reportsList[review.id] = {
+            reports: response.content,
+            totalReports: response.totalElements,
+            dataSource: new MatTableDataSource<Report>(response.content)
+          };
+          
+          if (!refreshing) {
+            setTimeout(() => {
+              this.paginators.forEach((paginator, index) => {
+                const paginatorElement = this.paginatorElements.toArray()[index];
+  
+                if (paginatorElement.nativeElement.id == review.id) {
+                  if (review.id) {
+                    this.reportsList[review.id].dataSource.paginator = paginator;
+                  }
+                  paginator.page.subscribe(() => this.loadReportsForReview(review, true));
+
+                }
+              });
+            });
+          }
+        }
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.reportService.getReportsForReview(review.id, token, sortBy, sortDir, page, size).subscribe(observer);
   }
 
-  routeToEditGame(title: string) {
-    this.router.navigate(['/games/edit/' + title]);
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
-  routeToViewGame(title: string) {
-    this.router.navigate(['/game/' + title]);
+  onPanelOpened(review: UserReview) {
+    this.loadReportsForReview(review);
   }
 
-  openGameDeletionConfirmationDialog(game: Game) {
-    const dialogTitle = 'Game deletion';
-    const dialogContent = 'Are you sure you want to delete the game ' + game.title + '?';
+  approveReport(report: Report) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Report approved',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Report approving failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.reportService.approveReport(report, token).subscribe(observer);
+  }
+
+  disapproveReport(report: Report) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Report disapproved',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Report disapproving failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.reportService.disapproveReport(report, token).subscribe(observer);
+  }
+
+  openReviewDeletionConfirmationDialog(review: UserReview) {
+    const dialogTitle = 'Confirm review deletion';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -103,37 +224,41 @@ export class ReportsListComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.deleteGame(game);
+        this.deleteReview(review);
       }
     });
   }
 
-  deleteGame(game: Game) {
-    if (!game || !game.id) {
-      console.log('Game ID is not valid.');
+  deleteReview(review: UserReview) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
       return;
     }
 
     const observer: Observer<any> = {
       next: response => {
-        this.reviewsList = response;
-        this.dataSource.data = this.reviewsList;
-        this.loadReports();
+        var toast: Toast = {
+          type: 'success',
+          title: 'Review deleted',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+
+        this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
       error: error => {
         console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Review deletion failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
       },
       complete: () => {}
     };
-
-    //this.gameService.deleteGame(game.id).subscribe(observer);
-  }
-
-  sortData(sort: Sort) {
-    this.loadReports();
-  }
-
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    this.reportService.deleteReview(review, token).subscribe(observer);
   }
 }

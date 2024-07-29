@@ -181,6 +181,9 @@ export class GameInformationComponent implements OnInit {
             showCloseButton: true
           };
           this.toasterService.pop(toast);
+
+          this.reviewList = this.reviewList.filter(r => r.id !== review.id);
+          this.updateUsersScoreText(review);
         },
         error: error => {
           console.error(error);
@@ -191,11 +194,7 @@ export class GameInformationComponent implements OnInit {
           };
           this.toasterService.pop(toast);
         },
-        complete: () => {
-          this.reviewList = this.reviewList.filter(r => r.id !== review.id);
-
-          this.updateUsersScoreText(review);
-        }
+        complete: () => {}
       };
       this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
     }

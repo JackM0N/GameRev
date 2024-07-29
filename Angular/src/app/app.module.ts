@@ -40,6 +40,7 @@ import { ProfileComponent } from './components/user/profile/profile.component';
 import { ReviewReportDialogComponent } from './components/games/review-report-dialog/review-report-dialog.component';
 import { ReportService } from './services/report.service';
 import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { ReportsListComponent } from './components/reports/reports-list/reports-
     MatPaginatorModule,
     MatButtonToggleModule,
     MatSortModule,
+    MatExpansionModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
