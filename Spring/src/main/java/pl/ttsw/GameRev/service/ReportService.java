@@ -33,7 +33,7 @@ public class ReportService {
     }
 
     public Page<ReportDTO> getReportsByReview(UserReviewDTO userReviewDTO, Pageable pageable) {
-        Page<Report> reports = reportRepository.findAllByUserReviewIdAndApproved(userReviewDTO.getId(),null, pageable);
+        Page<Report> reports = reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(userReviewDTO.getId(), pageable);
         if (reports.isEmpty()) {
             return null;
         }
