@@ -105,6 +105,4 @@ public class WebsiteUserController {
             return ResponseEntity.status(404).body(null);
         }
     }
-
-
 }

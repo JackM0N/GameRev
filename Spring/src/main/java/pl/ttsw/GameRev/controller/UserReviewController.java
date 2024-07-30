@@ -93,9 +93,4 @@ public class UserReviewController {
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));
     }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
 }

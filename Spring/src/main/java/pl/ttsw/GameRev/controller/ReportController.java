@@ -76,9 +76,4 @@ public class ReportController {
         }
         return ResponseEntity.ok(userReviewService.deleteUserReviewById(reviewId));
     }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
 }
