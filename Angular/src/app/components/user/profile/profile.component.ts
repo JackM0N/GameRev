@@ -40,7 +40,6 @@ export class ProfileComponent implements OnInit {
         const observer: Observer<WebsiteUser> = {
           next: response => {
             this.user = response;
-            console.log(this.user);
 
             const token = this.authService.getToken();
     
