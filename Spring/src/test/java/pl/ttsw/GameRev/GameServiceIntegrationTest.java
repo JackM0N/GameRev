@@ -204,7 +204,7 @@ public class GameServiceIntegrationTest {
         boolean result = gameService.deleteGame(game.getId());
 
         assertTrue(result);
-        assertFalse(gameRepository.existsById(game.getId().intValue()));
+        assertFalse(gameRepository.existsById(game.getId()));
     }
 
     @Test
