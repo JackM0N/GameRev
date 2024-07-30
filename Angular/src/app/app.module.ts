@@ -41,6 +41,8 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
 import { ReportService } from './services/report.service';
 import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { UserGameService } from './services/user-game.service';
+import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     PopupDialogComponent,
     ProfileComponent,
     ReviewReportDialogComponent,
-    ReportsListComponent
+    ReportsListComponent,
+    UserGamesListComponent
   ],
   imports: [
     BrowserModule,
@@ -100,6 +103,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     TagService,
     UserReviewService,
     ReportService,
+    UserGameService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],
