@@ -12,6 +12,8 @@ import org.junit.platform.suite.api.Suite;
 		GameServiceTest.class,
 		GameServiceIntegrationTest.class,
 		UserReviewServiceTest.class,
+		UserReviewServiceIntegrationTest.class,
+		RatingServiceTest.class,
 })
 public class AllTestsSuite {
 	// yes, this should be empty

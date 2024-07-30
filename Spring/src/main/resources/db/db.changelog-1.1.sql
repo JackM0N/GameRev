@@ -104,3 +104,8 @@ ALTER TABLE report
 ALTER TABLE game
     ADD CONSTRAINT unique_game_title UNIQUE (title);
 
+
+--changeset Stanislaw:14 labels:schema,fix
+ALTER TABLE game
+    ALTER COLUMN users_score TYPE DECIMAL(4,2);
+
