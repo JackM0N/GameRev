@@ -71,7 +71,7 @@ export class OwnProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userName = this.authService.getUserName();
+    const userName = this.authService.getUsername();
     const token = this.authService.getToken();
   
     if (!userName || !token) {
@@ -149,7 +149,7 @@ export class OwnProfileComponent implements OnInit {
   }
 
   deleteAccount(dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>) {
-    const userName = this.authService.getUserName();
+    const userName = this.authService.getUsername();
     const token = this.authService.getToken();
   
     if (!userName || !token || !dialogRef || !dialogRef.componentRef) {
@@ -192,7 +192,7 @@ export class OwnProfileComponent implements OnInit {
 
   onSubmitProfileInformationChange() {
     if (this.changeProfileInformationForm.valid) {
-      const userName = this.authService.getUserName();
+      const userName = this.authService.getUsername();
       const token = this.authService.getToken();
 
       if (!userName || !token) {
@@ -239,7 +239,7 @@ export class OwnProfileComponent implements OnInit {
 
   onSubmitPasswordChange() {
     if (this.changePasswordForm.valid) {
-      const userName = this.authService.getUserName();
+      const userName = this.authService.getUsername();
       const token = this.authService.getToken();
 
       if (!userName || !token) {
@@ -285,7 +285,7 @@ export class OwnProfileComponent implements OnInit {
 
   onSubmitEmailChange() {
     if (this.changeEmailForm.valid) {
-      const userName = this.authService.getUserName();
+      const userName = this.authService.getUsername();
       const token = this.authService.getToken();
 
       if (!userName || !token) {
@@ -368,7 +368,7 @@ export class OwnProfileComponent implements OnInit {
 
   onSubmitProfilePictureChange() {
     if (this.changeProfilePictureForm.valid && this.selectedImage) {
-      const userName = this.authService.getUserName();
+      const userName = this.authService.getUsername();
       const token = this.authService.getToken();
 
       if (!userName || !token) {

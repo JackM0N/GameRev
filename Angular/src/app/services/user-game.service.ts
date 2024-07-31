@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
+import { UserGame } from '../interfaces/userGame';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,12 @@ export class UserGameService {
       .set('sortBy', sortBy)
       .set('sortDir', sortDir);
     return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
+  }
+
+  updateUserGame(userReview: UserGame, token: string): Observable<UserGame> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
 }

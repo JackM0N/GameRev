@@ -43,6 +43,7 @@ import { ReportsListComponent } from './components/reports/reports-list/reports-
 import { MatExpansionModule } from '@angular/material/expansion';
 import { UserGameService } from './services/user-game.service';
 import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
+import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { UserGamesListComponent } from './components/user-games/user-games-list/
     ProfileComponent,
     ReviewReportDialogComponent,
     ReportsListComponent,
-    UserGamesListComponent
+    UserGamesListComponent,
+    UserGameEditDialogComponent
   ],
   imports: [
     BrowserModule,

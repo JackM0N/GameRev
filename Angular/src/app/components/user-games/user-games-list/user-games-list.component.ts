@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -8,22 +7,28 @@ import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { UserGameService } from '../../../services/user-game.service';
+import { AuthService } from '../../../services/auth.service';
+import { UserGame } from '../../../interfaces/userGame';
+import { UserGameEditDialogComponent } from '../user-game-edit-dialog/user-game-edit-dialog.component';
+import { Toast, ToasterService } from 'angular-toaster';
 
 @Component({
   selector: 'app-user-games-list',
   templateUrl: './user-games-list.component.html'
 })
 export class UserGamesListComponent implements AfterViewInit {
-  gamesList: Game[] = [];
+  gamesList: UserGame[] = [];
   totalGames: number = 0;
-  dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+  dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
+  displayedColumns: string[] = ['id', 'game', 'completionStatus', 'isFavourite', 'options'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private userGameService: UserGameService,
+    private authService: AuthService,
+    private toasterService: ToasterService,
     private router: Router,
     public dialog: MatDialog,
   ) {}
@@ -41,7 +46,12 @@ export class UserGamesListComponent implements AfterViewInit {
   }
 
   loadGames() {
-    const nickname = "";
+    var nickname = this.authService.getNickname();
+
+    if (!nickname) {
+      console.log('Nickname is not valid.');
+      return;
+    }
 
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
@@ -52,7 +62,7 @@ export class UserGamesListComponent implements AfterViewInit {
       next: response => {
         this.gamesList = response.content;
         this.totalGames = response.totalElements;
-        this.dataSource = new MatTableDataSource<Game>(this.gamesList);
+        this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
       },
       error: error => {
@@ -63,17 +73,66 @@ export class UserGamesListComponent implements AfterViewInit {
     this.userGameService.getUserGames(nickname, page, size, sortBy, sortDir).subscribe(observer);
   }
 
-  routeToAddNewGame() {
-    this.router.navigate(['/library/add']);
+  openEditUserGameDialog(userGame: UserGame) {
+    const dialogTitle = 'Updating game ' + userGame.game.title;
+
+    const dialogRef = this.dialog.open(UserGameEditDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, userGame }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true && dialogRef.componentRef) {
+        const form = dialogRef.componentRef.instance.updateForm
+
+        if (form) {
+          userGame.completionStatus = form.get('completionStatus')?.value;
+          userGame.isFavourite = form.get('isFavourite')?.value;
+          this.editUserGame(userGame);
+
+        } else {
+          console.log("Form is null");
+          return;
+        }
+      }
+    });
   }
 
-  routeToEditGame(title: string) {
-    this.router.navigate(['/library/edit/' + title]);
+  editUserGame(userGame: UserGame) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Game updated successfully',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Game updating failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {
+      }
+    };
+    this.userGameService.updateUserGame(userGame, token).subscribe(observer);
   }
 
-  openGameDeletionConfirmationDialog(game: Game) {
+  openGameDeletionConfirmationDialog(userGame: UserGame) {
     const dialogTitle = 'Game deletion';
-    const dialogContent = 'Are you sure you want to delete the game ' + game.title + '?';
+    const dialogContent = 'Are you sure you want to delete the game ' + userGame.game.title + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -84,13 +143,13 @@ export class UserGamesListComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.deleteGame(game);
+        this.deleteGame(userGame);
       }
     });
   }
 
-  deleteGame(game: Game) {
-    if (!game || !game.id) {
+  deleteGame(userGame: UserGame) {
+    if (!userGame || !userGame.id) {
       console.log('Game ID is not valid.');
       return;
     }
@@ -108,10 +167,6 @@ export class UserGamesListComponent implements AfterViewInit {
     };
 
     //this.userGameService.deleteGame(game.id).subscribe(observer);
-  }
-
-  getTags(game: Game) {
-    return game.tags.map(tag => tag.tagName).join(', ');
   }
 
   sortData(sort: Sort) {
