@@ -41,17 +41,23 @@ public class AuthenticationServiceIntegrationTest {
     @BeforeEach
     public void setUp() {
         WebsiteUser user = websiteUserRepository.findByUsername("testuser2");
-        if (user != null){
+        if (user != null) {
+            websiteUserRepository.delete(user);
+        }
+    }
+
+    @AfterEach
+    public void tearDown() {
+        WebsiteUser user = websiteUserRepository.findByUsername("testuser2");
+        if (user != null) {
             websiteUserRepository.delete(user);
         }
     }
 
     @Test
     public void testRegister() throws Exception {
-        // Arrange
         String userJson = "{ \"username\": \"testuser2\", \"password\": \"password\", \"email\": \"testuser2@example.com\", \"nickname\": \"testnickname2\" }";
 
-        // Act & Assert
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
@@ -61,7 +67,6 @@ public class AuthenticationServiceIntegrationTest {
 
     @Test
     public void testAuthenticate() throws Exception {
-        // Arrange
         WebsiteUser user = new WebsiteUser();
         user.setUsername("testuser2");
         user.setPassword(passwordEncoder.encode("password"));
@@ -75,16 +80,10 @@ public class AuthenticationServiceIntegrationTest {
 
         String loginJson = "{ \"username\": \"testuser2\", \"password\": \"password\" }";
 
-        // Act & Assert
         mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").isNotEmpty());
-    }
-
-    @AfterEach
-    public void tearDown() {
-        websiteUserRepository.delete(websiteUserRepository.findByUsername("testuser2"));
     }
 }

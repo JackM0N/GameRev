@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
@@ -15,10 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
+import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-import pl.ttsw.GameRev.service.WebsiteUserService;
 import pl.ttsw.GameRev.security.IAuthenticationFacade;
+import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,22 +34,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class WebsiteUserServiceTest {
 
+    private final String username = "testuser";
     @Mock
     private WebsiteUserRepository websiteUserRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private IAuthenticationFacade authenticationFacade;
-
+    @Spy
+    private WebsiteUserMapper websiteUserMapper;
     @InjectMocks
     private WebsiteUserService websiteUserService;
-
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics/";
-    private final String username = "testuser";
-
     private WebsiteUserDTO userDTO_old;
     private WebsiteUserDTO userDTO_new;
     private WebsiteUser user_new;
@@ -83,10 +82,11 @@ public class WebsiteUserServiceTest {
     }
 
     @Test
-    public void testFindByUsername() {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+    public void testFindByNickname() {
+        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(user_new);
+        when(websiteUserMapper.toDto(user_new)).thenReturn(userDTO_new);
         WebsiteUserDTO result = websiteUserService.findByNickname(username + "2");
-        assertEquals(username + "2", result.getUsername());
+        assertEquals(username + "2", result.getNickname());
     }
 
     @Test
@@ -94,6 +94,8 @@ public class WebsiteUserServiceTest {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
         when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(user_new);
+        userDTO_new.setEmail("newEmail@test.com");
+        when(websiteUserMapper.toDto(user_new)).thenReturn(userDTO_new);
 
         UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
         request.setCurrentPassword("currentPassword");
@@ -137,7 +139,7 @@ public class WebsiteUserServiceTest {
     @Test
     public void testGetProfilePicture_Success() throws IOException {
         user_new.setProfilepic(profilePicsDirectory + "/testuser2_profilePic.jpg");
-        when(websiteUserRepository.findByNickname("nickname2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(user_new);
 
         Path filePath = Paths.get(profilePicsDirectory, "testuser2_profilePic.jpg");
         Files.createDirectories(filePath.getParent());

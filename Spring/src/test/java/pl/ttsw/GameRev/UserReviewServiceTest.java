@@ -23,7 +23,6 @@ import pl.ttsw.GameRev.service.UserReviewService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,27 +31,21 @@ import static org.mockito.Mockito.*;
 
 class UserReviewServiceTest {
 
+    private final Pageable pageable = PageRequest.ofSize(10);
     @Mock
     private UserReviewRepository userReviewRepository;
-
     @Mock
     private WebsiteUserRepository websiteUserRepository;
-
     @Mock
     private GameRepository gameRepository;
-
     @Mock
     private RatingRepository ratingRepository;
-
     @Mock
     private WebsiteUserService websiteUserService;
-
     @Mock
     private UserReviewMapper userReviewMapper;
-
     @InjectMocks
     private UserReviewService userReviewService;
-    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     void setUp() {
@@ -85,19 +78,24 @@ class UserReviewServiceTest {
 
     @Test
     void testGetUserReviewByUser() throws BadRequestException {
+        Long userId = 1L;
         WebsiteUser currentUser = new WebsiteUser();
         UserReview userReview = new UserReview();
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
 
-        when(userReviewRepository.findByUser(currentUser,pageable)).thenReturn(userReviews);
+        when(websiteUserRepository.findById(userId)).thenReturn(Optional.of(currentUser));
+        when(userReviewRepository.findByUser(currentUser, pageable)).thenReturn(userReviews);
         when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
-        Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(currentUser.getId(),pageable);
+        Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(userId, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(userReviewRepository, times(1)).findByUser(currentUser,pageable);
+        assertEquals(userReviewDTO, result.getContent().get(0));
+
+        verify(websiteUserRepository, times(1)).findById(userId);
+        verify(userReviewRepository, times(1)).findByUser(currentUser, pageable);
         verify(userReviewMapper, times(1)).toDto(userReview);
     }
 

@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
@@ -28,27 +27,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 public class UserReviewServiceIntegrationTest {
 
+    private final Pageable pageable = PageRequest.ofSize(10);
     @Autowired
     private UserReviewService userReviewService;
-
     @Autowired
     private UserReviewRepository userReviewRepository;
-
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
-
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private ReleaseStatusRepository releaseStatusRepository;
-
     @Autowired
     private TagRepository tagRepository;
-
     private Game game;
     private WebsiteUser testUser;
-    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setup() {
@@ -65,7 +58,7 @@ public class UserReviewServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        Page<UserReview> reviews = userReviewRepository.findByUser(testUser,pageable);
+        Page<UserReview> reviews = userReviewRepository.findByUser(testUser, pageable);
         for (UserReview review : reviews) {
             userReviewRepository.delete(review);
         }
@@ -105,7 +98,7 @@ public class UserReviewServiceIntegrationTest {
         assertFalse(userReviews.isEmpty());
         assertEquals(1, userReviews.getTotalElements());
 
-        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(),pageable);
+        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(), pageable);
         assertFalse(userReviewsByUser.isEmpty());
         assertEquals(1, userReviewsByUser.getTotalElements());
     }
@@ -148,7 +141,8 @@ public class UserReviewServiceIntegrationTest {
         boolean deleted = userReviewService.deleteUserReviewByOwner(createdReview);
         assertTrue(deleted);
 
-        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(),pageable);
-        assertTrue(userReviewsByUser.isEmpty());
+        assertThrows(BadRequestException.class, () -> {
+            userReviewService.getUserReviewByUser(testUser.getId(), pageable);
+        });
     }
 }

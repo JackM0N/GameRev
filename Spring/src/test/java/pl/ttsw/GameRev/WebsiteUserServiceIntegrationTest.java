@@ -11,16 +11,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.controller.AuthenticationController;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.service.AuthenticationService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,19 +31,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class WebsiteUserServiceIntegrationTest {
 
+    private final String username = "testuser";
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private WebsiteUserService websiteUserService;
-
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory;
-
-    private final String username = "testuser";
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
@@ -52,6 +47,7 @@ public class WebsiteUserServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
+        tearDown();
     }
 
     @AfterEach
@@ -59,16 +55,10 @@ public class WebsiteUserServiceIntegrationTest {
         try {
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_newPic.jpg"));
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_profilePic.jpg"));
-            if (websiteUserRepository.findByUsername(username + "2")!= null){
-                WebsiteUserDTO userDTO = websiteUserService.findByNickname(username + "2");
-                if (userDTO != null) {
-                    WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername());
-                    if (user != null) {
-                        websiteUserRepository.delete(user);
-                    }
-                }
+            WebsiteUser user = websiteUserRepository.findByUsername(username + "2");
+            if (user != null) {
+                websiteUserRepository.delete(user);
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,13 +77,13 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
-    public void testFindByUsername() {
+    public void testFindByNickname() {
         WebsiteUser user = copyForTesting();
         websiteUserRepository.save(user);
 
         WebsiteUserDTO result = websiteUserService.findByNickname("testuser2");
 
-        assertEquals("testuser2", result.getUsername());
+        assertEquals("testuser2", result.getNickname());
     }
 
     @Test
