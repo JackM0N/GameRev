@@ -6,7 +6,6 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class EmailController {
     }
 
     @GetMapping("/emails")
-    public List<String> getEmails() throws MessagingException, IOException {
+    public List<String> getEmails() {
         List<String> emails = new ArrayList<>();
         Message[] messages = greenMail.getReceivedMessages();
         for (Message message : messages) {
@@ -28,5 +27,4 @@ public class EmailController {
         }
         return emails;
     }
-
 }

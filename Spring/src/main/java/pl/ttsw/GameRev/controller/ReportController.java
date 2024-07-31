@@ -54,6 +54,7 @@ public class ReportController {
         }
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<ReportDTO> reportDTOS = reportService.getReportsByReview(userReviewDTO,pageable);
         if (reportDTOS == null || reportDTOS.isEmpty()) {
             return ResponseEntity.noContent().build();

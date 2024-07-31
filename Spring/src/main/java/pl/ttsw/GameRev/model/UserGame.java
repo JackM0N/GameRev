@@ -28,5 +28,4 @@ public class UserGame {
 
     @Column(name = "is_favourite", nullable = false)
     private Boolean isFavourite = false;
-
 }

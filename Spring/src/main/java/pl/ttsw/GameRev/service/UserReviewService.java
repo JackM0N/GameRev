@@ -18,7 +18,6 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserReviewService{

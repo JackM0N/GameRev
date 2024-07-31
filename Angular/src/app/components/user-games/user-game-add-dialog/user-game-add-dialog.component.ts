@@ -40,8 +40,6 @@ export class UserGameAddDialogComponent implements OnInit {
 
         const existingGameIds = new Set(this.data.existingGames.map(game => game.id));
         this.gameList = this.gameList.filter(game => existingGameIds.has(game.id));
-
-        console.log(this.data.existingGames);
       },
       error: error => {
         console.error(error);

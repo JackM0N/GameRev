@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 
-import java.util.List;
-
 @Repository
 public interface UserReviewRepository extends JpaRepository<UserReview, Integer> {
     Page<UserReview> findByGameTitle(String title, Pageable pageable);

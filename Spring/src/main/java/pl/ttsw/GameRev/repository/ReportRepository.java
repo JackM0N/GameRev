@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
-
 import java.util.Optional;
 
 @Repository

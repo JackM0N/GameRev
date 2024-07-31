@@ -16,5 +16,4 @@ public class Platform {
 
     @Column(name = "platform_name", nullable = false)
     private String platformName;
-
 }

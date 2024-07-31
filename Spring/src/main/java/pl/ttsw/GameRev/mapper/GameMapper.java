@@ -1,7 +1,6 @@
 package pl.ttsw.GameRev.mapper;
 
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 
