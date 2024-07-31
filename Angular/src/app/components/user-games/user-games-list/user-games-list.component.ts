@@ -181,7 +181,13 @@ export class UserGamesListComponent implements AfterViewInit {
         };
         this.toasterService.pop(toast);
 
+        console.log(userGame);
+
         this.gamesList.push(userGame);
+
+        this.totalGames = this.totalGames + 1;
+        this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
+        this.dataSource.data = this.gamesList;
       },
       error: error => {
         console.error(error);
