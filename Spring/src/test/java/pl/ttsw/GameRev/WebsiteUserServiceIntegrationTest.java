@@ -60,7 +60,7 @@ public class WebsiteUserServiceIntegrationTest {
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_newPic.jpg"));
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_profilePic.jpg"));
             if (websiteUserRepository.findByUsername(username + "2")!= null){
-                WebsiteUserDTO userDTO = websiteUserService.findByUsername(username + "2");
+                WebsiteUserDTO userDTO = websiteUserService.findByNickname(username + "2");
                 if (userDTO != null) {
                     WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername());
                     if (user != null) {
@@ -91,7 +91,7 @@ public class WebsiteUserServiceIntegrationTest {
         WebsiteUser user = copyForTesting();
         websiteUserRepository.save(user);
 
-        WebsiteUserDTO result = websiteUserService.findByUsername("testuser2");
+        WebsiteUserDTO result = websiteUserService.findByNickname("testuser2");
 
         assertEquals("testuser2", result.getUsername());
     }

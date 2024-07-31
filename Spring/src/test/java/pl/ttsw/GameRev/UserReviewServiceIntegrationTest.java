@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
@@ -46,6 +48,7 @@ public class UserReviewServiceIntegrationTest {
 
     private Game game;
     private WebsiteUser testUser;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setup() {
@@ -62,7 +65,7 @@ public class UserReviewServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        List<UserReview> reviews = userReviewRepository.findByUserId(testUser.getId());
+        Page<UserReview> reviews = userReviewRepository.findByUser(testUser,pageable);
         for (UserReview review : reviews) {
             userReviewRepository.delete(review);
         }
@@ -102,9 +105,9 @@ public class UserReviewServiceIntegrationTest {
         assertFalse(userReviews.isEmpty());
         assertEquals(1, userReviews.getTotalElements());
 
-        List<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId());
+        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(),pageable);
         assertFalse(userReviewsByUser.isEmpty());
-        assertEquals(1, userReviewsByUser.size());
+        assertEquals(1, userReviewsByUser.getTotalElements());
     }
 
     @Test
@@ -145,7 +148,7 @@ public class UserReviewServiceIntegrationTest {
         boolean deleted = userReviewService.deleteUserReviewByOwner(createdReview);
         assertTrue(deleted);
 
-        List<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId());
+        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(),pageable);
         assertTrue(userReviewsByUser.isEmpty());
     }
 }

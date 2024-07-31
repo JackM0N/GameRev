@@ -58,20 +58,20 @@ public class WebsiteUserServiceTest {
         userDTO_old = new WebsiteUserDTO();
         userDTO_old.setUsername(username);
         userDTO_old.setPassword("encodedPassword");
-        userDTO_old.setNickname("nickname");
+        userDTO_old.setNickname(username);
         userDTO_old.setEmail("email@test.com");
 
         userDTO_new = new WebsiteUserDTO();
         userDTO_new.setUsername(username + "2");
         userDTO_new.setPassword("encodedPassword");
-        userDTO_new.setNickname("nickname2");
+        userDTO_new.setNickname(username + "2");
         userDTO_new.setEmail("email2@test.com");
         userDTO_new.setProfilepic("oldPic.jpg");
 
         user_new = new WebsiteUser();
         user_new.setUsername(username + "2");
         user_new.setPassword("encodedPassword");
-        user_new.setNickname("nickname2");
+        user_new.setNickname(username + "2");
         user_new.setEmail("email2@test.com");
         user_new.setProfilepic("oldPic.jpg");
 
@@ -85,7 +85,7 @@ public class WebsiteUserServiceTest {
     @Test
     public void testFindByUsername() {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
-        WebsiteUserDTO result = websiteUserService.findByUsername(username + "2");
+        WebsiteUserDTO result = websiteUserService.findByNickname(username + "2");
         assertEquals(username + "2", result.getUsername());
     }
 
@@ -143,7 +143,7 @@ public class WebsiteUserServiceTest {
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, "Test Image Content".getBytes());
 
-        byte[] result = websiteUserService.getProfilePicture("nickname2");
+        byte[] result = websiteUserService.getProfilePicture(username + "2");
 
         assertArrayEquals("Test Image Content".getBytes(), result);
 
@@ -152,10 +152,10 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testGetProfilePicture_NotFound() {
-        when(websiteUserRepository.findByNickname("nickname2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname("nickname3")).thenReturn(user_new);
 
         assertThrows(IOException.class, () -> {
-            websiteUserService.getProfilePicture("nickname2");
+            websiteUserService.getProfilePicture("nickname3");
         });
     }
 }

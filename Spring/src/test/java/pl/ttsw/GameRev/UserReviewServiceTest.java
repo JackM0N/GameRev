@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
@@ -51,6 +52,7 @@ class UserReviewServiceTest {
 
     @InjectMocks
     private UserReviewService userReviewService;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     void setUp() {
@@ -82,19 +84,20 @@ class UserReviewServiceTest {
     }
 
     @Test
-    void testGetUserReviewByUser() {
-        Long userId = 1L;
+    void testGetUserReviewByUser() throws BadRequestException {
+        WebsiteUser currentUser = new WebsiteUser();
         UserReview userReview = new UserReview();
         UserReviewDTO userReviewDTO = new UserReviewDTO();
+        Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
 
-        when(userReviewRepository.findByUserId(userId)).thenReturn(Collections.singletonList(userReview));
+        when(userReviewRepository.findByUser(currentUser,pageable)).thenReturn(userReviews);
         when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
-        List<UserReviewDTO> result = userReviewService.getUserReviewByUser(userId);
+        Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(currentUser.getId(),pageable);
 
         assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(userReviewRepository, times(1)).findByUserId(userId);
+        assertEquals(1, result.getTotalElements());
+        verify(userReviewRepository, times(1)).findByUser(currentUser,pageable);
         verify(userReviewMapper, times(1)).toDto(userReview);
     }
 
