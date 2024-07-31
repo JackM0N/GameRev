@@ -5,7 +5,6 @@ import pl.ttsw.GameRev.model.PasswordResetToken;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.PasswordResetTokenRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,9 +20,7 @@ public class PasswordResetTokenService {
     }
 
     public String createPasswordResetToken(String email) {
-        System.out.println(email);
         WebsiteUser user = websiteUserRepository.findByEmail(email);
-        System.out.println(user);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -32,7 +29,6 @@ public class PasswordResetTokenService {
         passwordResetToken.setToken(token);
         passwordResetToken.setUser(user);
         passwordResetToken.setExpiryDate(LocalDateTime.now().plus(Duration.ofHours(1)));
-        System.out.println(passwordResetToken);
         passwordResetTokenRepository.save(passwordResetToken);
 
         return "http://localhost:8080/password-reset/confirm?token="+token;
@@ -49,5 +45,4 @@ public class PasswordResetTokenService {
         }
         return passwordResetToken;
     }
-
 }

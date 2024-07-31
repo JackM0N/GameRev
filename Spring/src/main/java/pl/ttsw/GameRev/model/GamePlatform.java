@@ -21,5 +21,4 @@ public class GamePlatform {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
-
 }

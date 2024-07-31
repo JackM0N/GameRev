@@ -117,7 +117,6 @@ public class GameServiceIntegrationTest {
         assertEquals(1, createdGame.getTags().size());
         assertEquals(tag.getId(), createdGame.getTags().get(0).getId());
         assertEquals("Singleplayer", createdGame.getTags().get(0).getTagName());
-        System.out.println(createdGame.getId());
         gameService.deleteGame(createdGame.getId());
     }
 

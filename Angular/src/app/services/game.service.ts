@@ -14,13 +14,18 @@ export class GameService {
     private http: HttpClient,
   ) { }
 
-  getGames(page: number, size: number, sortBy: string, sortDir: string): Observable<Game> {
-    const params = new HttpParams()
-      .set('page', (page - 1).toString())
-      .set('size', size.toString())
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir);
-    return this.http.get<Game>(this.baseUrl, {params});
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string): Observable<Game> {
+    var params;
+    if (page && size && sortBy && sortDir) {
+      params = new HttpParams()
+        .set('page', (page - 1).toString())
+        .set('size', size.toString())
+        .set('sortBy', sortBy)
+        .set('sortDir', sortDir);
+    } else {
+      params = new HttpParams();
+    }
+    return this.http.get<Game>(this.baseUrl, { params });
   }
 
   getGameByName(name: string): Observable<Game> {

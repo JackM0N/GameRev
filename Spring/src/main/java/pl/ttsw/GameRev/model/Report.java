@@ -27,5 +27,4 @@ public class Report {
 
     @Column(name = "content")
     private String content;
-
 }
