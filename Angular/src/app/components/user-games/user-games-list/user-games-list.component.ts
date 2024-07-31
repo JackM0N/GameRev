@@ -11,6 +11,7 @@ import { AuthService } from '../../../services/auth.service';
 import { UserGame } from '../../../interfaces/userGame';
 import { UserGameEditDialogComponent } from '../user-game-edit-dialog/user-game-edit-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
+import { UserGameAddDialogComponent } from '../user-game-add-dialog/user-game-add-dialog.component';
 
 @Component({
   selector: 'app-user-games-list',
@@ -20,7 +21,7 @@ export class UserGamesListComponent implements AfterViewInit {
   gamesList: UserGame[] = [];
   totalGames: number = 0;
   dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
-  displayedColumns: string[] = ['id', 'game', 'completionStatus', 'isFavourite', 'options'];
+  displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -130,6 +131,73 @@ export class UserGamesListComponent implements AfterViewInit {
     this.userGameService.updateUserGame(userGame, token).subscribe(observer);
   }
 
+  openAddUserGameDialog() {
+    const dialogTitle = 'Adding game';
+
+    const dialogRef = this.dialog.open(UserGameAddDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, existingGames: this.gamesList }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true && dialogRef.componentRef) {
+        const form = dialogRef.componentRef.instance.addForm
+
+        if (form) {
+          var userGame: UserGame = {
+            id: 0,
+            user : { username: this.authService.getUsername() },
+            game: form.get('game')?.value,
+            completionStatus: form.get('completionStatus')?.value,
+            isFavourite: form.get('isFavourite')?.value
+          };
+
+          userGame.completionStatus = form.get('completionStatus')?.value;
+          userGame.isFavourite = form.get('isFavourite')?.value;
+          this.addUserGame(userGame);
+
+        } else {
+          console.log("Form is null");
+          return;
+        }
+      }
+    });
+  }
+
+  addUserGame(userGame: UserGame) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Game added successfully',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+
+        this.gamesList.push(userGame);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Game adding failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {
+      }
+    };
+    this.userGameService.addUserGame(userGame, token).subscribe(observer);
+  }
+
   openGameDeletionConfirmationDialog(userGame: UserGame) {
     const dialogTitle = 'Game deletion';
     const dialogContent = 'Are you sure you want to delete the game ' + userGame.game.title + '?';
@@ -149,6 +217,13 @@ export class UserGamesListComponent implements AfterViewInit {
   }
 
   deleteGame(userGame: UserGame) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.log("Token is null");
+      return;
+    }
+
     if (!userGame || !userGame.id) {
       console.log('Game ID is not valid.');
       return;
@@ -165,8 +240,7 @@ export class UserGamesListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-
-    //this.userGameService.deleteGame(game.id).subscribe(observer);
+    this.userGameService.deleteUserGame(userGame.id, token).subscribe(observer);
   }
 
   sortData(sort: Sort) {

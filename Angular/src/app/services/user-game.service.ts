@@ -30,4 +30,18 @@ export class UserGameService {
     });
     return this.http.put<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
+
+  addUserGame(userReview: UserGame, token: string): Observable<UserGame> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<UserGame>(this.baseUrl, userReview, { headers: headers });
+  }
+
+  deleteUserGame(id: number, token: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: headers });
+  }
 }

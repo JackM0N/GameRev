@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CompletionStatus } from '../../../interfaces/completionStatus';
 import { UserGame } from '../../../interfaces/userGame';
+import { completionStatuses } from '../../../interfaces/completionStatuses';
 
 @Component({
   selector: 'app-user-game-edit-dialog',
@@ -11,13 +12,7 @@ import { UserGame } from '../../../interfaces/userGame';
 export class UserGameEditDialogComponent implements OnInit {
   updateForm: FormGroup;
   completionStatus?: CompletionStatus = undefined;
-  completionStatuses: CompletionStatus[] = [
-    { id: 1, completionName: "Completed" },
-    { id: 2, completionName: "In-progress" },
-    { id: 3, completionName: "On-hold" },
-    { id: 4, completionName: "Planning" },
-    { id: 5, completionName: "Dropped" },
-  ];
+  completionStatuses: CompletionStatus[] = completionStatuses;
   isFavourite: boolean = false;
   
   constructor(
@@ -32,16 +27,18 @@ export class UserGameEditDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isFavourite = this.data.userGame.isFavourite;
+    if (this.data.userGame) {
+      this.isFavourite = this.data.userGame.isFavourite;
 
-    this.completionStatuses.forEach((status) => {
-      if (status.completionName === this.data.userGame.completionStatus.completionName) {
-        this.completionStatus = status;
-        this.updateForm.patchValue({
-          completionStatus: status
-        });
-      }
-    });
+      this.completionStatuses.forEach((status) => {
+        if (status.completionName === this.data.userGame.completionStatus.completionName) {
+          this.completionStatus = status;
+          this.updateForm.patchValue({
+            completionStatus: status
+          });
+        }
+      });
+    }
   }
 
   onConfirm(): void {
@@ -53,12 +50,12 @@ export class UserGameEditDialogComponent implements OnInit {
   }
 
   isCompletionStatusInvalid() {
-    const releaseStatusControl = this.updateForm.get('completionStatus');
+    const completionStatusControl = this.updateForm.get('completionStatus');
 
-    if (!releaseStatusControl) {
+    if (!completionStatusControl) {
       return true;
     }
 
-    return releaseStatusControl.hasError('required') && releaseStatusControl.touched
+    return completionStatusControl.hasError('required') && completionStatusControl.touched
   }
 }
