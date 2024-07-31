@@ -26,6 +26,18 @@ spring:
   liquibase:
     enabled: true
     change-log: db/db.changelog-master.xml
+  mail:
+    host: localhost
+    port: 3025
+    username: gamerev@example.com
+    password: password123
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 logging:
   level:
     org:
