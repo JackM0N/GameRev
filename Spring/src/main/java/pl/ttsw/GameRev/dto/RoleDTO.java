@@ -1,9 +1,6 @@
 package pl.ttsw.GameRev.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import java.io.Serializable;
 
 /**
@@ -12,6 +9,7 @@ import java.io.Serializable;
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
 public class RoleDTO implements Serializable {
     Long id;
     String roleName;

@@ -3,8 +3,6 @@ package pl.ttsw.GameRev.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,5 +24,4 @@ public class PasswordResetToken {
 
     @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiryDate;
-
 }

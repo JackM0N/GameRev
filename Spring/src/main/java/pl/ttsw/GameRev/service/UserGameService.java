@@ -7,7 +7,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
-import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
@@ -16,7 +15,6 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.CompletionStatusRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.util.Objects;
 
 @Service
@@ -26,26 +24,25 @@ public class UserGameService {
     private final CompletionStatusRepository completionStatusRepository;
     private final GameRepository gameRepository;
     private final UserGameRepository userGameRepository;
-    private final WebsiteUserMapper websiteUserMapper;
     private final WebsiteUserRepository websiteUserRepository;
 
-    public UserGameService(CompletionStatusRepository completionStatusRepository, GameRepository gameRepository, UserGameRepository userGameRepository, WebsiteUserService websiteUserService, UserGameMapper userGameMapper,
-                           WebsiteUserMapper websiteUserMapper, WebsiteUserRepository websiteUserRepository) {
+    public UserGameService(CompletionStatusRepository completionStatusRepository, GameRepository gameRepository,
+                           UserGameRepository userGameRepository, WebsiteUserService websiteUserService,
+                           UserGameMapper userGameMapper, WebsiteUserRepository websiteUserRepository) {
         this.completionStatusRepository = completionStatusRepository;
         this.gameRepository = gameRepository;
         this.userGameRepository = userGameRepository;
         this.websiteUserService = websiteUserService;
         this.userGameMapper = userGameMapper;
-        this.websiteUserMapper = websiteUserMapper;
         this.websiteUserRepository = websiteUserRepository;
     }
 
-    public Page<UserGameDTO> getUserGameDTO(String nickname,Pageable pageable) throws BadRequestException {
-        if (websiteUserRepository.findByNickname(nickname) == null){
+    public Page<UserGameDTO> getUserGameDTO(String nickname, Pageable pageable) throws BadRequestException {
+        if (websiteUserRepository.findByNickname(nickname) == null) {
             throw new BadRequestException("This user doesn't exist");
         }
         Page<UserGame> userGame = userGameRepository.findByUserNickname(nickname, pageable);
-        if (userGame == null){
+        if (userGame == null) {
             throw new BadRequestException("This users library is empty");
         }
         return userGame.map(userGameMapper::toDto);
@@ -97,7 +94,7 @@ public class UserGameService {
             throw new BadCredentialsException("You have to login first");
         }
 
-        if (!Objects.equals(userGame.getUser(), user)){
+        if (!Objects.equals(userGame.getUser(), user)) {
             throw new BadCredentialsException("You can only update your own library");
         }
 

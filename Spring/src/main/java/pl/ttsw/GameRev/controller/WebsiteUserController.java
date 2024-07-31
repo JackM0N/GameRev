@@ -44,7 +44,7 @@ public class WebsiteUserController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<?> getAccount() throws BadRequestException {
+    public ResponseEntity<?> getAccount() {
         WebsiteUserDTO user = websiteUserService.findByCurrentUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -74,7 +74,7 @@ public class WebsiteUserController {
     }
 
     @PutMapping("/ban")
-    public ResponseEntity<?> banUser(@RequestBody WebsiteUserDTO userDTO) throws BadRequestException {
+    public ResponseEntity<?> banUser(@RequestBody WebsiteUserDTO userDTO) {
         boolean gotBanned = websiteUserService.banUser(userDTO);
         return ResponseEntity.ok(gotBanned);
     }

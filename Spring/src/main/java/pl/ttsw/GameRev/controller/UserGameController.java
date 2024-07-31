@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.service.UserGameService;
@@ -30,7 +29,8 @@ public class UserGameController {
     ) throws BadRequestException {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(nickname,pageable);
+
+        Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(nickname, pageable);
         if (userGameDTOS.getTotalElements() == 0) {
             return ResponseEntity.noContent().build();
         }

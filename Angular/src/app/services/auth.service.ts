@@ -87,12 +87,23 @@ export class AuthService {
     }
   }
 
-  getUserName(): string | undefined {
+  getUsername(): string | undefined {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('access_token');
       if (token) {
         const decodedToken = this.jwtHelper.decodeToken(token);
         return decodedToken.sub
+      }
+    }
+    return undefined;
+  }
+
+  getNickname(): string | undefined {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        const decodedToken = this.jwtHelper.decodeToken(token);
+        return decodedToken.nickname
       }
     }
     return undefined;

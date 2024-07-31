@@ -1,12 +1,9 @@
 package pl.ttsw.GameRev.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.WebsiteUser;
-
 import java.io.Serializable;
 
 /**
@@ -15,6 +12,7 @@ import java.io.Serializable;
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
 public class UserGameDTO implements Serializable {
     Long id;
     GameDTO game;
