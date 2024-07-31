@@ -56,11 +56,27 @@ public class UserReviewService{
         return new PageImpl<>(userReviewDTOList, pageable, userReviews.getTotalElements());
     }
 
-    public List<UserReviewDTO> getUserReviewByUser(Long userId) {
-        List<UserReview> userReviews = (userReviewRepository.findByUserId(userId));
-        return userReviews.stream()
-                .map(userReviewMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<UserReviewDTO> getUserReviewByUser(Long userId, Pageable pageable) throws BadRequestException {
+        WebsiteUser wsUser = websiteUserRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        Page<UserReview> userReviews = userReviewRepository.findByUser(wsUser, pageable);
+        if (userReviews.getTotalElements() == 0) {
+            throw new BadRequestException("This user didnt review any games yet");
+        }
+        return userReviews.map(userReviewMapper::toDto);
+    }
+
+    public Page<UserReviewDTO> getUserReviewByOwner(Pageable pageable) throws BadRequestException {
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+        if (currentUser == null) {
+            throw new BadCredentialsException("You have to login first");
+        }
+        Page<UserReview> userReviews = userReviewRepository.findByUser(currentUser, pageable);
+        if (userReviews.getTotalElements() == 0) {
+            throw new BadRequestException("You haven't review any games yet");
+        }
+        return userReviews.map(userReviewMapper::toDto);
     }
 
     public UserReviewDTO getUserReviewById(Integer id) {

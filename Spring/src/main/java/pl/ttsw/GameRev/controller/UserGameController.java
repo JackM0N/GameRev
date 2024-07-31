@@ -53,11 +53,8 @@ public class UserGameController {
         return ResponseEntity.ok(userGameService.updateGame(userGameDTO));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteUserGame(@RequestBody UserGameDTO userGameDTO) throws BadRequestException {
-        if (userGameDTO == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(userGameService.deleteGame(userGameDTO));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserGame(@PathVariable Long id) throws BadRequestException {
+        return ResponseEntity.ok(userGameService.deleteGame(id));
     }
 }
