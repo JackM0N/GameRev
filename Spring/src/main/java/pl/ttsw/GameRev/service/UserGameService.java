@@ -114,13 +114,13 @@ public class UserGameService {
         return userGameMapper.toDto(userGameRepository.save(userGame));
     }
 
-    public boolean deleteGame(UserGameDTO userGameDTO) throws BadRequestException {
+    public boolean deleteGame(Long id) throws BadRequestException {
         WebsiteUser user = websiteUserService.getCurrentUser();
         if (user == null) {
             throw new BadCredentialsException("You have to login first");
         }
 
-        UserGame userGame = userGameRepository.findById(userGameDTO.getId()).orElse(null);
+        UserGame userGame = userGameRepository.findById(id).orElse(null);
         if (userGame == null) {
             throw new BadRequestException("Game not found");
         }

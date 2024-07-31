@@ -6,12 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.UserReview;
+import pl.ttsw.GameRev.model.WebsiteUser;
+
 import java.util.List;
 
 @Repository
 public interface UserReviewRepository extends JpaRepository<UserReview, Integer> {
     Page<UserReview> findByGameTitle(String title, Pageable pageable);
-    List<UserReview> findByUserId(Long id);
+    Page<UserReview> findByUser(WebsiteUser websiteUser, Pageable pageable);
     UserReview findById(Long id);
 
     @Query("SELECT ur FROM UserReview ur WHERE ur.reports IS NOT EMPTY ")
