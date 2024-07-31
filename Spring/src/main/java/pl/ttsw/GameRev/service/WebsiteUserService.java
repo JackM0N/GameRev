@@ -10,9 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
-import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
+import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 @Service
 public class WebsiteUserService {
@@ -29,15 +28,17 @@ public class WebsiteUserService {
     private final PasswordEncoder passwordEncoder;
     private final IAuthenticationFacade authenticationFacade;
     private final RoleRepository roleRepository;
+    private final WebsiteUserMapper websiteUserMapper;
 
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics";
 
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository) {
+    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository, WebsiteUserMapper websiteUserMapper) {
         this.websiteUserRepository = websiteUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationFacade = authenticationFacade;
         this.roleRepository = roleRepository;
+        this.websiteUserMapper = websiteUserMapper;
     }
 
     public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
@@ -45,11 +46,15 @@ public class WebsiteUserService {
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }
-        return websiteUsers.map(this::mapToDTO);
+        return websiteUsers.map(websiteUserMapper::toDto);
     }
 
-    public WebsiteUserDTO findByUsername(String username) {
-        return mapToDTO(websiteUserRepository.findByUsername(username));
+    public WebsiteUserDTO findByCurrentUser() {
+        WebsiteUser websiteUser = getCurrentUser();
+        if (websiteUser == null) {
+            throw new BadCredentialsException("You are not logged in");
+        }
+        return websiteUserMapper.toDto(websiteUser);
     }
 
     public WebsiteUserDTO findByNickname(String nickname) {
@@ -61,7 +66,7 @@ public class WebsiteUserService {
         user.setUsername(null);
         user.setPassword(null);
         user.setIsDeleted(null);
-        return mapToDTO(user);
+        return websiteUserMapper.toDto(user);
     }
 
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
@@ -98,7 +103,7 @@ public class WebsiteUserService {
 
         user = websiteUserRepository.save(user);
 
-        return mapToDTO(user);
+        return websiteUserMapper.toDto(user);
     }
 
     public boolean banUser(WebsiteUserDTO userDTO) {
@@ -155,24 +160,6 @@ public class WebsiteUserService {
 
         Path filepath = Paths.get(user.getProfilepic());
         return Files.readAllBytes(filepath);
-    }
-
-    public WebsiteUserDTO mapToDTO(WebsiteUser user) {
-        WebsiteUserDTO dto = new WebsiteUserDTO();
-        dto.setId(user.getId());
-        dto.setPassword(user.getPassword());
-        dto.setUsername(user.getUsername());
-        dto.setProfilepic(user.getProfilepic());
-        dto.setNickname(user.getNickname());
-        dto.setDescription(user.getDescription());
-        dto.setEmail(user.getEmail());
-        dto.setJoinDate(user.getJoinDate());
-        dto.setIsBanned(user.getIsBanned());
-        dto.setIsDeleted(user.getIsDeleted());
-        dto.setRoles(user.getRoles().stream()
-                .map(role -> new RoleDTO(role.getId(), role.getRoleName()))
-                .collect(Collectors.toList()));
-        return dto;
     }
 
     public WebsiteUser getCurrentUser() {
