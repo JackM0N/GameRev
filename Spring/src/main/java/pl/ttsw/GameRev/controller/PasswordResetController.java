@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,15 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.EmailService;
 import pl.ttsw.GameRev.service.PasswordResetTokenService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/password-reset")
 public class PasswordResetController {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final WebsiteUserRepository websiteUserRepository;
-    private PasswordResetTokenService passwordResetTokenService;
+    private final PasswordResetTokenService passwordResetTokenService;
 
     public PasswordResetController(PasswordResetTokenService passwordResetTokenService, EmailService emailService, PasswordEncoder passwordEncoder, WebsiteUserRepository websiteUserRepository) {
         this.passwordResetTokenService = passwordResetTokenService;
@@ -25,7 +28,7 @@ public class PasswordResetController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<?> requestPasswordReset(@RequestParam String email) {
+    public ResponseEntity<?> requestPasswordReset(@RequestParam String email) throws MessagingException, IOException {
         String resetUrl = passwordResetTokenService.createPasswordResetToken(email);
         emailService.sendEmail(email,"Password Reset Request", resetUrl);
         return ResponseEntity.ok("Password reset request was sent to your email");

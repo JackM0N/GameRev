@@ -1,8 +1,15 @@
 package pl.ttsw.GameRev.service;
 
-import org.springframework.mail.SimpleMailMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
@@ -12,11 +19,22 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        mailSender.send(message);
+    public void sendEmail(String to, String subject, String text) throws MessagingException, IOException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+        mimeMessageHelper.setTo(to);
+        mimeMessageHelper.setSubject(subject);
+
+        String htmlTemplate = loadEmailTemplate();
+        htmlTemplate = htmlTemplate.replace("{link}", text);
+        mimeMessageHelper.setText(htmlTemplate,true);
+
+        mailSender.send(mimeMessage);
+    }
+
+    private String loadEmailTemplate() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("templates/email_template.html");
+        return StreamUtils.copyToString(classPathResource.getInputStream(), StandardCharsets.UTF_8);
     }
 }
