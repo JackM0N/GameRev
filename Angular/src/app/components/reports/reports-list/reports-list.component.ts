@@ -28,7 +28,7 @@ export class ReportsListComponent implements AfterViewInit {
   totalReviews: number = 0;
 
   reportsList: ReportInformation[] = [];
-  displayedColumns: string[] = ['id', 'content', 'options'];
+  displayedColumns: string[] = ['id', 'user', 'content', 'options'];
   formatDate = formatDate;
 
   @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;

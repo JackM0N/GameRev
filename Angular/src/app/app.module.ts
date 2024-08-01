@@ -46,6 +46,7 @@ import { UserGamesListComponent } from './components/user-games/user-games-list/
 import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
 import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
 import { ImageCacheService } from './services/imageCache.service';
+import { OwnUserReviewListComponent } from './components/reports/own-reviews-list/own-reviews-list.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { ImageCacheService } from './services/imageCache.service';
     ReportsListComponent,
     UserGamesListComponent,
     UserGameEditDialogComponent,
-    UserGameAddDialogComponent
+    UserGameAddDialogComponent,
+    OwnUserReviewListComponent
   ],
   imports: [
     BrowserModule,

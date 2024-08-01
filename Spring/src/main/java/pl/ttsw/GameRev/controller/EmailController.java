@@ -1,10 +1,7 @@
 package pl.ttsw.GameRev.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +20,7 @@ public class EmailController {
     }
 
     @GetMapping("/emails")
-    public List<String> getEmails() throws MessagingException, JsonProcessingException {
+    public List<String> getEmails() {
         MimeMessage[] messages = greenMail.getReceivedMessages();
         List<String> emailContents = new ArrayList<>();
         for (MimeMessage message : messages) {

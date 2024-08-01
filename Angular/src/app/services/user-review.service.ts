@@ -14,6 +14,7 @@ export class UserReviewService {
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
   private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
   private reviewsWithReportsUrl = 'http://localhost:8080/reports';
+  private ownReviews = 'http://localhost:8080/users-reviews/my-reviews';
 
   constructor(
     private http: HttpClient,
@@ -22,6 +23,18 @@ export class UserReviewService {
 
   getUserReviews(): Observable<UserReview[]> {
     return this.http.get<UserReview[]>(this.baseUrl);
+  }
+
+  getOwnUserReviews(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+    return this.http.get<UserReview[]>(this.ownReviews, { headers, params });
   }
 
   getUserReviewById(id: string): Observable<UserReview> {

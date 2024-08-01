@@ -434,4 +434,8 @@ export class OwnProfileComponent implements OnInit {
       this.selectedImage = file;
     }
   }
+
+  routeToOwnReviews() {
+    this.router.navigate(['/user-reviews/own']);
+  }
 }
