@@ -45,6 +45,7 @@ import { UserGameService } from './services/user-game.service';
 import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
 import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
 import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
+import { ImageCacheService } from './services/imageCache.service';
 
 @NgModule({
   declarations: [
@@ -108,6 +109,7 @@ import { UserGameAddDialogComponent } from './components/user-games/user-game-ad
     UserReviewService,
     ReportService,
     UserGameService,
+    ImageCacheService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],
