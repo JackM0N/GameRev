@@ -42,7 +42,8 @@ public class UserGameService {
             throw new BadRequestException("This user doesn't exist");
         }
         Page<UserGame> userGame = userGameRepository.findByUserNickname(nickname, pageable);
-        if (userGame == null) {
+        System.out.println(userGame);
+        if (userGame == null || userGame.getTotalElements() == 0) {
             throw new BadRequestException("This users library is empty");
         }
         return userGame.map(userGameMapper::toDto);
