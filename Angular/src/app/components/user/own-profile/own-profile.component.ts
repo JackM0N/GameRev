@@ -71,10 +71,10 @@ export class OwnProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userName = this.authService.getUsername();
     const token = this.authService.getToken();
   
-    if (!userName || !token) {
+    if (token === null) {
+      console.log("Token is null");
       return;
     }
 
@@ -106,7 +106,7 @@ export class OwnProfileComponent implements OnInit {
       },
       complete: () => {}
     };
-    this.authService.getUserProfileInformation(userName, token).subscribe(observer);
+    this.authService.getUserProfileInformation(token).subscribe(observer);
   }
 
   openLogoutDialog() {

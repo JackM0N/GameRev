@@ -109,12 +109,11 @@ export class AuthService {
     return undefined;
   }
 
-  getUserProfileInformation(username: string, token: string): Observable<WebsiteUser> {
-    const url = `${this.profileInformationUrl}/${username}`;
+  getUserProfileInformation(token: string): Observable<WebsiteUser> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<WebsiteUser>(url, { headers });
+    return this.http.get<WebsiteUser>(this.profileInformationUrl, { headers });
   }
 
   changeProfile(userData: NewCredentials, token: string): Observable<any> {
