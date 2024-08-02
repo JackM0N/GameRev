@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class MailConfig {
-
     @Profile("!test")
     @Bean
     public GreenMail greenMail() {

@@ -5,11 +5,16 @@ import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
 import { Router } from '@angular/router';
 import { Toast, ToasterService } from 'angular-toaster';
+import { ResetPasswordConfirmationDialogComponent } from '../reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css'
+  styleUrls: [
+    '/src/app/styles/shared-form-styles.css',
+    './login.component.css'
+  ]
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -19,7 +24,8 @@ export class LoginComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private toasterService: ToasterService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog,
   ) {
     this.loginForm = this.formBuilder.group({
       usernameOrEmail: ['', [Validators.required, Validators.minLength(3)]],
@@ -76,5 +82,34 @@ export class LoginComponent {
   hidePasswordClickEvent(event: MouseEvent) {
     this.hidePassword.set(!this.hidePassword());
     event.stopPropagation();
+  }
+
+  openResetPasswordConfirmationDialog() {
+    const dialogRef = this.dialog.open(ResetPasswordConfirmationDialogComponent, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.requestResetPassword(dialogRef);
+      }
+    });
+  }
+
+  requestResetPassword(dialogRef: MatDialogRef<ResetPasswordConfirmationDialogComponent>) {
+    if (!dialogRef || !dialogRef.componentRef) {
+      return;
+    }
+
+    const email = dialogRef.componentRef.instance.resetPasswordForm.get('email')?.value;
+
+    var toast: Toast = {
+      type: 'success',
+      title: 'Password reset sent',
+      showCloseButton: true
+    };
+    this.toasterService.pop(toast);
+
+    this.authService.requestPasswordReset(email).subscribe();
   }
 }
