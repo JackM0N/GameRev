@@ -19,6 +19,7 @@ public class JWTService {
                 .builder()
                 .subject(user.getUsername())
                 .claim("nickname", user.getNickname())
+                .claim("roles", user.getRoles())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_TOKEN_EXPIRATION_TIME))
                 .signWith(getSigninKey())
