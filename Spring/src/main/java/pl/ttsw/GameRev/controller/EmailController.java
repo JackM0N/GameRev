@@ -18,7 +18,7 @@ public class EmailController {
     }
 
     @GetMapping("/emails")
-    public String getEmails() throws MessagingException {
+    public String getEmails() {
         MimeMessage[] messages = greenMail.getReceivedMessages();
         StringBuilder emailContents = new StringBuilder();
         for (MimeMessage message : messages) {
