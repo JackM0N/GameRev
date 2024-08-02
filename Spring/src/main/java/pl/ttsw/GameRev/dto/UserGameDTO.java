@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.dto;
 
 import lombok.*;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 
 import java.io.Serializable;
 
@@ -16,6 +17,6 @@ public class UserGameDTO implements Serializable {
     Long id;
     GameDTO game;
     WebsiteUserDTO user;
-    CompletionStatusDTO completionStatus;
+    CompletionStatus completionStatus;
     Boolean isFavourite;
 }

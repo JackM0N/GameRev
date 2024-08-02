@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 
 @Getter
 @Setter
@@ -22,8 +23,8 @@ public class UserGame {
     @JoinColumn(name = "user_id", nullable = false)
     private WebsiteUser user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "completion_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "completion_status", nullable = false)
     private CompletionStatus completionStatus;
 
     @Column(name = "is_favourite", nullable = false)

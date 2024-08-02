@@ -30,7 +30,7 @@ public class PasswordResetController {
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) throws MessagingException, IOException {
         String resetUrl = passwordResetTokenService.createPasswordResetToken(email);
         emailService.sendEmail(email,"Password Reset Request", resetUrl);
-        return ResponseEntity.ok("Password reset request was sent to your email");
+        return ResponseEntity.ok("If this email is connected to an account, we are going to sent you an email. Please check your inbox");
     }
 
     @GetMapping("/confirm")
