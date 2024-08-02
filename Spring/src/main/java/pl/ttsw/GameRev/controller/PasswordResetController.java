@@ -9,7 +9,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.EmailService;
 import pl.ttsw.GameRev.service.PasswordResetTokenService;
-
 import java.io.IOException;
 
 @RestController

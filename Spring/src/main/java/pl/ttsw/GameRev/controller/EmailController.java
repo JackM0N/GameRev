@@ -2,7 +2,6 @@ package pl.ttsw.GameRev.controller;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +18,7 @@ public class EmailController {
     }
 
     @GetMapping("/emails")
-    public String getEmails() throws MessagingException {
+    public String getEmails() {
         MimeMessage[] messages = greenMail.getReceivedMessages();
         StringBuilder emailContents = new StringBuilder();
         for (MimeMessage message : messages) {

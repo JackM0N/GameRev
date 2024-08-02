@@ -1,5 +1,5 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteUser';
 import { LoginCredentials } from '../interfaces/loginCredentials';
@@ -17,6 +17,7 @@ export class AuthService {
   private profileChangeUrl = 'http://localhost:8080/user/edit-profile';
   private profileInformationUrl = 'http://localhost:8080/user/account';
   private profileChangePictureUrl = 'http://localhost:8080/user';
+  private requestPasswordResetUrl = 'http://localhost:8080/password-reset/request';
 
   constructor(
     private http: HttpClient,
@@ -109,12 +110,11 @@ export class AuthService {
     return undefined;
   }
 
-  getUserProfileInformation(username: string, token: string): Observable<WebsiteUser> {
-    const url = `${this.profileInformationUrl}/${username}`;
+  getUserProfileInformation(token: string): Observable<WebsiteUser> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<WebsiteUser>(url, { headers });
+    return this.http.get<WebsiteUser>(this.profileInformationUrl, { headers });
   }
 
   changeProfile(userData: NewCredentials, token: string): Observable<any> {
@@ -148,5 +148,10 @@ export class AuthService {
       'Content-Type': 'application/json'
     });
     return this.http.put<WebsiteUser>(url, userData, { headers });
+  }
+
+  requestPasswordReset(email: string): Observable<any> {
+    const url = `${this.requestPasswordResetUrl}?email=${encodeURIComponent(email)}`;
+    return this.http.post<any>(url, {});
   }
 }

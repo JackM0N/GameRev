@@ -1,4 +1,4 @@
-<div class="flex justify-center items-center w-full h-full py-12">
+<div class="flex justify-center items-center w-full h-full py-12 bg-repeat pinkStars">
     <form class="z-20" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
         <div class="w-80 h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
@@ -49,9 +49,8 @@
                                 </div>
                             </div>
 
-                            <!--TODO: add proper link after creating route-->
                             <div class="font-arcade underline mb-2 text-white">
-                                <a routerLink="/" routerLinkActive="active">Forgot password</a>
+                                <a id="password-reset-link" (click)="openResetPasswordConfirmationDialog()">Forgot password</a>
                             </div>
                         </div>
                     </div>
