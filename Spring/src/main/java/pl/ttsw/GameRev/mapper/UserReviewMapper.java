@@ -8,8 +8,6 @@ import pl.ttsw.GameRev.model.UserReview;
 public interface UserReviewMapper {
     UserReview toEntity(UserReviewDTO userReviewDTO);
 
-    @Mapping(source = "game.title", target = "gameTitle")
-    @Mapping(source = "user.username", target = "userUsername")
     UserReviewDTO toDto(UserReview userReview);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
