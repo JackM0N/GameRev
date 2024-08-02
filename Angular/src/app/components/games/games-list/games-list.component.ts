@@ -8,6 +8,7 @@ import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-games-list',
@@ -26,6 +27,7 @@ export class GamesListComponent implements AfterViewInit {
     private gameService: GameService,
     private router: Router,
     public dialog: MatDialog,
+    public authService: AuthService
   ) {}
 
   ngAfterViewInit() {

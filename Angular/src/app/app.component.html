@@ -8,8 +8,8 @@
       <ul class="nav-list">
         <li class="nav-item"><a routerLink="/" routerLinkActive="active">Homepage</a></li>
         <li class="nav-item"><a routerLink="/games" routerLinkActive="active">Games</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/users" routerLinkActive="active">Users</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/reports" routerLinkActive="active">Reports</a></li>
+        <li class="nav-item" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])"><a routerLink="/users" routerLinkActive="active">Users</a></li>
+        <li class="nav-item" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])"><a routerLink="/reports" routerLinkActive="active">Reports</a></li>
         <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/library" routerLinkActive="active">Library</a></li>
 
         <li class="nav-item" *ngIf="!authService.isAuthenticated()"><a routerLink="/login" routerLinkActive="active">Login</a></li>

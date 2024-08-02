@@ -331,4 +331,22 @@ export class GameInformationComponent implements OnInit {
       }
     });
   }
+
+  canDeleteReview(review: UserReview) {
+    return this.authService.isAuthenticated() &&
+    (this.authService.getUsername() === review.userUsername || this.authService.hasAnyRole(['Admin', 'Critic']));
+  }
+
+  ownsReview(review: UserReview) {
+    return this.authService.isAuthenticated() && this.authService.getUsername() === review.userUsername;
+  }
+
+  canAddReview() {
+    if (!this.authService.isAuthenticated()) {
+      return false;
+    }
+
+    const userName = this.authService.getUsername();
+    return !this.reviewList.some(review => review.userUsername === userName);
+  }
 }
