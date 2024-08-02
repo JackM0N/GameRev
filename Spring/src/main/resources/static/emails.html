@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emails</title>
+    <style>
+        body {
+            background-color: rgb(20,18,28);
+        }
+        .email {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            overflow: auto;
+            background: white;
+            height: 500px;
+        }
+    </style>
+    <script>
+        async function fetchEmails() {
+            const response = await fetch('/emails');
+            const emailsHtml = await response.text();
+            const emailContainer = document.getElementById('emailContainer');
+            emailContainer.innerHTML = emailsHtml;
+        }
+
+        window.onload = fetchEmails;
+    </script>
+</head>
+<body>
+<h1>Received Emails</h1>
+<div id="emailContainer">
+    Loading emails...
+</div>
+</body>
+</html>
