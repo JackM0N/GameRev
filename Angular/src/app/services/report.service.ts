@@ -30,16 +30,15 @@ export class ReportService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     var params = new HttpParams()
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir);
+      .set('sort', sortBy + ',' + sortDir);
 
     if (page && size) {
       params = new HttpParams()
         .set('page', (page - 1).toString())
         .set('size', size.toString())
-        .set('sortBy', sortBy)
-        .set('sortDir', sortDir);
+        .set('sort', sortBy + ',' + sortDir);
     }
 
     return this.http.get<UserReview[]>(`${this.baseUrl}/${reviewId}`, { headers, params });
