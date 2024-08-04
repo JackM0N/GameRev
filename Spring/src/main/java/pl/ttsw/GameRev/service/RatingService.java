@@ -9,7 +9,6 @@ import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
-import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.util.Optional;
 
 @Service

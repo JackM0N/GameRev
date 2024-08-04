@@ -3,8 +3,6 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import pl.ttsw.GameRev.model.UserReview;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import java.io.Serializable;
 
 /**

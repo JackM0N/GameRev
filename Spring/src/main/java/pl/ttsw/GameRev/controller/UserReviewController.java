@@ -78,6 +78,39 @@ public class UserReviewController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<?> getUserReviewByUserId(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) throws BadRequestException {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewByUser(id, pageable);
+        if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
+            return ResponseEntity.badRequest().body("This user has no user reviews");
+        }
+        return ResponseEntity.ok(userReviewDTOS);
+    }
+
+    @GetMapping("/my-reviews")
+    public ResponseEntity<?> getUserReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) throws BadRequestException {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewByOwner(pageable);
+        if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
+            return ResponseEntity.badRequest().body("You haven't made any reviews yet");
+        }
+        return ResponseEntity.ok(userReviewDTOS);
+    }
+
     @PutMapping("/add-rating")
     public ResponseEntity<?> addUserReviewRating(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
         if (userReviewDTO == null) {
@@ -92,10 +125,5 @@ public class UserReviewController {
             return ResponseEntity.badRequest().body("There was an error when trying to report this users review");
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
