@@ -27,6 +27,11 @@ body {
     background-image: url(./app/images/pinkStars-bg.png);
 }
 
+.matrixNumbers{
+    background-image: url(./app/images/matrixNumbers.png);
+    background-size: 600px 300px;
+}
+
 .titleShadow{
     text-shadow: 0px 0px 30px white;
 }
@@ -34,6 +39,24 @@ body {
 .screenBg{
     background-image: url(./app/images/screen-bg.png);
     background-size: 6px 6px;
+}
+
+.synthwaveFloor{
+    background-image: url(./app/images/synthwaveFloor.jpg);
+}
+
+.neonAtSymbols{
+    background-image: url(./app/images/neonAtSymbols.jpg);
+}
+
+.neonStarsSymbols{
+    background-image: url(./app/images/neonStarsSymbols.jpg);
+}
+
+.screenHead{
+    background-image: url(./app/images/screenHead.png);
+    background-size: 320px 320px;
+    background-repeat: no-repeat;
 }
 
 .arcadeButtons{
@@ -58,6 +81,55 @@ body {
     background-image: url(./app/images/arcadeJoystickOrange.png);
     background-repeat: no-repeat;
     background-size: 60px 60px;
+}
+
+/*borrowed this one. not gonna translate this to tailwind*/
+.pixel-border {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .pixel-border::before, .pixel-border::after, 
+  .pixel-border div::before, .pixel-border div::after {
+    content: '';
+    position: absolute;
+    background: white;
+    z-index: -1;
+  }
+
+  /* Top and bottom borders */
+  .pixel-border::before, .pixel-border::after {
+    height: 6px; /* Adjust pixel size */
+    left: 6px;
+    right: 6px;
+  }
+  
+  .pixel-border::before {
+    top: 0;
+  }
+  
+  .pixel-border::after {
+    bottom: 0;
+  }
+
+  /* Left and right borders */
+  .pixel-border div::before, .pixel-border div::after {
+    width: 6px; /* Adjust pixel size */
+    top: 6px;
+    bottom: 6px;
+  }
+  
+  .pixel-border div::before {
+    left: 0;
+  }
+  
+  .pixel-border div::after {
+    right: 0;
+  }
+
+/*text shadow in here since tailwind doesn't have that*/
+.pinkTextShadow{
+    text-shadow: 2px 2px 0px #fb049c;
 }
 
 /*practical joke until later solution*/

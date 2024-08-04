@@ -28,6 +28,9 @@ module.exports = {
         'arcade-internal-edge': 'linear-gradient(to top left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 2px), rgba(71, 26, 80, 1) 50%, rgba(0,0,0,0) calc(50% + 2px), rgba(0,0,0,0) 100%), linear-gradient(to top right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 2px), rgba(71, 26, 80, 1) 50%, rgba(0,0,0,0) calc(50% + 2px), rgba(0,0,0,0) 100%);',
         'arcade-rainbow': 'linear-gradient(to top left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(38% - 3px), #3C003E 38%, #ED0280 39%, #ED0280 45%, black 46%, #00B2FF 47%, #00B2FF 53%, black 54%, #FF3D00 55%, #FF3D00 61%, #3C003E 62%, rgba(0,0,0,0) calc(62% + 3px), rgba(0,0,0,0) 100%);',
       },
+      backgroundSize:{
+        '100%': '100%',
+      },
       boxShadow: {
         'arcadeBorderShadow': 'inset 0px 0px 4px 4px rgba(60, 0, 62, 1)',
         'arcadeScreenShadow': '0px 0px 15px -1px rgba(0, 240, 255, 1)',
