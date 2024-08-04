@@ -9,6 +9,9 @@ import { GameInformationComponent } from './components/games/game-information/ga
 import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
 import { UsersListComponent } from './components/user/users-list/users-list.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
+import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
+import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
+import { OwnUserReviewListComponent } from './components/reports/own-reviews-list/own-reviews-list.component';
 
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent},
@@ -21,7 +24,10 @@ const routes: Routes = [
   { path: 'games/edit/:name', component: GameFormComponent},
   { path: 'user-reviews/add/:name', component: UserReviewFormComponent},
   { path: 'user-reviews/edit/:id', component: UserReviewFormComponent},
+  { path: 'user-reviews/own', component: OwnUserReviewListComponent},
   { path: 'users', component: UsersListComponent},
+  { path: 'reports', component: ReportsListComponent},
+  { path: 'library', component: UserGamesListComponent},
 ];
 
 @NgModule({

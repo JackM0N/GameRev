@@ -18,7 +18,6 @@ public class ReleaseStatusService {
         this.releaseStatusMapper = releaseStatusMapper;
     }
 
-
     public List<ReleaseStatusDTO> getAllReleaseStatuses() {
         List<ReleaseStatus> tags = releaseStatusRepository.findAll();
         return tags.stream().map(releaseStatusMapper::toDto).collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -8,15 +9,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-import pl.ttsw.GameRev.model.*;
-import pl.ttsw.GameRev.repository.*;
-import pl.ttsw.GameRev.security.*;
-import pl.ttsw.GameRev.service.*;
+import pl.ttsw.GameRev.model.Role;
+import pl.ttsw.GameRev.model.WebsiteUser;
+import pl.ttsw.GameRev.repository.RoleRepository;
+import pl.ttsw.GameRev.repository.WebsiteUserRepository;
+import pl.ttsw.GameRev.security.AuthenticationResponse;
+import pl.ttsw.GameRev.security.JWTService;
+import pl.ttsw.GameRev.service.AuthenticationService;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -42,7 +46,6 @@ public class AuthenticationServiceTest {
 
     @Test
     public void testRegister() {
-        // Arrange
         WebsiteUser request = new WebsiteUser();
         request.setUsername("testuser2");
         request.setPassword("password");
@@ -60,17 +63,14 @@ public class AuthenticationServiceTest {
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(savedUser);
         when(jwtService.generateToken(savedUser)).thenReturn("jwtToken");
 
-        // Act
         AuthenticationResponse response = authenticationService.register(request);
 
-        // Assert
         assertEquals("jwtToken", response.getToken());
         verify(websiteUserRepository).save(any(WebsiteUser.class));
     }
 
     @Test
     public void testAuthenticate() {
-        // Arrange
         WebsiteUser request = new WebsiteUser();
         request.setUsername("testuser2");
         request.setPassword("password");
@@ -81,10 +81,8 @@ public class AuthenticationServiceTest {
         when(websiteUserRepository.findByUsernameOrEmail("testuser2", "testuser2")).thenReturn(user);
         when(jwtService.generateToken(user)).thenReturn("jwtToken");
 
-        // Act
         AuthenticationResponse response = authenticationService.authenticate(request);
 
-        // Assert
         assertEquals("jwtToken", response.getToken());
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
     }

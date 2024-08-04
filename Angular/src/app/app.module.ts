@@ -38,6 +38,16 @@ import { UsersListComponent } from './components/user/users-list/users-list.comp
 import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { ReviewReportDialogComponent } from './components/games/review-report-dialog/review-report-dialog.component';
+import { ReportService } from './services/report.service';
+import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { UserGameService } from './services/user-game.service';
+import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
+import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
+import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
+import { ImageCacheService } from './services/imageCache.service';
+import { OwnUserReviewListComponent } from './components/reports/own-reviews-list/own-reviews-list.component';
+import { ResetPasswordConfirmationDialogComponent } from './components/authentication/reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +63,13 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
     UsersListComponent,
     PopupDialogComponent,
     ProfileComponent,
-    ReviewReportDialogComponent
+    ReviewReportDialogComponent,
+    ReportsListComponent,
+    UserGamesListComponent,
+    UserGameEditDialogComponent,
+    UserGameAddDialogComponent,
+    OwnUserReviewListComponent,
+    ResetPasswordConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -73,6 +89,7 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
     MatPaginatorModule,
     MatButtonToggleModule,
     MatSortModule,
+    MatExpansionModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
@@ -94,6 +111,9 @@ import { ReviewReportDialogComponent } from './components/games/review-report-di
     ReleaseStatusService,
     TagService,
     UserReviewService,
+    ReportService,
+    UserGameService,
+    ImageCacheService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],

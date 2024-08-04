@@ -57,6 +57,9 @@ public class WebsiteUser {
     )
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGame> userGames = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

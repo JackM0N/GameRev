@@ -52,7 +52,7 @@ export class UserReviewFormComponent implements OnInit {
       this.formTitle = 'Editing review';
     }
 
-    this.userReview.userUsername = this.authService.getUserName();
+    this.userReview.userUsername = this.authService.getUsername();
   }
 
   ngOnInit() {

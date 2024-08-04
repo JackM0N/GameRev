@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';

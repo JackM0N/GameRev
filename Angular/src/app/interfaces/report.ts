@@ -1,9 +1,10 @@
+import { UserReview } from "./userReview";
 
 export interface Report {
   id?: number;
 
   content: string;
-  reviewId: number;
+  userReview: UserReview;
   userId?: number;
   approved?: boolean;
 }
