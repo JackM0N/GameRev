@@ -28,14 +28,7 @@ public class WebsiteUserController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getUsers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public ResponseEntity<?> getUsers(Pageable pageable) {
         Page<WebsiteUserDTO> users = websiteUserService.getAllWebsiteUsers(pageable);
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

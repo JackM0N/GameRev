@@ -36,16 +36,8 @@ public class UserReviewController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getUserReviewByGame(
-            @PathVariable String title,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) {
+    public ResponseEntity<?> getUserReviewByGame(@PathVariable String title, Pageable pageable) {
         title = title.replaceAll("-", " ");
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
         Page<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title,pageable);
         if (userReviewDTO == null || userReviewDTO.isEmpty()) {
             return ResponseEntity.badRequest().body("There are no user reviews for this title");
@@ -79,15 +71,7 @@ public class UserReviewController {
     }
 
     @GetMapping("/admin/{id}")
-    public ResponseEntity<?> getUserReviewByUserId(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) throws BadRequestException {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public ResponseEntity<?> getUserReviewByUserId(@PathVariable Long id, Pageable pageable) throws BadRequestException {
         Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewByUser(id, pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
             return ResponseEntity.badRequest().body("This user has no user reviews");
@@ -96,14 +80,7 @@ public class UserReviewController {
     }
 
     @GetMapping("/my-reviews")
-    public ResponseEntity<?> getUserReviews(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) throws BadRequestException {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public ResponseEntity<?> getUserReviews(Pageable pageable) throws BadRequestException {
         Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewByOwner(pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
             return ResponseEntity.badRequest().body("You haven't made any reviews yet");

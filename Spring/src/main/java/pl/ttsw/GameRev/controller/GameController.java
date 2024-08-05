@@ -58,14 +58,7 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllGames(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public ResponseEntity<?> getAllGames(Pageable pageable) {
         Page<GameDTO> games = gameService.getAllGames(pageable);
         return ResponseEntity.ok(games);
     }
