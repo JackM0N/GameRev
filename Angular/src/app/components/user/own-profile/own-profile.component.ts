@@ -11,6 +11,7 @@ import { Toast, ToasterService } from 'angular-toaster';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { UserService } from '../../../services/user.service';
+import { ImageCacheService } from '../../../services/imageCache.service';
 
 @Component({
   selector: 'app-own-profile',
@@ -35,6 +36,7 @@ export class OwnProfileComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private imageCacheService: ImageCacheService,
     private router: Router,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -71,10 +73,10 @@ export class OwnProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userName = this.authService.getUsername();
     const token = this.authService.getToken();
   
-    if (!userName || !token) {
+    if (token === null) {
+      console.log("Token is null");
       return;
     }
 
@@ -84,16 +86,30 @@ export class OwnProfileComponent implements OnInit {
         this.changeProfileInformationForm.get('description')?.setValue(response.description);
         this.changeEmailForm.get('email')?.setValue(response.email);
 
-        const observerProfilePicture: Observer<any> = {
-          next: response2 => {
-            this.imageUrl = URL.createObjectURL(response2);
-          },
-          error: error => {
-            console.error(error);
-          },
-          complete: () => {}
-        };
-        this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+        const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
+
+        if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
+          const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);
+          if (cachedImage) {
+            this.imageUrl = cachedImage;
+          }
+
+        } else {
+          const observerProfilePicture: Observer<any> = {
+            next: response2 => {
+              if (response2) {
+                this.imageUrl = URL.createObjectURL(response2);
+                this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
+                this.imageCacheService.cacheProfilePicName("profilePicName" + response.nickname, response.profilepic);
+              }
+            },
+            error: error => {
+              console.error(error);
+            },
+            complete: () => {}
+          };
+          this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+        }
       },
       error: error => {
         console.error(error);
@@ -106,7 +122,7 @@ export class OwnProfileComponent implements OnInit {
       },
       complete: () => {}
     };
-    this.authService.getUserProfileInformation(userName, token).subscribe(observer);
+    this.authService.getUserProfileInformation(token).subscribe(observer);
   }
 
   openLogoutDialog() {
@@ -368,6 +384,7 @@ export class OwnProfileComponent implements OnInit {
 
   onSubmitProfilePictureChange() {
     if (this.changeProfilePictureForm.valid && this.selectedImage) {
+      const nickName = this.authService.getNickname();
       const userName = this.authService.getUsername();
       const token = this.authService.getToken();
 
@@ -391,6 +408,10 @@ export class OwnProfileComponent implements OnInit {
             showCloseButton: true
           };
           this.toasterService.pop(toast);
+
+          if (nickName) {
+            this.imageCacheService.deleteCachedImage("profilePic" + nickName);
+          }
         },
         error: error => {
           console.error(error);
@@ -412,5 +433,9 @@ export class OwnProfileComponent implements OnInit {
     if (file) {
       this.selectedImage = file;
     }
+  }
+
+  routeToOwnReviews() {
+    this.router.navigate(['/user-reviews/own']);
   }
 }

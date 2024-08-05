@@ -7,13 +7,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
-import pl.ttsw.GameRev.model.CompletionStatus;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
-import pl.ttsw.GameRev.repository.CompletionStatusRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.util.Objects;
 
@@ -21,15 +20,13 @@ import java.util.Objects;
 public class UserGameService {
     private final WebsiteUserService websiteUserService;
     private final UserGameMapper userGameMapper;
-    private final CompletionStatusRepository completionStatusRepository;
     private final GameRepository gameRepository;
     private final UserGameRepository userGameRepository;
     private final WebsiteUserRepository websiteUserRepository;
 
-    public UserGameService(CompletionStatusRepository completionStatusRepository, GameRepository gameRepository,
+    public UserGameService(GameRepository gameRepository,
                            UserGameRepository userGameRepository, WebsiteUserService websiteUserService,
                            UserGameMapper userGameMapper, WebsiteUserRepository websiteUserRepository) {
-        this.completionStatusRepository = completionStatusRepository;
         this.gameRepository = gameRepository;
         this.userGameRepository = userGameRepository;
         this.websiteUserService = websiteUserService;
@@ -67,9 +64,10 @@ public class UserGameService {
             throw new BadRequestException("Game not found");
         }
 
-        CompletionStatus completionStatus = completionStatusRepository
-                .findById(userGameDTO.getCompletionStatus().getId())
-                .orElseThrow(() -> new BadRequestException("Completion status not found"));
+        CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
+        if (completionStatus == null) {
+            throw new BadRequestException("Completion status not found");
+        }
 
         UserGame userGame = new UserGame();
         userGame.setUser(user);
@@ -102,7 +100,7 @@ public class UserGameService {
             userGame.setIsFavourite(userGameDTO.getIsFavourite());
         }
         if (userGame.getCompletionStatus() != null) {
-            CompletionStatus completionStatus = completionStatusRepository.findById(userGameDTO.getCompletionStatus().getId()).orElse(null);
+            CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
             if (completionStatus == null) {
                 throw new BadRequestException("Completion status not found");
             }

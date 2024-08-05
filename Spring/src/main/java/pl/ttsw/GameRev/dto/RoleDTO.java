@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleDTO implements Serializable {
     Long id;
     String roleName;

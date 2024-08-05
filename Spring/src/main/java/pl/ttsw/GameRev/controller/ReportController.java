@@ -25,14 +25,7 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseEntity<?> reviewsWithReports(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir
-    ) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public ResponseEntity<?> reviewsWithReports(Pageable pageable) {
         Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewsWithReports(pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -41,19 +34,11 @@ public class ReportController {
     }
     
     @GetMapping("/{reviewId}")
-    public ResponseEntity<?> reviewReports(
-            @PathVariable int reviewId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) {
+    public ResponseEntity<?> reviewReports(@PathVariable int reviewId, Pageable pageable) {
         UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(reviewId);
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("This review doesn't exists");
         }
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<ReportDTO> reportDTOS = reportService.getReportsByReview(userReviewDTO,pageable);
         if (reportDTOS == null || reportDTOS.isEmpty()) {
