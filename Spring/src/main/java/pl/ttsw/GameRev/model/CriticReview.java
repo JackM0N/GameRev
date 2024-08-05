@@ -3,6 +3,8 @@ package pl.ttsw.GameRev.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pl.ttsw.GameRev.enums.ReviewStatus;
+
 import java.time.LocalDate;
 
 @Getter
@@ -32,7 +34,7 @@ public class CriticReview {
     @Column(name = "score", nullable = false)
     private Integer score;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Enumerated(EnumType.STRING)
     @JoinColumn(name = "review_status", nullable = false)
     private ReviewStatus reviewStatus;
 

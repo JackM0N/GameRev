@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +66,7 @@ public class UserGameService {
         }
 
         CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
-        if (completionStatus == null) {
+        if (completionStatus == null || !EnumUtils.isValidEnumIgnoreCase(CompletionStatus.class, completionStatus.name())) {
             throw new BadRequestException("Completion status not found");
         }
 
@@ -101,7 +102,7 @@ public class UserGameService {
         }
         if (userGame.getCompletionStatus() != null) {
             CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
-            if (completionStatus == null) {
+            if (completionStatus == null || !EnumUtils.isValidEnumIgnoreCase(CompletionStatus.class, completionStatus.name())) {
                 throw new BadRequestException("Completion status not found");
             }
             userGame.setCompletionStatus(completionStatus);
