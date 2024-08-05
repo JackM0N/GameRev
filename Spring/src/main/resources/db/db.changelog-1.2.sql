@@ -29,3 +29,10 @@ ALTER TABLE critic_review RENAME COLUMN review_status_name to review_status;
 ALTER TABLE game ALTER COLUMN release_status SET NOT NULL;
 ALTER TABLE user_game ALTER COLUMN completion_status SET NOT NULL;
 ALTER TABLE critic_review ALTER COLUMN review_status SET NOT NULL;
+
+
+--changeset Stanislaw:17 labels:schema,refactoring
+UPDATE game SET release_status = UPPER(release_status);
+UPDATE user_game SET completion_status = UPPER(completion_status);
+UPDATE critic_review SET review_status = UPPER(review_status);
+
