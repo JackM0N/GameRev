@@ -20,16 +20,7 @@ public class UserGameController {
     }
 
     @GetMapping("/{nickname}")
-    public ResponseEntity<?> getUsersGames(
-            @PathVariable String nickname,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
-    ) throws BadRequestException {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-
+    public ResponseEntity<?> getUsersGames(@PathVariable String nickname, Pageable pageable) throws BadRequestException {
         Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(nickname, pageable);
         if (userGameDTOS.getTotalElements() == 0) {
             return ResponseEntity.noContent().build();
