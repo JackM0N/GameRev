@@ -5,7 +5,7 @@ public enum ReleaseStatus {
     EARLY_ACCESS("Early Access"),
     ANNOUNCED("Announced"),
     CANCELED("Canceled"),
-    END_OF_SERVICE("End Of Service"),;
+    END_OF_SERVICE("End Of Service");
 
     String status;
 

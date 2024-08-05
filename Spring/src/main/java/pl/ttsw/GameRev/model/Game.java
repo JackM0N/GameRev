@@ -3,6 +3,8 @@ package pl.ttsw.GameRev.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pl.ttsw.GameRev.enums.ReleaseStatus;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,8 @@ public class Game {
     @Column(name = "release_date")
     private LocalDate releaseDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "release_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "release_status", nullable = false)
     private ReleaseStatus releaseStatus;
 
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
