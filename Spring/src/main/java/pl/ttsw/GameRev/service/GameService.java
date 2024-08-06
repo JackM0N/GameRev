@@ -1,15 +1,16 @@
 package pl.ttsw.GameRev.service;
 
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.GameDTO;
+import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
-import pl.ttsw.GameRev.repository.ReleaseStatusRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,14 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
-    private final ReleaseStatusRepository statusRepository;
     private final TagRepository tagRepository;
     private final GameMapper gameMapper;
 
-    public GameService(GameRepository gameRepository, ReleaseStatusRepository statusRepository,
-                       TagRepository tagRepository, GameMapper gameMapper) {
+    public GameService(GameRepository gameRepository, TagRepository tagRepository, GameMapper gameMapper) {
         this.gameRepository = gameRepository;
-        this.statusRepository = statusRepository;
         this.tagRepository = tagRepository;
         this.gameMapper = gameMapper;
     }
@@ -38,7 +36,11 @@ public class GameService {
         return gameMapper.toDto(gameRepository.findGameById(id));
     }
 
-    public Game createGame(GameDTO game) {
+    public GameDTO getGameByTitle(String title) {
+        return gameMapper.toDto(gameRepository.findGameByTitle(title));
+    }
+
+    public Game createGame(GameDTO game) throws BadRequestException {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
         newGame.setDeveloper(game.getDeveloper());
@@ -47,7 +49,12 @@ public class GameService {
         newGame.setDescription(game.getDescription());
         newGame.setUsersScore(0.0f);
 
-        newGame.setReleaseStatus(statusRepository.findReleaseStatusById(game.getReleaseStatus().getId()));
+        ReleaseStatus releaseStatus = game.getReleaseStatus();
+        if (releaseStatus == null || !EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
+                throw new BadRequestException("Release status not found");
+        }
+
+        newGame.setReleaseStatus(game.getReleaseStatus());
 
         List<Tag> tags = game.getTags().stream()
                 .map(tagDTO -> tagRepository.findById(tagDTO.getId())
@@ -58,11 +65,7 @@ public class GameService {
         return gameRepository.save(newGame);
     }
 
-    public GameDTO getGameByTitle(String title) {
-        return gameMapper.toDto(gameRepository.findGameByTitle(title));
-    }
-
-    public GameDTO updateGame(String title, GameDTO game) {
+    public GameDTO updateGame(String title, GameDTO game) throws BadRequestException {
         Game updatedGame = gameRepository.findGameByTitle(title);
         if (game.getTitle() != null) {
             updatedGame.setTitle(game.getTitle());
@@ -80,8 +83,10 @@ public class GameService {
             updatedGame.setDescription(game.getDescription());
         }
         if (game.getReleaseStatus() != null) {
-            ReleaseStatus releaseStatus = statusRepository.findById(game.getReleaseStatus().getId())
-                    .orElseThrow(() -> new RuntimeException("Invalid release status ID"));
+            ReleaseStatus releaseStatus = game.getReleaseStatus();
+            if (!EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
+                throw new BadRequestException("Release status not found");
+            }
             updatedGame.setReleaseStatus(releaseStatus);
         }
         if (game.getTags() != null) {
