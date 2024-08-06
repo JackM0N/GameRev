@@ -24,6 +24,7 @@ const routes: Routes = [
   { path: 'games/edit/:name', component: GameFormComponent},
   { path: 'user-reviews/add/:name', component: UserReviewFormComponent},
   { path: 'user-reviews/edit/:id', component: UserReviewFormComponent},
+  { path: 'user-reviews', component: UserReviewListComponent},
   { path: 'user-reviews/:name', component: UserReviewListComponent},
   { path: 'users', component: UsersListComponent},
   { path: 'reports', component: ReportsListComponent},
