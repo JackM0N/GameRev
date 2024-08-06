@@ -31,7 +31,7 @@
   
     <ng-container matColumnDef="releaseStatus">
       <th mat-sort-header="releaseStatus" mat-header-cell *matHeaderCellDef> Release status </th>
-      <td mat-cell *matCellDef="let element"> {{element.releaseStatus.statusName}} </td>
+      <td mat-cell *matCellDef="let element"> {{findReleaseStatusName(element.releaseStatus)}} </td>
     </ng-container>
   
     <ng-container matColumnDef="usersScore">

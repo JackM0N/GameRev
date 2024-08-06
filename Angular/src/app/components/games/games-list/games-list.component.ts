@@ -9,12 +9,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { AuthService } from '../../../services/auth.service';
+import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 
 @Component({
   selector: 'app-games-list',
   templateUrl: './games-list.component.html'
 })
 export class GamesListComponent implements AfterViewInit {
+  releaseStatuses: ReleaseStatus[] = releaseStatuses;
   gamesList: Game[] = [];
   totalGames: number = 0;
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
@@ -124,5 +127,10 @@ export class GamesListComponent implements AfterViewInit {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  findReleaseStatusName(status: string) {
+    const releaseStatus = this.releaseStatuses.find(releaseStatus => releaseStatus.className === status);
+    return releaseStatus ? releaseStatus.name : undefined;
   }
 }

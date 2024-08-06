@@ -21,7 +21,7 @@
     <mat-select formControlName="completionStatus">
         <mat-option>--</mat-option>
         @for (status of completionStatuses; track status) {
-            <mat-option [value]="status">{{status.completionName}}</mat-option>
+            <mat-option [value]="status.name">{{status.name}}</mat-option>
         }
     </mat-select>
     @if (isCompletionStatusInvalid()) {

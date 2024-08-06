@@ -31,7 +31,7 @@ export class UserGameEditDialogComponent implements OnInit {
       this.isFavourite = this.data.userGame.isFavourite;
 
       this.completionStatuses.forEach((status) => {
-        if (status.completionName === this.data.userGame.completionStatus.completionName) {
+        if (status.name === this.data.userGame.completionStatus.name) {
           this.completionStatus = status;
           this.updateForm.patchValue({
             completionStatus: status

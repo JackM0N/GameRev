@@ -24,7 +24,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { GameService } from './services/game.service';
-import { ReleaseStatusService } from './services/release-status.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
@@ -108,7 +107,6 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     AuthService,
     ToasterService,
     GameService,
-    ReleaseStatusService,
     TagService,
     UserReviewService,
     ReportService,

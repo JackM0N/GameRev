@@ -17,6 +17,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ReportService } from '../../../services/report.service';
+import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 
 @Component({
   selector: 'app-game-information',
@@ -25,6 +27,7 @@ import { ReportService } from '../../../services/report.service';
 })
 export class GameInformationComponent implements OnInit {
   formatDate = formatDate;
+  releaseStatuses: ReleaseStatus[] = releaseStatuses;
   likeColor: 'primary' | '' = '';
   dislikeColor: 'warn' | '' = '';
   usersScoreText: string = '';
@@ -75,6 +78,12 @@ export class GameInformationComponent implements OnInit {
 
         this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
           this.game = game;
+
+          this.releaseStatuses.forEach(status => {
+            if (status.className === this.game.releaseStatus) {
+              this.game.releaseStatus = status.name;
+            }
+          });
 
           this.updateUsersScoreText();
 
@@ -167,9 +176,15 @@ export class GameInformationComponent implements OnInit {
   deleteReview(review: UserReview) {
     if (review.id) {
       const token = this.authService.getToken();
+      const username = this.authService.getUsername();
 
       if (token === null) {
         console.log("Token is null");
+        return;
+      }
+
+      if (username === null) {
+        console.log("Username is null");
         return;
       }
 
@@ -196,6 +211,9 @@ export class GameInformationComponent implements OnInit {
         },
         complete: () => {}
       };
+      
+      review.userUsername = username;
+
       this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
     }
   }
