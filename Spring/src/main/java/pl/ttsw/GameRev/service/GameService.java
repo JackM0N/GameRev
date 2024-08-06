@@ -37,7 +37,6 @@ public class GameService {
     }
 
     public GameDTO getGameByTitle(String title) {
-        System.out.println(gameRepository.findGameByTitle(title));
         return gameMapper.toDto(gameRepository.findGameByTitle(title));
     }
 
