@@ -45,7 +45,7 @@ import { UserGamesListComponent } from './components/user-games/user-games-list/
 import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
 import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
 import { ImageCacheService } from './services/imageCache.service';
-import { OwnUserReviewListComponent } from './components/reports/own-reviews-list/own-reviews-list.component';
+import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
 import { ResetPasswordConfirmationDialogComponent } from './components/authentication/reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
 
 @NgModule({
@@ -67,7 +67,7 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     UserGamesListComponent,
     UserGameEditDialogComponent,
     UserGameAddDialogComponent,
-    OwnUserReviewListComponent,
+    UserReviewListComponent,
     ResetPasswordConfirmationDialogComponent
   ],
   imports: [

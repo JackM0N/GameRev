@@ -174,4 +174,8 @@ export class UsersListComponent implements AfterViewInit {
   openProfile(user: WebsiteUser) {
     this.router.navigate(['/profile/' + user.nickname]);
   }
+
+  openUserReviews(user: WebsiteUser) {
+    this.router.navigate(['/user-reviews/' + user.id]);
+  }
 }

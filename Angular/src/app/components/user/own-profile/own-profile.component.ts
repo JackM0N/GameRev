@@ -436,6 +436,6 @@ export class OwnProfileComponent implements OnInit {
   }
 
   routeToOwnReviews() {
-    this.router.navigate(['/user-reviews/own']);
+    this.router.navigate(['/user-reviews']);
   }
 }

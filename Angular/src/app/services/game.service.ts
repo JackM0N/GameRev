@@ -20,8 +20,7 @@ export class GameService {
       params = new HttpParams()
         .set('page', (page - 1).toString())
         .set('size', size.toString())
-        .set('sortBy', sortBy)
-        .set('sortDir', sortDir);
+        .set('sort', sortBy + ',' + sortDir);
     } else {
       params = new HttpParams();
     }

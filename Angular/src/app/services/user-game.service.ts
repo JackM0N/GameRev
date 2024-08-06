@@ -19,8 +19,7 @@ export class UserGameService {
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir);
+      .set('sort', sortBy + ',' + sortDir);
     return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
   }
 
