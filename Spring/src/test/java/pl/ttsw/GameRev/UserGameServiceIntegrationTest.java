@@ -16,12 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserGameDTO;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
-import pl.ttsw.GameRev.model.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.CompletionStatusRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
@@ -40,25 +39,19 @@ public class UserGameServiceIntegrationTest {
     private UserGameService userGameService;
 
     @Autowired
-    private CompletionStatusRepository completionStatusRepository;
-
-    @Autowired
     private GameRepository gameRepository;
 
     @Autowired
     private UserGameRepository userGameRepository;
 
-
     @Autowired
     private UserGameMapper userGameMapper;
-
 
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
 
     private WebsiteUser testUser;
     private Game game;
-    private CompletionStatus completionStatus;
     private UserGame userGame;
     private UserGameDTO userGameDTO;
 
@@ -66,19 +59,17 @@ public class UserGameServiceIntegrationTest {
     public void setUp() {
         testUser = websiteUserRepository.findByUsername("testuser");
         game = gameRepository.findGameByTitle("Limbus Company");
-        completionStatus = completionStatusRepository.findById(1L).orElse(null);
 
         userGame = new UserGame();
         userGame.setUser(testUser);
         userGame.setGame(game);
-        userGame.setCompletionStatus(completionStatus);
+        userGame.setCompletionStatus(CompletionStatus.IN_PROGRESS);
         userGame.setIsFavourite(false);
         userGame.setId(1L);
         userGameDTO = userGameMapper.toDto(userGame);
 
         assertNotNull(testUser);
         assertNotNull(game);
-        assertNotNull(completionStatus);
         assertNotNull(userGameDTO);
     }
 
@@ -120,7 +111,7 @@ public class UserGameServiceIntegrationTest {
         UserGame userGame = new UserGame();
         userGame.setUser(testUser);
         userGame.setGame(game);
-        userGame.setCompletionStatus(completionStatus);
+        userGame.setCompletionStatus(CompletionStatus.IN_PROGRESS);
         userGame.setIsFavourite(false);
 
         UserGameDTO userGameDTO = userGameMapper.toDto(userGame);

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev;
 
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,14 +11,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.ttsw.GameRev.dto.GameDTO;
-import pl.ttsw.GameRev.dto.ReleaseStatusDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
+import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.ReleaseStatus;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
-import pl.ttsw.GameRev.repository.ReleaseStatusRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
 
@@ -43,9 +42,6 @@ class GameServiceTest {
     private GameRepository gameRepository;
 
     @Mock
-    private ReleaseStatusRepository statusRepository;
-
-    @Mock
     private TagRepository tagRepository;
 
     @BeforeEach
@@ -61,10 +57,7 @@ class GameServiceTest {
         game.setPublisher("Project Moon");
         game.setReleaseDate(LocalDate.now());
         game.setDescription("Nice game");
-        ReleaseStatus releaseStatus = new ReleaseStatus();
-        releaseStatus.setId(1L);
-        releaseStatus.setStatusName("Released");
-        game.setReleaseStatus(releaseStatus);
+        game.setReleaseStatus(ReleaseStatus.RELEASED);
         Tag tag = new Tag();
         tag.setId(1L);
         tag.setTagName("RPG");
@@ -106,30 +99,26 @@ class GameServiceTest {
     }
 
     @Test
-    public void testCreateGame() {
+    public void testCreateGame() throws BadRequestException {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Limbus Company");
         gameDTO.setDeveloper("Project Moon");
         gameDTO.setPublisher("Project Moon");
         gameDTO.setReleaseDate(LocalDate.now());
         gameDTO.setDescription("Nice game");
-        ReleaseStatusDTO releaseStatusDTO = new ReleaseStatusDTO();
-        releaseStatusDTO.setId(1L);
-        gameDTO.setReleaseStatus(releaseStatusDTO);
+        gameDTO.setReleaseStatus(ReleaseStatus.RELEASED);
         TagDTO tagDTO = new TagDTO();
         tagDTO.setId(1L);
         gameDTO.setTags(Collections.singletonList(tagDTO));
 
         Game game = createGameForTesting();
 
-        when(statusRepository.findReleaseStatusById(1L)).thenReturn(game.getReleaseStatus());
         when(tagRepository.findById(1L)).thenReturn(Optional.of(game.getTags().get(0)));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
 
         Game result = gameService.createGame(gameDTO);
 
         assertNotNull(result);
-        verify(statusRepository, times(1)).findReleaseStatusById(1L);
         verify(tagRepository, times(1)).findById(1L);
         verify(gameRepository, times(1)).save(any(Game.class));
     }
@@ -150,7 +139,7 @@ class GameServiceTest {
     }
 
     @Test
-    void testUpdateGame() {
+    void testUpdateGame() throws BadRequestException {
         Game game = createGameForTesting();
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Updated Title");

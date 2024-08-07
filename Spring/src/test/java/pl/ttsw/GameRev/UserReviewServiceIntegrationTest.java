@@ -13,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -38,8 +39,6 @@ public class UserReviewServiceIntegrationTest {
     private WebsiteUserRepository websiteUserRepository;
     @Autowired
     private GameRepository gameRepository;
-    @Autowired
-    private ReleaseStatusRepository releaseStatusRepository;
     @Autowired
     private TagRepository tagRepository;
     private Game game;
@@ -77,7 +76,7 @@ public class UserReviewServiceIntegrationTest {
         game.setPublisher("Project Moon");
         game.setReleaseDate(LocalDate.now());
         game.setDescription("Nice game");
-        game.setReleaseStatus(releaseStatusRepository.findReleaseStatusById(1L));
+        game.setReleaseStatus(ReleaseStatus.RELEASED);
         game.setTags(List.of(tagRepository.findById(1L).orElseThrow(RuntimeException::new)));
         return game;
     }

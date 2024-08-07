@@ -91,8 +91,6 @@ public class UserReviewService{
             long approvedReports = userReview.getReports().stream()
                     .filter(report -> report.getApproved() != null && report.getApproved())
                     .count();
-            userReviewDTO.setGameTitle(userReview.getGame().getTitle());
-            userReviewDTO.setUserUsername(userReview.getUser().getUsername());
             userReviewDTO.setTotalReports(totalReports);
             userReviewDTO.setApprovedReports(approvedReports);
             return userReviewDTO;
