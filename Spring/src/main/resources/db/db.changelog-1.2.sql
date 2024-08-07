@@ -36,3 +36,9 @@ UPDATE game SET release_status = UPPER(release_status);
 UPDATE user_game SET completion_status = UPPER(completion_status);
 UPDATE critic_review SET review_status = UPPER(review_status);
 
+
+--changeset Stanislaw:18 labels:schema,refactoring
+UPDATE game SET release_status = REPLACE(release_status, '-', '_');
+UPDATE user_game SET completion_status = REPLACE(completion_status, '-', '_');
+UPDATE critic_review SET review_status = REPLACE(review_status, '-', '_');
+
