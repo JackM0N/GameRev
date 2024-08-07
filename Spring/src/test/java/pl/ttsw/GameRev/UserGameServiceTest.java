@@ -12,16 +12,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
-import pl.ttsw.GameRev.dto.CompletionStatusDTO;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
-import pl.ttsw.GameRev.model.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.CompletionStatusRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
@@ -37,9 +35,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserGameServiceTest {
-
-    @Mock
-    private CompletionStatusRepository completionStatusRepository;
 
     @Mock
     private GameRepository gameRepository;
@@ -61,7 +56,6 @@ public class UserGameServiceTest {
 
     private WebsiteUser user;
     private Game game;
-    private CompletionStatus completionStatus;
     private UserGame userGame;
     private UserGameDTO userGameDTO;
 
@@ -79,18 +73,12 @@ public class UserGameServiceTest {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setId(1L);
 
-        completionStatus = new CompletionStatus();
-        completionStatus.setId(1L);
-        completionStatus.setCompletionName("Finished");
-
-        CompletionStatusDTO completionStatusDTO = new CompletionStatusDTO(1L, "Finished");
-
         userGame = new UserGame();
         userGame.setUser(user);
         userGame.setGame(game);
-        userGame.setCompletionStatus(completionStatus);
+        userGame.setCompletionStatus(CompletionStatus.IN_PROGRESS);
 
-        userGameDTO = new UserGameDTO(1L, gameDTO, userDTO, completionStatusDTO, false);
+        userGameDTO = new UserGameDTO(1L, gameDTO, userDTO, CompletionStatus.IN_PROGRESS, false);
     }
 
     @Test
@@ -130,7 +118,6 @@ public class UserGameServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(user);
         when(websiteUserRepository.findByUsername(anyString())).thenReturn(user);
         when(gameRepository.findGameById(anyLong())).thenReturn(game);
-        when(completionStatusRepository.findById(anyLong())).thenReturn(Optional.of(completionStatus));
         when(userGameRepository.save(any(UserGame.class))).thenReturn(userGame);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
@@ -168,13 +155,14 @@ public class UserGameServiceTest {
     public void testUpdateGame_Success() throws BadRequestException {
         when(userGameRepository.findById(anyLong())).thenReturn(Optional.of(userGame));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
-        when(completionStatusRepository.findById(anyLong())).thenReturn(Optional.of(completionStatus));
         when(userGameRepository.save(any(UserGame.class))).thenReturn(userGame);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
+        userGameDTO.setCompletionStatus(CompletionStatus.COMPLETED);
         UserGameDTO result = userGameService.updateGame(userGameDTO);
 
         assertNotNull(result);
+        assertEquals(CompletionStatus.COMPLETED, result.getCompletionStatus());
         verify(userGameRepository, times(1)).save(any(UserGame.class));
     }
 
