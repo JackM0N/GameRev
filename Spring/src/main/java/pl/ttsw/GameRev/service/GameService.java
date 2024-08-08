@@ -38,7 +38,7 @@ public class GameService {
         return gameMapper.toDto(game);
     }
 
-    public Game createGame(GameDTO game) throws BadRequestException {
+    public GameDTO createGame(GameDTO game) throws BadRequestException {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
         newGame.setDeveloper(game.getDeveloper());
@@ -60,7 +60,7 @@ public class GameService {
                 .collect(Collectors.toList());
         newGame.setTags(tags);
 
-        return gameRepository.save(newGame);
+        return gameMapper.toDto(gameRepository.save(newGame));
     }
 
     public GameDTO updateGame(String title, GameDTO game) throws BadRequestException {

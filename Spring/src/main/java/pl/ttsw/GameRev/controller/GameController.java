@@ -20,7 +20,7 @@ public class GameController {
 
     @PostMapping("")
     public ResponseEntity<?> createGame(@RequestBody GameDTO request) throws BadRequestException {
-        Game game = gameService.createGame(request);
+        GameDTO game = gameService.createGame(request);
         if (game == null) {
             return ResponseEntity.badRequest().body("Game creation failed");
         }
