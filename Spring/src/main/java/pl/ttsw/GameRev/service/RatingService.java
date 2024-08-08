@@ -28,7 +28,7 @@ public class RatingService {
 
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
-                .orElseThrow(() -> new BadRequestException("User Review Not Found"));
+                .orElseThrow(() -> new BadRequestException("User review not found"));
         Rating rating;
         if (userReview == null) {
             throw new BadRequestException("This review doesnt exist");
@@ -52,7 +52,7 @@ public class RatingService {
                 rating.setIsPositive(userReviewDTO.getOwnRatingIsPositive());
                 rating.setUser(websiteUserService.getCurrentUser());
                 rating.setUserReview(userReviewRepository.findById(userReviewDTO.getId())
-                        .orElseThrow(() -> new BadRequestException("User Review Not Found")));
+                        .orElseThrow(() -> new BadRequestException("User review not found")));
             }
         }
         return ratingMapper.toDto(ratingRepository.save(rating));
