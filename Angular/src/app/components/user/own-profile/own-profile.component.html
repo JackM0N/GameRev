@@ -1,8 +1,7 @@
 
 <div class="grow min-h-lvh z-10 text-white bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center">
-
-    <div class="pixel-border w-2/3 h-fit py-[6px] m-auto max-w-[1200px]">
-        <div class="synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex justify-center bg-black">
+    <div class="pixel-border max-[880px]:w-[386px] min-[880px]:w-5/6 h-fit py-[6px] m-auto max-w-[1200px]">
+        <div class="synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex max-[879px]:flex-col-reverse justify-center bg-black">
             <div class="z-20 w-fit inline-block pt-4 ml-8">
                 <form class="group m-auto relative w-fit" [formGroup]="changeProfilePictureForm" (ngSubmit)="onSubmitProfilePictureChange()">
                     <input class="z-50 peer bg-white w-36 h-32 absolute top-28 left-[10px] opacity-0" type="file" id="profilePicture" (change)="onFileSelected($event)" formControlName="profilePicture">
@@ -15,7 +14,7 @@
                 </div>
             </div>
 
-            <div class="w-full inline-block group pinkTextShadow p-4 pl-8 flex flex-col">
+            <div class="w-full inline-block pinkTextShadow p-4 px-8 flex flex-col">
                 <div class="text-3xl w-fit">Profile &nbsp; information</div>
                 <form class="text-xl flex flex-col" [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitProfileInformationChange()">
                     <div class="mt-2">
@@ -28,7 +27,7 @@
                         <textarea class="max-h-[112px] min-h-[112px] h-[112px] text-black px-1 resize-none mt-2" formControlName="description"></textarea>
                     </div>
 
-                    <div class="invisible group-focus-within:visible mt-2">
+                    <div class="mt-2">
                         <label class="block">Enter your password</label>
                         <div class="flex items-center w-64 bg-white h-[28px] mt-2">
                             <input class="px-1 h-full w-56 text-black" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
@@ -41,10 +40,10 @@
                             >
                                 <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                             </button>
-                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-4 invisible group-focus-within:visible">
+                    <div class="mt-4">
                         <button class="text-2xl pinkTextShadow pinkTextShadow text-white disabled:opacity-30" [disabled]="!changeProfileInformationForm.valid">Change profile</button>
                     </div>
                 </form>
@@ -52,14 +51,14 @@
         </div>
     </div>
 
-    <div class="pixel-border w-2/3 h-[280px] py-[6px] m-auto max-w-[1200px] my-10 text-xl pinkTextShadow flex">
+    <div class="pixel-border max-[880px]:w-[386px] min-[880px]:w-5/6 h-[280px] py-[6px] m-auto max-w-[1200px] my-10 text-xl pinkTextShadow flex">
         <div class="px-8 py-4 h-full w-fit ml-[6px] bg-no-repeat bg-right z-0 flex flex-col bg-black">
             <h3 class="text-3xl">Change email</h3>
 
             <form [formGroup]="changeEmailForm" (ngSubmit)="onSubmitEmailChange()">
                 <div class="mt-2">
                     <label>Enter new email</label>
-                    <input class="w-64 mt-2" placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                    <input class="w-64 mt-2 text-black px-1" placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
                     <mat-error *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
                 </div>
 
@@ -84,10 +83,10 @@
                 </div>
             </form>
         </div>
-        <div class="neonAtSymbols w-full h-full bg-cover bg-no-repeat"></div>
+        <div class="neonAtSymbols w-full h-full bg-cover bg-no-repeat max-[880px]:-ml-5"></div>
     </div>
 
-    <div class="pixel-border w-2/3 h-[350px] py-[6px] m-auto max-w-[1200px] my-10 text-xl pinkTextShadow flex">
+    <div class="pixel-border max-[880px]:w-[386px] min-[880px]:w-5/6 h-[350px] py-[6px] m-auto max-w-[1200px] my-10 text-xl pinkTextShadow flex">
         <div class="px-8 py-4 h-full w-fit ml-[6px] bg-no-repeat bg-right z-0 flex flex-col bg-black">
             <h3 class="text-3xl">Change password</h3>
 
@@ -147,13 +146,7 @@
                 </div>
             </form>
         </div>
-        <div class="neonStarsSymbols w-full h-full bg-cover bg-no-repeat bg-center"></div>
-    </div>
- 
-    <div class="pixel-border w-48 h-fit py-[6px] m-auto mb-8 px-[6px]">
-        <div class="flex justify-center font-arcade text-3xl bg-black">
-            <button class="text-white" (click)="routeToOwnReviews()">Check own reviews</button>
-        </div>
+        <div class="neonStarsSymbols w-full h-full bg-cover bg-no-repeat bg-left max-[880px]:-ml-20"></div>
     </div>
  
     <div class="pixel-border w-36 h-fit py-[6px] m-auto mb-8 px-[6px]">

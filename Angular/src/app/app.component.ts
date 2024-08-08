@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
 import { Router, NavigationStart } from '@angular/router';
@@ -19,6 +19,7 @@ export class AppComponent {
     private router: Router,
     public authService: AuthService,
     private backgroundService: BackgroundService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -38,6 +39,7 @@ export class AppComponent {
 
     this.backgroundService.classes$.subscribe(classes => {
       this.classes = classes;
+      this.cdRef.detectChanges();
     });
   }
 }

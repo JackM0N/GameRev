@@ -51,7 +51,16 @@ body {
     background-image: url(./app/images/neonStarsSymbols.jpg);
 }
 
-.screenHead {
+.fallingCds{
+    background-image: url(./app/images/fallingCds.png);
+}
+
+.synthwaveBg{
+    background-image: url(./app/images/synthwaveBg.png);
+    background-size: 22px 22px;
+}
+
+.screenHead{
     background-image: url(./app/images/screenHead.png);
     background-size: 320px 320px;
     background-repeat: no-repeat;
@@ -129,6 +138,94 @@ body {
 .pinkTextShadow {
     text-shadow: 2px 2px 0px #fb049c;
 }
+
+/*material edits*/
+/*table column sort*/
+.mat-sort-header-arrow{
+    color: white !important;
+    fill: white !important;
+    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+}
+
+/*paginator*/
+.mat-mdc-paginator-page-size{
+    text-align: center;
+}
+
+.mat-mdc-paginator-page-size-label{
+    color: white;
+    font-family: 'arcade';
+    font-size: large;
+}
+
+.mat-mdc-paginator-range-label{
+    color: white;
+    font-family: 'arcade';
+    font-size: large;
+}
+
+.mat-mdc-select-min-line{
+    color: white;
+    font-family: 'arcade';
+    font-size: large;
+}
+
+.mat-mdc-form-field{
+    background-color: black;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading, .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch, .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing{
+    border: none;
+}
+
+.mat-mdc-paginator-container{
+    display: flex;
+    flex-direction: column;
+    border-left: 6px white solid;
+    border-right: 6px white solid;
+}
+
+.mat-mdc-form-field div::before, .mat-mdc-form-field div::after{
+    background: none !important;
+}
+
+.cdk-overlay-pane{
+    background-color: black;
+    color: white;
+}
+
+.mat-mdc-select-panel{
+    background-color: black !important;
+    color: white !important;
+    border-radius: 0px !important;
+}
+
+.mat-mdc-option{
+    background-color: black !important;
+    color: white !important;
+    text-shadow: 2px 2px 0px #fb049c !important;
+    font-size: large !important;
+}
+
+.mdc-list-item__primary-text{
+    color: white !important;
+    font-family: "arcade" !important;
+}
+
+.mat-mdc-option:hover{
+    background-color: rgb(68, 0, 54) !important;
+}
+
+.mat-mdc-paginator-icon{
+    fill: white !important;
+    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+}
+
+.mat-mdc-select-arrow svg{
+    fill: white !important;
+    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+}
+
 
 /*practical joke until later solution*/
 .smallBgImageSize {

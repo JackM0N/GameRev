@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';
@@ -32,10 +32,11 @@ export class GamesListComponent implements AfterViewInit {
     private router: Router,
     public dialog: MatDialog,
     public authService: AuthService,
-    private backgroundService: BackgroundService
+    private backgroundService: BackgroundService,
   ) {}
 
   ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
     this.backgroundService.setMainContentStyle({'padding-left': '200px'});
   }
 
