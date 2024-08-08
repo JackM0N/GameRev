@@ -30,9 +30,6 @@ public class RatingService {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
                 .orElseThrow(() -> new BadRequestException("User review not found"));
         Rating rating;
-        if (userReview == null) {
-            throw new BadRequestException("This review doesnt exist");
-        }
         Optional <Rating> ratingOptional = ratingRepository.findByUserAndUserReview(websiteUserService.getCurrentUser(), userReview);
 
         if (userReviewDTO.getOwnRatingIsPositive() == null) {

@@ -112,7 +112,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         WebsiteUser currentUser = getCurrentUser();
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin"))){
+        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
 
@@ -120,7 +120,7 @@ public class WebsiteUserService {
             user.setUsername(websiteUserDTO.getUsername());
         }
         if (websiteUserDTO.getPassword() != null && !websiteUserDTO.getPassword().isEmpty()) {
-            user.setPassword(websiteUserDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(websiteUserDTO.getPassword()));
         }
         if (websiteUserDTO.getProfilepic() != null && !websiteUserDTO.getProfilepic().isEmpty()) {
             user.setProfilepic(null);
@@ -150,11 +150,13 @@ public class WebsiteUserService {
         if (websiteUser.getRoles().contains(role) && !isAdded){
             roles.remove(role);
             websiteUser.setRoles(roles);
+            websiteUserRepository.save(websiteUser);
             return true;
         }
         if (!websiteUser.getRoles().contains(role) && isAdded) {
             roles.add(role);
             websiteUser.setRoles(roles);
+            websiteUserRepository.save(websiteUser);
             return true;
         }
         return false;
@@ -165,7 +167,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
         WebsiteUser currentUser = getCurrentUser();
 
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin"))){
+        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
         if (user.getIsDeleted() != null && user.getIsDeleted()) {
