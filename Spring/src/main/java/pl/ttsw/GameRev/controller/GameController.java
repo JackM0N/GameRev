@@ -30,7 +30,7 @@ public class GameController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getGame(@PathVariable String title) {
+    public ResponseEntity<?> getGame(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-"," ");
         GameDTO game = gameService.getGameByTitle(title);
         if (game == null) {
