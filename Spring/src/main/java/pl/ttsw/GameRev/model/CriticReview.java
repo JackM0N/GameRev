@@ -35,7 +35,7 @@ public class CriticReview {
     private Integer score;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "review_status", nullable = false)
+    @Column(name = "review_status", nullable = false)
     private ReviewStatus reviewStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

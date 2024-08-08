@@ -99,7 +99,8 @@ public class UserReviewService{
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = new UserReview();
-        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
+        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername())
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
         if (websiteUser == null) {
             throw new BadRequestException("Your user could not be found");
@@ -109,7 +110,8 @@ public class UserReviewService{
         }
 
         userReview.setUser(websiteUser);
-        userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle()));
+        userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle())
+                .orElseThrow(() -> new BadRequestException("Game not found")));
         userReview.setContent(userReviewDTO.getContent());
         userReview.setScore(userReviewDTO.getScore());
         userReview.setPostDate(LocalDate.now());
@@ -120,7 +122,8 @@ public class UserReviewService{
     }
 
     public UserReviewDTO updateUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
-        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
+        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
+                .orElseThrow(() -> new BadRequestException("User review not found"));
 
         if (userReview == null) {
             throw new BadRequestException("This review doesn't exist");
@@ -140,9 +143,11 @@ public class UserReviewService{
         return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }
 
-    public boolean deleteUserReviewByOwner(UserReviewDTO userReviewDTO) {
-        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername());
-        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId());
+    public boolean deleteUserReviewByOwner(UserReviewDTO userReviewDTO) throws BadRequestException {
+        WebsiteUser websiteUser = websiteUserRepository.findByUsername(userReviewDTO.getUserUsername())
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
+                .orElseThrow(() -> new BadCredentialsException("User review not found"));
 
         if (websiteUser != websiteUserService.getCurrentUser()){
             throw new BadCredentialsException("You cant delete a review that doesn't belong to you");
@@ -156,10 +161,8 @@ public class UserReviewService{
     }
 
     public boolean deleteUserReviewById(Long id) throws BadRequestException {
-        UserReview userReview = userReviewRepository.findById(id);
-        if (userReview == null){
-            throw new BadRequestException("This review doesn't exist");
-        }
+        UserReview userReview = userReviewRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("User review not found"));
         userReviewRepository.delete(userReview);
         return true;
     }

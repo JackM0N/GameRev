@@ -6,11 +6,13 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 @Repository
 public interface WebsiteUserRepository extends JpaRepository<WebsiteUser, Long> {
-    WebsiteUser findByUsername(String username);
-    WebsiteUser findByUsernameOrEmail(String username, String email);
-    WebsiteUser findByNickname(String nickname);
-    WebsiteUser findByEmail(String email);
+    Optional<WebsiteUser> findByUsername(String username);
+    Optional<WebsiteUser> findByUsernameOrEmail(String username, String email);
+    Optional<WebsiteUser> findByNickname(String nickname);
+    Optional<WebsiteUser> findByEmail(String email);
     Page<WebsiteUser> findAll(Pageable pageable);
 }
