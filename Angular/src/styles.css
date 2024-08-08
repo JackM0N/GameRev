@@ -172,6 +172,10 @@ body {
     text-shadow: 2px 2px 0px #fb049c;
 }
 
+.noTextShadow {
+    text-shadow: none;
+}
+
 /*material edits*/
 /*table column sort*/
 .mat-sort-header-arrow{
@@ -201,6 +205,7 @@ body {
     color: white;
     font-family: 'arcade';
     font-size: large;
+    text-wrap: wrap;
 }
 
 .mat-mdc-form-field{
@@ -255,10 +260,62 @@ body {
 }
 
 .mat-mdc-select-arrow svg{
-    fill: white !important;
+    fill: black !important;
     filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
+/*date picker*/
+.mat-datepicker-toggle-default-icon{
+    fill: black !important;
+}
+
+.mat-calendar{
+    background: black;
+    color: white !important;
+}
+
+.mdc-icon-button{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
+}
+
+.mdc-button__label{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+.mat-calendar-arrow{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+mat-datepicker-toggle > button{
+    margin-top: -10px !important;
+}
+
+mat-datepicker-toggle > button > span{
+    display: none !important;
+}
+
+/*select*/
+.mat-mdc-select-min-line{
+    margin-left: 8px;
+    color: black; 
+    filter: none !important;
+}
+
+.mat-mdc-select-arrow{
+    margin: 8px;
+}
 
 /*practical joke until later solution*/
 .smallBgImageSize {
