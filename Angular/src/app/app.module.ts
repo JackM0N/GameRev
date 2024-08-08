@@ -47,6 +47,9 @@ import { UserGameAddDialogComponent } from './components/user-games/user-game-ad
 import { ImageCacheService } from './services/imageCache.service';
 import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
 import { ResetPasswordConfirmationDialogComponent } from './components/authentication/reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
+import { AdService } from './services/ad.service';
+import { BackgroundService } from './services/background.service';
+import { AdBoxComponent } from './components/ad-box/ad-box.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +71,8 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     UserGameEditDialogComponent,
     UserGameAddDialogComponent,
     UserReviewListComponent,
-    ResetPasswordConfirmationDialogComponent
+    ResetPasswordConfirmationDialogComponent,
+    AdBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -112,6 +116,8 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     ReportService,
     UserGameService,
     ImageCacheService,
+    BackgroundService,
+    AdService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],

@@ -20,8 +20,13 @@
   </div>
 </header>
 
-<main class="grow flex flex-col justify-between">
-  <router-outlet class="flex flex-col justify-between"></router-outlet>
+<main class="grow flex flex-col justify-between" [ngStyle]="styles" [ngClass]="classes">
+  <app-ad-box>
+  </app-ad-box>
+
+  <div class="main-container" [ngStyle]="mainStyles">
+    <router-outlet class="flex flex-col justify-between"></router-outlet>
+  </div>
 </main>
 
 <footer class="footer z-20">

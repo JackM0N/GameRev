@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { BackgroundService } from './services/background.service';
+import { Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,33 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Gamerev';
 
+  styles: { [key: string]: string } = {};
+  mainStyles: { [key: string]: string } = {};
+  classes: string[] = [];
+
   constructor(
-    public authService: AuthService
+    private router: Router,
+    public authService: AuthService,
+    private backgroundService: BackgroundService,
   ) {}
+
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.backgroundService.resetStyles();
+      }
+    });
+
+    this.backgroundService.style$.subscribe(styles => {
+      this.styles = styles;
+    });
+
+    this.backgroundService.mainStyle$.subscribe(mainStyles => {
+      this.mainStyles = mainStyles;
+    });
+
+    this.backgroundService.classes$.subscribe(classes => {
+      this.classes = classes;
+    });
+  }
 }

@@ -19,6 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ReportService } from '../../../services/report.service';
 import { releaseStatuses } from '../../../interfaces/releaseStatuses';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-game-information',
@@ -68,10 +69,13 @@ export class GameInformationComponent implements OnInit {
     private router: Router,
     private _location: Location,
     public dialog: MatDialog,
+    private backgroundService: BackgroundService
   ) {
   }
 
   ngOnInit() {
+    this.backgroundService.setMainContentStyle({'padding-left': '180px'});
+
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');

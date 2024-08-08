@@ -10,6 +10,7 @@ import { UserService } from '../../../services/user.service';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
 import { AuthService } from '../../../services/auth.service';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-users-list',
@@ -31,7 +32,12 @@ export class UsersListComponent implements AfterViewInit {
     private toasterService: ToasterService,
     private authService: AuthService,
     private router: Router,
+    private backgroundService: BackgroundService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.backgroundService.setMainContentStyle({'padding-left': '180px'});
   }
 
   ngAfterViewInit() {

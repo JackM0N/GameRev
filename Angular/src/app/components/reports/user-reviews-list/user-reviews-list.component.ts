@@ -10,6 +10,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { formatDate } from '../../../util/formatDate';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-user-reviews-list',
@@ -33,7 +34,12 @@ export class UserReviewListComponent implements AfterViewInit {
     private authService: AuthService,
     public dialog: MatDialog,
     private _location: Location,
+    private backgroundService: BackgroundService
   ) {}
+
+  ngOnInit(): void {
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+  }
 
   ngAfterViewInit() {
     this.route.params.subscribe(params => {

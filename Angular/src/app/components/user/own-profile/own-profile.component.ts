@@ -12,6 +12,7 @@ import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { UserService } from '../../../services/user.service';
 import { ImageCacheService } from '../../../services/imageCache.service';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-own-profile',
@@ -41,6 +42,7 @@ export class OwnProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     private toasterService: ToasterService,
+    private backgroundService: BackgroundService
   ) {
     this.changePasswordForm = this.formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -73,6 +75,8 @@ export class OwnProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.backgroundService.setClasses(['matrixNumbers']);
+
     const token = this.authService.getToken();
   
     if (token === null) {

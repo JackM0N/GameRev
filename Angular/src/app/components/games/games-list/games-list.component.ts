@@ -11,6 +11,7 @@ import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component'
 import { AuthService } from '../../../services/auth.service';
 import { releaseStatuses } from '../../../interfaces/releaseStatuses';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-games-list',
@@ -30,8 +31,13 @@ export class GamesListComponent implements AfterViewInit {
     private gameService: GameService,
     private router: Router,
     public dialog: MatDialog,
-    public authService: AuthService
+    public authService: AuthService,
+    private backgroundService: BackgroundService
   ) {}
+
+  ngOnInit(): void {
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
