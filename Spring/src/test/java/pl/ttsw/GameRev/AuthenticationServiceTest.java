@@ -17,6 +17,8 @@ import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.security.JWTService;
 import pl.ttsw.GameRev.service.AuthenticationService;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -56,10 +58,10 @@ public class AuthenticationServiceTest {
         savedUser.setUsername("testuser2");
 
         Role userRole = new Role();
-        userRole.setRoleName("USER");
+        userRole.setRoleName("User");
 
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(roleRepository.findByRoleName("USER")).thenReturn(userRole);
+        when(roleRepository.findByRoleName("User")).thenReturn(Optional.of(userRole));
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(savedUser);
         when(jwtService.generateToken(savedUser)).thenReturn("jwtToken");
 
@@ -78,7 +80,7 @@ public class AuthenticationServiceTest {
         WebsiteUser user = new WebsiteUser();
         user.setUsername("testuser2");
 
-        when(websiteUserRepository.findByUsernameOrEmail("testuser2", "testuser2")).thenReturn(user);
+        when(websiteUserRepository.findByUsernameOrEmail("testuser2", "testuser2")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("jwtToken");
 
         AuthenticationResponse response = authenticationService.authenticate(request);

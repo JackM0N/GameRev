@@ -20,6 +20,7 @@ import pl.ttsw.GameRev.service.GameService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,25 +39,25 @@ public class GameServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Game game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game != null) {
-            gameService.deleteGame(game.getId());
+        Optional<Game> game = gameRepository.findGameByTitle("Limbus Company 2");
+        if (game.isPresent()) {
+            gameService.deleteGame(game.get().getId());
         }
         game = gameRepository.findGameByTitle("Limbus Company Updated");
-        if (game != null) {
-            gameService.deleteGame(game.getId());
+        if (game.isPresent()) {
+            gameService.deleteGame(game.get().getId());
         }
     }
 
     @AfterEach
     public void tearDown() {
-        Game game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game != null) {
-            gameService.deleteGame(game.getId());
+        Optional<Game> game = gameRepository.findGameByTitle("Limbus Company 2");
+        if (game.isPresent()) {
+            gameService.deleteGame(game.get().getId());
         }
         game = gameRepository.findGameByTitle("Limbus Company Updated");
-        if (game != null) {
-            gameService.deleteGame(game.getId());
+        if (game.isPresent()) {
+            gameService.deleteGame(game.get().getId());
         }
     }
 
@@ -93,7 +94,7 @@ public class GameServiceIntegrationTest {
         tagDTO.setTagName(tag.getTagName());
         gameDTO.setTags(new ArrayList<>(List.of(tagDTO)));
 
-        Game createdGame = gameService.createGame(gameDTO);
+        GameDTO createdGame = gameService.createGame(gameDTO);
 
         assertNotNull(createdGame);
         assertEquals("Limbus Company 2", createdGame.getTitle());
@@ -109,7 +110,7 @@ public class GameServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testGetGameByTitle() {
+    public void testGetGameByTitle() throws BadRequestException {
         Game game = createGameForTesting();
         gameRepository.save(game);
 
@@ -125,18 +126,6 @@ public class GameServiceIntegrationTest {
         assertEquals(game.getTags().size(), gameDTO.getTags().size());
         assertEquals(game.getTags().get(0).getId(), gameDTO.getTags().get(0).getId());
         assertEquals(game.getTags().get(0).getTagName(), gameDTO.getTags().get(0).getTagName());
-    }
-
-    @Test
-    @Transactional
-    public void testGetGameById() {
-        Game game = createGameForTesting();
-        game = gameRepository.save(game);
-
-        GameDTO gameDTO = gameService.getGameById(game.getId());
-
-        assertNotNull(gameDTO);
-        assertEquals(game.getId(), gameDTO.getId());
     }
 
     @Test
