@@ -59,10 +59,6 @@
     font-weight: bold;
 }
 
-/* Add padding to content to offset header */
-.content {
-    padding-top: 80px; /* Adjust based on header height */
-}
 
 .header h1 {
     margin: 0;
@@ -77,4 +73,14 @@
     left: 0;
     width: 100%;
     margin: 0;
+}
+
+
+main {
+    display: flex;
+}
+
+.main-container {
+    flex: 1;
+    padding: 20px;
 }

@@ -20,8 +20,7 @@ export class UserService {
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir);
+      .set('sort', sortBy + ',' + sortDir);
     return this.http.get<WebsiteUser>(this.baseUrl, {params});
   }
 

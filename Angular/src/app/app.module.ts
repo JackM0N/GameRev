@@ -24,7 +24,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { GameService } from './services/game.service';
-import { ReleaseStatusService } from './services/release-status.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
@@ -46,8 +45,11 @@ import { UserGamesListComponent } from './components/user-games/user-games-list/
 import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
 import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
 import { ImageCacheService } from './services/imageCache.service';
-import { OwnUserReviewListComponent } from './components/reports/own-reviews-list/own-reviews-list.component';
+import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
 import { ResetPasswordConfirmationDialogComponent } from './components/authentication/reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
+import { AdService } from './services/ad.service';
+import { BackgroundService } from './services/background.service';
+import { AdBoxComponent } from './components/ad-box/ad-box.component';
 
 @NgModule({
   declarations: [
@@ -68,8 +70,9 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     UserGamesListComponent,
     UserGameEditDialogComponent,
     UserGameAddDialogComponent,
-    OwnUserReviewListComponent,
-    ResetPasswordConfirmationDialogComponent
+    UserReviewListComponent,
+    ResetPasswordConfirmationDialogComponent,
+    AdBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -108,12 +111,13 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
     AuthService,
     ToasterService,
     GameService,
-    ReleaseStatusService,
     TagService,
     UserReviewService,
     ReportService,
     UserGameService,
     ImageCacheService,
+    BackgroundService,
+    AdService,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     DatePipe
   ],

@@ -2,9 +2,7 @@ package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.GameDTO;
@@ -22,7 +20,7 @@ public class GameController {
 
     @PostMapping("")
     public ResponseEntity<?> createGame(@RequestBody GameDTO request) throws BadRequestException {
-        Game game = gameService.createGame(request);
+        GameDTO game = gameService.createGame(request);
         if (game == null) {
             return ResponseEntity.badRequest().body("Game creation failed");
         }
@@ -30,7 +28,7 @@ public class GameController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getGame(@PathVariable String title) {
+    public ResponseEntity<?> getGame(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-"," ");
         GameDTO game = gameService.getGameByTitle(title);
         if (game == null) {

@@ -7,6 +7,7 @@ import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { Toast, ToasterService } from 'angular-toaster';
 import { Router } from '@angular/router';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-registration',
@@ -25,7 +26,8 @@ export class RegistrationComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private toasterService: ToasterService,
-    private router: Router
+    private router: Router,
+    private backgroundService: BackgroundService
   ) {
     this.registrationForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -49,6 +51,10 @@ export class RegistrationComponent {
         .pipe(takeUntilDestroyed())
         .subscribe(() => this.updatePasswordMismatchErrorMessage());
     }
+  }
+
+  ngOnInit(): void {
+    this.backgroundService.setClasses(['pinkStars']);
   }
 
   onSubmit() {

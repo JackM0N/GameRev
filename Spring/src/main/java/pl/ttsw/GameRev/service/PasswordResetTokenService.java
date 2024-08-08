@@ -1,5 +1,7 @@
 package pl.ttsw.GameRev.service;
 
+import org.apache.coyote.BadRequestException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.model.PasswordResetToken;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -20,7 +22,8 @@ public class PasswordResetTokenService {
     }
 
     public String createPasswordResetToken(String email) {
-        WebsiteUser user = websiteUserRepository.findByEmail(email);
+        WebsiteUser user = websiteUserRepository.findByEmail(email)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -35,10 +38,8 @@ public class PasswordResetTokenService {
     }
 
     public PasswordResetToken validatePasswordResetToken(String token) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
-        if (passwordResetToken == null) {
-            throw new RuntimeException("Token not found");
-        }
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Token not found"));
 
         if (passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("This token is expired");

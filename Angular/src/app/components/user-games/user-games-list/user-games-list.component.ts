@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
@@ -12,6 +11,7 @@ import { UserGame } from '../../../interfaces/userGame';
 import { UserGameEditDialogComponent } from '../user-game-edit-dialog/user-game-edit-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
 import { UserGameAddDialogComponent } from '../user-game-add-dialog/user-game-add-dialog.component';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-user-games-list',
@@ -30,9 +30,13 @@ export class UserGamesListComponent implements AfterViewInit {
     private userGameService: UserGameService,
     private authService: AuthService,
     private toasterService: ToasterService,
-    private router: Router,
     public dialog: MatDialog,
+    private backgroundService: BackgroundService
   ) {}
+
+  ngOnInit(): void {
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
