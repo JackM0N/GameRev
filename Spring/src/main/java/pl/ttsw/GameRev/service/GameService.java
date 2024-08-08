@@ -36,7 +36,11 @@ public class GameService {
         return gameMapper.toDto(gameRepository.findGameById(id));
     }
 
-    public GameDTO getGameByTitle(String title) {
+    public GameDTO getGameByTitle(String title) throws BadRequestException {
+        Game game = gameRepository.findGameByTitle(title);
+        if (game == null) {
+            throw new BadRequestException("This game doesnt exist");
+        }
         return gameMapper.toDto(gameRepository.findGameByTitle(title));
     }
 

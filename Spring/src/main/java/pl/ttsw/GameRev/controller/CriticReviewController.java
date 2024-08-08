@@ -36,7 +36,7 @@ public class CriticReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CriticReviewDTO criticReviewDTO) {
+    public ResponseEntity<?> create(@RequestBody CriticReviewDTO criticReviewDTO) throws BadRequestException {
         if (criticReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error creating this critic review");
         }
@@ -59,5 +59,14 @@ public class CriticReviewController {
             return ResponseEntity.badRequest().body("There was an error editing this critic review");
         }
         return ResponseEntity.ok(criticReviewService.reviewCriticReview(id, reviewStatus));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id) throws BadRequestException {
+        boolean deleted = criticReviewService.deleteCriticReview(id);
+        if (!deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

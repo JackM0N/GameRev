@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Setter
 public class CriticReviewDTO implements Serializable {
     Long id;
-    GameDTO game;
+    String gameTitle;
     WebsiteUserDTO user;
     String content;
     LocalDate postDate;

@@ -21,12 +21,14 @@ public class CriticReviewService {
     private final CriticReviewMapper criticReviewMapper;
     private final GameMapper gameMapper;
     private final WebsiteUserService websiteUserService;
+    private final GameService gameService;
 
-    public CriticReviewService(CriticReviewRepository criticReviewRepository, CriticReviewMapper criticReviewMapper, GameMapper gameMapper, WebsiteUserService websiteUserService) {
+    public CriticReviewService(CriticReviewRepository criticReviewRepository, CriticReviewMapper criticReviewMapper, GameMapper gameMapper, WebsiteUserService websiteUserService, GameService gameService) {
         this.criticReviewRepository = criticReviewRepository;
         this.criticReviewMapper = criticReviewMapper;
         this.gameMapper = gameMapper;
         this.websiteUserService = websiteUserService;
+        this.gameService = gameService;
     }
 
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) {
@@ -39,7 +41,7 @@ public class CriticReviewService {
         return criticReview.map(criticReviewMapper::toDto).orElse(null);
     }
 
-    public CriticReviewDTO createCriticReview(CriticReviewDTO criticReviewDTO) {
+    public CriticReviewDTO createCriticReview(CriticReviewDTO criticReviewDTO) throws BadRequestException {
         WebsiteUser websiteUser = websiteUserService.getCurrentUser();
         if (websiteUser == null) {
             throw new BadCredentialsException("You have to login first");
@@ -47,7 +49,7 @@ public class CriticReviewService {
         CriticReview criticReview = new CriticReview();
         criticReview.setPostDate(LocalDate.now());
 
-        criticReview.setGame(gameMapper.toEntity(criticReviewDTO.getGame()));
+        criticReview.setGame(gameMapper.toEntity(gameService.getGameByTitle(criticReviewDTO.getGameTitle())));
         criticReview.setUser(websiteUser);
         criticReview.setContent(criticReviewDTO.getContent());
         criticReview.setScore(criticReviewDTO.getScore());
@@ -72,8 +74,8 @@ public class CriticReviewService {
         if (criticReviewDTO.getContent() != null) {
             criticReview.get().setContent(criticReviewDTO.getContent());
         }
-        if (criticReviewDTO.getGame() != null) {
-            criticReview.get().setGame(gameMapper.toEntity(criticReviewDTO.getGame()));
+        if (criticReviewDTO.getGameTitle() != null) {
+            criticReview.get().setGame(gameMapper.toEntity(gameService.getGameByTitle(criticReviewDTO.getGameTitle())));
         }
 
         return criticReviewMapper.toDto(criticReviewRepository.save(criticReview.get()));
