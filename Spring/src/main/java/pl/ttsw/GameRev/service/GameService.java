@@ -41,7 +41,7 @@ public class GameService {
         if (game == null) {
             throw new BadRequestException("This game doesnt exist");
         }
-        return gameMapper.toDto(gameRepository.findGameByTitle(title));
+        return gameMapper.toDto(game);
     }
 
     public Game createGame(GameDTO game) throws BadRequestException {
