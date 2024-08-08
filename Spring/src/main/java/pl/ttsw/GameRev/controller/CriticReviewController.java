@@ -35,7 +35,7 @@ public class CriticReviewController {
         return ResponseEntity.ok(criticReviewDTO);
     }
 
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CriticReviewDTO criticReviewDTO) {
         if (criticReviewDTO == null) {
             return ResponseEntity.badRequest().body("There was an error creating this critic review");
