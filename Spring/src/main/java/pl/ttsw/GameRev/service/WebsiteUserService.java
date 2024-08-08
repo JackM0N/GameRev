@@ -10,9 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
+import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
+import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class WebsiteUserService {
@@ -104,6 +107,59 @@ public class WebsiteUserService {
         return websiteUserMapper.toDto(user);
     }
 
+    public WebsiteUserDTO updateWebsiteUser(Long userId, WebsiteUserDTO websiteUserDTO) throws BadRequestException {
+        WebsiteUser user = websiteUserRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        WebsiteUser currentUser = getCurrentUser();
+        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin"))){
+            throw new BadCredentialsException("You dont have permission to perform this action");
+        }
+
+        if (websiteUserDTO.getUsername() != null && !websiteUserDTO.getUsername().isEmpty()) {
+            user.setUsername(websiteUserDTO.getUsername());
+        }
+        if (websiteUserDTO.getPassword() != null && !websiteUserDTO.getPassword().isEmpty()) {
+            user.setPassword(websiteUserDTO.getPassword());
+        }
+        if (websiteUserDTO.getProfilepic() != null && !websiteUserDTO.getProfilepic().isEmpty()) {
+            user.setProfilepic(null);
+        }
+        if (websiteUserDTO.getEmail() != null && !websiteUserDTO.getEmail().isEmpty()) {
+            user.setEmail(websiteUserDTO.getEmail());
+        }
+        if (websiteUserDTO.getNickname() != null && !websiteUserDTO.getNickname().isEmpty()) {
+            user.setNickname(websiteUserDTO.getNickname());
+        }
+        if (websiteUserDTO.getDescription() != null && !websiteUserDTO.getDescription().isEmpty()) {
+            user.setDescription(websiteUserDTO.getDescription());
+        }
+        if (websiteUserDTO.getIsDeleted() != null) {
+            user.setIsDeleted(websiteUserDTO.getIsDeleted());
+        }
+
+        return websiteUserMapper.toDto(websiteUserRepository.save(user));
+    }
+
+    public boolean updateRoles(RoleDTO roleDTO, long userId, boolean isAdded) throws BadRequestException {
+        WebsiteUser websiteUser = websiteUserRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        List<Role> roles = websiteUser.getRoles();
+        Role role = roleRepository.findByRoleName(roleDTO.getRoleName())
+                .orElseThrow(() -> new BadRequestException("Role not found"));
+        if (websiteUser.getRoles().contains(role) && !isAdded){
+            roles.remove(role);
+            websiteUser.setRoles(roles);
+            return true;
+        }
+        if (!websiteUser.getRoles().contains(role) && isAdded) {
+            roles.add(role);
+            websiteUser.setRoles(roles);
+            return true;
+        }
+        return false;
+    }
+
     public boolean banUser(WebsiteUserDTO userDTO) {
         WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
@@ -118,6 +174,13 @@ public class WebsiteUserService {
         user.setIsBanned(userDTO.getIsBanned());
         websiteUserRepository.save(user);
         return user.getIsBanned();
+    }
+
+    public boolean deleteWebsiteUser(Long id) throws BadRequestException {
+        WebsiteUser user = websiteUserRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        websiteUserRepository.delete(user);
+        return true;
     }
 
     public void uploadProfilePicture(ProfilePictureDTO profilePictureDTO) throws IOException {
