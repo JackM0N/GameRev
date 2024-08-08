@@ -19,12 +19,12 @@
     </nav>
   </div>
 </header>
+<app-ad-box class="z-100 fixed m-auto min-h-dvh flex items-center">
+</app-ad-box>
+<main class="grow flex flex-col justify-between "  [ngClass]="classes">
+  
 
-<main class="grow flex flex-col justify-between" [ngStyle]="styles" [ngClass]="classes">
-  <app-ad-box>
-  </app-ad-box>
-
-  <div class="main-container" [ngStyle]="mainStyles">
+  <div class="">
     <router-outlet class="flex flex-col justify-between"></router-outlet>
   </div>
 </main>

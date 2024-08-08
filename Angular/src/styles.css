@@ -134,6 +134,39 @@ body {
     right: 0;
   }
 
+/* Ukryj domyślny checkbox */
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+
+/* Styl dla niestandardowego checkboxa */
+.custom-checkbox .checkbox-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* X w środku checkboxa gdy jest odznaczony */
+.custom-checkbox .checkbox-box::before {
+    content: "X";
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+}
+
+/* Gdy checkbox jest zaznaczony, ukryj X */
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-box::before {
+    display: none;
+}
+
 /*text shadow in here since tailwind doesn't have that*/
 .pinkTextShadow {
     text-shadow: 2px 2px 0px #fb049c;

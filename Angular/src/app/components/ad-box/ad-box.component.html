@@ -1,5 +1,12 @@
-
-<div class="ad-box">
-  <h2>Advertisement</h2>
-  <img [src]="currentAd" alt="Advertisement" class="ad-image">
+<div class="pixel-border w-fit h-fit max-w-52 z-100 p-[6px] has-[:checked]:hidden">
+  <div class="w-fit h-fit bg-white font-arcade text-center text-xl">
+    <div class="flex flex-row">
+      <h2 class="pl-5 w-full select-none">Advertisement</h2>
+      <label class="custom-checkbox pt-1">
+        <input  type="checkbox">
+        <span class="checkbox-box"></span>
+      </label>
+    </div>
+      <img draggable="false" [src]="currentAd" alt="Advertisement" class="ad-image">
+  </div>
 </div>
