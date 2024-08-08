@@ -40,7 +40,7 @@ public class ReportController {
             return ResponseEntity.badRequest().body("This review doesn't exists");
         }
 
-        Page<ReportDTO> reportDTOS = reportService.getReportsByReview(userReviewDTO,pageable);
+        Page<ReportDTO> reportDTOS = reportService.getReportsByReview(userReviewDTO, pageable);
         if (reportDTOS == null || reportDTOS.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -1,6 +1,6 @@
-<div class="grow min-h-lvh z-10 fallingCds bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center">
+<div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center">
 
-  <div class="pixel-border w-56 h-fit py-[6px] m-auto mb-8 px-[6px]">
+  <div class="pixel-border w-56 h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
     <div class="flex justify-center font-arcade text-3xl bg-black text-white pinkTextShadow">
       <button class="pinkTextShadow" (click)="routeToAddNewGame()">Add a new game</button>
     </div>
@@ -13,7 +13,7 @@
       <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" >
           <ng-container matColumnDef="id">
             <th class="hidden" mat-sort-header="id" *matHeaderCellDef> Id </th>
-            <td class="hidden"   *matCellDef="let element"> {{element.id}} </td>
+            <td class="hidden" *matCellDef="let element"> {{element.id}} </td>
           </ng-container>
         
           <ng-container matColumnDef="title">
@@ -40,7 +40,7 @@
         
           <ng-container matColumnDef="releaseStatus">
             <th class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
-            <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.releaseStatus.statusName}} </td>
+            <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
           </ng-container>
         
           <ng-container matColumnDef="usersScore">
@@ -62,8 +62,8 @@
             <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" *matHeaderCellDef> Options </th>
             <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white"   *matCellDef="let element">
               <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="routeToViewGame(element.title)">View</button>
-              <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="routeToEditGame(element.title)">Edit</button>
-              <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)">Delete</button>
+              <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="routeToEditGame(element.title)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
+              <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Delete</button>
             </td>
           </ng-container>
         
