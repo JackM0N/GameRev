@@ -3,22 +3,22 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Toast, ToasterService } from 'angular-toaster';
-import { UserReview } from '../../../interfaces/userReview';
-import { UserReviewService } from '../../../services/user-review.service';
 import { AuthService } from '../../../services/auth.service';
 import { Location } from '@angular/common';
+import { CriticReview } from '../../../interfaces/criticReview';
+import { CriticReviewService } from '../../../services/critic-review.service';
 
 @Component({
-  selector: 'app-user-review-form',
-  templateUrl: './user-review-form.component.html',
+  selector: 'app-critic-review-form',
+  templateUrl: './critic-review-form.component.html',
   styleUrl: '/src/app/styles/shared-form-styles.css'
 })
-export class UserReviewFormComponent implements OnInit {
-  userReviewForm: FormGroup;
+export class CriticReviewFormComponent implements OnInit {
+  criticReviewForm: FormGroup;
   isEditRoute: boolean;
-  formTitle: string = 'Add a new review';
+  formTitle: string = 'Add a new critic review';
 
-  userReview: UserReview = {
+  criticReview: CriticReview = {
     gameTitle: '',
     userUsername: '',
     content: '',
@@ -30,47 +30,57 @@ export class UserReviewFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private toasterService: ToasterService,
-    private userReviewService: UserReviewService,
+    private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private _location: Location
   ) {
-    this.userReviewForm = this.formBuilder.group({
-      content: [this.userReview.content, [Validators.required, Validators.minLength(10)]],
-      score: [this.userReview.score, [Validators.required]]
+    this.criticReviewForm = this.formBuilder.group({
+      content: [this.criticReview.content, [Validators.required, Validators.minLength(10)]],
+      score: [this.criticReview.score, [Validators.required]]
     });
 
     this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
 
     if (this.isEditRoute) {
-      this.formTitle = 'Editing review';
+      this.formTitle = 'Editing critic review';
     }
 
-    this.userReview.userUsername = this.authService.getUsername();
+    this.criticReview.userUsername = this.authService.getUsername();
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
-        this.userReview.gameTitle = params['name'];
-      }
-      if (params['id']) {
-        this.userReviewService.getUserReviewById(params['id']).subscribe((userReview: UserReview) => {
-          this.userReview = userReview;
+        this.criticReview.gameTitle = params['name'];
 
-          this.userReviewForm.setValue({
-            content: userReview.content,
-            score: userReview.score
-          });
-        });
+        if (this.isEditRoute) {
+          const observer: Observer<any> = {
+            next: response => {
+              console.log(response);
+              if (response && response.length > 0) {
+                this.criticReview = response[0];
+  
+                this.criticReviewForm.setValue({
+                  content: response[0].content,
+                  score: response[0].score
+                });
+              }
+            },
+            error: error => {
+            },
+            complete: () => {}
+          };
+          this.criticReviewService.getCriticReviewsByGameTitle(params['name']).subscribe(observer);
+        }
       }
     });
   }
-
+ 
   onSubmit() {
-    if (this.userReviewForm.valid) {
+    if (this.criticReviewForm.valid) {
       const reviewData = {
-        ...this.userReview,
-        ...this.userReviewForm.value
+        ...this.criticReview,
+        ...this.criticReviewForm.value
       };
 
       const token = this.authService.getToken();
@@ -102,7 +112,7 @@ export class UserReviewFormComponent implements OnInit {
           },
           complete: () => {}
         };
-        this.userReviewService.editUserReview(reviewData, token).subscribe(observer);
+        this.criticReviewService.editCriticReview(reviewData, token).subscribe(observer);
         return;
       }
 
@@ -127,7 +137,7 @@ export class UserReviewFormComponent implements OnInit {
         },
         complete: () => {}
       };
-      this.userReviewService.addUserReview(reviewData, token).subscribe(observer);
+      this.criticReviewService.addCriticReview(reviewData, token).subscribe(observer);
     }
   }
 

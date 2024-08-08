@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CriticReview } from '../interfaces/criticReview';
@@ -10,6 +10,9 @@ import { CriticReview } from '../interfaces/criticReview';
 // Service for handling critics reviews
 export class CriticReviewService {
   private baseUrl = 'http://localhost:8080/critics-reviews';
+  private addUrl = 'http://localhost:8080/critics-reviews/create';
+  private editUrl = 'http://localhost:8080/critics-reviews/edit';
+  private reviewUrl = 'http://localhost:8080/critics-reviews/review'; // for approving/disapproving
 
   constructor(
     private http: HttpClient,
@@ -18,5 +21,37 @@ export class CriticReviewService {
 
   getCriticReviewsByGameTitle(gameTitle: string): Observable<CriticReview[]> {
     return this.http.get<CriticReview[]>(`${this.baseUrl}/${gameTitle}`);
+  }
+
+  getAllReviews(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<CriticReview[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    const params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sort', sortBy + ',' + sortDir);
+    return this.http.get<CriticReview[]>(this.baseUrl, { headers, params });
+  }
+
+  addCriticReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<CriticReview>(this.addUrl, criticReview, { headers });
+  }
+
+  editCriticReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<CriticReview>(`${this.editUrl}/${criticReview.id}`, criticReview, { headers });
+  }
+
+  reviewReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<CriticReview>(`${this.reviewUrl}/${criticReview.id}`, criticReview, { headers });
   }
 }

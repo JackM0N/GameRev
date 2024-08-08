@@ -388,6 +388,10 @@ export class GameInformationComponent implements OnInit {
   }
 
   canAddCriticReview() {
-    return this.authService.isAuthenticated() && this.authService.hasRole('Critic') && this.criticReview;
+    return this.authService.isAuthenticated() && this.authService.hasRole('Critic') && this.criticReview == undefined;
+  }
+
+  routeToAddNewCriticReview() {
+    this.router.navigate(['/critic-reviews/add/' + this.game.title]);
   }
 }

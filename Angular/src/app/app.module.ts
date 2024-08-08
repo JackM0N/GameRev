@@ -50,6 +50,8 @@ import { ResetPasswordConfirmationDialogComponent } from './components/authentic
 import { AdService } from './services/ad.service';
 import { BackgroundService } from './services/background.service';
 import { AdBoxComponent } from './components/ad-box/ad-box.component';
+import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
+import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +74,9 @@ import { AdBoxComponent } from './components/ad-box/ad-box.component';
     UserGameAddDialogComponent,
     UserReviewListComponent,
     ResetPasswordConfirmationDialogComponent,
-    AdBoxComponent
+    AdBoxComponent,
+    CriticReviewFormComponent,
+    CriticReviewListComponent
   ],
   imports: [
     BrowserModule,

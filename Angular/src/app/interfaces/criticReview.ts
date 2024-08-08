@@ -1,3 +1,5 @@
+import { ReviewStatus } from "./reviewStatus";
+import { WebsiteUser } from "./websiteUser";
 
 export interface CriticReview {
   id?: number;
@@ -8,8 +10,7 @@ export interface CriticReview {
   content?: string;
   postDate?: any;
   score?: number;
-  positiveRating?: number;
-  negativeRating?: number;
-  
-  ownRatingIsPositive?: boolean | null;
+
+  reviewStatus?: ReviewStatus;
+  approvedBy?: WebsiteUser;
 }
