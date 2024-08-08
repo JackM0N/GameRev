@@ -8,9 +8,9 @@
   <p>Description: {{this.game.description}}</p>
   <p>{{this.usersScoreText}}</p>
   <div class="grid-container">
-      <div class="grid-item" *ngFor="let tag of game.tags">
-        {{ tag.tagName }}
-      </div>
+    <div class="grid-item" *ngFor="let tag of game.tags">
+      {{ tag.tagName }}
+    </div>
   </div>
 
   <h3>Reviews</h3>
@@ -42,5 +42,6 @@
   </mat-paginator>
 
   <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()" *ngIf="this.canAddReview()">Add review</button>
+  <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()" *ngIf="this.canAddCriticReview()">Add critic review</button>
   <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
 </div>

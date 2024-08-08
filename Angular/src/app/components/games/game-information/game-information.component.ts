@@ -371,4 +371,13 @@ export class GameInformationComponent implements OnInit {
     const userName = this.authService.getUsername();
     return !this.reviewList.some(review => review.userUsername === userName);
   }
+
+  canAddCriticReview() {
+    if (!this.authService.isAuthenticated() || !this.authService.hasRole('Critic')) {
+      return false;
+    }
+
+    const userName = this.authService.getUsername();
+    return !this.reviewList.some(review => review.userUsername === userName);
+  }
 }
