@@ -32,19 +32,13 @@ public class GameService {
         return games.map(gameMapper::toDto);
     }
 
-    public GameDTO getGameById(Long id) {
-        return gameMapper.toDto(gameRepository.findGameById(id));
-    }
-
     public GameDTO getGameByTitle(String title) throws BadRequestException {
-        Game game = gameRepository.findGameByTitle(title);
-        if (game == null) {
-            throw new BadRequestException("This game doesnt exist");
-        }
-        return gameMapper.toDto(gameRepository.findGameByTitle(title));
+        Game game = gameRepository.findGameByTitle(title)
+                .orElseThrow(() -> new BadRequestException("Game not found"));
+        return gameMapper.toDto(game);
     }
 
-    public Game createGame(GameDTO game) throws BadRequestException {
+    public GameDTO createGame(GameDTO game) throws BadRequestException {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
         newGame.setDeveloper(game.getDeveloper());
@@ -66,11 +60,12 @@ public class GameService {
                 .collect(Collectors.toList());
         newGame.setTags(tags);
 
-        return gameRepository.save(newGame);
+        return gameMapper.toDto(gameRepository.save(newGame));
     }
 
     public GameDTO updateGame(String title, GameDTO game) throws BadRequestException {
-        Game updatedGame = gameRepository.findGameByTitle(title);
+        Game updatedGame = gameRepository.findGameByTitle(title)
+                .orElseThrow(() -> new BadRequestException("Game not found"));
         if (game.getTitle() != null) {
             updatedGame.setTitle(game.getTitle());
         }

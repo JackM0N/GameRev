@@ -6,12 +6,10 @@
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
     font-family: Arial;
 }
 
-html, body { height: 100%; }
-
-html, body { height: 100%; }
 body { 
     margin: 0; 
     font-family: Roboto, "Helvetica Neue", sans-serif; 
@@ -23,33 +21,33 @@ body {
     src: url(./app/fonts/ARCADECLASSIC.ttf) format('truetype');
 }
 
-.pinkStars{
+.pinkStars {
     background-image: url(./app/images/pinkStars-bg.png);
 }
 
-.matrixNumbers{
+.matrixNumbers {
     background-image: url(./app/images/matrixNumbers.png);
     background-size: 600px 300px;
 }
 
-.titleShadow{
+.titleShadow {
     text-shadow: 0px 0px 30px white;
 }
 
-.screenBg{
+.screenBg {
     background-image: url(./app/images/screen-bg.png);
     background-size: 6px 6px;
 }
 
-.synthwaveFloor{
+.synthwaveFloor {
     background-image: url(./app/images/synthwaveFloor.jpg);
 }
 
-.neonAtSymbols{
+.neonAtSymbols {
     background-image: url(./app/images/neonAtSymbols.jpg);
 }
 
-.neonStarsSymbols{
+.neonStarsSymbols {
     background-image: url(./app/images/neonStarsSymbols.jpg);
 }
 
@@ -68,25 +66,25 @@ body {
     background-repeat: no-repeat;
 }
 
-.arcadeButtons{
+.arcadeButtons {
     background-image: url(./app/images/arcadeButtons.png);
     background-repeat: no-repeat;
     background-size: 70px 60px;
 }
 
-.arcadeJoystick{
+.arcadeJoystick {
     background-image: url(./app/images/arcadeJoystick.png);
     background-repeat: no-repeat;
     background-size: 60px 60px;
 }
 
-.arcadeButtonsOrange{
+.arcadeButtonsOrange {
     background-image: url(./app/images/arcadeButtonsOrange.png);
     background-repeat: no-repeat;
     background-size: 70px 60px;
 }
 
-.arcadeJoystickOrange{
+.arcadeJoystickOrange {
     background-image: url(./app/images/arcadeJoystickOrange.png);
     background-repeat: no-repeat;
     background-size: 60px 60px;
@@ -137,7 +135,7 @@ body {
   }
 
 /*text shadow in here since tailwind doesn't have that*/
-.pinkTextShadow{
+.pinkTextShadow {
     text-shadow: 2px 2px 0px #fb049c;
 }
 
@@ -230,83 +228,83 @@ body {
 
 
 /*practical joke until later solution*/
-.smallBgImageSize{
+.smallBgImageSize {
     background-repeat: no-repeat;
     background-size: 40px 32px;
 }
 
-.smallBgImage1{
+.smallBgImage1 {
     background-image: url(./app/images/arcade/56.png);
 }
 
-.smallBgImage2{
+.smallBgImage2 {
     background-image: url(./app/images/arcade/19.png);
 }
 
-.smallBgImage3{
+.smallBgImage3 {
     background-image: url(./app/images/arcade/6.png);
 }
 
-.smallBgImage4{
+.smallBgImage4 {
     background-image: url(./app/images/arcade/7.png);
 }
 
-.smallBgImage5{
+.smallBgImage5 {
     background-image: url(./app/images/arcade/10.png);
 }
 
-.smallBgImage6{
+.smallBgImage6 {
     background-image: url(./app/images/arcade/13.png);
 }
 
-.smallBgImage7{
+.smallBgImage7 {
     background-image: url(./app/images/arcade/20.png);
 }
 
-.smallBgImage8{
+.smallBgImage8 {
     background-image: url(./app/images/arcade/22.png);
 }
 
-.smallBgImage9{
+.smallBgImage9 {
     background-image: url(./app/images/arcade/23.png);
 }
 
-.smallBgImage10{
+.smallBgImage10 {
     background-image: url(./app/images/arcade/24.png);
 }
 
-.smallBgImage11{
+.smallBgImage11 {
     background-image: url(./app/images/arcade/25.png);
 }
 
-.smallBgImage12{
+.smallBgImage12 {
     background-image: url(./app/images/arcade/26.png);
 }
 
-.smallBgImage13{
+.smallBgImage13 {
     background-image: url(./app/images/arcade/50.png);
 }
 
-.smallBgImage14{
+.smallBgImage14 {
     background-image: url(./app/images/arcade/28.png);
 }
 
-.smallBgImage15{
+.smallBgImage15 {
     background-image: url(./app/images/arcade/36.png);
 }
 
-.smallBgImage16{
+.smallBgImage16 {
     background-image: url(./app/images/arcade/37.png);
 }
 
-.smallBgImage17{
+.smallBgImage17 {
     background-image: url(./app/images/arcade/42.png);
 }
 
-.smallBgImage18{
+.smallBgImage18 {
     background-image: url(./app/images/arcade/46.png);
 }
 
-.smallBgImage19{
+.smallBgImage19 {
     background-image: url(./app/images/arcade/52.png);
 }

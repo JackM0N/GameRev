@@ -58,10 +58,8 @@ public class WebsiteUserService {
     }
 
     public WebsiteUserDTO findByNickname(String nickname) {
-        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
-        if (user == null) {
-            throw new BadCredentialsException("Invalid nickname");
-        }
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
         user.setId(null);
         user.setUsername(null);
         user.setPassword(null);
@@ -107,14 +105,12 @@ public class WebsiteUserService {
     }
 
     public boolean banUser(WebsiteUserDTO userDTO) {
-        WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername());
+        WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername())
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
         WebsiteUser currentUser = getCurrentUser();
 
         if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin"))){
             throw new BadCredentialsException("You dont have permission to perform this action");
-        }
-        if (user == null) {
-            throw new BadCredentialsException("This user does not exist");
         }
         if (user.getIsDeleted() != null && user.getIsDeleted()) {
             throw new BadCredentialsException("This user is deleted");
@@ -127,11 +123,9 @@ public class WebsiteUserService {
     public void uploadProfilePicture(ProfilePictureDTO profilePictureDTO) throws IOException {
         String username = profilePictureDTO.getUsername();
         MultipartFile file = profilePictureDTO.getProfilePicture();
-        WebsiteUser user = websiteUserRepository.findByUsername(username);
+        WebsiteUser user = websiteUserRepository.findByUsername(username)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-        if (user == null){
-            throw new BadRequestException("This user does not exist");
-        }
         if (!user.equals(getCurrentUser())){
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
@@ -149,11 +143,9 @@ public class WebsiteUserService {
     }
 
     public byte[] getProfilePicture(String nickname) throws IOException {
-        WebsiteUser user = websiteUserRepository.findByNickname(nickname);
+        WebsiteUser user = websiteUserRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-        if (user == null) {
-            throw new BadCredentialsException("This user does not exist");
-        }
         if (user.getProfilepic() == null) {
             throw new IOException("Users profile picture not found");
         }
@@ -165,9 +157,7 @@ public class WebsiteUserService {
     public WebsiteUser getCurrentUser() {
         Authentication authentication = authenticationFacade.getAuthentication();
         String username = authentication.getName();
-        if (websiteUserRepository.findByUsername(username) == null) {
-            return null;
-        }
-        return websiteUserRepository.findByUsername(username);
+        return websiteUserRepository.findByUsername(username)
+                .orElseThrow(() -> new BadCredentialsException("You are not logged in"));
     }
 }

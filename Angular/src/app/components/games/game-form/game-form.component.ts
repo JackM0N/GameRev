@@ -6,10 +6,10 @@ import { Observer } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Toast, ToasterService } from 'angular-toaster';
 import { GameService } from '../../../services/game.service';
-import { ReleaseStatusService } from '../../../services/release-status.service';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 import { Location } from '@angular/common';
+import { releaseStatuses } from '../../../interfaces/releaseStatuses';
 
 @Component({
   selector: 'app-game-form',
@@ -18,7 +18,7 @@ import { Location } from '@angular/common';
 })
 export class GameFormComponent implements OnInit {
   addingGameForm: FormGroup;
-  releaseStatuses: ReleaseStatus[] = [];
+  releaseStatuses: ReleaseStatus[] = releaseStatuses;
   isEditRoute: boolean;
   listTitle: string = 'Add new game';
   tagsList: Tag[] = [];
@@ -43,7 +43,6 @@ export class GameFormComponent implements OnInit {
     private toasterService: ToasterService,
     private gameService: GameService,
     private tagService: TagService,
-    private releaseStatusService: ReleaseStatusService,
     private _location: Location
   ) {
     this.addingGameForm = this.formBuilder.group({
@@ -62,17 +61,6 @@ export class GameFormComponent implements OnInit {
     if (this.isEditRoute) {
       this.listTitle = 'Editing game';
     }
-
-    const observerReleaseStatus: Observer<any> = {
-      next: response => {
-        this.releaseStatuses = response;
-      },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.releaseStatusService.getReleaseStatuses().subscribe(observerReleaseStatus);
 
     const observerTag: Observer<any> = {
       next: response => {
@@ -97,16 +85,6 @@ export class GameFormComponent implements OnInit {
           }
           this.game = game;
 
-          var releaseStatus = game.releaseStatus;
-          if (game.releaseStatus) {
-            for (let i = 0; i < this.releaseStatuses.length; i++) {
-              if (this.releaseStatuses[i].id === game.releaseStatus['id']) {
-                releaseStatus = this.releaseStatuses[i];
-                break;
-              }
-            }
-          }
-
           var tags = [];
           for (let i = 0; i < this.tagsList.length; i++) {
             for (let j = 0; j < game.tags.length; j++) {
@@ -121,7 +99,7 @@ export class GameFormComponent implements OnInit {
             developer: game.developer,
             publisher: game.publisher,
             releaseDate: this.gameDate,
-            releaseStatus: releaseStatus,
+            releaseStatus: game.releaseStatus,
             tags: tags,
             description: game.description,
             usersScore: game.usersScore
@@ -139,6 +117,8 @@ export class GameFormComponent implements OnInit {
       };
 
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
+
+      console.log(gameData);
 
       if (this.isEditRoute) {
         const observer: Observer<any> = {

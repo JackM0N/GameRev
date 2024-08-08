@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Toast, ToasterService } from 'angular-toaster';
 import { ResetPasswordConfirmationDialogComponent } from '../reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-login',
@@ -26,11 +27,16 @@ export class LoginComponent {
     private toasterService: ToasterService,
     private router: Router,
     public dialog: MatDialog,
+    private backgroundService: BackgroundService
   ) {
     this.loginForm = this.formBuilder.group({
       usernameOrEmail: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  ngOnInit(): void {
+    this.backgroundService.setClasses(['pinkStars']);
   }
 
   isValidEmail(email: string): boolean {

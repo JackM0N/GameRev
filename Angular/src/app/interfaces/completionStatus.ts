@@ -1,5 +1,5 @@
 
 export interface CompletionStatus {
-  id?: number;
-  completionName: string;
+  name: string
+  className: string;
 }

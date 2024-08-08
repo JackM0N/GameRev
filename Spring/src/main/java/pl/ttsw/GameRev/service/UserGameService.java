@@ -36,7 +36,7 @@ public class UserGameService {
     }
 
     public Page<UserGameDTO> getUserGameDTO(String nickname, Pageable pageable) throws BadRequestException {
-        if (websiteUserRepository.findByNickname(nickname) == null) {
+        if (websiteUserRepository.findByNickname(nickname).isEmpty()) {
             throw new BadRequestException("This user doesn't exist");
         }
         Page<UserGame> userGame = userGameRepository.findByUserNickname(nickname, pageable);
@@ -52,7 +52,8 @@ public class UserGameService {
             throw new BadCredentialsException("You have to login first");
         }
 
-        WebsiteUser userFromDTO = websiteUserRepository.findByUsername(userGameDTO.getUser().getUsername());
+        WebsiteUser userFromDTO = websiteUserRepository.findByUsername(userGameDTO.getUser().getUsername())
+                .orElseThrow(() -> new BadRequestException("This user doesn't exist"));
         if (userFromDTO == null) {
             throw new BadRequestException("This user does not exist");
         }
@@ -60,10 +61,8 @@ public class UserGameService {
             throw new BadCredentialsException("You can only add games to your own library");
         }
 
-        Game game = gameRepository.findGameById(userGameDTO.getGame().getId());
-        if (game == null) {
-            throw new BadRequestException("Game not found");
-        }
+        Game game = gameRepository.findGameById(userGameDTO.getGame().getId())
+                .orElseThrow(() -> new BadRequestException("This game doesn't exist"));
 
         CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
         if (completionStatus == null || !EnumUtils.isValidEnumIgnoreCase(CompletionStatus.class, completionStatus.name())) {

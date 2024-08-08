@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,12 +8,17 @@ import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort, MatSort } from '@angular/material/sort';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { AuthService } from '../../../services/auth.service';
+import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { ReleaseStatus } from '../../../interfaces/releaseStatus';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-games-list',
   templateUrl: './games-list.component.html'
 })
 export class GamesListComponent implements AfterViewInit {
+  releaseStatuses: ReleaseStatus[] = releaseStatuses;
   gamesList: Game[] = [];
   totalGames: number = 0;
   dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
@@ -26,7 +31,14 @@ export class GamesListComponent implements AfterViewInit {
     private gameService: GameService,
     private router: Router,
     public dialog: MatDialog,
+    public authService: AuthService,
+    private backgroundService: BackgroundService,
   ) {}
+
+  ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -122,5 +134,10 @@ export class GamesListComponent implements AfterViewInit {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  findReleaseStatusName(status: string) {
+    const releaseStatus = this.releaseStatuses.find(releaseStatus => releaseStatus.className === status);
+    return releaseStatus ? releaseStatus.name : undefined;
   }
 }
