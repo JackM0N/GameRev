@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,8 @@ public class AuthenticationService {
         user.setIsDeleted(false);
         user.setProfilepic(null);
 
-        Role role = roleRepository.findByRoleName("User");
+        Role role = roleRepository.findByRoleName("User")
+                .orElseThrow(() -> new RuntimeException("Role not found"));
         user.setRoles(Collections.singletonList(role));
         user = websiteUserRepository.save(user);
         String token = jwtService.generateToken(user);
@@ -63,7 +65,8 @@ public class AuthenticationService {
             )
         );
 
-        user = websiteUserRepository.findByUsernameOrEmail(login, login);
+        user = websiteUserRepository.findByUsernameOrEmail(login, login)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
         String token = jwtService.generateToken(user);
 
         return new AuthenticationResponse(token);

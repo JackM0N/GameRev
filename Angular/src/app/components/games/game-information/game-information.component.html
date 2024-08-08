@@ -4,7 +4,7 @@
   <p>Developer: {{this.game.developer}}</p>
   <p>Publisher: {{this.game.publisher}}</p>
   <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
-  <p>Release status: {{this.game.releaseStatus?.statusName}}</p>
+  <p>Release status: {{this.game.releaseStatus}}</p>
   <p>Description: {{this.game.description}}</p>
   <p>{{this.usersScoreText}}</p>
   <div class="grid-container">
@@ -20,11 +20,14 @@
       <p>{{ review.content }}</p>
       <p>Likes: {{ review.positiveRating }}</p>
       <p>Dislikes: {{ review.negativeRating }}</p>
-      <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
-      <button mat-stroked-button (click)="editReview(review)">Edit review</button>
-      <button mat-stroked-button (click)="reportReview(review)">Report review</button>
-      
+
       <div>
+        <button mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="this.canDeleteReview(review)">Delete review</button>
+        <button mat-stroked-button (click)="editReview(review)" *ngIf="this.ownsReview(review)">Edit review</button>
+      </div>
+      <button mat-stroked-button (click)="reportReview(review)" *ngIf="!this.ownsReview(review)">Report review</button>
+      
+      <div *ngIf="!this.ownsReview(review)">
         <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
         <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
       </div>
@@ -38,6 +41,6 @@
     showFirstLastButtons>
   </mat-paginator>
 
-  <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()">Add review</button>
+  <button id="gotoreview-button" mat-stroked-button (click)="routeToAddNewReview()" *ngIf="this.canAddReview()">Add review</button>
   <button id="goback-button" mat-stroked-button (click)="goBack()">Go back</button>
 </div>

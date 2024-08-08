@@ -33,7 +33,7 @@
                 <mat-select formControlName="releaseStatus">
                     <mat-option>--</mat-option>
                     @for (status of releaseStatuses; track status) {
-                        <mat-option [value]="status">{{status.statusName}}</mat-option>
+                        <mat-option [value]="status.className">{{status.name}}</mat-option>
                     }
                 </mat-select>
                 @if (isReleaseStatusInvalid()) {

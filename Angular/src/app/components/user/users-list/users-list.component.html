@@ -49,6 +49,7 @@
       <th mat-header-cell *matHeaderCellDef> Options </th>
       <td mat-cell *matCellDef="let element">
         <button mat-stroked-button (click)="openProfile(element)">Profile</button>
+        <button mat-stroked-button (click)="openUserReviews(element)">Reviews</button>
         <button mat-stroked-button *ngIf="!element.isBanned" (click)="openBanDialog(element)">Ban</button>
         <button mat-stroked-button *ngIf="element.isBanned" (click)="openUnbanDialog(element)">Unban</button>
       </td>

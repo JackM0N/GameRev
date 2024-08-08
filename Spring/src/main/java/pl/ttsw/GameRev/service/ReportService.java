@@ -41,7 +41,8 @@ public class ReportService {
     }
 
     public ReportDTO createReport(ReportDTO reportDTO) throws BadRequestException {
-        UserReview userReview = userReviewRepository.findById(reportDTO.getUserReview().getId());
+        UserReview userReview = userReviewRepository.findById(reportDTO.getUserReview().getId())
+                .orElseThrow(() -> new BadRequestException("User review not found"));
 
         if (userReview == null) {
             throw new BadRequestException("This review doesnt exist");

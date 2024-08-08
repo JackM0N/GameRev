@@ -6,6 +6,7 @@ import { LoginCredentials } from '../interfaces/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { NewCredentials } from '../interfaces/newCredentials';
+import { Role } from '../interfaces/role';
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +109,27 @@ export class AuthService {
       }
     }
     return undefined;
+  }
+
+  getRoles(): Role[] {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        const decodedToken = this.jwtHelper.decodeToken(token);
+        return decodedToken.roles || [];
+      }
+    }
+    return [];
+  }
+  
+  hasRole(role: string): boolean {
+    const roles = this.getRoles();
+    return roles.some(rl => rl.roleName === role);
+  }
+  
+  hasAnyRole(roles: string[]): boolean {
+    const userRoles = this.getRoles();
+    return userRoles.some(rl1 => roles.some(rl2 => rl1.roleName === rl2));
   }
 
   getUserProfileInformation(token: string): Observable<WebsiteUser> {
