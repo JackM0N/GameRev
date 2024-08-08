@@ -99,7 +99,7 @@ body {
   }
   
   .pixel-border::before, .pixel-border::after, 
-  .pixel-border div::before, .pixel-border div::after {
+  .pixel-border > div::before, .pixel-border > div::after {
     content: '';
     position: absolute;
     background: white;
@@ -122,17 +122,17 @@ body {
   }
 
   /* Left and right borders */
-  .pixel-border div::before, .pixel-border div::after {
+  .pixel-border > div::before, .pixel-border > div::after {
     width: 6px; /* Adjust pixel size */
     top: 6px;
     bottom: 6px;
   }
   
-  .pixel-border div::before {
+  .pixel-border > div::before {
     left: 0;
   }
   
-  .pixel-border div::after {
+  .pixel-border > div::after {
     right: 0;
   }
 
