@@ -13,6 +13,7 @@ import { ReportsListComponent } from './components/reports/reports-list/reports-
 import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
 import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
 import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
+import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
 
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent},
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'library', component: UserGamesListComponent},
   { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent},
   { path: 'critic-reviews/edit/:name', component: CriticReviewFormComponent},
+  { path: 'critic-reviews', component: CriticReviewListComponent},
 ];
 
 @NgModule({

@@ -1,4 +1,3 @@
-import { ReviewStatus } from "./reviewStatus";
 import { WebsiteUser } from "./websiteUser";
 
 export interface CriticReview {
@@ -11,6 +10,8 @@ export interface CriticReview {
   postDate?: any;
   score?: number;
 
-  reviewStatus?: ReviewStatus;
+  user?: WebsiteUser;
+
+  reviewStatus?: string;
   approvedBy?: WebsiteUser;
 }

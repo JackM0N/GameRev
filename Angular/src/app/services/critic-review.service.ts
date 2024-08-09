@@ -10,9 +10,11 @@ import { CriticReview } from '../interfaces/criticReview';
 // Service for handling critics reviews
 export class CriticReviewService {
   private baseUrl = 'http://localhost:8080/critics-reviews';
+  private allUrl = 'http://localhost:8080/critics-reviews/list';
   private addUrl = 'http://localhost:8080/critics-reviews/create';
   private editUrl = 'http://localhost:8080/critics-reviews/edit';
   private reviewUrl = 'http://localhost:8080/critics-reviews/review'; // for approving/disapproving
+  private deleteUrl = 'http://localhost:8080/critics-reviews/delete';
 
   constructor(
     private http: HttpClient,
@@ -31,7 +33,7 @@ export class CriticReviewService {
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir);
-    return this.http.get<CriticReview[]>(this.baseUrl, { headers, params });
+    return this.http.get<CriticReview[]>(this.allUrl, { headers, params });
   }
 
   addCriticReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
@@ -52,6 +54,21 @@ export class CriticReviewService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.put<CriticReview>(`${this.reviewUrl}/${criticReview.id}`, criticReview, { headers });
+
+    var params = new HttpParams();
+
+    if (criticReview.reviewStatus) {
+      params = new HttpParams()
+      .set('reviewStatus', criticReview.reviewStatus);
+    }
+
+    return this.http.put<CriticReview>(`${this.reviewUrl}/${criticReview.id}`, criticReview.reviewStatus, { headers, params });
+  }
+
+  deleteReview(id: number, token: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers: headers });
   }
 }
