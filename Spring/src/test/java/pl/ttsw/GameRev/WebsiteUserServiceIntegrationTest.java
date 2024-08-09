@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,9 +58,9 @@ public class WebsiteUserServiceIntegrationTest {
         try {
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_newPic.jpg"));
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_profilePic.jpg"));
-            WebsiteUser user = websiteUserRepository.findByUsername(username + "2");
-            if (user != null) {
-                websiteUserRepository.delete(user);
+            Optional<WebsiteUser> user = websiteUserRepository.findByUsername(username + "2");
+            if (user.isPresent()) {
+                websiteUserRepository.delete(user.get());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -67,7 +68,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     private WebsiteUser copyForTesting() {
-        WebsiteUser user_old = websiteUserRepository.findByUsername(username);
+        WebsiteUser user_old = websiteUserRepository.findByUsername(username).get();
         WebsiteUser user_new = new WebsiteUser();
         user_new.setUsername(username + "2");
         user_new.setPassword(user_old.getPassword());

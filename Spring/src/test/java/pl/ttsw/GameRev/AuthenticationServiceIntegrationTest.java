@@ -18,6 +18,7 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,17 +43,17 @@ public class AuthenticationServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        WebsiteUser user = websiteUserRepository.findByUsername("testuser2");
-        if (user != null) {
-            websiteUserRepository.delete(user);
+        Optional<WebsiteUser> user = websiteUserRepository.findByUsername("testuser2");
+        if (user.isPresent()) {
+            websiteUserRepository.delete(user.get());
         }
     }
 
     @AfterEach
     public void tearDown() {
-        WebsiteUser user = websiteUserRepository.findByUsername("testuser2");
-        if (user != null) {
-            websiteUserRepository.delete(user);
+        Optional<WebsiteUser> user = websiteUserRepository.findByUsername("testuser2");
+        if (user.isPresent()) {
+            websiteUserRepository.delete(user.get());
         }
     }
 
@@ -76,7 +77,7 @@ public class AuthenticationServiceIntegrationTest {
         user.setNickname("testnickname2");
         user.setJoinDate(LocalDate.now());
         user.setLastActionDate(LocalDateTime.now());
-        Role role = roleRepository.findByRoleName("USER");
+        Role role = roleRepository.findByRoleName("User").get();
         user.setRoles(Collections.singletonList(role));
         websiteUserRepository.save(user);
 

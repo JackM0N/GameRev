@@ -42,3 +42,25 @@ UPDATE game SET release_status = REPLACE(release_status, '-', '_');
 UPDATE user_game SET completion_status = REPLACE(completion_status, '-', '_');
 UPDATE critic_review SET review_status = REPLACE(review_status, '-', '_');
 
+
+--changeset Stanislaw:19 labels:triggers
+--trigger deleting expired tokens on password_reset_token table changes
+CREATE OR REPLACE FUNCTION delete_expired_tokens()
+    RETURNS TRIGGER AS '
+    BEGIN
+        DELETE FROM password_reset_token
+        WHERE expiry_date < NOW();
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_delete_expired_tokens
+    AFTER INSERT ON password_reset_token
+    FOR EACH ROW
+EXECUTE FUNCTION delete_expired_tokens();
+
+
+--changeset Stanislaw:20 labels:schema,refactoring
+ALTER TABLE game
+    ADD COLUMN picture VARCHAR(255);
+

@@ -61,7 +61,7 @@ public class ReportServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        testUser = websiteUserRepository.findByUsername("testuser");
+        testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser);
 
         testUserReview = userReviewRepository.findWithReports(pageable).get().findFirst().orElse(null);
@@ -130,7 +130,7 @@ public class ReportServiceIntegrationTest {
             reportService.createReport(reportDTO);
         });
 
-        assertEquals("This review doesnt exist", exception.getMessage());
+        assertEquals("User review not found", exception.getMessage());
     }
 
     @Test

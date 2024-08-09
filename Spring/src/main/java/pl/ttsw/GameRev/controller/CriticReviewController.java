@@ -27,6 +27,15 @@ public class CriticReviewController {
         return ResponseEntity.ok(criticReviewDTO);
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id) {
+        CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewById(id);
+        if (criticReviewDTO == null) {
+            return ResponseEntity.badRequest().body("There are no critic reviews for this id");
+        }
+        return ResponseEntity.ok(criticReviewDTO);
+    }
+
     @GetMapping("/{title}")
     public ResponseEntity<?> getByTitle(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-", " ");

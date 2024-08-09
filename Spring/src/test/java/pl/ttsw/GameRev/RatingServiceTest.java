@@ -56,7 +56,7 @@ public class RatingServiceTest {
         WebsiteUser currentUser = new WebsiteUser();
         Rating rating = new Rating();
 
-        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.of(userReview));
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(ratingRepository.findByUserAndUserReview(any(), any())).thenReturn(Optional.empty());
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
@@ -78,7 +78,7 @@ public class RatingServiceTest {
         WebsiteUser currentUser = new WebsiteUser();
         Rating rating = new Rating();
 
-        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.of(userReview));
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(ratingRepository.findByUserAndUserReview(any(), any())).thenReturn(Optional.of(rating));
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
@@ -91,18 +91,20 @@ public class RatingServiceTest {
         verify(ratingRepository).save(any(Rating.class));
     }
 
+
     @Test
     public void testUpdateRating_ReviewDoesNotExist() {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         userReviewDTO.setId(1L);
 
-        when(userReviewRepository.findById(anyLong())).thenReturn(null);
+        Optional<UserReview> userReview = Optional.empty();
+        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
 
         Exception exception = assertThrows(BadRequestException.class, () -> {
             ratingService.updateRating(userReviewDTO);
         });
 
-        assertEquals("This review doesnt exist", exception.getMessage());
+        assertEquals("User review not found", exception.getMessage());
         verify(ratingRepository, never()).findByUserAndUserReview(any(), any());
     }
 
@@ -116,7 +118,7 @@ public class RatingServiceTest {
         WebsiteUser currentUser = new WebsiteUser();
         Rating rating = new Rating();
 
-        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.of(userReview));
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(ratingRepository.findByUserAndUserReview(any(), any())).thenReturn(Optional.of(rating));
 

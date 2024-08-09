@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
-import pl.ttsw.GameRev.mapper.RatingMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
@@ -47,9 +46,6 @@ public class RatingServiceIntegrationTest {
     private WebsiteUserRepository websiteUserRepository;
 
     @Autowired
-    private RatingMapper ratingMapper;
-
-    @Autowired
     private GameRepository gameRepository;
 
     private WebsiteUser testUser;
@@ -60,9 +56,13 @@ public class RatingServiceIntegrationTest {
     @BeforeEach
     public void setup() {
         teardown();
-        testUser = websiteUserRepository.findByUsername("testuser");
-        testUser2 = websiteUserRepository.findByUsername("testadmin");
-        game = gameRepository.findGameByTitle("Limbus Company");
+        try{
+            testUser = websiteUserRepository.findByUsername("testuser").get();
+            testUser2 = websiteUserRepository.findByUsername("testadmin").get();
+            game = gameRepository.findGameByTitle("Limbus Company").get();
+        }catch(EntityNotFoundException e) {
+            throw new EntityNotFoundException("Test data not found");
+        }
         testUserReview = new UserReview();
         testUserReview.setUser(testUser2);
         testUserReview.setGame(game);
@@ -156,6 +156,6 @@ public class RatingServiceIntegrationTest {
             ratingService.updateRating(userReviewDTO);
         });
 
-        assertEquals("This review doesnt exist", exception.getMessage());
+        assertEquals("User review not found", exception.getMessage());
     }
 }
