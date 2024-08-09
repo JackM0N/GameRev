@@ -135,7 +135,7 @@ public class ReportServiceTest {
 
     @Test
     public void testCreateReport_Success() throws BadRequestException {
-        when(userReviewRepository.findById(anyLong())).thenReturn(testUserReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
         when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class)))
                 .thenReturn(Optional.empty());
@@ -150,18 +150,20 @@ public class ReportServiceTest {
 
     @Test
     public void testCreateReport_ReviewDoesNotExist() {
-        when(userReviewRepository.findById(anyLong())).thenReturn(null);
+        Optional<UserReview> userReview = Optional.empty();
+        when(websiteUserService.getCurrentUser()).thenReturn(testUser);
+        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             reportService.createReport(testReportDTO);
         });
 
-        assertEquals("This review doesnt exist", exception.getMessage());
+        assertEquals("User review not found", exception.getMessage());
     }
 
     @Test
     public void testCreateReport_UserNotLoggedIn() {
-        when(userReviewRepository.findById(anyLong())).thenReturn(testUserReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -173,7 +175,7 @@ public class ReportServiceTest {
 
     @Test
     public void testCreateReport_AlreadyReported() {
-        when(userReviewRepository.findById(anyLong())).thenReturn(testUserReview);
+        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
         when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class)))
                 .thenReturn(Optional.of(testReport));
