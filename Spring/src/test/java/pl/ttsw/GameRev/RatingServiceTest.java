@@ -92,21 +92,21 @@ public class RatingServiceTest {
     }
 
 
-    //TODO: fix after update
-//    @Test
-//    public void testUpdateRating_ReviewDoesNotExist() {
-//        UserReviewDTO userReviewDTO = new UserReviewDTO();
-//        userReviewDTO.setId(1L);
-//
-//        when(userReviewRepository.findById(anyLong())).thenReturn(null);
-//
-//        Exception exception = assertThrows(BadRequestException.class, () -> {
-//            ratingService.updateRating(userReviewDTO);
-//        });
-//
-//        assertEquals("This review doesnt exist", exception.getMessage());
-//        verify(ratingRepository, never()).findByUserAndUserReview(any(), any());
-//    }
+    @Test
+    public void testUpdateRating_ReviewDoesNotExist() {
+        UserReviewDTO userReviewDTO = new UserReviewDTO();
+        userReviewDTO.setId(1L);
+
+        Optional<UserReview> userReview = Optional.empty();
+        when(userReviewRepository.findById(anyLong())).thenReturn(userReview);
+
+        Exception exception = assertThrows(BadRequestException.class, () -> {
+            ratingService.updateRating(userReviewDTO);
+        });
+
+        assertEquals("User review not found", exception.getMessage());
+        verify(ratingRepository, never()).findByUserAndUserReview(any(), any());
+    }
 
     @Test
     public void testUpdateRating_DeleteRating() throws BadRequestException {
