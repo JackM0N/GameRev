@@ -59,3 +59,8 @@ CREATE TRIGGER trigger_delete_expired_tokens
     FOR EACH ROW
 EXECUTE FUNCTION delete_expired_tokens();
 
+
+--changeset Stanislaw:20 labels:schema,refactoring
+ALTER TABLE game
+    ADD COLUMN picture VARCHAR(255);
+
