@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observer } from 'rxjs';
@@ -6,14 +6,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort, Sort } from '@angular/material/sort';
 import { formatDate } from '../../../util/formatDate';
-import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
 import { BackgroundService } from '../../../services/background.service';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
 import { Toast, ToasterService } from 'angular-toaster';
 import { reviewStatuses } from '../../../interfaces/reviewStatuses';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-critic-reviews-list',

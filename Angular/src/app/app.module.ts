@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'; 
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
 import { OwnProfileComponent } from './components/user/own-profile/own-profile.component';
@@ -53,78 +53,72 @@ import { AdBoxComponent } from './components/ad-box/ad-box.component';
 import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
 import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegistrationComponent,
-    OwnProfileComponent,
-    AccountDeletionConfirmationDialogComponent,
-    GameFormComponent,
-    GamesListComponent,
-    GameInformationComponent,
-    UserReviewFormComponent,
-    UsersListComponent,
-    PopupDialogComponent,
-    ProfileComponent,
-    ReviewReportDialogComponent,
-    ReportsListComponent,
-    UserGamesListComponent,
-    UserGameEditDialogComponent,
-    UserGameAddDialogComponent,
-    UserReviewListComponent,
-    ResetPasswordConfirmationDialogComponent,
-    AdBoxComponent,
-    CriticReviewFormComponent,
-    CriticReviewListComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    HttpClientModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatButtonToggleModule,
-    MatSortModule,
-    MatExpansionModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.getItem('access_token');
-        },
-        allowedDomains: [''],
-        disallowedRoutes: ['localhost:8080/login']
-      }
-    }),
-    BrowserAnimationsModule,
-    ToasterModule.forRoot()
-  ],
-  providers: [
-    provideClientHydration(),
-    provideAnimationsAsync(),
-    AuthService,
-    ToasterService,
-    GameService,
-    TagService,
-    UserReviewService,
-    ReportService,
-    UserGameService,
-    ImageCacheService,
-    BackgroundService,
-    AdService,
-    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
-    DatePipe
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        RegistrationComponent,
+        OwnProfileComponent,
+        AccountDeletionConfirmationDialogComponent,
+        GameFormComponent,
+        GamesListComponent,
+        GameInformationComponent,
+        UserReviewFormComponent,
+        UsersListComponent,
+        PopupDialogComponent,
+        ProfileComponent,
+        ReviewReportDialogComponent,
+        ReportsListComponent,
+        UserGamesListComponent,
+        UserGameEditDialogComponent,
+        UserGameAddDialogComponent,
+        UserReviewListComponent,
+        ResetPasswordConfirmationDialogComponent,
+        AdBoxComponent,
+        CriticReviewFormComponent,
+        CriticReviewListComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatSelectModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatButtonToggleModule,
+        MatSortModule,
+        MatExpansionModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: () => {
+                    return localStorage.getItem('access_token');
+                },
+                allowedDomains: [''],
+                disallowedRoutes: ['localhost:8080/login']
+            }
+        }),
+        BrowserAnimationsModule,
+        ToasterModule.forRoot()], providers: [
+        provideClientHydration(),
+        provideAnimationsAsync(),
+        AuthService,
+        ToasterService,
+        GameService,
+        TagService,
+        UserReviewService,
+        ReportService,
+        UserGameService,
+        ImageCacheService,
+        BackgroundService,
+        AdService,
+        { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+        DatePipe,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
