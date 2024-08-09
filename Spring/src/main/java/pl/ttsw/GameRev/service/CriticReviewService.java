@@ -34,12 +34,18 @@ public class CriticReviewService {
 
     public Page<CriticReviewDTO> getAllCriticReviews(Pageable pageable) throws BadRequestException {
         Page<CriticReview> criticReviews = criticReviewRepository.findAll(pageable);
+        for (CriticReview criticReview : criticReviews) {
+            criticReview.getUser().setPassword(null);
+            criticReview.getUser().setDescription(null);
+        }
         return criticReviews.map(criticReviewMapper::toDto);
     }
 
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
         CriticReview criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
+        criticReview.getUser().setPassword(null);
+        criticReview.getUser().setDescription(null);
         return criticReviewMapper.toDto(criticReview);
     }
 
