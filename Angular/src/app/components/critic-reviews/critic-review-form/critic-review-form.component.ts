@@ -7,6 +7,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Location } from '@angular/common';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-critic-review-form',
@@ -38,7 +39,8 @@ export class CriticReviewFormComponent implements OnInit {
     private toasterService: ToasterService,
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
-    private _location: Location
+    private _location: Location,
+    private backgroundService: BackgroundService,
   ) {
     this.criticReviewForm = this.formBuilder.group({
       content: [this.criticReview.content, [Validators.required, Validators.minLength(10)]],
@@ -55,15 +57,19 @@ export class CriticReviewFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      if (params['id'] && this.isEditRoute) {
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
 
+    this.route.params.subscribe(params => {
+      if (params['name']) {
+        this.criticReview.gameTitle = params['name'];
+      }
+
+      if (params["id"] && this.isEditRoute) {
         const token = this.authService.getToken();
 
         if (token) {
           const observer: Observer<any> = {
             next: response => {
-              console.log(response);
               if (response) {
                 this.criticReview = response;
 
@@ -79,13 +85,6 @@ export class CriticReviewFormComponent implements OnInit {
           };
           this.criticReviewService.getCriticReviewById(params['id'], token).subscribe(observer);
         }
-      }
-
-    });
-
-    this.route.params.subscribe(params => {
-      if (params['name']) {
-        this.criticReview.gameTitle = params['name'];
       }
     });
   }

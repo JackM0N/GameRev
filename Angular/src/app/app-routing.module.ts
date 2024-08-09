@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'reports', component: ReportsListComponent},
   { path: 'library', component: UserGamesListComponent},
   { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent},
-  { path: 'critic-reviews/edit/:name', component: CriticReviewFormComponent},
+  { path: 'critic-reviews/edit/:id', component: CriticReviewFormComponent},
   { path: 'critic-reviews', component: CriticReviewListComponent},
 ];
 
