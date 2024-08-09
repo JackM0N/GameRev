@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/critics-reviews/id/**", "/critics-reviews/edit/**",
                                 "/critics-reviews/review/**", "/critics-reviews/create",
-                                "/critics-reviews/delete/**").hasAnyRole("Critic", "Admin")
+                                "/critics-reviews/delete/**", "/critics-reviews/list").hasAnyRole("Critic", "Admin")
                         .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**",
                                 "/user/edit/**", "/user/delete/**", "/user/roles/**").hasRole("Admin")
                         .requestMatchers("/login/**", "/register/**", "/games/**","/tags/**",
