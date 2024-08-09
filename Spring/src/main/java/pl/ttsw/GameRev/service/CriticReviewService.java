@@ -41,6 +41,11 @@ public class CriticReviewService {
         return criticReviews.map(criticReviewMapper::toDto);
     }
 
+    public CriticReviewDTO getCriticReviewById(Long id) {
+        Optional<CriticReview> criticReview = criticReviewRepository.findById(id);
+        return criticReview.map(criticReviewMapper::toDto).orElse(null);
+    }
+
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
         CriticReview criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
