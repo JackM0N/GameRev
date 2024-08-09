@@ -54,6 +54,9 @@ module.exports = {
         'wiggle-slow': 'wiggle 3s ease-in-out infinite',
         'wiggle-reverse-slow': 'wiggle-reverse 3s ease-in-out infinite',
       },
+      zIndex: {
+        '100': '100',
+      },
     },
   },
   plugins: [

@@ -24,42 +24,42 @@
           </ng-container>
         
           <ng-container matColumnDef="developer">
-            <th class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="developer" *matHeaderCellDef> Developer </th>
+            <th class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="developer" *matHeaderCellDef> Developer </th>
             <td class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.developer}} </td>
           </ng-container>
         
           <ng-container matColumnDef="publisher">
-            <th class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="publisher" *matHeaderCellDef> Publisher </th>
+            <th class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="publisher" *matHeaderCellDef> Publisher </th>
             <td class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.publisher}} </td>
           </ng-container>
         
           <ng-container matColumnDef="releaseDate">
-            <th class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="releaseDate" *matHeaderCellDef> Release date </th>
+            <th class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseDate" *matHeaderCellDef> Release date </th>
             <td class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
           </ng-container>
         
           <ng-container matColumnDef="releaseStatus">
-            <th class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
+            <th class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
             <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
           </ng-container>
         
           <ng-container matColumnDef="usersScore">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" mat-sort-header="usersScore" *matHeaderCellDef> Users score </th>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="usersScore" *matHeaderCellDef> Users score </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.usersScore}} </td>
           </ng-container>
         
           <ng-container matColumnDef="tags">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" *matHeaderCellDef> Tags </th>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Tags </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white" *matCellDef="let element"> {{getTags(element)}} </td>
           </ng-container>
         
           <ng-container matColumnDef="description">
-            <th class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" *matHeaderCellDef> Description </th>
+            <th class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Description </th>
             <td class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-xl pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.description}} </td>
           </ng-container>
         
           <ng-container matColumnDef="options">
-            <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-2 border-white" *matHeaderCellDef> Options </th>
+            <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-2xl pinkTextShadow px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Options </th>
             <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white"   *matCellDef="let element">
               <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="routeToViewGame(element.title)">View</button>
               <button class="w-full text-white font-arcade text-center text-xl pinkTextShadow" (click)="routeToEditGame(element.title)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>

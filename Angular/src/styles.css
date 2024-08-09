@@ -97,7 +97,7 @@ body {
   }
   
   .pixel-border::before, .pixel-border::after, 
-  .pixel-border div::before, .pixel-border div::after {
+  .pixel-border > div::before, .pixel-border > div::after {
     content: '';
     position: absolute;
     background: white;
@@ -120,23 +120,60 @@ body {
   }
 
   /* Left and right borders */
-  .pixel-border div::before, .pixel-border div::after {
+  .pixel-border > div::before, .pixel-border > div::after {
     width: 6px; /* Adjust pixel size */
     top: 6px;
     bottom: 6px;
   }
   
-  .pixel-border div::before {
+  .pixel-border > div::before {
     left: 0;
   }
   
-  .pixel-border div::after {
+  .pixel-border > div::after {
     right: 0;
   }
+
+/* Ukryj domyślny checkbox */
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+
+/* Styl dla niestandardowego checkboxa */
+.custom-checkbox .checkbox-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* X w środku checkboxa gdy jest odznaczony */
+.custom-checkbox .checkbox-box::before {
+    content: "X";
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+}
+
+/* Gdy checkbox jest zaznaczony, ukryj X */
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-box::before {
+    display: none;
+}
 
 /*text shadow in here since tailwind doesn't have that*/
 .pinkTextShadow {
     text-shadow: 2px 2px 0px #fb049c;
+}
+
+.noTextShadow {
+    text-shadow: none;
 }
 
 /*material edits*/
@@ -168,6 +205,7 @@ body {
     color: white;
     font-family: 'arcade';
     font-size: large;
+    text-wrap: wrap;
 }
 
 .mat-mdc-form-field{
@@ -222,10 +260,62 @@ body {
 }
 
 .mat-mdc-select-arrow svg{
-    fill: white !important;
+    fill: black !important;
     filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
+/*date picker*/
+.mat-datepicker-toggle-default-icon{
+    fill: black !important;
+}
+
+.mat-calendar{
+    background: black;
+    color: white !important;
+}
+
+.mdc-icon-button{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
+}
+
+.mdc-button__label{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+.mat-calendar-arrow{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span{
+    fill: white !important;
+    color: white !important;
+    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+}
+
+mat-datepicker-toggle > button{
+    margin-top: -10px !important;
+}
+
+mat-datepicker-toggle > button > span{
+    display: none !important;
+}
+
+/*select*/
+.mat-mdc-select-min-line{
+    margin-left: 8px;
+    color: black; 
+    filter: none !important;
+}
+
+.mat-mdc-select-arrow{
+    margin: 8px;
+}
 
 /*practical joke until later solution*/
 .smallBgImageSize {
