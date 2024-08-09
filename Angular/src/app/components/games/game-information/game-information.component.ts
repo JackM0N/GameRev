@@ -79,7 +79,7 @@ export class GameInformationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.backgroundService.setMainContentStyle({'padding-left': '180px'});
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
 
     this.route.params.subscribe(params => {
       if (params['name']) {
@@ -107,13 +107,11 @@ export class GameInformationComponent implements OnInit {
         // Load critic review
         const observer: Observer<any> = {
           next: response => {
-            console.log(response);
-            if (response && response.length > 0) {
-              this.criticReview = response[0];
+            if (response) {
+              this.criticReview = response;
             }
           },
           error: error => {
-            console.error(error);
           },
           complete: () => {}
         };

@@ -13,6 +13,16 @@
     </div>
   </div>
 
+  <div *ngIf="this.criticReview != undefined">
+    <h3 *ngIf="this.criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
+
+    <div class="review-item">
+      <p>Date: {{ formatDate(this.criticReview.postDate) }}</p>
+      <p>Score: {{ this.criticReview.score }}</p>
+      <p [innerHTML]="this.criticReview.content"></p>
+    </div>
+  </div>
+
   <h3>Reviews</h3>
   <div class="review-container">
     <div class="review-item" *ngFor="let review of reviewList">
