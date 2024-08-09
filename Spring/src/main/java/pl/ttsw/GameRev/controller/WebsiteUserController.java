@@ -2,9 +2,7 @@ package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
+import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.service.WebsiteUserService;
@@ -66,12 +65,6 @@ public class WebsiteUserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/ban")
-    public ResponseEntity<?> banUser(@RequestBody WebsiteUserDTO userDTO) {
-        boolean gotBanned = websiteUserService.banUser(userDTO);
-        return ResponseEntity.ok(gotBanned);
-    }
-
     @PostMapping("/{username}/profile-picture")
     public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
         try {
@@ -97,5 +90,42 @@ public class WebsiteUserController {
         } catch (IOException e) {
             return ResponseEntity.status(404).body(null);
         }
+    }
+
+    //Admin endpoints
+    @PutMapping("/ban")
+    public ResponseEntity<?> banUser(@RequestBody WebsiteUserDTO userDTO) {
+        boolean gotBanned = websiteUserService.banUser(userDTO);
+        return ResponseEntity.ok(gotBanned);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editUser(@PathVariable Long id, @RequestBody WebsiteUserDTO websiteUserDTO) throws BadRequestException {
+        WebsiteUserDTO userDTO = websiteUserService.updateWebsiteUser(id, websiteUserDTO);
+        if (userDTO == null) {
+            return ResponseEntity.badRequest().body("There was an error updating website user");
+        }
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) throws BadRequestException {
+        boolean isDeleted = websiteUserService.deleteWebsiteUser(id);
+        if (!isDeleted) {
+            return ResponseEntity.badRequest().body("There was an error deleting website user");
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/roles/{id}")
+    public ResponseEntity<?> editUserRole(
+            @PathVariable Long id,
+            @RequestBody RoleDTO roleDTO,
+            @RequestParam boolean isAdded) throws BadRequestException {
+        boolean changedRoles = websiteUserService.updateRoles(roleDTO, id, isAdded);
+        if (!changedRoles) {
+            return ResponseEntity.badRequest().body("There was an error updating this users roles");
+        }
+        return ResponseEntity.ok().build();
     }
 }

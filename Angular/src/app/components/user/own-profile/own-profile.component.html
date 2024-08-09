@@ -1,6 +1,6 @@
 
-<div class="grow min-h-lvh z-10 text-white bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center">
-    <div class="pixel-border max-[880px]:w-[386px] min-[880px]:w-5/6 h-fit py-[6px] m-auto max-w-[1200px]">
+<div class="grow min-h-lvh z-10 text-white bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center caret-[#fb049c]">
+    <div class="pixel-border max-[880px]:w-[386px] min-[880px]:w-5/6 h-fit p-[6px] m-auto max-w-[1200px]">
         <div class="synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex max-[879px]:flex-col-reverse justify-center bg-black">
             <div class="z-20 w-fit inline-block pt-4 ml-8">
                 <form class="group m-auto relative w-fit" [formGroup]="changeProfilePictureForm" (ngSubmit)="onSubmitProfilePictureChange()">
@@ -19,7 +19,7 @@
                 <form class="text-xl flex flex-col" [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitProfileInformationChange()">
                     <div class="mt-2">
                         <label class="w-full block">Enter your new nickname</label>
-                        <input class="text-black px-1 w-64 mt-2" maxlength="20" placeholder="Input nickname" formControlName="nickname"/>
+                        <input class="text-black px-1 w-64 mt-2 " maxlength="20" placeholder="Input nickname" formControlName="nickname"/>
                     </div>
 
                     <div class="flex flex-col mt-2">
@@ -110,7 +110,7 @@
                 <div class="mt-2">
                     <label>Enter new password</label>
                     <div class="flex items-center w-64 bg-white h-[28px] mt-2">
-                        <input class="px-1 h-full w-56 text-black" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                        <input class="px-1 h-full text-black" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
                         <button class="px-1 flex items-center text-black"
                         matSuffix
                         type="button"
