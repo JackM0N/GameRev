@@ -26,6 +26,12 @@ export class CriticReviewFormComponent implements OnInit {
     score: undefined,
   };
 
+  quillToolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
+
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -50,19 +56,20 @@ export class CriticReviewFormComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      if (params['name']) {
-        this.criticReview.gameTitle = params['name'];
+      if (params['id'] && this.isEditRoute) {
 
-        if (this.isEditRoute) {
+        const token = this.authService.getToken();
+
+        if (token) {
           const observer: Observer<any> = {
             next: response => {
               console.log(response);
-              if (response && response.length > 0) {
-                this.criticReview = response[0];
-  
+              if (response) {
+                this.criticReview = response;
+
                 this.criticReviewForm.setValue({
-                  content: response[0].content,
-                  score: response[0].score
+                  content: response.content,
+                  score: response.score
                 });
               }
             },
@@ -70,8 +77,15 @@ export class CriticReviewFormComponent implements OnInit {
             },
             complete: () => {}
           };
-          this.criticReviewService.getCriticReviewsByGameTitle(params['name']).subscribe(observer);
+          this.criticReviewService.getCriticReviewById(params['id'], token).subscribe(observer);
         }
+      }
+
+    });
+
+    this.route.params.subscribe(params => {
+      if (params['name']) {
+        this.criticReview.gameTitle = params['name'];
       }
     });
   }

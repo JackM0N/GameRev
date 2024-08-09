@@ -37,9 +37,11 @@
             "styles": [
               "src/custom-theme.scss",
               "src/styles.css",
-              "src/assets/styles/toaster.css"
+              "src/assets/styles/toaster.css",
+              "./node_modules/quill/dist/quill.core.css",
+              "./node_modules/quill/dist/quill.snow.css"
             ],
-            "scripts": [],
+            "scripts": ["./node_modules/quill/dist/quill.js"],
             "prerender": false
           },
           "configurations": {

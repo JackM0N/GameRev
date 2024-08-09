@@ -71,7 +71,7 @@ export class CriticReviewListComponent implements AfterViewInit {
         if (response) {
           this.totalReviews = response.totalElements;
           this.reviewsList = response.content;
-          this.dataSource = new MatTableDataSource<CriticReview>(response.content)
+          this.dataSource = new MatTableDataSource<CriticReview>(response.content);
         }
       },
       error: error => {
@@ -149,7 +149,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     });
   }
 
-  deleteReview(review: CriticReview) {
+  softDeleteReview(review: CriticReview) {
     const token = this.authService.getToken();
 
     if (token == null) {
@@ -172,8 +172,6 @@ export class CriticReviewListComponent implements AfterViewInit {
           showCloseButton: true
         };
         this.toasterService.pop(toast);
-
-        //this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
       error: error => {
         console.error(error);
@@ -186,8 +184,46 @@ export class CriticReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    //this.criticReviewService.deleteReview(review.id, token).subscribe(observer);
     this.criticReviewService.reviewReview(review, token).subscribe(observer);
+  }
+
+  deleteReview(review: CriticReview) {
+    const token = this.authService.getToken();
+
+    if (token == null) {
+      console.log("Token is null");
+      return;
+    }
+
+    if (review.id == null) {
+      console.log("Review is null");
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: response => {
+        var toast: Toast = {
+          type: 'success',
+          title: 'Review deleted successfully',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+
+        this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
+        this.dataSource = new MatTableDataSource<CriticReview>(this.reviewsList);
+      },
+      error: error => {
+        console.error(error);
+        var toast: Toast = {
+          type: 'error',
+          title: 'Deletion submission failed',
+          showCloseButton: true
+        };
+        this.toasterService.pop(toast);
+      },
+      complete: () => {}
+    };
+    this.criticReviewService.deleteReview(review.id, token).subscribe(observer);
   }
 
   canDeleteReview(review: CriticReview) {

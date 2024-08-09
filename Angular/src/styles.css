@@ -1,3 +1,4 @@
+
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
@@ -397,4 +398,31 @@ mat-datepicker-toggle > button > span{
 
 .smallBgImage19 {
     background-image: url(./app/images/arcade/52.png);
+}
+
+
+/* Quill editor styles */
+.quill-editor-custom {
+    width: 100%; /* Ensure the editor takes full width */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    margin-bottom: 18px; /* Consistent margin bottom */
+    font-size: 14px;
+}
+
+.quill-editor-custom .ql-container {
+    height: 150px; /* Set a consistent height for the editor */
+    border: 1px solid #d6d6d6; /* Border to match input fields */
+    border-radius: 0px; /* No border radius */
+    font-size: 14px;
+}
+
+.quill-editor-custom .ql-toolbar {
+    border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
+    border-bottom: none; /* Remove bottom border to avoid double border */
+    border-radius: 0px; /* No border radius */
+    margin-bottom: 0px; /* Consistent margin bottom */
+}
+
+.quill-editor-custom .ql-editor {
+    font-size: 14px;
 }

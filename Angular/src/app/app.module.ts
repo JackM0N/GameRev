@@ -52,6 +52,7 @@ import { BackgroundService } from './services/background.service';
 import { AdBoxComponent } from './components/ad-box/ad-box.component';
 import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
 import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -77,7 +78,9 @@ import { CriticReviewListComponent } from './components/critic-reviews/critic-re
         CriticReviewFormComponent,
         CriticReviewListComponent
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
         AppRoutingModule,
         FormsModule,
         ReactiveFormsModule,
@@ -94,6 +97,7 @@ import { CriticReviewListComponent } from './components/critic-reviews/critic-re
         MatButtonToggleModule,
         MatSortModule,
         MatExpansionModule,
+        QuillModule.forRoot(),
         JwtModule.forRoot({
             config: {
                 tokenGetter: () => {

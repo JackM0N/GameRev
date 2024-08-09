@@ -10,6 +10,7 @@ import { CriticReview } from '../interfaces/criticReview';
 // Service for handling critics reviews
 export class CriticReviewService {
   private baseUrl = 'http://localhost:8080/critics-reviews';
+  private idUrl = 'http://localhost:8080/critics-reviews/id';
   private allUrl = 'http://localhost:8080/critics-reviews/list';
   private addUrl = 'http://localhost:8080/critics-reviews/create';
   private editUrl = 'http://localhost:8080/critics-reviews/edit';
@@ -23,6 +24,13 @@ export class CriticReviewService {
 
   getCriticReviewsByGameTitle(gameTitle: string): Observable<CriticReview[]> {
     return this.http.get<CriticReview[]>(`${this.baseUrl}/${gameTitle}`);
+  }
+
+  getCriticReviewById(id: number, token: string): Observable<CriticReview> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
   getAllReviews(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<CriticReview[]> {

@@ -5,10 +5,10 @@
         <div class="field-container">
             <p>{{this.formTitle}}</p>
 
-            <mat-form-field>
-                <mat-label>Content</mat-label>
-                <textarea matInput formControlName="content"></textarea>
-            </mat-form-field>
+            <div id="description-container">
+                <label for="description">Content</label>
+                <quill-editor class="quill-editor-custom" formControlName="content" [modules]="{ toolbar: quillToolbarOptions }"></quill-editor>
+            </div>
 
             <mat-form-field>
                 <mat-label>Score</mat-label>
