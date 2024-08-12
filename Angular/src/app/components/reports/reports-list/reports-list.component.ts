@@ -109,27 +109,35 @@ export class ReportsListComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        if (response && review.id) {
-          this.reportsList[review.id] = {
-            reports: response.content,
-            totalReports: response.totalElements,
-            dataSource: new MatTableDataSource<Report>(response.content)
-          };
-          
-          if (!refreshing) {
-            setTimeout(() => {
-              this.paginators.forEach((paginator, index) => {
-                const paginatorElement = this.paginatorElements.toArray()[index];
-  
-                if (paginatorElement.nativeElement.id == review.id) {
-                  if (review.id) {
-                    this.reportsList[review.id].dataSource.paginator = paginator;
-                  }
-                  paginator.page.subscribe(() => this.loadReportsForReview(review, true));
+        if (review.id) {
+          if (response) {
+            this.reportsList[review.id] = {
+              reports: response.content,
+              totalReports: response.totalElements,
+              dataSource: new MatTableDataSource<Report>(response.content)
+            };
+            
+            if (!refreshing) {
+              setTimeout(() => {
+                this.paginators.forEach((paginator, index) => {
+                  const paginatorElement = this.paginatorElements.toArray()[index];
+    
+                  if (paginatorElement.nativeElement.id == review.id) {
+                    if (review.id) {
+                      this.reportsList[review.id].dataSource.paginator = paginator;
+                    }
+                    paginator.page.subscribe(() => this.loadReportsForReview(review, true));
 
-                }
+                  }
+                });
               });
-            });
+            }
+          } else {
+            this.reportsList[review.id] = {
+              reports: [],
+              totalReports: 0,
+              dataSource: new MatTableDataSource<Report>([])
+            };
           }
         }
       },
