@@ -48,7 +48,7 @@ public class GameService {
         return gameMapper.toDto(game);
     }
 
-    public GameDTO createGame(MultipartFile picture, GameDTO game) throws IOException {
+    public GameDTO createGame(GameDTO game, MultipartFile picture) throws IOException {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
         newGame.setDeveloper(game.getDeveloper());

@@ -32,7 +32,7 @@ public class GameController {
                 .addModule(new JavaTimeModule())
                 .build();
         GameDTO request = objectMapper.readValue(gameJson, GameDTO.class);
-        GameDTO game = gameService.createGame(picture, request);
+        GameDTO game = gameService.createGame(request, picture);
         if (game == null) {
             return ResponseEntity.badRequest().body("Game creation failed");
         }
