@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <button class="text-white pinkTextShadow text-2xl" [disabled]="!changeEmailForm.valid">Change email</button>
+                    <button class="text-white pinkTextShadow text-2xl disabled:opacity-30" [disabled]="!changeEmailForm.valid">Change email</button>
                 </div>
             </form>
         </div>
@@ -142,7 +142,7 @@
                 <mat-error class="bottom-mat-error" *ngIf="isPasswordMismatch()">{{ passwordMismatchErrorMessage() }}</mat-error>
 
                 <div class="mt-4">
-                    <button class="text-white pinkTextShadow text-2xl" [disabled]="!changePasswordForm.valid">Change password</button>
+                    <button class="text-white pinkTextShadow text-2xl disabled:opacity-30" [disabled]="!changePasswordForm.valid">Change password</button>
                 </div>
             </form>
         </div>

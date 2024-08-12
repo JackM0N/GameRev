@@ -54,7 +54,7 @@
 
             <div class="mt-2">
                 <label>Description</label><br>
-                <textarea class="w-full text-black px-2" formControlName="description"></textarea>
+                <textarea class="w-full text-black px-2 min-h-14" formControlName="description"></textarea>
             </div>
 
             <div class="font-arcade text-3xl flex flex-row mt-2">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="pixel-border w-32 h-fit py-[6px] m-auto px-[6px]">
                     <div class="bg-green-600">
-                        <button class="px-[10px]" [disabled]="!addingGameForm.valid">Submit</button>
+                        <button class="px-[10px] disabled:opacity-30" [disabled]="!addingGameForm.valid">Submit</button>
                     </div>
                 </div>
             </div>
