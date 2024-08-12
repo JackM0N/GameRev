@@ -41,6 +41,9 @@ public class Game {
     @Column(name = "users_score")
     private float usersScore;
 
+    @Column(name = "picture")
+    private String picture;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "game_tag",

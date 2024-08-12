@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CriticReviewRepository extends JpaRepository<CriticReview, Long> {
     Optional<CriticReview> findByGameTitleAndApprovedByIsNotNull(String gameTitle);
+    Optional<CriticReview> findByGameTitle(String gameTitle);
     Page<CriticReview> findAll(Pageable pageable);
 }

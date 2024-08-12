@@ -2,9 +2,11 @@ package pl.ttsw.GameRev.service;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.mapper.GameMapper;
@@ -12,6 +14,11 @@ import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +27,9 @@ public class GameService {
     private final GameRepository gameRepository;
     private final TagRepository tagRepository;
     private final GameMapper gameMapper;
+
+    @Value("${game.pics.directory}")
+    private final String gamePicsDirectory = "../Pictures/game_pics";
 
     public GameService(GameRepository gameRepository, TagRepository tagRepository, GameMapper gameMapper) {
         this.gameRepository = gameRepository;
@@ -38,7 +48,7 @@ public class GameService {
         return gameMapper.toDto(game);
     }
 
-    public GameDTO createGame(GameDTO game) throws BadRequestException {
+    public GameDTO createGame(MultipartFile picture, GameDTO game) throws IOException {
         Game newGame = new Game();
         newGame.setTitle(game.getTitle());
         newGame.setDeveloper(game.getDeveloper());
@@ -54,16 +64,38 @@ public class GameService {
 
         newGame.setReleaseStatus(game.getReleaseStatus());
 
-        List<Tag> tags = game.getTags().stream()
-                .map(tagDTO -> tagRepository.findById(tagDTO.getId())
-                        .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
-                .collect(Collectors.toList());
-        newGame.setTags(tags);
+        Path filepath = null;
 
-        return gameMapper.toDto(gameRepository.save(newGame));
+        try {
+            if (picture != null && !picture.isEmpty()) {
+                String filename = newGame.getTitle().replaceAll("\\s+", "_").toLowerCase() + "_" + picture.getOriginalFilename();
+                filepath = Paths.get(gamePicsDirectory, filename);
+                Files.copy(picture.getInputStream(), filepath);
+
+                newGame.setPicture(filepath.toString());
+            }
+
+
+            List<Tag> tags = game.getTags().stream()
+                    .map(tagDTO -> tagRepository.findById(tagDTO.getId())
+                            .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
+                    .collect(Collectors.toList());
+            newGame.setTags(tags);
+
+            return gameMapper.toDto(gameRepository.save(newGame));
+        } catch (Exception e) {
+            if (filepath != null && Files.exists(filepath)) {
+                try {
+                    Files.delete(filepath);
+                } catch (IOException ioException) {
+                    System.err.println("Failed to delete file after an error: " + filepath.toString());
+                }
+            }
+            throw e;
+        }
     }
 
-    public GameDTO updateGame(String title, GameDTO game) throws BadRequestException {
+    public GameDTO updateGame(String title, GameDTO game, MultipartFile picture) throws IOException {
         Game updatedGame = gameRepository.findGameByTitle(title)
                 .orElseThrow(() -> new BadRequestException("Game not found"));
         if (game.getTitle() != null) {
@@ -94,6 +126,20 @@ public class GameService {
                             .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
                     .collect(Collectors.toList());
             updatedGame.setTags(tags);
+        }
+        if (picture != null && !picture.isEmpty()) {
+            String oldPicturePath = updatedGame.getPicture();
+            if (oldPicturePath != null && !oldPicturePath.isEmpty()) {
+                Path oldFilepath = Paths.get(oldPicturePath);
+                Files.deleteIfExists(oldFilepath);
+            }
+
+            String filename = updatedGame.getTitle().replaceAll("\\s+", "_")
+                    .toLowerCase() + "_" + picture.getOriginalFilename();
+            Path filepath = Paths.get(gamePicsDirectory, filename);
+            Files.copy(picture.getInputStream(), filepath);
+
+            updatedGame.setPicture(filepath.toString());
         }
         return gameMapper.toDto(gameRepository.save(updatedGame));
     }
