@@ -95,45 +95,45 @@ body {
 .pixel-border {
     position: relative;
     z-index: 1;
-  }
-  
-  .pixel-border::before, .pixel-border::after, 
-  .pixel-border > div::before, .pixel-border > div::after {
+}
+
+.pixel-border::before, .pixel-border::after, 
+.pixel-border > div::before, .pixel-border > div::after {
     content: '';
     position: absolute;
     background: white;
     z-index: -1;
-  }
+}
 
-  /* Top and bottom borders */
-  .pixel-border::before, .pixel-border::after {
+/* Top and bottom borders */
+.pixel-border::before, .pixel-border::after {
     height: 6px; /* Adjust pixel size */
     left: 6px;
     right: 6px;
-  }
-  
-  .pixel-border::before {
-    top: 0;
-  }
-  
-  .pixel-border::after {
-    bottom: 0;
-  }
+}
 
-  /* Left and right borders */
-  .pixel-border > div::before, .pixel-border > div::after {
+.pixel-border::before {
+    top: 0;
+}
+
+.pixel-border::after {
+    bottom: 0;
+}
+
+/* Left and right borders */
+.pixel-border > div::before, .pixel-border > div::after {
     width: 6px; /* Adjust pixel size */
     top: 6px;
     bottom: 6px;
-  }
-  
-  .pixel-border > div::before {
+}
+
+.pixel-border > div::before {
     left: 0;
-  }
-  
-  .pixel-border > div::after {
+}
+
+.pixel-border > div::after {
     right: 0;
-  }
+}
 
 /* Ukryj domyślny checkbox */
 .custom-checkbox input[type="checkbox"] {
@@ -161,11 +161,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     display: block;
-}
-
-/* Gdy checkbox jest zaznaczony, ukryj X */
-.custom-checkbox input[type="checkbox"]:checked + .checkbox-box::before {
-    display: none;
 }
 
 /*text shadow in here since tailwind doesn't have that*/
