@@ -144,9 +144,9 @@ class UserReviewServiceTest {
 
         UserReview userReview = new UserReview();
         WebsiteUser websiteUser = new WebsiteUser();
-        when(websiteUserRepository.findByUsername("testUser2")).thenReturn(websiteUser);
+        when(websiteUserRepository.findByUsername("testUser2")).thenReturn(Optional.of(websiteUser));
         when(websiteUserService.getCurrentUser()).thenReturn(websiteUser);
-        when(gameRepository.findGameByTitle("Cimbus Lompany")).thenReturn(new Game());
+        when(gameRepository.findGameByTitle("Cimbus Lompany")).thenReturn(Optional.of(new Game()));
         when(userReviewRepository.save(any(UserReview.class))).thenReturn(userReview);
         when(userReviewMapper.toDto(any(UserReview.class))).thenReturn(userReviewDTO);
 
@@ -170,7 +170,7 @@ class UserReviewServiceTest {
         UserReview userReview = new UserReview();
         userReview.setUser(new WebsiteUser());
 
-        when(userReviewRepository.findById(userReviewDTO.getId())).thenReturn(userReview);
+        when(userReviewRepository.findById(userReviewDTO.getId())).thenReturn(Optional.of(userReview));
         when(websiteUserService.getCurrentUser()).thenReturn(userReview.getUser());
         when(userReviewRepository.save(any(UserReview.class))).thenReturn(userReview);
         when(userReviewMapper.toDto(any(UserReview.class))).thenReturn(userReviewDTO);
@@ -185,7 +185,7 @@ class UserReviewServiceTest {
     }
 
     @Test
-    void testDeleteUserReviewByOwner() {
+    void testDeleteUserReviewByOwner() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         userReviewDTO.setId(1L);
         userReviewDTO.setUserUsername("testUser2");
@@ -194,9 +194,9 @@ class UserReviewServiceTest {
         UserReview userReview = new UserReview();
         userReview.setUser(websiteUser);
 
-        when(websiteUserRepository.findByUsername("testUser2")).thenReturn(websiteUser);
+        when(websiteUserRepository.findByUsername("testUser2")).thenReturn(Optional.of(websiteUser));
         when(websiteUserService.getCurrentUser()).thenReturn(websiteUser);
-        when(userReviewRepository.findById(userReviewDTO.getId())).thenReturn(userReview);
+        when(userReviewRepository.findById(userReviewDTO.getId())).thenReturn(Optional.of(userReview));
 
         boolean result = userReviewService.deleteUserReviewByOwner(userReviewDTO);
 
@@ -212,7 +212,7 @@ class UserReviewServiceTest {
         Long reviewId = 1L;
         UserReview userReview = new UserReview();
 
-        when(userReviewRepository.findById(reviewId)).thenReturn(userReview);
+        when(userReviewRepository.findById(reviewId)).thenReturn(Optional.of(userReview));
 
         boolean result = userReviewService.deleteUserReviewById(reviewId);
 

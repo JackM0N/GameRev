@@ -84,21 +84,6 @@ class GameServiceTest {
     }
 
     @Test
-    public void testGetGameById() {
-        Game game = createGameForTesting();
-        GameDTO gameDTO = new GameDTO();
-
-        when(gameRepository.findGameById(1L)).thenReturn(game);
-        when(gameMapper.toDto(game)).thenReturn(gameDTO);
-
-        GameDTO result = gameService.getGameById(1L);
-
-        assertNotNull(result);
-        verify(gameRepository, times(1)).findGameById(1L);
-        verify(gameMapper, times(1)).toDto(game);
-    }
-
-    @Test
     public void testCreateGame() throws BadRequestException {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Limbus Company");
@@ -115,8 +100,9 @@ class GameServiceTest {
 
         when(tagRepository.findById(1L)).thenReturn(Optional.of(game.getTags().get(0)));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
+        when(gameMapper.toDto(any(Game.class))).thenReturn(gameDTO);
 
-        Game result = gameService.createGame(gameDTO);
+        GameDTO result = gameService.createGame(gameDTO);
 
         assertNotNull(result);
         verify(tagRepository, times(1)).findById(1L);
@@ -124,11 +110,11 @@ class GameServiceTest {
     }
 
     @Test
-    public void testGetGameByTitle() {
+    public void testGetGameByTitle() throws BadRequestException {
         Game game = createGameForTesting();
         GameDTO gameDTO = new GameDTO();
 
-        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(game);
+        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(Optional.of(game));
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
         GameDTO result = gameService.getGameByTitle("Limbus Company");
@@ -144,7 +130,7 @@ class GameServiceTest {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Updated Title");
 
-        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(game);
+        when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(Optional.of(game));
         when(gameRepository.save(game)).thenReturn(game);
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
 

@@ -57,8 +57,8 @@ public class UserGameServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        testUser = websiteUserRepository.findByUsername("testuser");
-        game = gameRepository.findGameByTitle("Limbus Company");
+        testUser = websiteUserRepository.findByUsername("testuser").get();
+        game = gameRepository.findGameByTitle("Limbus Company").get();
 
         userGame = new UserGame();
         userGame.setUser(testUser);

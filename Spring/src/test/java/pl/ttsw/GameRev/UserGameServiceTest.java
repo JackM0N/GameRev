@@ -86,7 +86,7 @@ public class UserGameServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<UserGame> userGamePage = new PageImpl<>(Collections.singletonList(userGame));
 
-        when(websiteUserRepository.findByNickname("testuser")).thenReturn(user);
+        when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findByUserNickname("testuser", pageable)).thenReturn(userGamePage);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
@@ -99,7 +99,7 @@ public class UserGameServiceTest {
     @Test
     public void testGetUserGameDTO_UserNotFound() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(websiteUserRepository.findByNickname("nonexistent")).thenReturn(null);
+        when(websiteUserRepository.findByNickname("nonexistent")).thenReturn(Optional.empty());
 
         assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("nonexistent", pageable));
     }
@@ -107,7 +107,7 @@ public class UserGameServiceTest {
     @Test
     public void testGetUserGameDTO_EmptyLibrary() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(websiteUserRepository.findByNickname("testuser")).thenReturn(user);
+        when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findByUserNickname("testuser", pageable)).thenReturn(Page.empty());
 
         assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("testuser", pageable));
@@ -116,8 +116,8 @@ public class UserGameServiceTest {
     @Test
     public void testAddGameToUser_Success() throws BadRequestException {
         when(websiteUserService.getCurrentUser()).thenReturn(user);
-        when(websiteUserRepository.findByUsername(anyString())).thenReturn(user);
-        when(gameRepository.findGameById(anyLong())).thenReturn(game);
+        when(websiteUserRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+        when(gameRepository.findGameById(anyLong())).thenReturn(Optional.ofNullable(game));
         when(userGameRepository.save(any(UserGame.class))).thenReturn(userGame);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
@@ -137,7 +137,7 @@ public class UserGameServiceTest {
     @Test
     public void testAddGameToUser_UserNotFound() {
         when(websiteUserService.getCurrentUser()).thenReturn(user);
-        when(websiteUserRepository.findByUsername(anyString())).thenReturn(null);
+        when(websiteUserRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
         assertThrows(BadRequestException.class, () -> userGameService.addGameToUser(userGameDTO));
     }
@@ -145,8 +145,8 @@ public class UserGameServiceTest {
     @Test
     public void testAddGameToUser_GameNotFound() {
         when(websiteUserService.getCurrentUser()).thenReturn(user);
-        when(websiteUserRepository.findByUsername(anyString())).thenReturn(user);
-        when(gameRepository.findGameById(anyLong())).thenReturn(null);
+        when(websiteUserRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+        when(gameRepository.findGameById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(BadRequestException.class, () -> userGameService.addGameToUser(userGameDTO));
     }

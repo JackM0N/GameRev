@@ -1,6 +1,8 @@
 package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
@@ -16,6 +18,15 @@ public class CriticReviewController {
         this.criticReviewService = criticReviewService;
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getAll(Pageable pageable) throws BadRequestException {
+        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(pageable);
+        if (criticReviewDTO.getTotalElements() == 0) {
+            return ResponseEntity.badRequest().body("There are no critic reviews yet");
+        }
+        return ResponseEntity.ok(criticReviewDTO);
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getById(@PathVariable long id) {
         CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewById(id);
@@ -26,7 +37,7 @@ public class CriticReviewController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getByTitle(@PathVariable String title) {
+    public ResponseEntity<?> getByTitle(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-", " ");
         CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewByTitle(title);
         if (criticReviewDTO == null) {

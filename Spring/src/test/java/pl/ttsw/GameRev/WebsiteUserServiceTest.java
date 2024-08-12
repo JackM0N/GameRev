@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +84,7 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testFindByNickname() {
-        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(Optional.ofNullable(user_new));
         when(websiteUserMapper.toDto(user_new)).thenReturn(userDTO_new);
         WebsiteUserDTO result = websiteUserService.findByNickname(username + "2");
         assertEquals(username + "2", result.getNickname());
@@ -91,7 +92,7 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testUpdateUserProfile_Success() throws BadRequestException {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(Optional.ofNullable(user_new));
         when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);
         when(websiteUserRepository.save(any(WebsiteUser.class))).thenReturn(user_new);
         userDTO_new.setEmail("newEmail@test.com");
@@ -107,7 +108,7 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testUpdateUserProfile_PasswordMismatch() {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(Optional.ofNullable(user_new));
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
         UpdateWebsiteUserDTO request = new UpdateWebsiteUserDTO();
@@ -120,7 +121,7 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testUploadProfilePicture_Success() throws IOException {
-        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByUsername(username + "2")).thenReturn(Optional.ofNullable(user_new));
 
         ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO();
         profilePictureDTO.setUsername(user_new.getUsername());
@@ -139,7 +140,7 @@ public class WebsiteUserServiceTest {
     @Test
     public void testGetProfilePicture_Success() throws IOException {
         user_new.setProfilepic(profilePicsDirectory + "/testuser2_profilePic.jpg");
-        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(Optional.ofNullable(user_new));
 
         Path filePath = Paths.get(profilePicsDirectory, "testuser2_profilePic.jpg");
         Files.createDirectories(filePath.getParent());
@@ -154,7 +155,7 @@ public class WebsiteUserServiceTest {
 
     @Test
     public void testGetProfilePicture_NotFound() {
-        when(websiteUserRepository.findByNickname("nickname3")).thenReturn(user_new);
+        when(websiteUserRepository.findByNickname("nickname3")).thenReturn(Optional.ofNullable(user_new));
 
         assertThrows(IOException.class, () -> {
             websiteUserService.getProfilePicture("nickname3");

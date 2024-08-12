@@ -22,6 +22,7 @@ import pl.ttsw.GameRev.service.UserReviewService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,11 +47,11 @@ public class UserReviewServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game != null) {
+        Optional<Game> gameToDelete = gameRepository.findGameByTitle("Limbus Company 2");
+        if (gameToDelete.isPresent()) {
             gameRepository.delete(game);
         }
-        testUser = websiteUserRepository.findByUsername("testuser");
+        testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser, "Test user should already exist in the database");
 
         game = createGameForTesting();
@@ -60,11 +61,9 @@ public class UserReviewServiceIntegrationTest {
     @AfterEach
     public void teardown() {
         Page<UserReview> reviews = userReviewRepository.findByUser(testUser, pageable);
-        for (UserReview review : reviews) {
-            userReviewRepository.delete(review);
-        }
-        game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game != null) {
+        userReviewRepository.deleteAll(reviews);
+        Optional<Game> gameToDelete = gameRepository.findGameByTitle("Limbus Company 2");
+        if (gameToDelete.isPresent()) {
             gameRepository.delete(game);
         }
     }

@@ -1,7 +1,8 @@
 package pl.ttsw.GameRev.service;
 
 import org.apache.coyote.BadRequestException;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
@@ -31,14 +32,26 @@ public class CriticReviewService {
         this.gameService = gameService;
     }
 
-    public CriticReviewDTO getCriticReviewByTitle(String gameTitle) {
-        Optional<CriticReview> criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle);
-        return criticReview.map(criticReviewMapper::toDto).orElse(null);
+    public Page<CriticReviewDTO> getAllCriticReviews(Pageable pageable) throws BadRequestException {
+        Page<CriticReview> criticReviews = criticReviewRepository.findAll(pageable);
+        for (CriticReview criticReview : criticReviews) {
+            criticReview.getUser().setPassword(null);
+            criticReview.getUser().setDescription(null);
+        }
+        return criticReviews.map(criticReviewMapper::toDto);
     }
 
     public CriticReviewDTO getCriticReviewById(Long id) {
         Optional<CriticReview> criticReview = criticReviewRepository.findById(id);
         return criticReview.map(criticReviewMapper::toDto).orElse(null);
+    }
+
+    public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
+        CriticReview criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle)
+                .orElseThrow(() -> new BadRequestException("Critic review not found"));
+        criticReview.getUser().setPassword(null);
+        criticReview.getUser().setDescription(null);
+        return criticReviewMapper.toDto(criticReview);
     }
 
     public CriticReviewDTO createCriticReview(CriticReviewDTO criticReviewDTO) throws BadRequestException {
