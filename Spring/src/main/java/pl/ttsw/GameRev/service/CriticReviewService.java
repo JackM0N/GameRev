@@ -47,7 +47,7 @@ public class CriticReviewService {
     }
 
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
-        CriticReview criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle)
+        CriticReview criticReview = criticReviewRepository.findByGameTitleAndReviewStatus(gameTitle, ReviewStatus.APPROVED)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
         criticReview.getUser().setPassword(null);
         criticReview.getUser().setDescription(null);
@@ -93,7 +93,7 @@ public class CriticReviewService {
         }
 
         criticReview.setReviewStatus(ReviewStatus.EDITED);
-        criticReview.setApprovedBy(null);
+        criticReview.setStatusChangedBy(websiteUser);
 
         return criticReviewMapper.toDto(criticReviewRepository.save(criticReview));
     }
@@ -108,9 +108,7 @@ public class CriticReviewService {
             throw new BadRequestException("This review doesnt exist");
         }
         criticReview.get().setReviewStatus(reviewStatus);
-        if (criticReview.get().getReviewStatus() == ReviewStatus.APPROVED) {
-            criticReview.get().setApprovedBy(websiteUser);
-        }
+        criticReview.get().setStatusChangedBy(websiteUser);
         return criticReviewMapper.toDto(criticReviewRepository.save(criticReview.get()));
     }
 
