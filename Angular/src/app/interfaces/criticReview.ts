@@ -13,5 +13,5 @@ export interface CriticReview {
   user?: WebsiteUser;
 
   reviewStatus?: string;
-  approvedBy?: WebsiteUser;
+  statusChangedBy?: WebsiteUser;
 }
