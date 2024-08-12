@@ -64,26 +64,26 @@ public class CriticReviewServiceTest {
         mockReview.setReviewStatus(ReviewStatus.APPROVED);
 
         CriticReviewDTO mockReviewDTO = new CriticReviewDTO();
-        when(criticReviewRepository.findByGameTitleAndApprovedByIsNotNull("Some Game"))
+        when(criticReviewRepository.findByGameTitleAndReviewStatus("Some Game", ReviewStatus.APPROVED))
                 .thenReturn(Optional.of(mockReview));
         when(criticReviewMapper.toDto(any(CriticReview.class))).thenReturn(mockReviewDTO);
 
         CriticReviewDTO result = criticReviewService.getCriticReviewByTitle("Some Game");
 
         assertNotNull(result);
-        verify(criticReviewRepository, times(1)).findByGameTitleAndApprovedByIsNotNull("Some Game");
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Some Game",ReviewStatus.APPROVED);
     }
 
     @Test
     public void testGetCriticReviewByTitle_NotFound() throws BadRequestException {
-        when(criticReviewRepository.findByGameTitleAndApprovedByIsNotNull("Unknown Game"))
+        when(criticReviewRepository.findByGameTitleAndReviewStatus("Unknown Game", ReviewStatus.APPROVED))
                 .thenReturn(Optional.empty());
 
         assertThrows(BadRequestException.class, () -> {
             criticReviewService.getCriticReviewByTitle("Unknown Game");
         });
 
-        verify(criticReviewRepository, times(1)).findByGameTitleAndApprovedByIsNotNull("Unknown Game");
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Unknown Game",ReviewStatus.APPROVED);
     }
 
     @Test
