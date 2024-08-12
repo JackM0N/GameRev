@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
@@ -20,6 +21,7 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +45,9 @@ class GameServiceTest {
 
     @Mock
     private TagRepository tagRepository;
+
+    @Mock
+    private MultipartFile picture;
 
     @BeforeEach
     public void setUp() {
@@ -84,7 +89,7 @@ class GameServiceTest {
     }
 
     @Test
-    public void testCreateGame() throws BadRequestException {
+    public void testCreateGame() throws IOException {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Limbus Company");
         gameDTO.setDeveloper("Project Moon");
@@ -101,8 +106,9 @@ class GameServiceTest {
         when(tagRepository.findById(1L)).thenReturn(Optional.of(game.getTags().get(0)));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
         when(gameMapper.toDto(any(Game.class))).thenReturn(gameDTO);
+        when(picture.isEmpty()).thenReturn(true);
 
-        GameDTO result = gameService.createGame(gameDTO);
+        GameDTO result = gameService.createGame(gameDTO, picture);
 
         assertNotNull(result);
         verify(tagRepository, times(1)).findById(1L);
@@ -125,7 +131,7 @@ class GameServiceTest {
     }
 
     @Test
-    void testUpdateGame() throws BadRequestException {
+    void testUpdateGame() throws IOException {
         Game game = createGameForTesting();
         GameDTO gameDTO = new GameDTO();
         gameDTO.setTitle("Updated Title");
@@ -133,8 +139,9 @@ class GameServiceTest {
         when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(Optional.of(game));
         when(gameRepository.save(game)).thenReturn(game);
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
+        when(picture.isEmpty()).thenReturn(true);
 
-        GameDTO result = gameService.updateGame("Limbus Company", gameDTO);
+        GameDTO result = gameService.updateGame("Limbus Company", gameDTO,picture);
 
         assertNotNull(result);
         assertEquals("Updated Title", result.getTitle());
