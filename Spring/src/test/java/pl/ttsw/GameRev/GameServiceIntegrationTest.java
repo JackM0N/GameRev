@@ -17,6 +17,7 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class GameServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testCreateGame() throws BadRequestException {
+    public void testCreateGame() throws IOException {
         // existing tags
         Tag tag = tagRepository.findById(1L).orElseThrow(RuntimeException::new);
 
@@ -94,7 +95,7 @@ public class GameServiceIntegrationTest {
         tagDTO.setTagName(tag.getTagName());
         gameDTO.setTags(new ArrayList<>(List.of(tagDTO)));
 
-        GameDTO createdGame = gameService.createGame(gameDTO);
+        GameDTO createdGame = gameService.createGame(gameDTO, null);
 
         assertNotNull(createdGame);
         assertEquals("Limbus Company 2", createdGame.getTitle());
@@ -130,7 +131,7 @@ public class GameServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testUpdateGame() throws BadRequestException {
+    public void testUpdateGame() throws IOException {
         Game existingGame = createGameForTesting();
         existingGame = gameRepository.save(existingGame);
 
@@ -149,7 +150,7 @@ public class GameServiceIntegrationTest {
         updatedTagDTO.setTagName(updatedTag.getTagName());
         updateGameDTO.setTags(new ArrayList<>(List.of(updatedTagDTO)));
 
-        GameDTO resultGameDTO = gameService.updateGame("Limbus Company 2", updateGameDTO);
+        GameDTO resultGameDTO = gameService.updateGame("Limbus Company 2", updateGameDTO, null);
 
         assertNotNull(resultGameDTO);
         assertEquals("Limbus Company Updated", resultGameDTO.getTitle());

@@ -79,9 +79,10 @@ public class CriticReviewServiceTest {
         when(criticReviewRepository.findByGameTitleAndApprovedByIsNotNull("Unknown Game"))
                 .thenReturn(Optional.empty());
 
-        CriticReviewDTO result = criticReviewService.getCriticReviewByTitle("Unknown Game");
+        assertThrows(BadRequestException.class, () -> {
+            criticReviewService.getCriticReviewByTitle("Unknown Game");
+        });
 
-        assertNull(result);
         verify(criticReviewRepository, times(1)).findByGameTitleAndApprovedByIsNotNull("Unknown Game");
     }
 
