@@ -69,3 +69,21 @@ ALTER TABLE game
 ALTER TABLE critic_review
     RENAME COLUMN approved_by to status_changed_by;
 
+
+-- changeset Stanislaw:22 labels:triggers
+-- trigger deleting disapproved reports
+CREATE OR REPLACE FUNCTION delete_disapproved_report()
+    RETURNS TRIGGER AS '
+BEGIN
+    IF NEW.approved = false THEN
+        DELETE FROM report WHERE report_id = NEW.report_id;
+    END IF;
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_delete_disapproved_reports
+    AFTER UPDATE ON report
+    FOR EACH ROW
+EXECUTE FUNCTION delete_disapproved_report();
+
