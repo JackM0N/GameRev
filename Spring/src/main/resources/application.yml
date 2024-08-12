@@ -49,3 +49,6 @@ logging:
 profile:
   pics:
     directory: ../Pictures/profile_pics
+game:
+  pics:
+    directory: ../Pictures/game_pics

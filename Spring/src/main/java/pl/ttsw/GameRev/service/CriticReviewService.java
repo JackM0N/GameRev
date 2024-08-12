@@ -47,7 +47,7 @@ public class CriticReviewService {
     }
 
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
-        CriticReview criticReview = criticReviewRepository.findByGameTitleAndApprovedByIsNotNull(gameTitle)
+        CriticReview criticReview = criticReviewRepository.findByGameTitleAndReviewStatus(gameTitle, ReviewStatus.APPROVED)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
         criticReview.getUser().setPassword(null);
         criticReview.getUser().setDescription(null);
@@ -58,6 +58,9 @@ public class CriticReviewService {
         WebsiteUser websiteUser = websiteUserService.getCurrentUser();
         if (websiteUser == null) {
             throw new BadCredentialsException("You have to login first");
+        }
+        if (criticReviewRepository.findByGameTitle(criticReviewDTO.getGameTitle()).isPresent()){
+            throw new BadRequestException("Critic review already exists");
         }
         CriticReview criticReview = new CriticReview();
         criticReview.setPostDate(LocalDate.now());
@@ -76,22 +79,23 @@ public class CriticReviewService {
         if (websiteUser == null) {
             throw new BadCredentialsException("You have to login first");
         }
-        Optional<CriticReview> criticReview = criticReviewRepository.findById(id);
-        if (criticReview.isEmpty()) {
-            throw new BadRequestException("This review doesnt exist");
-        }
+        CriticReview criticReview = criticReviewRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Critic review not found"));
 
         if (criticReviewDTO.getScore() != null) {
-            criticReview.get().setScore(criticReviewDTO.getScore());
+            criticReview.setScore(criticReviewDTO.getScore());
         }
         if (criticReviewDTO.getContent() != null) {
-            criticReview.get().setContent(criticReviewDTO.getContent());
+            criticReview.setContent(criticReviewDTO.getContent());
         }
         if (criticReviewDTO.getGameTitle() != null) {
-            criticReview.get().setGame(gameMapper.toEntity(gameService.getGameByTitle(criticReviewDTO.getGameTitle())));
+            criticReview.setGame(gameMapper.toEntity(gameService.getGameByTitle(criticReviewDTO.getGameTitle())));
         }
 
-        return criticReviewMapper.toDto(criticReviewRepository.save(criticReview.get()));
+        criticReview.setReviewStatus(ReviewStatus.EDITED);
+        criticReview.setStatusChangedBy(websiteUser);
+
+        return criticReviewMapper.toDto(criticReviewRepository.save(criticReview));
     }
 
     public CriticReviewDTO reviewCriticReview(Long id, ReviewStatus reviewStatus) throws BadRequestException {
@@ -104,9 +108,7 @@ public class CriticReviewService {
             throw new BadRequestException("This review doesnt exist");
         }
         criticReview.get().setReviewStatus(reviewStatus);
-        if (criticReview.get().getReviewStatus() == ReviewStatus.APPROVED) {
-            criticReview.get().setApprovedBy(websiteUser);
-        }
+        criticReview.get().setStatusChangedBy(websiteUser);
         return criticReviewMapper.toDto(criticReviewRepository.save(criticReview.get()));
     }
 

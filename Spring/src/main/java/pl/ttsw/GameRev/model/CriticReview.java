@@ -39,6 +39,6 @@ public class CriticReview {
     private ReviewStatus reviewStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by")
-    private WebsiteUser approvedBy;
+    @JoinColumn(name = "status_changed_by")
+    private WebsiteUser statusChangedBy;
 }

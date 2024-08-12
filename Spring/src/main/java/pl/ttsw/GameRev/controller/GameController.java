@@ -1,13 +1,20 @@
 package pl.ttsw.GameRev.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.mail.internet.MimeMultipart;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/games")
@@ -19,8 +26,13 @@ public class GameController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createGame(@RequestBody GameDTO request) throws BadRequestException {
-        GameDTO game = gameService.createGame(request);
+    public ResponseEntity<?> createGame(@RequestParam(value = "picture", required = false) MultipartFile picture,
+                                        @RequestParam("game") String gameJson) throws IOException {
+        ObjectMapper objectMapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
+        GameDTO request = objectMapper.readValue(gameJson, GameDTO.class);
+        GameDTO game = gameService.createGame(picture, request);
         if (game == null) {
             return ResponseEntity.badRequest().body("Game creation failed");
         }
@@ -38,9 +50,15 @@ public class GameController {
     }
 
     @PutMapping("/{title}")
-    public ResponseEntity<?> editGame(@PathVariable String title, @RequestBody GameDTO request) throws BadRequestException {
+    public ResponseEntity<?> editGame(@RequestParam(value = "picture", required = false) MultipartFile picture,
+                                      @PathVariable String title,
+                                      @RequestParam("game") String gameJson) throws IOException {
         title = title.replaceAll("-"," ");
-        GameDTO updatedGame = gameService.updateGame(title, request);
+        ObjectMapper objectMapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
+        GameDTO request = objectMapper.readValue(gameJson, GameDTO.class);
+        GameDTO updatedGame = gameService.updateGame(title, request, picture);
         if (updatedGame == null) {
             return ResponseEntity.notFound().build();
         }

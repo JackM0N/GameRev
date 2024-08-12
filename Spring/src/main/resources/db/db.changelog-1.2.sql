@@ -64,3 +64,8 @@ EXECUTE FUNCTION delete_expired_tokens();
 ALTER TABLE game
     ADD COLUMN picture VARCHAR(255);
 
+
+--changeset Stanislaw:21 labels:schema,refactoring
+ALTER TABLE critic_review
+    RENAME COLUMN approved_by to status_changed_by;
+
