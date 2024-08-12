@@ -3,11 +3,14 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.service.CriticReviewService;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/critics-reviews")
@@ -19,8 +22,15 @@ public class CriticReviewController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAll(Pageable pageable) throws BadRequestException {
-        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(pageable);
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "gameTitle", required = false) String gameTitle,
+            @RequestParam(value = "reviewStatus", required = false) ReviewStatus reviewStatus,
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            Pageable pageable
+    ) throws BadRequestException {
+        gameTitle = gameTitle.replaceAll("-"," ");
+        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(gameTitle, reviewStatus, fromDate, toDate, pageable);
         if (criticReviewDTO.getTotalElements() == 0) {
             return ResponseEntity.badRequest().body("There are no critic reviews yet");
         }
