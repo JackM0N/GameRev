@@ -13,7 +13,7 @@ import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component'
 import { Toast, ToasterService } from 'angular-toaster';
 import { reviewStatuses } from '../../../interfaces/reviewStatuses';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -33,7 +33,6 @@ export class CriticReviewListComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private route: ActivatedRoute,
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     public dialog: MatDialog,
@@ -44,7 +43,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+    this.backgroundService.setMainContentStyle({'padding-left': '220px'});
   }
 
   ngAfterViewInit() {
@@ -237,8 +236,8 @@ export class CriticReviewListComponent implements AfterViewInit {
   findReviewStatusName(review: CriticReview) {
     var status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
 
-    if (status == 'Approved' && review.approvedBy) {
-      status += ' (by ' + review.approvedBy.nickname + ')';
+    if (review.statusChangedBy) {
+      status += ' (by ' + review.statusChangedBy.nickname + ')';
     }
 
     return status;

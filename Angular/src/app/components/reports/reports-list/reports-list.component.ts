@@ -11,6 +11,7 @@ import { UserReviewService } from '../../../services/user-review.service';
 import { formatDate } from '../../../util/formatDate';
 import { Toast, ToasterService } from 'angular-toaster';
 import { PopupDialogComponent } from '../../popup-dialog/popup-dialog.component';
+import { BackgroundService } from '../../../services/background.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -41,7 +42,12 @@ export class ReportsListComponent implements AfterViewInit {
     private authService: AuthService,
     public dialog: MatDialog,
     private toasterService: ToasterService,
+    private backgroundService: BackgroundService
   ) {}
+
+  ngOnInit(): void {
+    this.backgroundService.setMainContentStyle({'padding-left': '180px'});
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
