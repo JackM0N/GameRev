@@ -105,11 +105,11 @@ public class UserReviewService{
             throw new BadCredentialsException("You have to login first");
         }
 
-        filterCheck(postDateFrom, postDateTo, scoreFrom, scoreTo, currentUser);
+        Specification<UserReview> spec = filterCheck(postDateFrom, postDateTo, scoreFrom, scoreTo, currentUser);
 
-        Page<UserReview> userReviews = userReviewRepository.findByUser(currentUser, pageable);
+        Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
         if (userReviews.getTotalElements() == 0) {
-            throw new BadRequestException("You haven't review any games yet");
+            throw new BadRequestException("You haven't reviewed any games yet");
         }
         return userReviews.map(userReviewMapper::toDto);
     }
@@ -119,8 +119,28 @@ public class UserReviewService{
         return userReview.map(userReviewMapper::toDto).orElse(null);
     }
 
-    public Page<UserReviewDTO> getUserReviewsWithReports(Pageable pageable) {
-        Page<UserReview> userReviews = userReviewRepository.findWithReports(pageable);
+    public Page<UserReviewDTO> getUserReviewsWithReports(
+            LocalDate postDateFrom,
+            LocalDate postDateTo,
+            Integer scoreFrom,
+            Integer scoreTo,
+            Pageable pageable) {
+        Specification<UserReview> spec = (root, query, builder) -> builder.isNotEmpty(root.get("reports"));
+
+        if (postDateFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        }
+        if (postDateTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        }
+        if (scoreFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        }
+        if (scoreTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        }
+
+        Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
         return userReviews.map(userReview -> {
             UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
             long totalReports = userReview.getReports().size();

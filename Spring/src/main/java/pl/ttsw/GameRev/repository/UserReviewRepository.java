@@ -16,7 +16,4 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Long>, J
     Page<UserReview> findByGameTitle(String title, Pageable pageable);
     Page<UserReview> findByUser(WebsiteUser websiteUser, Pageable pageable);
     Optional<UserReview> findById(Long id);
-
-    @Query("SELECT ur FROM UserReview ur WHERE ur.reports IS NOT EMPTY ")
-    Page<UserReview> findWithReports(Pageable pageable);
 }
