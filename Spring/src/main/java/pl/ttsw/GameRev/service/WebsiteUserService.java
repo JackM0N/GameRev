@@ -1,9 +1,11 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.criteria.Join;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -44,8 +47,34 @@ public class WebsiteUserService {
         this.websiteUserMapper = websiteUserMapper;
     }
 
-    public Page<WebsiteUserDTO> getAllWebsiteUsers(Pageable pageable) {
-        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(pageable);
+    public Page<WebsiteUserDTO> getAllWebsiteUsers(
+            LocalDate joinDateFrom,
+            LocalDate joinDateTo,
+            Boolean isDeleted,
+            Boolean isBanned,
+            List<Long> roleIds,
+            Pageable pageable) {
+        Specification<WebsiteUser> spec = Specification.where((root, query, builder) -> builder.conjunction());
+
+        if (joinDateFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("joinDate"), joinDateFrom));
+        }
+        if (joinDateTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("joinDate"), joinDateTo));
+        }
+        if (isDeleted != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), isDeleted));
+        }
+        if (isBanned != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("isBanned"), isBanned));
+        }
+        if (roleIds != null && !roleIds.isEmpty()) {
+            spec = spec.and((root, query, builder) -> {
+                Join<WebsiteUser, Role> rolesJoin = root.join("roles");
+                return rolesJoin.get("id").in(roleIds);
+            });
+        }
+        Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
             websiteUser.setPassword(null);
         }

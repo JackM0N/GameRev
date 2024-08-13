@@ -3,18 +3,20 @@ package pl.ttsw.GameRev.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.mail.internet.MimeMultipart;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
-import pl.ttsw.GameRev.model.Game;
+import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.service.GameService;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/games")
@@ -75,8 +77,18 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllGames(Pageable pageable) {
-        Page<GameDTO> games = gameService.getAllGames(pageable);
+    public ResponseEntity<?> getAllGames(
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(value = "minUserScore", required = false) Float minUserScore,
+            @RequestParam(value = "maxUserScore", required = false) Float maxUserScore,
+            @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
+            @RequestParam(value = "releaseStatuses", required = false) List<ReleaseStatus> releaseStatuses,
+            Pageable pageable) {
+        Page<GameDTO> games = gameService.getAllGames(fromDate, toDate, minUserScore, maxUserScore, tagIds, releaseStatuses, pageable);
+        if (games.getTotalElements() == 0) {
+            return ResponseEntity.badRequest().body("No games found with the given criteria");
+        }
         return ResponseEntity.ok(games);
     }
 }

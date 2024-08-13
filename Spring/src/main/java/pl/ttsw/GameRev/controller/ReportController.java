@@ -10,6 +10,8 @@ import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/reports")
 public class ReportController {
@@ -22,8 +24,13 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseEntity<?> reviewsWithReports(Pageable pageable) {
-        Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewsWithReports(pageable);
+    public ResponseEntity<?> reviewsWithReports(
+            @RequestParam(value = "postDateFrom", required = false) LocalDate postDateFrom,
+            @RequestParam(value = "postDateTo", required = false) LocalDate postDateTo,
+            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
+            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
+            Pageable pageable) {
+        Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewsWithReports(postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -31,7 +38,7 @@ public class ReportController {
     }
     
     @GetMapping("/{reviewId}")
-    public ResponseEntity<?> reviewReports(@PathVariable int reviewId, Pageable pageable) {
+    public ResponseEntity<?> reviewReports(@PathVariable long reviewId, Pageable pageable) {
         UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(reviewId);
         if (userReviewDTO == null) {
             return ResponseEntity.badRequest().body("This review doesn't exists");
