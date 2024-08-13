@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.mail.internet.MimeMultipart;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
-import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.service.GameService;
 
 import java.io.IOException;
