@@ -1,10 +1,12 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.criteria.Join;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,8 +40,38 @@ public class GameService {
         this.gameMapper = gameMapper;
     }
 
-    public Page<GameDTO> getAllGames(Pageable pageable) {
-        Page<Game> games = gameRepository.findAll(pageable);
+    public Page<GameDTO> getAllGames(
+            LocalDate fromDate, LocalDate toDate,
+            Float minUserScore, Float maxUserScore,
+            List<Long> tagIds,
+            List<ReleaseStatus> releaseStatuses,
+            Pageable pageable
+    ) {
+        Specification<Game> spec = Specification.where(null);
+
+        if (fromDate != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("releaseDate"), fromDate));
+        }
+        if (toDate != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("releaseDate"), toDate));
+        }
+        if (minUserScore != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("userScore"), minUserScore));
+        }
+        if (maxUserScore != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("userScore"), maxUserScore));
+        }
+        if (releaseStatuses != null && !releaseStatuses.isEmpty()) {
+            spec = spec.and((root, query, builder) -> root.get("releaseStatus").in(releaseStatuses));
+        }
+        if (tagIds != null && !tagIds.isEmpty()) {
+            spec = spec.and((root, query, builder) -> {
+                Join<Game, Tag> tagJoin = root.join("tags");
+                return tagJoin.get("id").in(tagIds);
+            });
+        }
+
+        Page<Game> games = gameRepository.findAll(spec, pageable);
         return games.map(gameMapper::toDto);
     }
 
