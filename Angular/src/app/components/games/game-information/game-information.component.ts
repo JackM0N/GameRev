@@ -20,6 +20,8 @@ import { ReportService } from '../../../services/report.service';
 import { releaseStatuses } from '../../../interfaces/releaseStatuses';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 import { BackgroundService } from '../../../services/background.service';
+import { CriticReviewService } from '../../../services/critic-review.service';
+import { CriticReview } from '../../../interfaces/criticReview';
 
 @Component({
   selector: 'app-game-information',
@@ -37,6 +39,8 @@ export class GameInformationComponent implements OnInit {
   totalReviews: number = 0;
   dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewList);
   gameTitle: string = '';
+
+  criticReview?: CriticReview;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -69,17 +73,19 @@ export class GameInformationComponent implements OnInit {
     private router: Router,
     private _location: Location,
     public dialog: MatDialog,
-    private backgroundService: BackgroundService
+    private backgroundService: BackgroundService,
+    private criticReviewService: CriticReviewService,
   ) {
   }
 
   ngOnInit() {
-    this.backgroundService.setMainContentStyle({'padding-left': '180px'});
+    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
 
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');
 
+        // Load game information
         this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
           this.game = game;
 
@@ -97,6 +103,19 @@ export class GameInformationComponent implements OnInit {
             this.usersScoreText = "No reviews yet";
           }
         });
+
+        // Load critic review
+        const observer: Observer<any> = {
+          next: response => {
+            if (response) {
+              this.criticReview = response;
+            }
+          },
+          error: error => {
+          },
+          complete: () => {}
+        };
+        this.criticReviewService.getCriticReviewsByGameTitle(this.gameTitle).subscribe(observer);
       }
     });
   }
@@ -107,12 +126,6 @@ export class GameInformationComponent implements OnInit {
     this.loadReviews();
 
     this.paginator.page.subscribe(() => this.loadReviews());
-    /*
-    this.sort.sortChange.subscribe(() => {
-      this.paginator.pageIndex = 0;
-      this.loadReviews();
-    });
-    */
   }
 
   loadReviews() {
@@ -370,5 +383,13 @@ export class GameInformationComponent implements OnInit {
 
     const userName = this.authService.getUsername();
     return !this.reviewList.some(review => review.userUsername === userName);
+  }
+
+  canAddCriticReview() {
+    return this.authService.isAuthenticated() && this.authService.hasRole('Critic') && this.criticReview == undefined;
+  }
+
+  routeToAddNewCriticReview() {
+    this.router.navigate(['/critic-reviews/add/' + this.game.title]);
   }
 }

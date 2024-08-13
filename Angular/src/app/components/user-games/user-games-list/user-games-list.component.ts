@@ -35,7 +35,7 @@ export class UserGamesListComponent implements AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.backgroundService.setMainContentStyle({'padding-left': '200px'});
+    this.backgroundService.setMainContentStyle({'padding-left': '220px'});
   }
 
   ngAfterViewInit() {

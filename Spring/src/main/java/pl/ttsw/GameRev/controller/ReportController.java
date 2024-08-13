@@ -2,9 +2,7 @@ package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ReportDTO;
@@ -15,7 +13,6 @@ import pl.ttsw.GameRev.service.UserReviewService;
 @RestController
 @RequestMapping("/reports")
 public class ReportController {
-
     private final UserReviewService userReviewService;
     private final ReportService reportService;
 

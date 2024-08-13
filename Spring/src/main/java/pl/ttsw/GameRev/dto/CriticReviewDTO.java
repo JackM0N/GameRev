@@ -3,11 +3,7 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import pl.ttsw.GameRev.enums.ReviewStatus;
-import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.WebsiteUser;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 
