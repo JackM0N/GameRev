@@ -4,6 +4,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
@@ -37,8 +38,30 @@ public class UserReviewService{
         this.userReviewMapper = userReviewMapper;
     }
 
-    public Page<UserReviewDTO> getUserReviewByGame(String title, Pageable pageable) {
-        Page<UserReview> userReviews = userReviewRepository.findByGameTitle(title, pageable);
+    public Page<UserReviewDTO> getUserReviewByGame(
+            String title,
+            LocalDate postDateFrom, LocalDate postDateTo,
+            Integer scoreFrom, Integer scoreTo,
+            Pageable pageable) {
+
+        Specification<UserReview> spec = Specification.where((root, query, builder) ->
+                builder.equal(root.get("game").get("title"), title)
+        );
+
+        if (postDateFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        }
+        if (postDateTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        }
+        if (scoreFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        }
+        if (scoreTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        }
+
+        Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
         List<UserReviewDTO> userReviewDTOList = userReviews.stream().map(userReview -> {
@@ -55,22 +78,35 @@ public class UserReviewService{
         return new PageImpl<>(userReviewDTOList, pageable, userReviews.getTotalElements());
     }
 
-    public Page<UserReviewDTO> getUserReviewByUser(Long userId, Pageable pageable) throws BadRequestException {
+    public Page<UserReviewDTO> getUserReviewByUser(
+            Long userId,
+            LocalDate postDateFrom, LocalDate postDateTo,
+            Integer scoreFrom, Integer scoreTo,
+            Pageable pageable) throws BadRequestException {
         WebsiteUser wsUser = websiteUserRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        Page<UserReview> userReviews = userReviewRepository.findByUser(wsUser, pageable);
+        Specification<UserReview> spec = filterCheck(postDateFrom, postDateTo, scoreFrom, scoreTo, wsUser);
+
+        Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
         if (userReviews.getTotalElements() == 0) {
-            throw new BadRequestException("This user didnt review any games yet");
+            throw new BadRequestException("This user didn't review any games yet");
         }
         return userReviews.map(userReviewMapper::toDto);
     }
 
-    public Page<UserReviewDTO> getUserReviewByOwner(Pageable pageable) throws BadRequestException {
+
+    public Page<UserReviewDTO> getUserReviewByOwner(
+            LocalDate postDateFrom, LocalDate postDateTo,
+            Integer scoreFrom, Integer scoreTo,
+            Pageable pageable) throws BadRequestException {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         if (currentUser == null) {
             throw new BadCredentialsException("You have to login first");
         }
+
+        filterCheck(postDateFrom, postDateTo, scoreFrom, scoreTo, currentUser);
+
         Page<UserReview> userReviews = userReviewRepository.findByUser(currentUser, pageable);
         if (userReviews.getTotalElements() == 0) {
             throw new BadRequestException("You haven't review any games yet");
@@ -78,7 +114,7 @@ public class UserReviewService{
         return userReviews.map(userReviewMapper::toDto);
     }
 
-    public UserReviewDTO getUserReviewById(Integer id) {
+    public UserReviewDTO getUserReviewById(Long id) {
         Optional<UserReview> userReview = (userReviewRepository.findById(id));
         return userReview.map(userReviewMapper::toDto).orElse(null);
     }
@@ -154,7 +190,7 @@ public class UserReviewService{
         }
 
         if (userReview != null){
-            userReviewRepository.deleteById(Math.toIntExact(userReviewDTO.getId()));
+            userReviewRepository.deleteById(userReviewDTO.getId());
             return true;
         }
         return false;
@@ -165,5 +201,25 @@ public class UserReviewService{
                 .orElseThrow(() -> new BadRequestException("User review not found"));
         userReviewRepository.delete(userReview);
         return true;
+    }
+
+    private Specification<UserReview> filterCheck(LocalDate postDateFrom, LocalDate postDateTo, Integer scoreFrom, Integer scoreTo, WebsiteUser wsUser) {
+        Specification<UserReview> spec = Specification.where((root, query, builder) ->
+                builder.equal(root.get("user"), wsUser)
+        );
+
+        if (postDateFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        }
+        if (postDateTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        }
+        if (scoreFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        }
+        if (scoreTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        }
+        return spec;
     }
 }
