@@ -76,7 +76,7 @@ export class OwnProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.backgroundService.setClasses(['matrixNumbers']);
-    this.backgroundService.setMainContentStyle({'padding-left': '80px'});
+    this.backgroundService.setMainContentStyle({'padding-left': '120px'});
 
     const token = this.authService.getToken();
   

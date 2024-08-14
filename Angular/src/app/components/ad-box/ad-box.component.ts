@@ -8,6 +8,7 @@ import { AdService } from '../../services/ad.service';
 })
 export class AdBoxComponent implements OnInit {
   currentAd?: string;
+  closed = false;
 
   constructor(
     private adService: AdService,
@@ -15,5 +16,9 @@ export class AdBoxComponent implements OnInit {
 
   ngOnInit() {
     this.adService.ad$.subscribe(ad => this.currentAd = ad);
+  }
+
+  close() {
+    this.closed = true;
   }
 }

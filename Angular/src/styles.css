@@ -1,3 +1,4 @@
+
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
@@ -94,45 +95,45 @@ body {
 .pixel-border {
     position: relative;
     z-index: 1;
-  }
-  
-  .pixel-border::before, .pixel-border::after, 
-  .pixel-border > div::before, .pixel-border > div::after {
+}
+
+.pixel-border::before, .pixel-border::after, 
+.pixel-border > div::before, .pixel-border > div::after {
     content: '';
     position: absolute;
     background: white;
     z-index: -1;
-  }
+}
 
-  /* Top and bottom borders */
-  .pixel-border::before, .pixel-border::after {
+/* Top and bottom borders */
+.pixel-border::before, .pixel-border::after {
     height: 6px; /* Adjust pixel size */
     left: 6px;
     right: 6px;
-  }
-  
-  .pixel-border::before {
-    top: 0;
-  }
-  
-  .pixel-border::after {
-    bottom: 0;
-  }
+}
 
-  /* Left and right borders */
-  .pixel-border > div::before, .pixel-border > div::after {
+.pixel-border::before {
+    top: 0;
+}
+
+.pixel-border::after {
+    bottom: 0;
+}
+
+/* Left and right borders */
+.pixel-border > div::before, .pixel-border > div::after {
     width: 6px; /* Adjust pixel size */
     top: 6px;
     bottom: 6px;
-  }
-  
-  .pixel-border > div::before {
+}
+
+.pixel-border > div::before {
     left: 0;
-  }
-  
-  .pixel-border > div::after {
+}
+
+.pixel-border > div::after {
     right: 0;
-  }
+}
 
 /* Ukryj domyślny checkbox */
 .custom-checkbox input[type="checkbox"] {
@@ -160,11 +161,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     display: block;
-}
-
-/* Gdy checkbox jest zaznaczony, ukryj X */
-.custom-checkbox input[type="checkbox"]:checked + .checkbox-box::before {
-    display: none;
 }
 
 /*text shadow in here since tailwind doesn't have that*/
@@ -415,4 +411,31 @@ mat-datepicker-toggle > button > span{
 
 .smallBgImage19 {
     background-image: url(./app/images/arcade/52.png);
+}
+
+
+/* Quill editor styles */
+.quill-editor-custom {
+    width: 100%; /* Ensure the editor takes full width */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    margin-bottom: 18px; /* Consistent margin bottom */
+    font-size: 14px;
+}
+
+.quill-editor-custom .ql-container {
+    height: 150px; /* Set a consistent height for the editor */
+    border: 1px solid #d6d6d6; /* Border to match input fields */
+    border-radius: 0px; /* No border radius */
+    font-size: 14px;
+}
+
+.quill-editor-custom .ql-toolbar {
+    border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
+    border-bottom: none; /* Remove bottom border to avoid double border */
+    border-radius: 0px; /* No border radius */
+    margin-bottom: 0px; /* Consistent margin bottom */
+}
+
+.quill-editor-custom .ql-editor {
+    font-size: 14px;
 }

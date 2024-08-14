@@ -16,6 +16,8 @@ import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -27,8 +29,16 @@ public class WebsiteUserController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getUsers(Pageable pageable) {
-        Page<WebsiteUserDTO> users = websiteUserService.getAllWebsiteUsers(pageable);
+    public ResponseEntity<?> getUsers(
+            @RequestParam(value = "joinDateFrom", required = false) LocalDate joinDateFrom,
+            @RequestParam(value = "joinDateTo", required = false) LocalDate joinDateTo,
+            @RequestParam(value = "isDeleted", required = false) Boolean isDeleted,
+            @RequestParam(value = "isBanned", required = false) Boolean isBanned,
+            @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
+            Pageable pageable
+    ) {
+        Page<WebsiteUserDTO> users = websiteUserService
+                .getAllWebsiteUsers(joinDateFrom, joinDateTo, isDeleted, isBanned, roleIds, pageable);
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

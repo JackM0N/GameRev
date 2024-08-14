@@ -8,7 +8,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
+import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.service.UserGameService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/library")
@@ -20,10 +23,15 @@ public class UserGameController {
     }
 
     @GetMapping("/{nickname}")
-    public ResponseEntity<?> getUsersGames(@PathVariable String nickname, Pageable pageable) throws BadRequestException {
-        Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(nickname, pageable);
+    public ResponseEntity<?> getUsersGames(
+            @PathVariable String nickname,
+            @RequestParam(value = "isFavourite", required = false) Boolean isFavourite,
+            @RequestParam(value = "completionStatus", required = false) CompletionStatus completionStatus,
+            @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
+            Pageable pageable) throws BadRequestException {
+        Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(isFavourite, completionStatus, tagIds, nickname, pageable);
         if (userGameDTOS.getTotalElements() == 0) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().body("No games found with the given criteria");
         }
         return ResponseEntity.ok(userGameDTOS);
     }
