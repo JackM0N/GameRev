@@ -22,8 +22,8 @@ export class CriticReviewService {
     public jwtHelper: JwtHelperService
   ) {}
 
-  getCriticReviewsByGameTitle(gameTitle: string): Observable<CriticReview[]> {
-    return this.http.get<CriticReview[]>(`${this.baseUrl}/${gameTitle}`);
+  getCriticReviewsByGameTitle(gameTitle: string): Observable<CriticReview> {
+    return this.http.get<CriticReview>(`${this.baseUrl}/${gameTitle}`);
   }
 
   getCriticReviewById(id: number, token: string): Observable<CriticReview> {

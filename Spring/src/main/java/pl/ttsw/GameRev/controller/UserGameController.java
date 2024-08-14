@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.service.UserGameService;
-
 import java.util.List;
 
 @RestController

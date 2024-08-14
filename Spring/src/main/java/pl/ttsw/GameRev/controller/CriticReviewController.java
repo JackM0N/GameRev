@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.service.CriticReviewService;
-
 import java.time.LocalDate;
 
 @RestController
