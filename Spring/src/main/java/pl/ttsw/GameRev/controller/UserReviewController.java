@@ -38,7 +38,7 @@ public class UserReviewController {
     @GetMapping("/{title}")
     public ResponseEntity<?> getUserReviewByGame(@PathVariable String title, Pageable pageable) {
         title = title.replaceAll("-", " ");
-        Page<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title,pageable);
+        Page<UserReviewDTO> userReviewDTO = userReviewService.getUserReviewByGame(title, pageable);
         if (userReviewDTO == null || userReviewDTO.isEmpty()) {
             return ResponseEntity.badRequest().body("There are no user reviews for this title");
         }
