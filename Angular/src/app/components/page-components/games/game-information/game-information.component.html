@@ -1,0 +1,30 @@
+
+<div class="container">
+    <!-- GAME INFO -->
+    <h3>{{this.game.title}}</h3>
+    <p>Developer: {{this.game.developer}}</p>
+    <p>Publisher: {{this.game.publisher}}</p>
+    <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
+    <p>Release status: {{this.game.releaseStatus}}</p>
+    <p>Description: {{this.game.description}}</p>
+    <p>{{this.usersScoreText}}</p>
+
+    <!-- TAGS -->
+    <div class="grid-container">
+        <div class="grid-item" *ngFor="let tag of game.tags">
+        {{ tag.tagName }}
+        </div>
+    </div>
+
+    <!-- CRITIC REVIEWS -->
+    <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+
+    <!-- REVIEWS -->
+    <app-gameinfo-review-list
+        [gameTitle]="gameTitle"
+        [game]="game"
+        (usersScoreUpdated)="updateUsersScoreText($event)">>
+    </app-gameinfo-review-list>
+    
+    <button id="goback-button" type="button" mat-stroked-button (click)="goBack()">Go back</button>
+</div>

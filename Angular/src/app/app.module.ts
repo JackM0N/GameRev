@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/authentication/login/login.component';
-import { RegistrationComponent } from './components/authentication/registration/registration.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,13 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
-import { OwnProfileComponent } from './components/user/own-profile/own-profile.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService } from 'angular-toaster';
-import { AccountDeletionConfirmationDialogComponent } from './components/user/account-deletion-confirmation-dialog/account-deletion-confirmation-dialog.component';
-import { GamesListComponent } from './components/games/games-list/games-list.component';
-import { GameFormComponent } from './components/games/game-form/game-form.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -28,31 +22,40 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TagService } from './services/tag.service';
 import { DatePipe } from '@angular/common';
-import { GameInformationComponent } from './components/games/game-information/game-information.component';
 import { UserReviewService } from './services/user-review.service';
-import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
-import { UsersListComponent } from './components/user/users-list/users-list.component';
-import { PopupDialogComponent } from './components/popup-dialog/popup-dialog.component';
-import { ProfileComponent } from './components/user/profile/profile.component';
-import { ReviewReportDialogComponent } from './components/games/review-report-dialog/review-report-dialog.component';
 import { ReportService } from './services/report.service';
-import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { UserGameService } from './services/user-game.service';
-import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
-import { UserGameEditDialogComponent } from './components/user-games/user-game-edit-dialog/user-game-edit-dialog.component';
-import { UserGameAddDialogComponent } from './components/user-games/user-game-add-dialog/user-game-add-dialog.component';
+import { LibraryService } from './services/library.service';
 import { ImageCacheService } from './services/imageCache.service';
-import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
-import { ResetPasswordConfirmationDialogComponent } from './components/authentication/reset-password-confirmation-dialog/reset-password-confirmation-dialog.component';
 import { AdService } from './services/ad.service';
 import { BackgroundService } from './services/background.service';
-import { AdBoxComponent } from './components/ad-box/ad-box.component';
-import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
-import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
 import { QuillModule } from 'ngx-quill';
+import { AdBoxComponent } from './components/general-components/ad-box.component';
+import { PopupDialogComponent } from './components/general-components/popup-dialog.component';
+import { LoginComponent } from './components/page-components/authentication/login.component';
+import { RegistrationComponent } from './components/page-components/authentication/registration.component';
+import { ResetPasswordConfirmationDialogComponent } from './components/page-components/authentication/reset-password-confirmation-dialog.component';
+import { CriticReviewFormComponent } from './components/page-components/critic-reviews/critic-review-form.component';
+import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
+import { GameFormComponent } from './components/page-components/games/game-form.component';
+import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
+import { ReviewReportDialogComponent } from './components/page-components/games/review-report-dialog.component';
+import { LibraryComponent } from './components/page-components/library/library.component';
+import { UserReviewFormComponent } from './components/page-components/user-reviews/user-review-form.component';
+import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
+import { AccountDeletionConfirmationDialogComponent } from './components/page-components/user/account-deletion-confirmation-dialog.component';
+import { OwnProfileComponent } from './components/page-components/user/own-profile.component';
+import { ProfileComponent } from './components/page-components/user/profile.component';
+import { UserListComponent } from './components/page-components/user/user-list.component';
+import { LibraryAddDialogComponent } from './components/page-components/library/library-add-dialog.component';
+import { LibraryEditDialogComponent } from './components/page-components/library/library-edit-dialog.component';
+import { GameListComponent } from './components/page-components/games/game-list.component';
+import { ReportListComponent } from './components/page-components/reports/report-list.component';
+import { GameInfoCriticReviewComponent } from './components/page-components/games/game-information/critic-review.component';
+import { GameInfoReviewListComponent } from './components/page-components/games/game-information/review-list.component';
+import { NotificationService } from './services/notification.service';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -61,22 +64,24 @@ import { QuillModule } from 'ngx-quill';
         OwnProfileComponent,
         AccountDeletionConfirmationDialogComponent,
         GameFormComponent,
-        GamesListComponent,
+        GameListComponent,
         GameInformationComponent,
         UserReviewFormComponent,
-        UsersListComponent,
+        UserListComponent,
         PopupDialogComponent,
         ProfileComponent,
         ReviewReportDialogComponent,
-        ReportsListComponent,
-        UserGamesListComponent,
-        UserGameEditDialogComponent,
-        UserGameAddDialogComponent,
+        ReportListComponent,
+        LibraryComponent,
+        LibraryEditDialogComponent,
+        LibraryAddDialogComponent,
         UserReviewListComponent,
         ResetPasswordConfirmationDialogComponent,
         AdBoxComponent,
         CriticReviewFormComponent,
-        CriticReviewListComponent
+        CriticReviewListComponent,
+        GameInfoCriticReviewComponent,
+        GameInfoReviewListComponent
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -117,10 +122,11 @@ import { QuillModule } from 'ngx-quill';
         TagService,
         UserReviewService,
         ReportService,
-        UserGameService,
+        LibraryService,
         ImageCacheService,
         BackgroundService,
         AdService,
+        NotificationService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         DatePipe,
         provideHttpClient(withInterceptorsFromDi())

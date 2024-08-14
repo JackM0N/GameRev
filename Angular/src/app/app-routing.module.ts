@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegistrationComponent } from './components/authentication/registration/registration.component';
-import { LoginComponent } from './components/authentication/login/login.component';
-import { OwnProfileComponent } from './components/user/own-profile/own-profile.component';
-import { GamesListComponent } from './components/games/games-list/games-list.component';
-import { GameFormComponent } from './components/games/game-form/game-form.component';
-import { GameInformationComponent } from './components/games/game-information/game-information.component';
-import { UserReviewFormComponent } from './components/user-reviews/user-review-form/user-review-form.component';
-import { UsersListComponent } from './components/user/users-list/users-list.component';
-import { ProfileComponent } from './components/user/profile/profile.component';
-import { ReportsListComponent } from './components/reports/reports-list/reports-list.component';
-import { UserGamesListComponent } from './components/user-games/user-games-list/user-games-list.component';
-import { UserReviewListComponent } from './components/reports/user-reviews-list/user-reviews-list.component';
-import { CriticReviewFormComponent } from './components/critic-reviews/critic-review-form/critic-review-form.component';
-import { CriticReviewListComponent } from './components/critic-reviews/critic-reviews-list/critic-reviews-list.component';
+import { LoginComponent } from './components/page-components/authentication/login.component';
+import { RegistrationComponent } from './components/page-components/authentication/registration.component';
+import { CriticReviewFormComponent } from './components/page-components/critic-reviews/critic-review-form.component';
+import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
+import { GameFormComponent } from './components/page-components/games/game-form.component';
+import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
+import { GameListComponent } from './components/page-components/games/game-list.component';
+import { ReportListComponent } from './components/page-components/reports/report-list.component';
+import { UserReviewFormComponent } from './components/page-components/user-reviews/user-review-form.component';
+import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
+import { OwnProfileComponent } from './components/page-components/user/own-profile.component';
+import { ProfileComponent } from './components/page-components/user/profile.component';
+import { LibraryComponent } from './components/page-components/library/library.component';
+import { UserListComponent } from './components/page-components/user/user-list.component';
 
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent},
@@ -21,16 +21,16 @@ const routes: Routes = [
   { path: 'profile', component: OwnProfileComponent},
   { path: 'profile/:name', component: ProfileComponent},
   { path: 'game/:name', component: GameInformationComponent},
-  { path: 'games', component: GamesListComponent},
+  { path: 'games', component: GameListComponent},
   { path: 'games/add', component: GameFormComponent},
   { path: 'games/edit/:name', component: GameFormComponent},
   { path: 'user-reviews/add/:name', component: UserReviewFormComponent},
   { path: 'user-reviews/edit/:id', component: UserReviewFormComponent},
   { path: 'user-reviews', component: UserReviewListComponent},
   { path: 'user-reviews/:name', component: UserReviewListComponent},
-  { path: 'users', component: UsersListComponent},
-  { path: 'reports', component: ReportsListComponent},
-  { path: 'library', component: UserGamesListComponent},
+  { path: 'users', component: UserListComponent},
+  { path: 'reports', component: ReportListComponent},
+  { path: 'library', component: LibraryComponent},
   { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent},
   { path: 'critic-reviews/edit/:id', component: CriticReviewFormComponent},
   { path: 'critic-reviews', component: CriticReviewListComponent},
