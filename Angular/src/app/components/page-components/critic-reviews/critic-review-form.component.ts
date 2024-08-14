@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { Toast, ToasterService } from 'angular-toaster';
 import { AuthService } from '../../../services/auth.service';
 import { Location } from '@angular/common';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { BackgroundService } from '../../../services/background.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-critic-review-form',
@@ -36,7 +36,7 @@ export class CriticReviewFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private _location: Location,
@@ -104,53 +104,17 @@ export class CriticReviewFormComponent implements OnInit {
       }
 
       if (this.isEditRoute) {
-        const observer: Observer<any> = {
-          next: response => {
-            this._location.back();
-            var toast: Toast = {
-              type: 'success',
-              title: 'Edited review successfuly',
-              showCloseButton: true
-            };
-            this.toasterService.pop(toast);
-          },
-          error: error => {
-            console.error(error);
-            var toast: Toast = {
-              type: 'error',
-              title: 'Editing review failed',
-              showCloseButton: true
-            };
-            this.toasterService.pop(toast);
-          },
-          complete: () => {}
-        };
-        this.criticReviewService.editCriticReview(reviewData, token).subscribe(observer);
+        this.criticReviewService.editCriticReview(reviewData, token).subscribe({
+          next: () => { this.notificationService.popSuccessToast('Edited review successfuly', true); },
+          error: error => this.notificationService.popErrorToast('Editing review failed', error)
+        });
         return;
       }
 
-      const observer: Observer<any> = {
-        next: response => {
-          this._location.back();
-          var toast: Toast = {
-            type: 'success',
-            title: 'Added review successfuly',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        error: error => {
-          console.error(error);
-          var toast: Toast = {
-            type: 'error',
-            title: 'Adding review failed',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        complete: () => {}
-      };
-      this.criticReviewService.addCriticReview(reviewData, token).subscribe(observer);
+      this.criticReviewService.addCriticReview(reviewData, token).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Added review successfuly', true); },
+        error: error => this.notificationService.popErrorToast('Adding review failed', error)
+      });
     }
   }
 

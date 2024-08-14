@@ -9,9 +9,8 @@ import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 import { formatDate } from '../../../util/formatDate';
-import { Toast, ToasterService } from 'angular-toaster';
-import { BackgroundService } from '../../../services/background.service';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { NotificationService } from '../../../services/notification.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -42,13 +41,8 @@ export class ReportListComponent implements AfterViewInit {
     private userReviewService: UserReviewService,
     private authService: AuthService,
     public dialog: MatDialog,
-    private toasterService: ToasterService,
-    private backgroundService: BackgroundService
+    private notificationService: NotificationService,
   ) {}
-
-  ngOnInit(): void {
-    //this.backgroundService.setMainContentStyle({'padding-left': '180px'});
-  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -175,27 +169,10 @@ export class ReportListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Report approved',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Report approving failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {}
-    };
-    this.reportService.approveReport(report, token).subscribe(observer);
+    this.reportService.approveReport(report, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Report approved', false); },
+      error: error => this.notificationService.popErrorToast('Report approving failed', error)
+    });
   }
 
   disapproveReport(report: Report) {
@@ -206,27 +183,10 @@ export class ReportListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Report disapproved',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Report disapproving failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {}
-    };
-    this.reportService.disapproveReport(report, token).subscribe(observer);
+    this.reportService.disapproveReport(report, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Report disapproved', false); },
+      error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
+    });
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
@@ -255,28 +215,12 @@ export class ReportListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Review deleted',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-
+    this.reportService.deleteReview(review, token).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Report disapproved', false);
         this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Review deletion failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {}
-    };
-    this.reportService.deleteReview(review, token).subscribe(observer);
+      error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
+    });
   }
 }

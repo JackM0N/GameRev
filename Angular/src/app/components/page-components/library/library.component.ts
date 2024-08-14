@@ -7,23 +7,24 @@ import { MatSort } from '@angular/material/sort';
 import { LibraryService } from '../../../services/library.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserGame } from '../../../interfaces/userGame';
-import { Toast, ToasterService } from 'angular-toaster';
 import { LibraryEditDialogComponent } from './library-edit-dialog.component';
 import { LibraryAddDialogComponent } from './library-add-dialog.component';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-library',
   templateUrl: './library.component.html'
 })
 export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
-  gamesList: UserGame[] = [];
-  totalGames: number = 0;
-  dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
-  displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
+  private gamesList: UserGame[] = [];
+  public totalGames: number = 0;
+  public dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
+  public libraryEmpty = false;
+  public displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -31,7 +32,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   constructor(
     private libraryService: LibraryService,
     private authService: AuthService,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     public dialog: MatDialog,
     backgroundService: BackgroundService,
     adService: AdService,
@@ -44,7 +45,6 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     super.ngAfterViewInit();
 
     this.dataSource.paginator = this.paginator;
-
     this.loadGames();
 
     this.paginator.page.subscribe(() => this.loadGames());
@@ -69,13 +69,22 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.gamesList = response.content;
-        this.totalGames = response.totalElements;
-        this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
-        this.dataSource.data = this.gamesList;
+        if (response) {
+          this.gamesList = response.content;
+          this.totalGames = response.totalElements;
+          this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
+          this.dataSource.data = this.gamesList;
+          if (this.dataSource.data.length == 0) {
+            this.libraryEmpty = true;
+          }
+        }
       },
       error: error => {
-        console.error(error);
+        if (error.error == "This users library is empty") {
+          this.libraryEmpty = true;
+        } else {
+          console.error(error);
+        }
       },
       complete: () => {}
     };
@@ -115,28 +124,10 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Game updated successfully',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Game updating failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {
-      }
-    };
-    this.libraryService.updateUserGame(userGame, token).subscribe(observer);
+    this.libraryService.updateUserGame(userGame, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Game updated successfully', false); },
+      error: error => this.notificationService.popErrorToast('Game updating failed', error)
+    });
   }
 
   openAddUserGameDialog() {
@@ -180,36 +171,18 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Game added successfully',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-
-        console.log(userGame);
-
+    this.libraryService.addUserGame(userGame, token).subscribe({
+      next: () => {
         this.gamesList.push(userGame);
 
         this.totalGames = this.totalGames + 1;
         this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
+
+        this.notificationService.popSuccessToast('Game added successfully', false);
       },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Game adding failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {
-      }
-    };
-    this.libraryService.addUserGame(userGame, token).subscribe(observer);
+      error: error => this.notificationService.popErrorToast('Game adding failed', error)
+    });
   }
 
   openGameDeletionConfirmationDialog(userGame: UserGame) {

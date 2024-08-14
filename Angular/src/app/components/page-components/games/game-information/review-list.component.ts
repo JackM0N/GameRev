@@ -1,6 +1,5 @@
 ﻿import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserReviewService } from '../../../../services/user-review.service';
-import { Toast, ToasterService } from 'angular-toaster';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
 import { Router } from '@angular/router';
@@ -15,6 +14,7 @@ import { PopupDialogComponent } from '../../../general-components/popup-dialog.c
 import { Game } from '../../../../interfaces/game';
 import { Report } from '../../../../interfaces/report';
 import { formatDate } from '../../../../util/formatDate';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-gameinfo-review-list',
@@ -44,7 +44,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   constructor(
     private userReviewService: UserReviewService,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private authService: AuthService,
     private reportService: ReportService,
     private router: Router,
@@ -123,33 +123,16 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         return;
       }
 
-      const observerTag: Observer<any> = {
-        next: response => {
-          var toast: Toast = {
-            type: 'success',
-            title: 'Deleted review successfuly',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-
-          this.reviewList = this.reviewList.filter(r => r.id !== review.id);
-          this.usersScoreUpdated.emit(review.score);
-        },
-        error: error => {
-          console.error(error);
-          var toast: Toast = {
-            type: 'error',
-            title: 'Deleting review failed',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        complete: () => {}
-      };
-      
       review.userUsername = username;
 
-      this.userReviewService.deleteUserReview(review, token).subscribe(observerTag);
+      this.userReviewService.deleteUserReview(review, token).subscribe({
+        next: () => {
+          this.reviewList = this.reviewList.filter(r => r.id !== review.id);
+          this.usersScoreUpdated.emit(review.score);
+          this.notificationService.popSuccessToast('Deleted review successfuly', false);
+        },
+        error: error => this.notificationService.popErrorToast('Deleting review failed', error)
+      });
     }
   }
 
@@ -232,28 +215,10 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'Report sent successfully',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'Report submission failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {
-      }
-    };
-    this.reportService.reportReview(this.report, token).subscribe(observer);
+    this.reportService.reportReview(this.report, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Report sent successfully', false); },
+      error: error => this.notificationService.popErrorToast('Report submission failed', error)
+    });
   }
 
   reportReview(review: UserReview) {

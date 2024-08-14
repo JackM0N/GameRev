@@ -1,13 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observer } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
 import { Router } from '@angular/router';
-import { Toast, ToasterService } from 'angular-toaster';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BackgroundService } from '../../../services/background.service';
 import { ResetPasswordConfirmationDialogComponent } from './reset-password-confirmation-dialog.component';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +22,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private router: Router,
     public dialog: MatDialog,
     private backgroundService: BackgroundService
@@ -59,28 +58,13 @@ export class LoginComponent {
         credentials.username = usernameOrEmail;
       }
 
-      const observer: Observer<any> = {
-        next: response => {
+      this.authService.login(credentials).subscribe({
+        next: () => {
           this.router.navigate(['/']);
-          var toast: Toast = {
-            type: 'success',
-            title: 'Login successful',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
+          this.notificationService.popSuccessToast('Login successful', false);
         },
-        error: error => {
-          console.error(error);
-          var toast: Toast = {
-            type: 'error',
-            title: 'Login failed',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        complete: () => {}
-      };
-      this.authService.login(credentials).subscribe(observer);
+        error: error => this.notificationService.popErrorToast('Login failed', error)
+      });
     }
   }
 
@@ -107,14 +91,8 @@ export class LoginComponent {
     }
 
     const email = dialogRef.componentRef.instance.resetPasswordForm.get('email')?.value;
-
-    var toast: Toast = {
-      type: 'success',
-      title: 'Password reset sent',
-      showCloseButton: true
-    };
-    this.toasterService.pop(toast);
-
     this.authService.requestPasswordReset(email).subscribe();
+
+    this.notificationService.popSuccessToast('Password reset sent', false);
   }
 }

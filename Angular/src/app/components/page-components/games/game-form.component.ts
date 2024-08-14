@@ -4,12 +4,12 @@ import { Game } from '../../../interfaces/game';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 import { Observer } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Toast, ToasterService } from 'angular-toaster';
 import { GameService } from '../../../services/game.service';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 import { Location } from '@angular/common';
 import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-game-form',
@@ -40,7 +40,7 @@ export class GameFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private gameService: GameService,
     private tagService: TagService,
     private _location: Location
@@ -119,53 +119,17 @@ export class GameFormComponent implements OnInit {
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
 
       if (this.isEditRoute) {
-        const observer: Observer<any> = {
-          next: response => {
-            this._location.back();
-            var toast: Toast = {
-              type: 'success',
-              title: 'Edited game successfuly',
-              showCloseButton: true
-            };
-            this.toasterService.pop(toast);
-          },
-          error: error => {
-            console.error(error);
-            var toast: Toast = {
-              type: 'error',
-              title: 'Editing game failed',
-              showCloseButton: true
-            };
-            this.toasterService.pop(toast);
-          },
-          complete: () => {}
-        };
-        this.gameService.editGame(this.gameTitle, gameData).subscribe(observer);
+        this.gameService.editGame(this.gameTitle, gameData).subscribe({
+          next: () => { this.notificationService.popSuccessToast('Edited game successfuly', true); },
+          error: error => this.notificationService.popErrorToast('Editing game failed', error)
+        });
         return;
       }
 
-      const observer: Observer<any> = {
-        next: response => {
-          this._location.back();
-          var toast: Toast = {
-            type: 'success',
-            title: 'Added game successfuly',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        error: error => {
-          console.error(error);
-          var toast: Toast = {
-            type: 'error',
-            title: 'Adding game failed',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        complete: () => {}
-      };
-      this.gameService.addGame(gameData).subscribe(observer);
+      this.gameService.addGame(gameData).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Added game successfuly', true); },
+        error: error => this.notificationService.popErrorToast('Adding game failed', error)
+      });
     }
   }
 

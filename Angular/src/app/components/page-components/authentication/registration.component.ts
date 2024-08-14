@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { merge, Observer } from 'rxjs';
+import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
-import { Toast, ToasterService } from 'angular-toaster';
 import { Router } from '@angular/router';
 import { BackgroundService } from '../../../services/background.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-registration',
@@ -25,7 +25,7 @@ export class RegistrationComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private router: Router,
     private backgroundService: BackgroundService
   ) {
@@ -66,28 +66,13 @@ export class RegistrationComponent {
         nickname: this.registrationForm.get('username')?.value,
       };
 
-      const observer: Observer<any> = {
-        next: response => {
+      this.authService.registerUser(userData).subscribe({
+        next: () => {
           this.router.navigate(['/']);
-          var toast: Toast = {
-            type: 'success',
-            title: 'Registration successful',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
+          this.notificationService.popSuccessToast('Registration successful', false);
         },
-        error: error => {
-          console.error(error);
-          var toast: Toast = {
-            type: 'error',
-            title: 'Registration failed',
-            showCloseButton: true
-          };
-          this.toasterService.pop(toast);
-        },
-        complete: () => {}
-      };
-      this.authService.registerUser(userData).subscribe(observer);
+        error: error => this.notificationService.popErrorToast('Registration failed', error)
+      });
     }
   }
 

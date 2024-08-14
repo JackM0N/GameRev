@@ -7,10 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSort, Sort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { UserService } from '../../../services/user.service';
-import { Toast, ToasterService } from 'angular-toaster';
 import { AuthService } from '../../../services/auth.service';
-import { BackgroundService } from '../../../services/background.service';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-user-list',
@@ -29,15 +28,10 @@ export class UserListComponent implements AfterViewInit {
   constructor(
     private userService: UserService,
     public dialog: MatDialog,
-    private toasterService: ToasterService,
+    private notificationService: NotificationService,
     private authService: AuthService,
-    private router: Router,
-    private backgroundService: BackgroundService
+    private router: Router
   ) {
-  }
-
-  ngOnInit(): void {
-    //this.backgroundService.setMainContentStyle({'padding-left': '200px'});
   }
 
   ngAfterViewInit() {
@@ -123,27 +117,10 @@ export class UserListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'User banned successfuly!',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'User ban failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {}
-    };
-    this.userService.banUser(user, token).subscribe(observer);
+    this.userService.banUser(user, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('User banned successfuly!', false); },
+      error: error => this.notificationService.popErrorToast('User ban failed', error)
+    });
   }
 
   unbanUser(user: WebsiteUser) {
@@ -154,27 +131,10 @@ export class UserListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        var toast: Toast = {
-          type: 'success',
-          title: 'User unbanned successfuly!',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      error: error => {
-        console.error(error);
-        var toast: Toast = {
-          type: 'error',
-          title: 'User unban failed',
-          showCloseButton: true
-        };
-        this.toasterService.pop(toast);
-      },
-      complete: () => {}
-    };
-    this.userService.unbanUser(user, token).subscribe(observer);
+    this.userService.unbanUser(user, token).subscribe({
+      next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!', false); },
+      error: error => this.notificationService.popErrorToast('User unban failed', error)
+    });
   }
 
   openProfile(user: WebsiteUser) {
