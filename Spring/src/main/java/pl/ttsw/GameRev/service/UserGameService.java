@@ -40,7 +40,7 @@ public class UserGameService {
         this.websiteUserRepository = websiteUserRepository;
     }
 
-    public Page<UserGameDTO> getUserGameDTO(
+    public Page<UserGameDTO> getUserGame(
             Boolean isFavourite,
             CompletionStatus completionStatus,
             List<Long> tagIds,
@@ -51,7 +51,7 @@ public class UserGameService {
         }
 
         Specification<UserGame> spec = Specification.where((root, query, builder) ->
-                builder.equal(root.get("websiteUser").get("nickname"), nickname));
+                builder.equal(root.get("user").get("nickname"), nickname));
 
         if (isFavourite != null) {
             spec = spec.and((root, query, builder) -> builder.equal(root.get("isFavourite"), isFavourite));

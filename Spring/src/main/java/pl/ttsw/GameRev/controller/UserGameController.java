@@ -2,9 +2,7 @@ package pl.ttsw.GameRev.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
@@ -29,7 +27,7 @@ public class UserGameController {
             @RequestParam(value = "completionStatus", required = false) CompletionStatus completionStatus,
             @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
             Pageable pageable) throws BadRequestException {
-        Page<UserGameDTO> userGameDTOS = userGameService.getUserGameDTO(isFavourite, completionStatus, tagIds, nickname, pageable);
+        Page<UserGameDTO> userGameDTOS = userGameService.getUserGame(isFavourite, completionStatus, tagIds, nickname, pageable);
         if (userGameDTOS.getTotalElements() == 0) {
             return ResponseEntity.badRequest().body("No games found with the given criteria");
         }
