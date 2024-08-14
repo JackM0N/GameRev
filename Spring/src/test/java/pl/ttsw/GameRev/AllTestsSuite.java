@@ -20,6 +20,7 @@ import org.junit.platform.suite.api.Suite;
         ReportServiceTest.class,
 		ReportServiceIntegrationTest.class,
 		CriticReviewServiceTest.class,
+		CriticReviewServiceIntegrationTest.class
 })
 public class AllTestsSuite {
 	// yes, this should be empty

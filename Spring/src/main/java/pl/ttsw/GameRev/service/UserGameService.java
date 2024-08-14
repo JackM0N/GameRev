@@ -1,20 +1,25 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.criteria.Join;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
 import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
+import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.model.UserGame;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
+
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -35,15 +40,38 @@ public class UserGameService {
         this.websiteUserRepository = websiteUserRepository;
     }
 
-    public Page<UserGameDTO> getUserGameDTO(String nickname, Pageable pageable) throws BadRequestException {
+    public Page<UserGameDTO> getUserGame(
+            Boolean isFavourite,
+            CompletionStatus completionStatus,
+            List<Long> tagIds,
+            String nickname,
+            Pageable pageable) throws BadRequestException {
         if (websiteUserRepository.findByNickname(nickname).isEmpty()) {
             throw new BadRequestException("This user doesn't exist");
         }
-        Page<UserGame> userGame = userGameRepository.findByUserNickname(nickname, pageable);
-        if (userGame == null || userGame.getTotalElements() == 0) {
-            throw new BadRequestException("This users library is empty");
+
+        Specification<UserGame> spec = Specification.where((root, query, builder) ->
+                builder.equal(root.get("user").get("nickname"), nickname));
+
+        if (isFavourite != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("isFavourite"), isFavourite));
         }
-        return userGame.map(userGameMapper::toDto);
+        if (completionStatus != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("completionStatus"), completionStatus));
+        }
+        if (tagIds != null && !tagIds.isEmpty()) {
+            spec = spec.and((root, query, builder) -> {
+                Join<UserGame, Game> gameJoin = root.join("game");
+                Join<Game, Tag> tags = gameJoin.join("tags");
+                return tags.get("id").in(tagIds);
+            });
+        }
+        Page<UserGame> userGames = userGameRepository.findAll(spec, pageable);
+        if (userGames.isEmpty()) {
+            throw new BadRequestException("This user has no games in his library");
+        }
+
+        return userGames.map(userGameMapper::toDto);
     }
 
     public UserGameDTO addGameToUser(UserGameDTO userGameDTO) throws BadRequestException {

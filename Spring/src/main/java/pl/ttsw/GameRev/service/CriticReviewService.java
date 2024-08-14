@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.service;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
@@ -32,12 +33,34 @@ public class CriticReviewService {
         this.gameService = gameService;
     }
 
-    public Page<CriticReviewDTO> getAllCriticReviews(Pageable pageable) throws BadRequestException {
-        Page<CriticReview> criticReviews = criticReviewRepository.findAll(pageable);
+    public Page<CriticReviewDTO> getAllCriticReviews(
+            String gameTitle,
+            ReviewStatus reviewStatus,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable
+    ) throws BadRequestException {
+        Specification<CriticReview> spec = Specification.where(null);
+
+        if (gameTitle != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("game").get("title"), gameTitle));
+        }
+        if (reviewStatus != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("reviewStatus"), reviewStatus));
+        }
+        if (fromDate != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("reviewDate"), fromDate));
+        }
+        if (toDate != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("reviewDate"), toDate));
+        }
+
+        Page<CriticReview> criticReviews = criticReviewRepository.findAll(spec, pageable);
         for (CriticReview criticReview : criticReviews) {
             criticReview.getUser().setPassword(null);
             criticReview.getUser().setDescription(null);
         }
+
         return criticReviews.map(criticReviewMapper::toDto);
     }
 

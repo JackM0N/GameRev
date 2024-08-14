@@ -21,5 +21,5 @@ public class CriticReviewDTO implements Serializable {
     LocalDate postDate;
     Integer score;
     ReviewStatus reviewStatus;
-    WebsiteUserDTO approvedBy;
+    WebsiteUserDTO statusChangedBy;
 }
