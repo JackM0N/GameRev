@@ -10,7 +10,7 @@ import { GameListComponent } from './components/page-components/games/game-list.
 import { ReportListComponent } from './components/page-components/reports/report-list.component';
 import { UserReviewFormComponent } from './components/page-components/user-reviews/user-review-form.component';
 import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
-import { OwnProfileComponent } from './components/page-components/user/own-profile.component';
+import { OwnProfileComponent } from './components/page-components/user/own-profile/own-profile.component';
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { LibraryComponent } from './components/page-components/library/library.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';

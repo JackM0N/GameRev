@@ -1,20 +1,18 @@
 import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { merge, Observer } from 'rxjs';
-import { NewCredentials } from '../../../interfaces/newCredentials';
-import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observer } from 'rxjs';
+import { NewCredentials } from '../../../../interfaces/newCredentials';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { UserService } from '../../../services/user.service';
-import { ImageCacheService } from '../../../services/imageCache.service';
-import { BackgroundService } from '../../../services/background.service';
-import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
-import { AccountDeletionConfirmationDialogComponent } from './account-deletion-confirmation-dialog.component';
-import { BaseAdComponent } from '../../base-components/base-ad-component';
-import { AdService } from '../../../services/ad.service';
-import { NotificationService } from '../../../services/notification.service';
+import { UserService } from '../../../../services/user.service';
+import { ImageCacheService } from '../../../../services/imageCache.service';
+import { BackgroundService } from '../../../../services/background.service';
+import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
+import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog.component';
+import { BaseAdComponent } from '../../../base-components/base-ad-component';
+import { AdService } from '../../../../services/ad.service';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-own-profile',
@@ -25,16 +23,14 @@ import { NotificationService } from '../../../services/notification.service';
   ]
 })
 export class OwnProfileComponent extends BaseAdComponent implements OnInit {
-  changePasswordForm: FormGroup;
-  changeEmailForm: FormGroup;
-  changeProfileInformationForm: FormGroup;
-  changeProfilePictureForm: FormGroup;
+  public changeProfileInformationForm: FormGroup;
+  public changeProfilePictureForm: FormGroup;
 
-  hidePassword = signal(true);
-  passwordMismatchErrorMessage = signal('');
-  emailErrorMessage = signal('');
-  selectedImage: File | null = null;
-  imageUrl: string = '';
+  public hidePassword = signal(true);
+  private selectedImage: File | null = null;
+  public imageUrl: string = '';
+
+  public email: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -49,17 +45,6 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
-
-    this.changePasswordForm = this.formBuilder.group({
-      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-    }, { validators: passwordMatchValidator });
-
-    this.changeEmailForm = this.formBuilder.group({
-      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
-      email: ['', [Validators.required, Validators.email]],
-    });
     
     this.changeProfileInformationForm = this.formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -70,14 +55,6 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     this.changeProfilePictureForm = this.formBuilder.group({
       profilePicture: [null, [Validators.required]],
     });
-
-    const email = this.changeEmailForm.get('email');
-
-    if (email != null) {
-      merge(email.statusChanges, email.valueChanges)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.updateEmailErrorMessage());
-    }
   }
 
   ngOnInit(): void {
@@ -94,7 +71,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       next: response => {
         this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
         this.changeProfileInformationForm.get('description')?.setValue(response.description);
-        this.changeEmailForm.get('email')?.setValue(response.email);
+        this.email = response.email;
 
         const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
 
@@ -168,26 +145,24 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     const token = this.authService.getToken();
   
     if (!userName || !token || !dialogRef || !dialogRef.componentRef) {
+      this.notificationService.popErrorToast('Account deletion failed');
       return;
     }
-
-    const password = dialogRef.componentRef.instance.deleteAccountForm.get('currentPassword')?.value;
 
     const userData: NewCredentials = {
       username: userName,
       isDeleted: true,
-      currentPassword: password,
+      currentPassword: dialogRef.componentRef.instance.deleteAccountForm.get('currentPassword')?.value,
     };
 
     this.authService.deleteOwnAccount(userData, token).subscribe({
       next: () => {
-        this.authService.logout();
         this.notificationService.popSuccessToast('Account deleted successfuly!', false);
+        this.authService.logout();
+        this.router.navigate(['/']);
       },
-      error: error => this.notificationService.popErrorToast('Profile picture change failed', error)
+      error: error => this.notificationService.popErrorToast('Account deletion failed', error)
     });
-
-    this.router.navigate(['/']);
   }
 
   onSubmitProfileInformationChange() {
@@ -214,87 +189,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     }
   }
 
-  onSubmitPasswordChange() {
-    if (this.changePasswordForm.valid) {
-      const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
-
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Password change failed', "Username or token not found");
-        return;
-      }
-
-      const newData: NewCredentials = {
-        username: userName,
-        currentPassword: this.changePasswordForm.get('currentPassword')?.value,
-        newPassword: this.changePasswordForm.get('password')?.value,
-      };
-
-      this.authService.changeProfile(newData, token).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Password change successful!', false); },
-        error: error => this.notificationService.popErrorToast('Password change failed', error)
-      });
-    }
-  }
-
-  onSubmitEmailChange() {
-    if (this.changeEmailForm.valid) {
-      const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
-
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Email change failed', "Username or token not found");
-        return;
-      }
-
-      const newData: NewCredentials = {
-        username: userName,
-        currentPassword: this.changeEmailForm.get('currentPassword')?.value,
-        email: this.changeEmailForm.get('email')?.value,
-      };
-
-      this.authService.changeProfile(newData, token).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Email change successful', false); },
-        error: error => this.notificationService.popErrorToast('Email change failed', error)
-      });
-    }
-  }
-
   hidePasswordClickEvent(event: MouseEvent) {
     this.hidePassword.set(!this.hidePassword());
     event.stopPropagation();
-  }
-
-  isPasswordMismatch() {
-    return this.changePasswordForm.hasError('passwordMismatch');
-  }
-
-  updatePasswordMismatchErrorMessage() {
-    if (this.isPasswordMismatch()) {
-      this.passwordMismatchErrorMessage.set('Passwords do not match');
-    } else {
-      this.passwordMismatchErrorMessage.set('');
-    }
-  }
-
-  updateEmailErrorMessage() {
-    const email = this.changeEmailForm.get('email');
-
-    if(email != null) {
-      if (email.hasError('required')) {
-        this.emailErrorMessage.set('You must enter a value');
-  
-      } else if (email.hasError('email')) {
-        this.emailErrorMessage.set('Not a valid email');
-  
-      } else {
-        this.emailErrorMessage.set('');
-      }
-    }
-  }
-
-  isEmailInvalid() {
-    return this.changeEmailForm.get('email')?.invalid && this.changeEmailForm.get('email')?.touched;
   }
 
   onSubmitProfilePictureChange() {

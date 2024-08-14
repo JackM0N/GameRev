@@ -46,7 +46,7 @@ import { LibraryComponent } from './components/page-components/library/library.c
 import { UserReviewFormComponent } from './components/page-components/user-reviews/user-review-form.component';
 import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
 import { AccountDeletionConfirmationDialogComponent } from './components/page-components/user/account-deletion-confirmation-dialog.component';
-import { OwnProfileComponent } from './components/page-components/user/own-profile.component';
+import { OwnProfileComponent } from './components/page-components/user/own-profile/own-profile.component';
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
 import { LibraryAddDialogComponent } from './components/page-components/library/library-add-dialog.component';
@@ -56,6 +56,8 @@ import { ReportListComponent } from './components/page-components/reports/report
 import { GameInfoCriticReviewComponent } from './components/page-components/games/game-information/critic-review.component';
 import { GameInfoReviewListComponent } from './components/page-components/games/game-information/review-list.component';
 import { NotificationService } from './services/notification.service';
+import { EmailChangeComponent } from './components/page-components/user/own-profile/email-change.component';
+import { PasswordChangeComponent } from './components/page-components/user/own-profile/password-change-component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -81,7 +83,9 @@ import { NotificationService } from './services/notification.service';
         CriticReviewFormComponent,
         CriticReviewListComponent,
         GameInfoCriticReviewComponent,
-        GameInfoReviewListComponent
+        GameInfoReviewListComponent,
+        EmailChangeComponent,
+        PasswordChangeComponent
     ],
     bootstrap: [AppComponent],
     imports: [
