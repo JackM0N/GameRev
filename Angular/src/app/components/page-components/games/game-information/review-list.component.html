@@ -1,0 +1,37 @@
+﻿
+<h3>Reviews</h3>
+<div class="review-container">
+    <div class="review-item" *ngFor="let review of reviewList">
+        <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
+        <p>{{ review.content }}</p>
+        <p>Likes: {{ review.positiveRating }}</p>
+        <p>Dislikes: {{ review.negativeRating }}</p>
+
+        <div>
+            <button type="button" mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="this.canDeleteReview(review)">Delete review</button>
+            <button type="button" mat-stroked-button (click)="editReview(review)" *ngIf="this.ownsReview(review)">Edit review</button>
+        </div>
+        <button type="button" mat-stroked-button (click)="reportReview(review)" *ngIf="!this.ownsReview(review)">Report review</button>
+
+        <div *ngIf="!this.ownsReview(review)">
+            <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
+            <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
+        </div>
+    </div>
+</div>
+
+<mat-paginator
+  [length]="totalReviews"
+  [pageSize]="5"
+  [pageSizeOptions]="[2, 5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>
+
+<button
+    id="gotoreview-button"
+    type="button" mat-stroked-button
+    (click)="routeToAddNewReview()"
+    *ngIf="this.canAddReview()">
+    Add review
+</button>
+

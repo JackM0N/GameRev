@@ -1,0 +1,24 @@
+
+<div class="form-container">
+    <form [formGroup]="userReviewForm" (ngSubmit)="onSubmit()">
+
+        <div class="field-container">
+            <p>{{this.formTitle}}</p>
+
+            <mat-form-field>
+                <mat-label>Content</mat-label>
+                <textarea matInput formControlName="content"></textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Score</mat-label>
+                <input type="number" min="1" max="10" matInput placeholder="Input the review's score" formControlName="score" required/>
+            </mat-form-field>
+
+            <div class="centered-container">
+                <button type="button" mat-stroked-button (click)="cancel()">Cancel</button>
+                <button type="submit" mat-stroked-button [disabled]="!userReviewForm.valid">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

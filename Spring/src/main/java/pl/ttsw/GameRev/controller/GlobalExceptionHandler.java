@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.apache.coyote.BadRequestException;
-
 import java.io.IOException;
 
 @ControllerAdvice
