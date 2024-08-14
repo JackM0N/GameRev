@@ -18,7 +18,7 @@ body {
 @font-face {
     font-family: 'arcade';
     font-weight: 400;
-    src: url(./app/fonts/ARCADECLASSIC.ttf) format('truetype');
+    src: url(./app/fonts/joystixMonospace.otf) format('opentype');
 }
 
 .pinkStars {
@@ -169,6 +169,10 @@ body {
 
 /*text shadow in here since tailwind doesn't have that*/
 .pinkTextShadow {
+    text-shadow: 1px 1px 0px #fb049c;
+}
+
+.pinkTextShadowWide {
     text-shadow: 2px 2px 0px #fb049c;
 }
 
