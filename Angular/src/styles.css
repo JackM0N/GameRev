@@ -19,7 +19,7 @@ body {
 @font-face {
     font-family: 'arcade';
     font-weight: 400;
-    src: url(./app/fonts/ARCADECLASSIC.ttf) format('truetype');
+    src: url(./app/fonts/joystixMonospace.otf) format('opentype');
 }
 
 .pinkStars {
@@ -165,6 +165,10 @@ body {
 
 /*text shadow in here since tailwind doesn't have that*/
 .pinkTextShadow {
+    text-shadow: 1px 1px 0px #fb049c;
+}
+
+.pinkTextShadowWide {
     text-shadow: 2px 2px 0px #fb049c;
 }
 
@@ -197,12 +201,7 @@ body {
     font-size: large;
 }
 
-.mat-mdc-select-min-line{
-    color: white;
-    font-family: 'arcade';
-    font-size: large;
-    text-wrap: wrap;
-}
+
 
 .mat-mdc-form-field{
     background-color: black;
@@ -260,6 +259,12 @@ body {
     filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
+.mat-mdc-form-field-infix > mat-select > div > div > span > span{
+    color: white;
+    font-family: 'arcade';
+    font-size: large;
+}
+
 /*date picker*/
 .mat-datepicker-toggle-default-icon{
     fill: black !important;
@@ -312,6 +317,19 @@ mat-datepicker-toggle > button > span{
 .mat-mdc-select-arrow{
     margin: 8px;
 }
+
+.mat-mdc-select-value-text{
+    color: black !important;
+}
+
+.noTextShadow > div > div > span > span{
+    color: black;
+    font-family: 'arcade';
+    font-size: large;
+    text-wrap: wrap;
+}
+
+
 
 /*practical joke until later solution*/
 .smallBgImageSize {
