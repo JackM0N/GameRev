@@ -26,6 +26,8 @@ import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserGameService;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -80,12 +82,12 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
-    public void testGetUserGameDTO_Success() throws BadRequestException {
+    public void testGetUserGame_Success() throws BadRequestException {
         Pageable pageable = PageRequest.of(0, 10);
         WebsiteUser existingUser = websiteUserRepository.findById(4L).orElse(null);
         assertNotNull(existingUser);
 
-        Page<UserGameDTO> result = userGameService.getUserGameDTO(existingUser.getNickname(), pageable);
+        Page<UserGameDTO> result = userGameService.getUserGame(null,null,null,existingUser.getNickname(), pageable);
 
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
@@ -94,15 +96,15 @@ public class UserGameServiceIntegrationTest {
     @Test
     public void testGetUserGameDTO_UserNotFound() {
         Pageable pageable = PageRequest.of(0, 10);
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("nosuchuser", pageable));
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null,null,null,"nosuchuser", pageable));
     }
 
     @Test
-    public void testGetUserGameDTO_EmptyLibrary() {
+    public void testGetUserGame_EmptyLibrary() {
         Pageable pageable = PageRequest.of(0, 10);
         userGameRepository.findByUserNickname("testcritic", pageable);
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("testcritic", pageable));
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null,null,null,"testcritic", pageable));
     }
 
     @Test
