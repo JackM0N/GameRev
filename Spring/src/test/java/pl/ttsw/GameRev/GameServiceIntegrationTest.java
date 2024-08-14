@@ -16,6 +16,9 @@ import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -182,5 +185,57 @@ public class GameServiceIntegrationTest {
         boolean result = gameService.deleteGame(9999L);
 
         assertFalse(result);
+    }
+
+
+    @Test
+    @Transactional
+    public void testGetAllGamesWithFilters() {
+        Pageable pageable = PageRequest.of(0, 10);
+        LocalDate fromDate = LocalDate.of(2022, 1, 1);
+        LocalDate toDate = LocalDate.of(2023, 12, 31);
+        Page<GameDTO> result = gameService.getAllGames(fromDate, toDate, null, null, null, null, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game ->
+                game.getReleaseDate().isAfter(fromDate.minusDays(1)) && game.getReleaseDate().isBefore(toDate.plusDays(1))
+        ));
+
+        Float minUsersScore = 8.0f;
+        Float maxUsersScore = 10.0f;
+        result = gameService.getAllGames(null, null, minUsersScore, maxUsersScore, null, null, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game ->
+                game.getUsersScore() >= minUsersScore && game.getUsersScore() <= maxUsersScore
+        ));
+
+        List<Long> tagIds = List.of(1L);
+        result = gameService.getAllGames(null, null, null, null, tagIds, null, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game ->
+                game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId()))
+        ));
+
+        List<ReleaseStatus> releaseStatuses = List.of(ReleaseStatus.RELEASED);
+        result = gameService.getAllGames(null, null, null, null, null, releaseStatuses, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game ->
+                releaseStatuses.contains(game.getReleaseStatus())
+        ));
+
+        result = gameService.getAllGames(fromDate, toDate, minUsersScore, maxUsersScore, tagIds, releaseStatuses, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game ->
+                game.getReleaseDate().isAfter(fromDate.minusDays(1)) &&
+                        game.getReleaseDate().isBefore(toDate.plusDays(1)) &&
+                        game.getUsersScore() >= minUsersScore &&
+                        game.getUsersScore() <= maxUsersScore &&
+                        game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId())) &&
+                        releaseStatuses.contains(game.getReleaseStatus())
+        ));
     }
 }

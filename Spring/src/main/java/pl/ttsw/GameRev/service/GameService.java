@@ -56,10 +56,10 @@ public class GameService {
             spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("releaseDate"), toDate));
         }
         if (minUserScore != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("userScore"), minUserScore));
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("usersScore"), minUserScore));
         }
         if (maxUserScore != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("userScore"), maxUserScore));
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("usersScore"), maxUserScore));
         }
         if (releaseStatuses != null && !releaseStatuses.isEmpty()) {
             spec = spec.and((root, query, builder) -> root.get("releaseStatus").in(releaseStatuses));
