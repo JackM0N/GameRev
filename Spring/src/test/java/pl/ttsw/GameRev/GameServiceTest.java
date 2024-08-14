@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
@@ -76,15 +77,16 @@ class GameServiceTest {
         Game game = createGameForTesting();
         GameDTO gameDTO = new GameDTO();
         Page<Game> gamesPage = new PageImpl<>(Collections.singletonList(game));
+        Specification<Game> spec = Specification.anyOf();
 
-        when(gameRepository.findAll(pageable)).thenReturn(gamesPage);
+        when(gameRepository.findAll(spec, pageable)).thenReturn(gamesPage);
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
-        Page<GameDTO> result = gameService.getAllGames(pageable);
+        Page<GameDTO> result = gameService.getAllGames(null, null, null, null, null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(gameRepository, times(1)).findAll(pageable);
+        verify(gameRepository, times(1)).findAll(spec, pageable);
         verify(gameMapper, times(1)).toDto(game);
     }
 
@@ -141,7 +143,7 @@ class GameServiceTest {
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
         when(picture.isEmpty()).thenReturn(true);
 
-        GameDTO result = gameService.updateGame("Limbus Company", gameDTO,picture);
+        GameDTO result = gameService.updateGame("Limbus Company", gameDTO, picture);
 
         assertNotNull(result);
         assertEquals("Updated Title", result.getTitle());
