@@ -80,7 +80,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
         }
       },
       error: error => {
-        if (error.error == "This users library is empty") {
+        if (error.error == "This user has no games in his library") {
           this.libraryEmpty = true;
         } else {
           console.error(error);
