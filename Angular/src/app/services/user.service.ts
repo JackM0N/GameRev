@@ -14,14 +14,29 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-  ) { }
+  ) {}
 
-  getUsers(page: number, size: number, sortBy: string, sortDir: string): Observable<WebsiteUser> {
-    const params = new HttpParams()
+  getUsers(page: number, size: number, sortBy: string, sortDir: string,
+    isBannedFilter?: boolean, deletedFilter?: boolean, rolesFilter?: string[], startDateFilter?: string, endDateFilter?: string): Observable<WebsiteUser> {
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir);
-    return this.http.get<WebsiteUser>(this.baseUrl, {params});
+  
+      if (isBannedFilter !== undefined) {
+        params = params.set('isBanned', isBannedFilter.toString());
+      }
+      if (deletedFilter !== undefined) {
+        params = params.set('isDeleted', deletedFilter.toString());
+      }
+      if (rolesFilter !== undefined && rolesFilter.length > 0) {
+        params = params.set('roleIds', rolesFilter.toString());
+      }
+      if (startDateFilter !== undefined && endDateFilter !== undefined) {
+        params = params.set('joinDateFrom', startDateFilter).set('joinDateTo', endDateFilter);
+      }
+  
+    return this.http.get<WebsiteUser>(this.baseUrl, { params });
   }
 
   getUser(nickname: string): Observable<WebsiteUser> {
