@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.UserGameDTO;
@@ -82,15 +83,15 @@ public class UserGameServiceTest {
     }
 
     @Test
-    public void testGetUserGameDTO_Success() throws BadRequestException {
+    public void testGetUserGame_Success() throws BadRequestException {
         Pageable pageable = PageRequest.of(0, 10);
         Page<UserGame> userGamePage = new PageImpl<>(Collections.singletonList(userGame));
 
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
-        when(userGameRepository.findByUserNickname("testuser", pageable)).thenReturn(userGamePage);
+        when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userGamePage);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
-        Page<UserGameDTO> result = userGameService.getUserGameDTO("testuser", pageable);
+        Page<UserGameDTO> result = userGameService.getUserGame(null, null, null, "testuser", pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -101,16 +102,16 @@ public class UserGameServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(websiteUserRepository.findByNickname("nonexistent")).thenReturn(Optional.empty());
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("nonexistent", pageable));
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null, null, null, "nonexistent", pageable));
     }
 
     @Test
-    public void testGetUserGameDTO_EmptyLibrary() {
+    public void testGetUserGame_EmptyLibrary() {
         Pageable pageable = PageRequest.of(0, 10);
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
-        when(userGameRepository.findByUserNickname("testuser", pageable)).thenReturn(Page.empty());
+        when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGameDTO("testuser", pageable));
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null, null, null, "testuser", pageable));
     }
 
     @Test

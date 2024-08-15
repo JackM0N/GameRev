@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Game;
@@ -61,16 +62,16 @@ class UserReviewServiceTest {
         WebsiteUser currentUser = new WebsiteUser();
         UserReviewDTO userReviewDTO = new UserReviewDTO();
 
-        when(userReviewRepository.findByGameTitle(gameTitle, pageable)).thenReturn(userReviews);
+        when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
         when(ratingRepository.findByUserAndUserReview(currentUser, userReview)).thenReturn(Optional.empty());
 
-        Page<UserReviewDTO> result = userReviewService.getUserReviewByGame(gameTitle, pageable);
+        Page<UserReviewDTO> result = userReviewService.getUserReviewByGame(gameTitle, null, null, null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(userReviewRepository, times(1)).findByGameTitle(gameTitle, pageable);
+        verify(userReviewRepository, times(1)).findAll(any(Specification.class), eq(pageable));
         verify(websiteUserService, times(1)).getCurrentUser();
         verify(userReviewMapper, times(1)).toDto(userReview);
         verify(ratingRepository, times(1)).findByUserAndUserReview(currentUser, userReview);
@@ -85,23 +86,24 @@ class UserReviewServiceTest {
         Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
 
         when(websiteUserRepository.findById(userId)).thenReturn(Optional.of(currentUser));
-        when(userReviewRepository.findByUser(currentUser, pageable)).thenReturn(userReviews);
+        when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
         when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
-        Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(userId, pageable);
+
+        Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(userId, null, null, null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(userReviewDTO, result.getContent().get(0));
 
         verify(websiteUserRepository, times(1)).findById(userId);
-        verify(userReviewRepository, times(1)).findByUser(currentUser, pageable);
+        verify(userReviewRepository, times(1)).findAll(any(Specification.class), eq(pageable));
         verify(userReviewMapper, times(1)).toDto(userReview);
     }
 
     @Test
     void testGetUserReviewById() {
-        Integer reviewId = 1;
+        Long reviewId = 1L;
         UserReview userReview = new UserReview();
         UserReviewDTO userReviewDTO = new UserReviewDTO();
 
@@ -123,14 +125,14 @@ class UserReviewServiceTest {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
 
-        when(userReviewRepository.findWithReports(pageable)).thenReturn(userReviews);
+        when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
         when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
-        Page<UserReviewDTO> result = userReviewService.getUserReviewsWithReports(pageable);
+        Page<UserReviewDTO> result = userReviewService.getUserReviewsWithReports(null, null, null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(userReviewRepository, times(1)).findWithReports(pageable);
+        verify(userReviewRepository, times(1)).findAll(any(Specification.class), eq(pageable));
         verify(userReviewMapper, times(1)).toDto(userReview);
     }
 
@@ -204,7 +206,7 @@ class UserReviewServiceTest {
         verify(websiteUserRepository, times(1)).findByUsername("testUser2");
         verify(websiteUserService, times(1)).getCurrentUser();
         verify(userReviewRepository, times(1)).findById(userReviewDTO.getId());
-        verify(userReviewRepository, times(1)).deleteById(Math.toIntExact(userReviewDTO.getId()));
+        verify(userReviewRepository, times(1)).deleteById(userReviewDTO.getId());
     }
 
     @Test

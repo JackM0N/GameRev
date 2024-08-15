@@ -17,7 +17,10 @@ import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.*;
+import pl.ttsw.GameRev.repository.GameRepository;
+import pl.ttsw.GameRev.repository.TagRepository;
+import pl.ttsw.GameRev.repository.UserReviewRepository;
+import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
 
 import java.time.LocalDate;
@@ -94,11 +97,11 @@ public class UserReviewServiceIntegrationTest {
         assertNotNull(createdReview);
         assertEquals("Great game!", createdReview.getContent());
 
-        Page<UserReviewDTO> userReviews = userReviewService.getUserReviewByGame(game.getTitle(), PageRequest.of(0, 10));
+        Page<UserReviewDTO> userReviews = userReviewService.getUserReviewByGame(game.getTitle(), null, null, null, null, PageRequest.of(0, 10));
         assertFalse(userReviews.isEmpty());
         assertEquals(1, userReviews.getTotalElements());
 
-        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(), pageable);
+        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(), null, null, null, null, pageable);
         assertFalse(userReviewsByUser.isEmpty());
         assertEquals(1, userReviewsByUser.getTotalElements());
     }
@@ -142,7 +145,7 @@ public class UserReviewServiceIntegrationTest {
         assertTrue(deleted);
 
         assertThrows(BadRequestException.class, () -> {
-            userReviewService.getUserReviewByUser(testUser.getId(), pageable);
+            userReviewService.getUserReviewByUser(testUser.getId(), null, null, null, null, pageable);
         });
     }
 }

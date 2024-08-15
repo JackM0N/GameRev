@@ -24,6 +24,7 @@ import pl.ttsw.GameRev.repository.ReportRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.ReportService;
+import pl.ttsw.GameRev.service.UserReviewService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,16 +56,18 @@ public class ReportServiceIntegrationTest {
     private UserReviewMapper userReviewMapper;
 
     private WebsiteUser testUser;
-    private UserReview testUserReview;
+    private UserReviewDTO testUserReview;
     private Report testReport;
     private final Pageable pageable = PageRequest.ofSize(10);
+    @Autowired
+    private UserReviewService userReviewService;
 
     @BeforeEach
     public void setup() {
         testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser);
 
-        testUserReview = userReviewRepository.findWithReports(pageable).get().findFirst().orElse(null);
+        testUserReview = userReviewService.getUserReviewsWithReports(null,null,null,null,pageable).get().findFirst().orElse(null);
         assertNotNull(testUserReview);
 
         testReport = reportRepository.findById(1L).orElse(null);
@@ -73,7 +76,7 @@ public class ReportServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        Report report = reportRepository.findByUserAndUserReview(testUser, testUserReview).orElse(null);
+        Report report = reportRepository.findByUserAndUserReview(testUser, userReviewMapper.toEntity(testUserReview)).orElse(null);
         if (report != null) {
             reportRepository.delete(report);
         }
@@ -105,7 +108,7 @@ public class ReportServiceIntegrationTest {
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
 
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setUserReview(userReviewMapper.toDto(testUserReview));
+        reportDTO.setUserReview(testUserReview);
         reportDTO.setContent("New Report Content");
 
         ReportDTO result = reportService.createReport(reportDTO);
@@ -139,7 +142,7 @@ public class ReportServiceIntegrationTest {
         when(websiteUserService.getCurrentUser()).thenReturn(null);
 
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setUserReview(userReviewMapper.toDto(testUserReview));
+        reportDTO.setUserReview(testUserReview);
         reportDTO.setContent("New Report Content");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -156,7 +159,7 @@ public class ReportServiceIntegrationTest {
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
 
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setUserReview(userReviewMapper.toDto(testUserReview));
+        reportDTO.setUserReview(testUserReview);
         reportDTO.setContent("New Report Content");
 
         ReportDTO result = reportService.createReport(reportDTO);

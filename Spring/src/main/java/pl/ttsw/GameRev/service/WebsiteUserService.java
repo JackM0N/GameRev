@@ -53,8 +53,10 @@ public class WebsiteUserService {
             Boolean isDeleted,
             Boolean isBanned,
             List<Long> roleIds,
+            String searchText,
             Pageable pageable) {
         Specification<WebsiteUser> spec = Specification.where((root, query, builder) -> builder.conjunction());
+
 
         if (joinDateFrom != null) {
             spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("joinDate"), joinDateFrom));
@@ -73,6 +75,15 @@ public class WebsiteUserService {
                 Join<WebsiteUser, Role> rolesJoin = root.join("roles");
                 return rolesJoin.get("id").in(roleIds);
             });
+        }
+        if (searchText != null && !searchText.isEmpty()) {
+            String likePattern = "%" + searchText + "%";
+            spec = spec.and((root, query, builder) -> builder.or(
+                    builder.like(builder.lower(root.get("id")), likePattern),
+                    builder.like(builder.lower(root.get("nickname")), likePattern),
+                    builder.like(builder.lower(root.get("description")), likePattern),
+                    builder.like(builder.lower(root.get("email")), likePattern)
+            ));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
