@@ -28,14 +28,14 @@
 
 <mat-form-field>
   <mat-label>Search</mat-label>
-  <input matInput>
+  <input matInput #searchInput>
 </mat-form-field>
 
 <mat-form-field>
   <mat-label>Join date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="Start date" (dateChange)="onStartDateChange($event)">
-    <input matEndDate placeholder="End date" (dateChange)="onEndDateChange($event)">
+    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
   </mat-date-range-input>
   <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

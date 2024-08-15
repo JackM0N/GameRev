@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
@@ -21,18 +21,20 @@ import { Role } from '../../../interfaces/role';
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
 export class UserListComponent implements AfterViewInit {
-  totalUsers: number = 0;
-  dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
-  displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+  public totalUsers: number = 0;
+  public dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
+  public displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
   private isBannedFilter?: boolean = undefined;
   private deletedFilter?: boolean = undefined;
   private startDateFilter?: string = undefined;
   private endDateFilter?: string = undefined;
-  private rolesFilter?: string[] = [];
+  private rolesFilter?: string[] = undefined;
+  private searchFilter?: string = undefined;
 
   constructor(
     private userService: UserService,
@@ -54,6 +56,17 @@ export class UserListComponent implements AfterViewInit {
       this.paginator.pageIndex = 0;
       this.loadUsers();
     });
+
+    if (this.searchInput) {
+      fromEvent(this.searchInput.nativeElement, 'input').pipe(
+        map((event: any) => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+
+      ).subscribe(value => {
+        this.onSearchChange(value);
+      });
+    }
   }
 
   loadUsers() {
@@ -79,7 +92,7 @@ export class UserListComponent implements AfterViewInit {
     };
     
     this.userService.getUsers(page, size, sortBy, sortDir,
-      this.isBannedFilter, this.deletedFilter, this.rolesFilter, this.startDateFilter, this.endDateFilter).subscribe(observer);
+      this.isBannedFilter, this.deletedFilter, this.rolesFilter, this.startDateFilter, this.endDateFilter, this.searchFilter).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -173,7 +186,6 @@ export class UserListComponent implements AfterViewInit {
 
   onStartDateChange(event: MatDatepickerInputEvent<Date>) {
     const selectedDate = event.value;
-    console.log('Selected start date:', selectedDate);
 
     if (selectedDate) {
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
@@ -190,7 +202,6 @@ export class UserListComponent implements AfterViewInit {
 
   onEndDateChange(event: MatDatepickerInputEvent<Date>) {
     const selectedDate = event.value;
-    console.log('Selected end date:', selectedDate);
 
     if (selectedDate) {
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
@@ -203,6 +214,11 @@ export class UserListComponent implements AfterViewInit {
         this.loadUsers();
       }
     }
+  }
+
+  onSearchChange(value: string) {
+    this.searchFilter = value;
+    this.loadUsers();
   }
 
   parseRoles(roles: Role[]): string {

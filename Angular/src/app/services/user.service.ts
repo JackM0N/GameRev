@@ -17,7 +17,9 @@ export class UserService {
   ) {}
 
   getUsers(page: number, size: number, sortBy: string, sortDir: string,
-    isBannedFilter?: boolean, deletedFilter?: boolean, rolesFilter?: string[], startDateFilter?: string, endDateFilter?: string): Observable<WebsiteUser> {
+      isBannedFilter?: boolean, deletedFilter?: boolean, rolesFilter?: string[],
+      startDateFilter?: string, endDateFilter?: string, searchFilter?: string): Observable<WebsiteUser>
+    {
     let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
@@ -34,6 +36,9 @@ export class UserService {
       }
       if (startDateFilter !== undefined && endDateFilter !== undefined) {
         params = params.set('joinDateFrom', startDateFilter).set('joinDateTo', endDateFilter);
+      }
+      if (searchFilter !== undefined) {
+        params = params.set('searchText', searchFilter);
       }
   
     return this.http.get<WebsiteUser>(this.baseUrl, { params });
