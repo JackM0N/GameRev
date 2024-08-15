@@ -14,16 +14,33 @@ export class GameService {
     private http: HttpClient,
   ) { }
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string): Observable<Game> {
-    var params;
-    if (page && size && sortBy && sortDir) {
-      params = new HttpParams()
-        .set('page', (page - 1).toString())
-        .set('size', size.toString())
-        .set('sort', sortBy + ',' + sortDir);
-    } else {
-      params = new HttpParams();
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string,
+    startDateFilter?: string, endDateFilter?: string, releaseStatusFilter?: string[], tagsFilter?: string[], searchFilter?: string
+  ): Observable<Game> {
+    var params = new HttpParams();
+
+    if (page) {
+      params = params.set('page', (page - 1).toString());
     }
+    if (size) {
+      params = params.set('size', size.toString());
+    }
+    if (sortBy && sortDir) {
+      params = params.set('sort', sortBy + ',' + sortDir);
+    }
+    if (startDateFilter && endDateFilter) {
+      params = params.set('fromDate', startDateFilter).set('toDate', endDateFilter);
+    }
+    if (releaseStatusFilter && releaseStatusFilter.length > 0) {
+      params = params.set('releaseStatuses', releaseStatusFilter.toString());
+    }
+    if (tagsFilter && tagsFilter.length > 0) {
+      params = params.set('tagIds', tagsFilter.toString());
+    }
+    if (searchFilter) {
+      params = params.set('searchText', searchFilter);
+    }
+
     return this.http.get<Game>(this.baseUrl, { params });
   }
 

@@ -33,7 +33,7 @@
             <div class="mt-2">
                 <label>Release status</label><br>
                 <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="releaseStatus">
-                    <mat-option>--</mat-option>
+                    <mat-option>-</mat-option>
                     @for (status of releaseStatuses; track status) {
                         <mat-option [value]="status.className">{{status.name}}</mat-option>
                     }

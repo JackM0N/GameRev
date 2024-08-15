@@ -1,4 +1,38 @@
 
+<mat-form-field>
+  <mat-label>Release status</mat-label>
+  <mat-select (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
+    <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
+      {{ status.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Tags</mat-label>
+  <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
+    <mat-option *ngFor="let tag of tagList" [value]="tag.id">
+      {{ tag.tagName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Release date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Search</mat-label>
+  <input matInput #searchInput>
+</mat-form-field>
+
 <div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
   <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
     <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
