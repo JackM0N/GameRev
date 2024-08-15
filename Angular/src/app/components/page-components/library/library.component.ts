@@ -14,6 +14,7 @@ import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
+import { completionStatuses } from '../../../interfaces/completionStatuses';
 
 @Component({
   selector: 'app-library',
@@ -180,6 +181,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
         this.dataSource.data = this.gamesList;
 
         this.notificationService.popSuccessToast('Game added successfully', false);
+
+        this.loadGames();
       },
       error: error => this.notificationService.popErrorToast('Game adding failed', error)
     });
@@ -230,11 +233,12 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     this.libraryService.deleteUserGame(userGame.id, token).subscribe(observer);
   }
 
-  sortData() {
-    this.loadGames();
-  }
-
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  findCompletionStatusName(status: string) {
+    const completionStatus = completionStatuses.find(completionStatus => completionStatus.className === status);
+    return completionStatus ? completionStatus.name : undefined;
   }
 }
