@@ -149,3 +149,84 @@ ALTER TABLE forum
     ADD CONSTRAINT check_self_parent
         CHECK (forum_id IS DISTINCT FROM parent_forum_id);
 
+
+--changeset Stanislaw:25 labels:expansion,schema
+--add title
+ALTER TABLE club_post
+    ADD COLUMN title VARCHAR(150) NOT NULL DEFAULT 'MISSING TITLE';
+
+ALTER TABLE forum_post
+    ADD COLUMN title VARCHAR(150) NOT NULL DEFAULT 'MISSING TITLE';
+
+ALTER TABLE club_post
+    ALTER COLUMN  title DROP DEFAULT;
+
+ALTER TABLE forum_post
+    ALTER COLUMN  title DROP DEFAULT;
+
+--add last_response_date to show if post had replies since user last checked
+ALTER TABLE forum_post
+    ADD COLUMN last_response_date TIMESTAMP;
+
+ALTER TABLE club_post
+    ADD COLUMN last_response_date TIMESTAMP;
+
+--update old posts
+UPDATE forum_post fp
+SET last_response_date = (
+    SELECT MAX(fc.post_date)
+    FROM forum_comment fc
+    WHERE fc.forum_post_id = fp.forum_post_id
+)
+WHERE EXISTS (
+    SELECT 1
+    FROM forum_comment fc
+    WHERE fc.forum_post_id = fp.forum_post_id
+);
+
+UPDATE club_post cp
+SET last_response_date = (
+    SELECT MAX(cc.post_date)
+    FROM club_comment cc
+    WHERE cc.club_post_id = cp.club_post_id
+)
+WHERE EXISTS (
+    SELECT 1
+    FROM club_comment cc
+    WHERE cc.club_comment_id = cp.club_post_id
+);
+
+--trigger for new posts in forums
+CREATE OR REPLACE FUNCTION update_forum_post_last_response_date()
+    RETURNS TRIGGER AS '
+BEGIN
+    UPDATE forum_post
+    SET last_response_date = NEW.post_date
+    WHERE forum_post_id = NEW.forum_post_id;
+
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_forum_post_last_response_date
+    AFTER INSERT ON forum_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_forum_post_last_response_date();
+
+--trigger for new posts in clubs
+CREATE OR REPLACE FUNCTION update_club_post_last_response_date()
+    RETURNS TRIGGER AS '
+    BEGIN
+        UPDATE club_post
+        SET last_response_date = NEW.post_date
+        WHERE club_post_id = NEW.club_post_id;
+
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_club_post_last_response_date
+    AFTER INSERT ON club_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_club_post_last_response_date();
+
