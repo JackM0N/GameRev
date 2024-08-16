@@ -1,0 +1,88 @@
+
+<div *ngIf="!this.noReviews">
+  <div class="container">
+    <h3>Reviews</h3>
+    <div class="review-container">
+      <div class="review-item" *ngFor="let review of this.reviewsList">
+        <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
+        <p>{{ review.content }}</p>
+        <p>Likes: {{ review.positiveRating }}</p>
+        <p>Dislikes: {{ review.negativeRating }}</p>
+
+        <button type="button" mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)">Delete review</button>
+
+        <mat-expansion-panel hideToggle (opened)="onPanelOpened(review)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Show reports</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <ng-container *ngIf="review.id; else noId">
+            <ng-container *ngIf="this.reportsList[review.id]; else loading">
+              <ng-container *ngIf="this.reportsList[review.id].totalReports > 0; else noReports">
+                <table mat-table [dataSource]="this.reportsList[review.id].dataSource" class="mat-elevation-z8">
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> Id </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef> User </th>
+                    <td mat-cell *matCellDef="let element"> {{element.user.nickname}} </td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="content">
+                    <th mat-header-cell *matHeaderCellDef> Content </th>
+                    <td mat-cell *matCellDef="let element"> {{element.content}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="options">
+                    <th mat-header-cell *matHeaderCellDef> Options </th>
+                    <td mat-cell *matCellDef="let element">
+                      <button type="button" mat-stroked-button *ngIf="!element.approved" (click)="approveReport(element)">Approve</button>
+                      <button type="button" mat-stroked-button *ngIf="element.approved" (click)="disapproveReport(element)">Disapprove</button>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              
+                <mat-paginator
+                  [id]="review.id"
+                  [length]="this.reportsList[review.id].totalReports"
+                  [pageSize]="5"
+                  [pageSizeOptions]="[1, 2, 5, 10, 20]"
+                  showFirstLastButtons>
+                </mat-paginator>
+              </ng-container>
+
+              <ng-template #noReports>
+                <p>No reports found for this review.</p>
+              </ng-template>
+            </ng-container>
+            
+            <ng-template #loading>
+              <p>Loading...</p>
+            </ng-template>
+          </ng-container>
+
+          <ng-template #noId>
+            <p>Review ID is not available</p>
+          </ng-template>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <mat-paginator
+      #reviewsPaginator
+      [length]="totalReviews"
+      [pageSize]="5"
+      [pageSizeOptions]="[2, 5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+
+<div *ngIf="this.noReviews">
+  <p class="text-center">No reports have been made</p>
+</div>

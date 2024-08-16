@@ -1,0 +1,23 @@
+<div class="pixel-border p-[6px] bg-black rounded-none text-white font-arcade pinkTextShadow">
+  <div class="px-5 p-3">
+    <h1 class="text-xl">{{ data.dialogTitle }}</h1>
+
+    <div class="mt-2 text-base">
+      <p>{{ data.dialogContent }}</p>
+    </div>
+
+    <div class="mt-2 flex flex-row justify-center gap-5">
+      <div class="pixel-border p-[6px] w-28">
+        <div class="w-full">
+          <button class="pinkTextShadow text-base w-full" type="button" (click)="onCancel()">{{ data.cancelText }}</button>
+        </div>
+      </div>
+
+      <div class="pixel-border p-[6px] w-28">
+        <div class="w-full">
+          <button class="pinkTextShadow text-base w-full bg-red-700" type="submit" (click)="onConfirm()">{{ data.submitText }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

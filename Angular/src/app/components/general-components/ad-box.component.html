@@ -1,0 +1,12 @@
+<div class="pixel-border w-fit h-fit max-w-52 z-100 p-[6px]" *ngIf="!closed">
+  <div class="w-fit h-fit bg-white font-arcade text-center text-sm leading-8">
+    <div class="flex flex-row">
+      <h2 class="pl-5 w-full select-none">Advertisement</h2>
+      <label class="custom-checkbox pt-1">
+        <input type="checkbox" (click)="close()">
+        <span class="checkbox-box"></span>
+      </label>
+    </div>
+    <img draggable="false" [src]="currentAd" alt="Advertisement" class="ad-image">
+  </div>
+</div>

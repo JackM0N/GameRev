@@ -35,10 +35,11 @@ public class WebsiteUserController {
             @RequestParam(value = "isDeleted", required = false) Boolean isDeleted,
             @RequestParam(value = "isBanned", required = false) Boolean isBanned,
             @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
+            @RequestParam(value = "searchText", required = false) String searchText,
             Pageable pageable
     ) {
         Page<WebsiteUserDTO> users = websiteUserService
-                .getAllWebsiteUsers(joinDateFrom, joinDateTo, isDeleted, isBanned, roleIds, pageable);
+                .getAllWebsiteUsers(joinDateFrom, joinDateTo, isDeleted, isBanned, roleIds, searchText, pageable);
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

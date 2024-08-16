@@ -1,0 +1,35 @@
+﻿
+<div class="pixel-border max-[900px]:w-[390px] min-[900px]:w-5/6 h-[235px] py-[6px] m-auto max-w-[1200px] my-10 text-base pinkTextShadow flex">
+  <div class="px-8 py-4 h-full w-fit mx-[6px] bg-no-repeat bg-right z-0 flex flex-col bg-black">
+    <h3 class="text-xl">Change email</h3>
+
+    <form autocomplete="off" [formGroup]="changeEmailForm" (ngSubmit)="onSubmitEmailChange()">
+      <div class="mt-2">
+        <label>Enter new email</label>
+        <input class="w-full text-black px-1 h-7" placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+      </div>
+      <mat-error *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+
+      <div class="mt-2">
+        <label>Enter password</label>
+        <div class="flex items-center w-full bg-white h-[28px]">
+          <input class="px-1 h-full text-black" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+          <button class="px-1 flex items-center text-black"
+            matSuffix
+            type="button"
+            (mousedown)="hidePasswordClickEvent($event)"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword()"
+          >
+            <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button class="text-white pinkTextShadow text-lg disabled:opacity-30" [disabled]="!changeEmailForm.valid">Save email</button>
+      </div>
+    </form>
+  </div>
+  <div class="neonAtSymbols w-full h-full bg-cover bg-no-repeat -ml-5"></div>
+</div>
