@@ -149,3 +149,119 @@ ALTER TABLE forum
     ADD CONSTRAINT check_self_parent
         CHECK (forum_id IS DISTINCT FROM parent_forum_id);
 
+
+--changeset Stanislaw:25 labels:expansion,schema
+--add title
+ALTER TABLE club_post
+    ADD COLUMN title VARCHAR(150) NOT NULL DEFAULT 'MISSING TITLE';
+
+ALTER TABLE forum_post
+    ADD COLUMN title VARCHAR(150) NOT NULL DEFAULT 'MISSING TITLE';
+
+ALTER TABLE club_post
+    ALTER COLUMN title DROP DEFAULT;
+
+ALTER TABLE forum_post
+    ALTER COLUMN title DROP DEFAULT;
+
+--add last_response_date to show if post had replies since user last checked
+ALTER TABLE forum_post
+    ADD COLUMN last_response_date TIMESTAMP;
+
+ALTER TABLE club_post
+    ADD COLUMN last_response_date TIMESTAMP;
+
+--update old posts
+UPDATE forum_post fp
+SET last_response_date = (SELECT MAX(fc.post_date)
+                          FROM forum_comment fc
+                          WHERE fc.forum_post_id = fp.forum_post_id)
+WHERE EXISTS (SELECT 1
+              FROM forum_comment fc
+              WHERE fc.forum_post_id = fp.forum_post_id);
+
+UPDATE club_post cp
+SET last_response_date = (SELECT MAX(cc.post_date)
+                          FROM club_comment cc
+                          WHERE cc.club_post_id = cp.club_post_id)
+WHERE EXISTS (SELECT 1
+              FROM club_comment cc
+              WHERE cc.club_comment_id = cp.club_post_id);
+
+--trigger for new posts in forums
+CREATE OR REPLACE FUNCTION update_forum_post_last_response_date()
+    RETURNS TRIGGER AS
+'
+    BEGIN
+        UPDATE forum_post
+        SET last_response_date = NEW.post_date
+        WHERE forum_post_id = NEW.forum_post_id;
+
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_forum_post_last_response_date
+    AFTER INSERT
+    ON forum_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_forum_post_last_response_date();
+
+--trigger for new posts in clubs
+CREATE OR REPLACE FUNCTION update_club_post_last_response_date()
+    RETURNS TRIGGER AS
+'
+    BEGIN
+        UPDATE club_post
+        SET last_response_date = NEW.post_date
+        WHERE club_post_id = NEW.club_post_id;
+
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_club_post_last_response_date
+    AFTER INSERT
+    ON club_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_club_post_last_response_date();
+
+
+--changeset Stanislaw:26 labels:expansion,data
+INSERT INTO forum (forum_id, forum_name) --should be autoincrement, but liquibase cant count, works ok form dbeaver
+VALUES (2, 'General');
+
+UPDATE forum
+SET parent_forum_id = 2
+WHERE forum_id = 1;
+
+INSERT INTO forum (forum_id, forum_name, parent_forum_id, game_id)
+VALUES (3, 'Mirror Dungeon', 1, 1);
+
+INSERT INTO forum_post(forum_id, author_id, title, content, post_date)
+VALUES (3, 4, 'Standard mode strategies', 'Here you can post your teams, suggested gifts and other tips that will help new players solve standard mode.', '2024-08-14 11:16:23');
+
+INSERT INTO forum_post(forum_id, author_id, title, content, post_date)
+VALUES (3, 4, 'Hard mode strategies', 'Here you can post your teams, suggested gifts and other tips that will help new players solve hard mode.', '2024-08-14 11:17:23');
+
+INSERT INTO forum_comment(forum_post_id, author_id, content, post_date)
+VALUES (2, 5, 'Just take whatever strongest IDs you have and Faust`s base EGO for sanity healing, should be enough.', '2024-08-14 12:24:52');
+
+INSERT INTO forum_comment(forum_post_id, author_id, content, post_date)
+VALUES (2, 6, 'If you have more IDs, you can try forming teams around Burn, Charge, etc, then each Identity will synergize with others. ', '2024-08-14 12:24:52');
+
+--moderators: 4 can manage all, 5 only subforum
+INSERT INTO forum_moderator (forum_id, moderator_id)
+VALUES (1, 4),
+       (2, 4),
+       (3, 4),
+       (3, 5);
+
+UPDATE forum_post
+SET title = 'Update is finally here!'
+WHERE title = 'MISSING TITLE';
+
+UPDATE club_post
+SET title = 'This new RR is great!'
+WHERE title = 'MISSING TITLE';
+
