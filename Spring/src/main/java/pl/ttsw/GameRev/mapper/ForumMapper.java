@@ -6,8 +6,10 @@ import pl.ttsw.GameRev.model.Forum;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ForumMapper {
+    @Mapping(source = "parentForumId", target = "parentForum.id")
     Forum toEntity(ForumDTO forumDTO);
-    
+
+    @Mapping(source = "parentForum.id", target = "parentForumId")
     ForumDTO toDto(Forum forum);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
