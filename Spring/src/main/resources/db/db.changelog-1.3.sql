@@ -257,3 +257,11 @@ VALUES (1, 4),
        (3, 4),
        (3, 5);
 
+UPDATE forum_post
+SET title = 'Update is finally here!'
+WHERE title = 'MISSING TITLE';
+
+UPDATE club_post
+SET title = 'This new RR is great!'
+WHERE title = 'MISSING TITLE';
+
