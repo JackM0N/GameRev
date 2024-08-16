@@ -20,7 +20,7 @@ public class ForumDTO implements Serializable {
     GameDTO game;
     String forumName;
     Boolean isDeleted;
-    Long parentForum;
+    Long parentForumId;
     List<WebsiteUserDTO> forumModeratorsDTO;
     List<ForumPostDTO> forumPostsDTO;
 }
