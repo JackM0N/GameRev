@@ -14,26 +14,27 @@ import { OwnProfileComponent } from './components/page-components/user/own-profi
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { LibraryComponent } from './components/page-components/library/library.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'profile', component: OwnProfileComponent},
+  { path: 'profile', component: OwnProfileComponent, canActivate: [AuthGuard]},
   { path: 'profile/:name', component: ProfileComponent},
   { path: 'game/:name', component: GameInformationComponent},
   { path: 'games', component: GameListComponent},
-  { path: 'games/add', component: GameFormComponent},
-  { path: 'games/edit/:name', component: GameFormComponent},
-  { path: 'user-reviews/add/:name', component: UserReviewFormComponent},
-  { path: 'user-reviews/edit/:id', component: UserReviewFormComponent},
-  { path: 'user-reviews', component: UserReviewListComponent},
-  { path: 'user-reviews/:name', component: UserReviewListComponent},
-  { path: 'users', component: UserListComponent},
-  { path: 'reports', component: ReportListComponent},
-  { path: 'library', component: LibraryComponent},
-  { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent},
-  { path: 'critic-reviews/edit/:id', component: CriticReviewFormComponent},
-  { path: 'critic-reviews', component: CriticReviewListComponent},
+  { path: 'games/add', component: GameFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'games/edit/:name', component: GameFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'user-reviews/add/:name', component: UserReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'user-reviews/edit/:id', component: UserReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'user-reviews', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'user-reviews/:name', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
+  { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'library', component: LibraryComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'critic-reviews/edit/:id', component: CriticReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'critic-reviews', component: CriticReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
 ];
 
 @NgModule({
