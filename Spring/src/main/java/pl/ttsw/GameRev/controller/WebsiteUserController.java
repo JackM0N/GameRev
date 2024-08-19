@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,8 +31,8 @@ public class WebsiteUserController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsers(
-            @RequestParam(value = "joinDateFrom", required = false) LocalDate joinDateFrom,
-            @RequestParam(value = "joinDateTo", required = false) LocalDate joinDateTo,
+            @RequestParam(value = "joinDateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate joinDateFrom,
+            @RequestParam(value = "joinDateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate joinDateTo,
             @RequestParam(value = "isDeleted", required = false) Boolean isDeleted,
             @RequestParam(value = "isBanned", required = false) Boolean isBanned,
             @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
@@ -40,8 +41,8 @@ public class WebsiteUserController {
     ) {
         Page<WebsiteUserDTO> users = websiteUserService
                 .getAllWebsiteUsers(joinDateFrom, joinDateTo, isDeleted, isBanned, roleIds, searchText, pageable);
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (users.getTotalElements() == 0) {
+            return ResponseEntity.badRequest().body("No users found with the given criteria");
         }
         return ResponseEntity.ok(users);
     }
