@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ReportDTO;
@@ -46,7 +47,7 @@ public class UserReviewController {
         Page<UserReviewDTO> userReviewDTO = userReviewService
                 .getUserReviewByGame(title, postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
         if (userReviewDTO == null || userReviewDTO.isEmpty()) {
-            return ResponseEntity.badRequest().body("There are no user reviews for this title");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(userReviewDTO);
     }
@@ -87,7 +88,7 @@ public class UserReviewController {
         Page<UserReviewDTO> userReviewDTOS = userReviewService
                 .getUserReviewByUser(id, postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
-            return ResponseEntity.badRequest().body("This user has no user reviews");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(userReviewDTOS);
     }
@@ -102,7 +103,7 @@ public class UserReviewController {
         Page<UserReviewDTO> userReviewDTOS = userReviewService
                 .getUserReviewByOwner( postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
-            return ResponseEntity.badRequest().body("You haven't made any reviews yet");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(userReviewDTOS);
     }

@@ -4,6 +4,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
@@ -32,7 +33,7 @@ public class CriticReviewController {
     ) throws BadRequestException {
         Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(reviewStatus, fromDate, toDate, scoreFrom, scoreTo, searchText, pageable);
         if (criticReviewDTO.getTotalElements() == 0) {
-            return ResponseEntity.badRequest().body("There are no critic reviews yet");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(criticReviewDTO);
     }
