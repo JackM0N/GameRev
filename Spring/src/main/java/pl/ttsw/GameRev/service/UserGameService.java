@@ -67,10 +67,6 @@ public class UserGameService {
             });
         }
         Page<UserGame> userGames = userGameRepository.findAll(spec, pageable);
-        if (userGames.isEmpty()) {
-            throw new BadRequestException("This user has no games in his library");
-        }
-
         return userGames.map(userGameMapper::toDto);
     }
 
@@ -101,7 +97,7 @@ public class UserGameService {
         userGame.setUser(user);
         userGame.setGame(game);
         userGame.setCompletionStatus(completionStatus);
-        userGame.setIsFavourite(false);
+        userGame.setIsFavourite(userGameDTO.getIsFavourite());
 
         user.getUserGames().add(userGame);
         game.getUserGames().add(userGame);

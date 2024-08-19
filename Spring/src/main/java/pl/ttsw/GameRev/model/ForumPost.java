@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,11 +29,14 @@ public class ForumPost {
     @JoinColumn(name = "author_id", nullable = false)
     private WebsiteUser author;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
     private String content;
 
     @Column(name = "post_date", nullable = false)
-    private Instant postDate;
+    private LocalDate postDate;
 
     @Column(name = "picture")
     private String picture;

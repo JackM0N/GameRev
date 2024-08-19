@@ -26,7 +26,8 @@ public class ForumService {
     }
 
     public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
-        Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("id"), id);
+        Forum forum = forumRepository.findById(id).orElse(null);
+        Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
         spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"),false));
 
@@ -37,11 +38,9 @@ public class ForumService {
             });
         }
         if (searchText != null) {
+            searchText = searchText.toLowerCase();
             String likePattern = "%" + searchText + "%";
-            spec = spec.and((root, query, builder) -> builder.or(
-                    builder.like(builder.lower(root.get("forumName")), likePattern)
-                    // TODO: Add searching for post titles
-            ));
+            spec = spec.and((root, query, builder) ->  builder.like(builder.lower(root.get("forumName")), likePattern));
         }
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
@@ -78,10 +77,8 @@ public class ForumService {
     }
 
     public boolean deleteForum(Long id) throws BadRequestException {
-        Forum forum = forumRepository.findById(id).orElse(null);
-        if (forum == null) {
-            throw new BadRequestException("Forum not found");
-        }
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Forum not found"));
         forum.setIsDeleted(!forum.getIsDeleted());
         forumRepository.save(forum);
         return true;

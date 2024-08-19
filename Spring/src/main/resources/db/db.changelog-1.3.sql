@@ -265,3 +265,41 @@ UPDATE club_post
 SET title = 'This new RR is great!'
 WHERE title = 'MISSING TITLE';
 
+
+--changeset Stanislaw:27 labels:expansion,schema
+--trigger to delete all child forums
+CREATE OR REPLACE FUNCTION soft_delete_child_forums()
+    RETURNS TRIGGER AS
+'
+    BEGIN
+        UPDATE forum
+        SET is_deleted = TRUE
+        WHERE parent_forum_id = OLD.forum_id;
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_forum_soft_delete
+    BEFORE UPDATE OF is_deleted
+    ON forum
+    FOR EACH ROW
+    WHEN (NEW.is_deleted = TRUE)
+EXECUTE FUNCTION soft_delete_child_forums();
+
+
+--changeset Stanislaw:28 labels:expansion,data
+-- Forum Posts
+INSERT INTO forum_post(forum_id, author_id, title, content, post_date, picture, last_response_date)
+VALUES
+    (2, 6, 'Looking for recommendations', 'Ive recently finished Elden Ring, it was fun. Im looking for something similar but with a different setting. Any suggestions?', '2024-08-14 11:16:23', NULL, '2024-08-16 09:30:45'),
+    (2, 5, 'Best strategy games of 2024?', 'Ive been into strategy games lately and was wondering what everyones favorite from this year is?', '2024-08-12 13:45:12', NULL, '2024-08-14 18:22:10'),
+    (2, 4, 'Favorite Indie Games?', 'I love discovering hidden indie gems. What are some of your favorite indie games of all time?', '2024-08-15 09:55:45', NULL, '2024-08-15 11:25:32');
+
+-- Forum Comments
+INSERT INTO forum_comment(forum_post_id, author_id, content, post_date)
+VALUES
+    (4, 5, 'You should try Sekiro: Shadows Die Twice if you havent already. It has a different setting but the same challenging combat.', '2024-08-14 13:22:50'),
+    (4, 4, 'If you want something a bit different, maybe check out Dark Souls 3 or Bloodborne. They have a similar vibe.', '2024-08-15 08:14:29'),
+    (5, 6, 'For me, its definitely Age of Empires IV. The new expansions have really kept it fresh.', '2024-08-12 16:05:33'),
+    (5, 4, 'Im really enjoying Company of Heroes 3. Its a solid blend of tactics and action.', '2024-08-13 10:30:15');
+
