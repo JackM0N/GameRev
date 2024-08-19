@@ -48,10 +48,10 @@ public class CriticReviewService {
             spec = spec.and((root, query, builder) -> builder.equal(root.get("reviewStatus"), reviewStatus));
         }
         if (fromDate != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("reviewDate"), fromDate));
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), fromDate));
         }
         if (toDate != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("reviewDate"), toDate));
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), toDate));
         }
         if (scoreFrom != null) {
             spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));

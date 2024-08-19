@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -28,6 +29,6 @@ public class ForumComment {
     private String content;
 
     @Column(name = "post_date", nullable = false)
-    private Instant postDate;
+    private LocalDate postDate;
 
 }

@@ -97,7 +97,7 @@ public class UserGameService {
         userGame.setUser(user);
         userGame.setGame(game);
         userGame.setCompletionStatus(completionStatus);
-        userGame.setIsFavourite(false);
+        userGame.setIsFavourite(userGameDTO.getIsFavourite());
 
         user.getUserGames().add(userGame);
         game.getUserGames().add(userGame);
