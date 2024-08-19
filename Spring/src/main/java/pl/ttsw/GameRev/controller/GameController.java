@@ -7,6 +7,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,7 +88,7 @@ public class GameController {
     ) {
         Page<GameDTO> games = gameService.getAllGames(fromDate, toDate, minUserScore, maxUserScore, tagIds, releaseStatuses, pageable);
         if (games.getTotalElements() == 0) {
-            return ResponseEntity.badRequest().body("No games found with the given criteria");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(games);
     }
