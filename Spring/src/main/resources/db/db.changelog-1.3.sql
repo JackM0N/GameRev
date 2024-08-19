@@ -265,3 +265,24 @@ UPDATE club_post
 SET title = 'This new RR is great!'
 WHERE title = 'MISSING TITLE';
 
+
+--changeset Stanislaw:27 labels:expansion,schema
+--trigger to delete all child forums
+CREATE OR REPLACE FUNCTION soft_delete_child_forums()
+    RETURNS TRIGGER AS
+'
+    BEGIN
+        UPDATE forum
+        SET is_deleted = TRUE
+        WHERE parent_forum_id = OLD.forum_id;
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_forum_soft_delete
+    BEFORE UPDATE OF is_deleted
+    ON forum
+    FOR EACH ROW
+    WHEN (NEW.is_deleted = TRUE)
+EXECUTE FUNCTION soft_delete_child_forums();
+
