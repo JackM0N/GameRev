@@ -20,6 +20,7 @@ public class ForumPostDTO implements Serializable {
     Long id;
     ForumDTO forum;
     WebsiteUserDTO author;
+    String title;
     String content;
     LocalDate postDate;
     String picture;

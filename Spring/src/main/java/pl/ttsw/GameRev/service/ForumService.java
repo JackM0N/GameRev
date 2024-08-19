@@ -77,10 +77,8 @@ public class ForumService {
     }
 
     public boolean deleteForum(Long id) throws BadRequestException {
-        Forum forum = forumRepository.findById(id).orElse(null);
-        if (forum == null) {
-            throw new BadRequestException("Forum not found");
-        }
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Forum not found"));
         forum.setIsDeleted(!forum.getIsDeleted());
         forumRepository.save(forum);
         return true;
