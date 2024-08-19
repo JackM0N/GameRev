@@ -14,7 +14,7 @@ export class TagService {
   constructor(
     private http: HttpClient,
     public jwtHelper: JwtHelperService
-  ) { }
+  ) {}
 
   getTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>(this.baseUrl);

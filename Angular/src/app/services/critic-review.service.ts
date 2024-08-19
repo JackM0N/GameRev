@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CriticReview } from '../interfaces/criticReview';
+import { criticReviewFilters } from '../interfaces/criticReviewFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -33,14 +34,30 @@ export class CriticReviewService {
     return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
-  getAllReviews(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<CriticReview[]> {
+  getAllReviews(token: string, page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    const params = new HttpParams()
+
+    var params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
+
+    if (filters.startDate && filters.endDate) {
+      params = params.set('fromDate', filters.startDate).set('toDate', filters.endDate);
+    }
+    if (filters.reviewStatus && filters.reviewStatus.length > 0) {
+      params = params.set('reviewStatus', filters.reviewStatus.toString());
+    }
+    if (filters.search) {
+      params = params.set('searchText', filters.search);
+    }
+    if (filters.scoreMin && filters.scoreMax) {
+      params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
+    }
+
     return this.http.get<CriticReview[]>(this.allUrl, { headers, params });
   }
 

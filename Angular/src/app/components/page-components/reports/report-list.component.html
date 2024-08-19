@@ -1,4 +1,23 @@
 
+<mat-form-field>
+  <mat-label>Post date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<div class="bg-[#F5F5F5] w-min">
+  <label class="text-sm font-medium text-gray-700">Score</label>
+  <mat-slider min="1" max="10" showTickMarks discrete>
+    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+  </mat-slider>
+</div>
+
 <div *ngIf="!this.noReviews">
   <div class="container">
     <h3>Reviews</h3>
@@ -72,15 +91,17 @@
         </mat-expansion-panel>
       </div>
     </div>
-
-    <mat-paginator
-      #reviewsPaginator
-      [length]="totalReviews"
-      [pageSize]="5"
-      [pageSizeOptions]="[2, 5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
   </div>
+</div>
+
+<div [hidden]="noReviews">
+  <mat-paginator
+    #reviewsPaginator
+    [length]="totalReviews"
+    [pageSize]="5"
+    [pageSizeOptions]="[2, 5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
 </div>
 
 <div *ngIf="this.noReviews">

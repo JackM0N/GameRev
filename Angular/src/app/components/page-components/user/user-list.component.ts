@@ -14,6 +14,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { Role } from '../../../interfaces/role';
+import { userFilters } from '../../../interfaces/userFilters';
 
 @Component({
   selector: 'app-user-list',
@@ -23,27 +24,30 @@ import { Role } from '../../../interfaces/role';
 export class UserListComponent implements AfterViewInit {
   public totalUsers: number = 0;
   public dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
-  public displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
-  
+  public displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+  public isAdminOrCritic = false;
+
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
-  private isBannedFilter?: boolean = undefined;
-  private deletedFilter?: boolean = undefined;
-  private startDateFilter?: string = undefined;
-  private endDateFilter?: string = undefined;
-  private rolesFilter?: string[] = undefined;
-  private searchFilter?: string = undefined;
+  private filters: userFilters = {};
 
   constructor(
     private userService: UserService,
-    public dialog: MatDialog,
     private notificationService: NotificationService,
     private authService: AuthService,
     private router: Router,
-    private datePipe: DatePipe
-  ) {
+    private datePipe: DatePipe,
+    public dialog: MatDialog
+  ) {}
+
+  ngInit() {
+    this.isAdminOrCritic = this.authService.hasAnyRole(['Admin', 'Critic']);
+    if (this.isAdminOrCritic) {
+      this.displayedColumns = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+    }
   }
 
   ngAfterViewInit() {
@@ -91,8 +95,7 @@ export class UserListComponent implements AfterViewInit {
       complete: () => {}
     };
     
-    this.userService.getUsers(page, size, sortBy, sortDir,
-      this.isBannedFilter, this.deletedFilter, this.rolesFilter, this.startDateFilter, this.endDateFilter, this.searchFilter).subscribe(observer);
+    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -170,17 +173,17 @@ export class UserListComponent implements AfterViewInit {
   }
 
   onBannedFilterChange(event: MatSelectChange) {
-    this.isBannedFilter = event.value;
+    this.filters.isBanned = event.value;
     this.loadUsers();
   }
 
   onRolesFilterChange(event: MatSelectChange) {
-    this.rolesFilter = event.value;
+    this.filters.roles = event.value;
     this.loadUsers();
   }
 
   onDeletedFilterChange(event: MatSelectChange) {
-    this.deletedFilter = event.value;
+    this.filters.deleted = event.value;
     this.loadUsers();
   }
 
@@ -191,10 +194,10 @@ export class UserListComponent implements AfterViewInit {
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
       
       if (formattedDate) {
-        this.startDateFilter = formattedDate;
+        this.filters.startDate = formattedDate;
       }
 
-      if (this.startDateFilter && this.endDateFilter) {
+      if (this.filters.startDate && this.filters.endDate) {
         this.loadUsers();
       }
     }
@@ -207,17 +210,17 @@ export class UserListComponent implements AfterViewInit {
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
 
       if (formattedDate) {
-        this.endDateFilter = formattedDate;
+        this.filters.endDate = formattedDate;
       }
 
-      if (this.startDateFilter && this.endDateFilter) {
+      if (this.filters.startDate && this.filters.endDate) {
         this.loadUsers();
       }
     }
   }
 
   onSearchChange(value: string) {
-    this.searchFilter = value;
+    this.filters.search = value;
     this.loadUsers();
   }
 

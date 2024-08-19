@@ -1,23 +1,42 @@
 ﻿
+<mat-form-field>
+  <mat-label>Post date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<div class="bg-[#F5F5F5] w-min">
+  <label class="text-sm font-medium text-gray-700">Score</label>
+  <mat-slider min="1" max="10" showTickMarks discrete>
+    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+  </mat-slider>
+</div>
+
 <h3>Reviews</h3>
 <div class="review-container">
-    <div class="review-item" *ngFor="let review of reviewList">
-        <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
-        <p>{{ review.content }}</p>
-        <p>Likes: {{ review.positiveRating }}</p>
-        <p>Dislikes: {{ review.negativeRating }}</p>
+  <div class="review-item" *ngFor="let review of reviewList">
+    <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
+    <p>{{ review.content }}</p>
+    <p>Likes: {{ review.positiveRating }}</p>
+    <p>Dislikes: {{ review.negativeRating }}</p>
 
-        <div>
-            <button type="button" mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="this.canDeleteReview(review)">Delete review</button>
-            <button type="button" mat-stroked-button (click)="editReview(review)" *ngIf="this.ownsReview(review)">Edit review</button>
-        </div>
-        <button type="button" mat-stroked-button (click)="reportReview(review)" *ngIf="!this.ownsReview(review)">Report review</button>
-
-        <div *ngIf="!this.ownsReview(review)">
-            <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
-            <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
-        </div>
+    <div>
+      <button type="button" mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="this.canDeleteReview(review)">Delete review</button>
+      <button type="button" mat-stroked-button (click)="editReview(review)" *ngIf="this.ownsReview(review)">Edit review</button>
     </div>
+    <button type="button" mat-stroked-button (click)="reportReview(review)" *ngIf="!this.ownsReview(review)">Report review</button>
+
+    <div *ngIf="!this.ownsReview(review)">
+      <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
+      <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
+    </div>
+  </div>
 </div>
 
 <mat-paginator
@@ -28,10 +47,10 @@
 </mat-paginator>
 
 <button
-    id="gotoreview-button"
-    type="button" mat-stroked-button
-    (click)="routeToAddNewReview()"
-    *ngIf="this.canAddReview()">
-    Add review
+  id="gotoreview-button"
+  type="button" mat-stroked-button
+  (click)="routeToAddNewReview()"
+  *ngIf="this.canAddReview()">
+  Add review
 </button>
 

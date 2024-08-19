@@ -76,12 +76,9 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('access_token');
-    } else {
-      return null;
-    }
+    return isPlatformBrowser(this.platformId) ? localStorage.getItem('access_token') : null;
   }
+  
 
   logout() {
     if (isPlatformBrowser(this.platformId)) {

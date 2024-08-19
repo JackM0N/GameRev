@@ -1,74 +1,73 @@
 
 <div class="grow min-h-lvh z-10 fallingCds bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center">
-    <form class="pixel-border w-full max-w-[500px] h-fit p-[6px] m-auto text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="addingGameForm" (ngSubmit)="onSubmit()">
+  <form class="pixel-border w-full max-w-[500px] h-fit p-[6px] m-auto text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="addingGameForm" (ngSubmit)="onSubmit()">
 
-        <div class="w-full py-4 px-8 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col 
-         justify-center bg-black">
-            <p class="text-xl text-center">{{this.listTitle}}</p>
+    <div class="w-full py-4 px-8 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col justify-center bg-black">
+      <p class="text-xl text-center">{{this.listTitle}}</p>
 
-            <div class="mt-2">
-                <label class="w-full">Title</label><br>
-                <input class="w-full px-2 text-black" placeholder="Input the game's title" formControlName="title" required/>
-            </div>
+      <div class="mt-2">
+        <label class="w-full">Title</label><br>
+        <input class="w-full px-2 text-black" placeholder="Input the game's title" formControlName="title" required/>
+      </div>
 
-            <div class="mt-2">
-                <label>Developer</label><br>
-                <input class="w-full px-2  text-black" placeholder="Input the game's developer" formControlName="developer" required/>
-            </div>
+      <div class="mt-2">
+        <label>Developer</label><br>
+        <input class="w-full px-2  text-black" placeholder="Input the game's developer" formControlName="developer" required/>
+      </div>
 
-            <div class="mt-2">
-                <label>Publisher</label><br>
-                <input class="w-full px-2  text-black" placeholder="Input the game's publisher" formControlName="publisher" required/>
-            </div>
+      <div class="mt-2">
+        <label>Publisher</label><br>
+        <input class="w-full px-2  text-black" placeholder="Input the game's publisher" formControlName="publisher" required/>
+      </div>
 
-            <div class="mt-2">
-                <label>Release date</label><br>
-                <div class="bg-white h-7 flex flex-row">
-                    <input class="w-full  h-7 -mt-[0px] px-2  text-black" placeholder="MM/DD/YYYY" [matDatepicker]="picker" formControlName="releaseDate">
-                    <mat-datepicker-toggle class="h-10 -mr-2"  [for]="picker"></mat-datepicker-toggle>
-                </div>
-                <mat-datepicker #picker></mat-datepicker>
-            </div>
-
-            <div class="mt-2">
-                <label>Release status</label><br>
-                <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="releaseStatus">
-                    <mat-option>-</mat-option>
-                    @for (status of releaseStatuses; track status) {
-                        <mat-option [value]="status.className">{{status.name}}</mat-option>
-                    }
-                </mat-select>
-                @if (isReleaseStatusInvalid()) {
-                    <mat-error>Please choose a release status</mat-error>
-                }
-            </div>
-
-            <div class="mt-2">
-                <label>Tags</label><br>
-                <mat-select class="border-2 bg-white noTextShadow" formControlName="tags" multiple required>
-                  @for (tag of tagsList; track tag) {
-                    <mat-option [value]="tag">{{tag.tagName}}</mat-option>
-                  }
-                </mat-select>
-              </div>
-
-            <div class="mt-2">
-                <label>Description</label><br>
-                <textarea class="w-full text-black px-2 min-h-14" formControlName="description"></textarea>
-            </div>
-
-            <div class="font-arcade text-xl flex flex-row mt-2">
-                <div class="pixel-border w-32 h-fit py-[6px] m-auto px-[6px]">
-                    <div class="bg-red-700">
-                        <button class="px-[10px]" (click)="cancel()">Cancel</button>
-                    </div>
-                </div>
-                <div class="pixel-border w-32 h-fit py-[6px] m-auto px-[6px]">
-                    <div class="bg-green-600">
-                        <button class="px-[10px] disabled:opacity-30" [disabled]="!addingGameForm.valid">Submit</button>
-                    </div>
-                </div>
-            </div>
+      <div class="mt-2">
+        <label>Release date</label><br>
+        <div class="bg-white h-7 flex flex-row">
+          <input class="w-full  h-7 -mt-[0px] px-2  text-black" placeholder="MM/DD/YYYY" [matDatepicker]="picker" formControlName="releaseDate">
+          <mat-datepicker-toggle class="h-10 -mr-2"  [for]="picker"></mat-datepicker-toggle>
         </div>
-    </form>
+        <mat-datepicker #picker></mat-datepicker>
+      </div>
+
+      <div class="mt-2">
+        <label>Release status</label><br>
+        <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="releaseStatus">
+          <mat-option>-</mat-option>
+          @for (status of releaseStatuses; track status) {
+              <mat-option [value]="status.className">{{status.name}}</mat-option>
+          }
+        </mat-select>
+        @if (isReleaseStatusInvalid()) {
+          <mat-error>Please choose a release status</mat-error>
+        }
+      </div>
+
+      <div class="mt-2">
+        <label>Tags</label><br>
+        <mat-select class="border-2 bg-white noTextShadow" formControlName="tags" multiple required>
+          @for (tag of tagsList; track tag) {
+            <mat-option [value]="tag">{{tag.tagName}}</mat-option>
+          }
+        </mat-select>
+      </div>
+
+      <div class="mt-2">
+        <label>Description</label><br>
+        <textarea class="w-full text-black px-2 min-h-14" formControlName="description"></textarea>
+      </div>
+
+      <div class="font-arcade text-xl flex flex-row mt-2">
+        <div class="pixel-border w-32 h-fit py-[6px] m-auto px-[6px]">
+          <div class="bg-red-700">
+            <button class="px-[10px]" (click)="cancel()">Cancel</button>
+          </div>
+        </div>
+        <div class="pixel-border w-32 h-fit py-[6px] m-auto px-[6px]">
+          <div class="bg-green-600">
+            <button class="px-[10px] disabled:opacity-30" [disabled]="!addingGameForm.valid">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

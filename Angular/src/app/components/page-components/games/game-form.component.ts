@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../services/game.service';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
-import { Location } from '@angular/common';
 import { releaseStatuses } from '../../../interfaces/releaseStatuses';
 import { NotificationService } from '../../../services/notification.service';
 
@@ -17,15 +16,15 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: '/src/app/styles/shared-form-styles.css'
 })
 export class GameFormComponent implements OnInit {
-  addingGameForm: FormGroup;
-  releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  isEditRoute: boolean;
-  listTitle: string = 'Add new game';
-  tagsList: Tag[] = [];
-  gameTitle: string = '';
-  gameDate: Date = new Date();
+  public addingGameForm: FormGroup;
+  public releaseStatuses: ReleaseStatus[] = releaseStatuses;
+  private isEditRoute: boolean;
+  public listTitle: string = 'Add new game';
+  public tagsList: Tag[] = [];
+  private gameTitle: string = '';
+  private gameDate: Date = new Date();
 
-  game: Game = {
+  private game: Game = {
     title: '',
     developer: '',
     publisher: '',
@@ -42,8 +41,7 @@ export class GameFormComponent implements OnInit {
     private route: ActivatedRoute,
     private notificationService: NotificationService,
     private gameService: GameService,
-    private tagService: TagService,
-    private _location: Location
+    private tagService: TagService
   ) {
     this.addingGameForm = this.formBuilder.group({
       title: [this.game.title, [Validators.required, Validators.minLength(1)]],

@@ -8,13 +8,15 @@ import { Observer } from 'rxjs';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
 import { Game } from '../../../../interfaces/game';
 import { Report } from '../../../../interfaces/report';
 import { formatDate } from '../../../../util/formatDate';
 import { NotificationService } from '../../../../services/notification.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
+import { reviewFilters } from '../../../../interfaces/reviewFilters';
 
 @Component({
   selector: 'app-gameinfo-review-list',
@@ -30,12 +32,12 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  reviewList: UserReview[] = [];
-  totalReviews: number = 0;
-  dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>(this.reviewList);
-  formatDate = formatDate;
+  public reviewList: UserReview[] = [];
+  public totalReviews: number = 0;
+  public formatDate = formatDate;
+  private filters: reviewFilters = {};
 
-  report: Report = {
+  private report: Report = {
     content: '',
     userReview: {
       id: -1
@@ -49,10 +51,10 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     private reportService: ReportService,
     private router: Router,
     public dialog: MatDialog,
+    private datePipe: DatePipe,
   ) {}
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
     this.loadReviews();
     this.paginator.page.subscribe(() => this.loadReviews());
   }
@@ -77,17 +79,20 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.reviewList = response.content;
-        this.totalReviews = response.totalElements;
-        this.dataSource = new MatTableDataSource<UserReview>(this.reviewList);
-        this.dataSource.data = this.reviewList;
+        if (response) {
+          this.reviewList = response.content;
+          this.totalReviews = response.totalElements;
+        } else {
+          this.reviewList = [];
+          this.totalReviews = 0;
+        }
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    this.userReviewService.getUserReviewsForGame(this.gameTitle, token, page, size, sortBy, sortDir).subscribe(observer);
+    this.userReviewService.getUserReviewsForGame(this.gameTitle, token, page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
@@ -178,16 +183,9 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-      },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {
-      }
-    };
-    this.userReviewService.updateUserReviewRating(review, token).subscribe(observer);
+    this.userReviewService.updateUserReviewRating(review, token).subscribe({
+      error: error => console.error(error)
+    });
   }
 
   sendReportInformation(review: UserReview, dialogRef: MatDialogRef<ReviewReportDialogComponent>) {
@@ -262,5 +260,55 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   editReview(review: UserReview) {
     this.router.navigate(['/user-reviews/edit/' + review.id]);
+  }
+
+  // Filters
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadReviews();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
+    this.loadReviews();
   }
 }

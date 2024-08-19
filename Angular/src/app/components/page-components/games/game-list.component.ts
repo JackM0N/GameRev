@@ -18,6 +18,7 @@ import { DatePipe } from '@angular/common';
 import { MatSelectChange } from '@angular/material/select';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
+import { gameFilters } from '../../../interfaces/gameFilters';
 
 @Component({
   selector: 'app-game-list',
@@ -29,13 +30,10 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   public dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
   public displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
-  private startDateFilter?: string = undefined;
-  private endDateFilter?: string = undefined;
-  private releaseStatusFilter?: string[] = undefined;
-  private tagsFilter?: string[] = undefined;
-  private searchFilter?: string = undefined;
   public releaseStatuses = releaseStatuses;
   public tagList: Tag[] = [];
+
+  private filters: gameFilters = {};
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -111,17 +109,13 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
         }
       },
       error: error => {
-        if (error.error == "No games found with the given criteria") {
-          this.totalGames = 0;
-          this.dataSource = new MatTableDataSource<Game>([]);
-        } else {
-          console.error(error);
-        }
+        this.totalGames = 0;
+        this.dataSource = new MatTableDataSource<Game>([]);
+        console.error(error);
       },
       complete: () => {}
     };
-    this.gameService.getGames(page, size, sortBy, sortDir,
-      this.startDateFilter, this.endDateFilter, this.releaseStatusFilter, this.tagsFilter, this.searchFilter).subscribe(observer);
+    this.gameService.getGames(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   routeToAddNewGame() {
@@ -189,6 +183,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     return releaseStatus ? releaseStatus.name : undefined;
   }
 
+  // Filters
+
   onStartDateChange(event: MatDatepickerInputEvent<Date>) {
     const selectedDate = event.value;
 
@@ -196,10 +192,10 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
       
       if (formattedDate) {
-        this.startDateFilter = formattedDate;
+        this.filters.startDate = formattedDate;
       }
 
-      if (this.startDateFilter && this.endDateFilter) {
+      if (this.filters.startDate && this.filters.endDate) {
         this.loadGames();
       }
     }
@@ -212,32 +208,43 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
       const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
 
       if (formattedDate) {
-        this.endDateFilter = formattedDate;
+        this.filters.endDate = formattedDate;
       }
 
-      if (this.startDateFilter && this.endDateFilter) {
+      if (this.filters.startDate && this.filters.endDate) {
         this.loadGames();
       }
     }
   }
 
   onReleaseStatusesFilterChange(event: MatSelectChange) {
-    this.releaseStatusFilter = event.value;
+    this.filters.releaseStatus = event.value;
     this.loadGames();
   }
 
   onTagFilterChange(event: MatSelectChange) {
-    this.tagsFilter = event.value;
-    this.loadGames();
-  }
-
-  tagsFilterChange(event: MatSelectChange) {
-    this.tagsFilter = event.value;
+    this.filters.tags = event.value;
     this.loadGames();
   }
 
   onSearchChange(value: string) {
-    this.searchFilter = value;
+    this.filters.search = value;
+    this.loadGames();
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadGames();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
     this.loadGames();
   }
 }

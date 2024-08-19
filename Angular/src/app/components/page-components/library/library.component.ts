@@ -15,6 +15,10 @@ import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { completionStatuses } from '../../../interfaces/completionStatuses';
+import { MatSelectChange } from '@angular/material/select';
+import { libraryFilters } from '../../../interfaces/libraryFilters';
+import { Tag } from '../../../interfaces/tag';
+import { TagService } from '../../../services/tag.service';
 
 @Component({
   selector: 'app-library',
@@ -26,6 +30,9 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
   public libraryEmpty = false;
   public displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
+  private filters: libraryFilters = {};
+  public completionStatuses = completionStatuses;
+  public tagList: Tag[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -34,6 +41,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     private libraryService: LibraryService,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private tagService: TagService,
     public dialog: MatDialog,
     backgroundService: BackgroundService,
     adService: AdService,
@@ -47,11 +55,22 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
 
     this.dataSource.paginator = this.paginator;
     this.loadGames();
+    this.loadTags();
 
     this.paginator.page.subscribe(() => this.loadGames());
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
       this.loadGames();
+    });
+  }
+
+  loadTags() {
+    this.tagService.getTags().subscribe({
+      next: (response) => {
+        if (response) {
+          this.tagList = response;
+        }
+      }
     });
   }
 
@@ -75,21 +94,17 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
           this.totalGames = response.totalElements;
           this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
           this.dataSource.data = this.gamesList;
-          if (this.dataSource.data.length == 0) {
-            this.libraryEmpty = true;
-          }
+          this.libraryEmpty = (this.dataSource.data.length == 0);
+        } else {
+          this.libraryEmpty = true;
         }
       },
       error: error => {
-        if (error.error == "This user has no games in his library") {
-          this.libraryEmpty = true;
-        } else {
-          console.error(error);
-        }
+        console.error(error);
       },
       complete: () => {}
     };
-    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir).subscribe(observer);
+    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   openEditUserGameDialog(userGame: UserGame) {
@@ -152,8 +167,6 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
             isFavourite: form.get('isFavourite')?.value
           };
 
-          userGame.completionStatus = form.get('completionStatus')?.value;
-          userGame.isFavourite = form.get('isFavourite')?.value;
           this.addUserGame(userGame);
 
         } else {
@@ -240,5 +253,22 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   findCompletionStatusName(status: string) {
     const completionStatus = completionStatuses.find(completionStatus => completionStatus.className === status);
     return completionStatus ? completionStatus.name : undefined;
+  }
+
+  // Filters
+
+  onCompletionStatusFilterChange(event: MatSelectChange) {
+    this.filters.completionStatus = event.value;
+    this.loadGames();
+  }
+
+  onFavoriteFilterChange(event: MatSelectChange) {
+    this.filters.isFavorite = event.value;
+    this.loadGames();
+  }
+
+  onTagFilterChange(event: MatSelectChange) {
+    this.filters.tags = event.value;
+    this.loadGames();
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteUser';
+import { userFilters } from '../interfaces/userFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -16,31 +17,29 @@ export class UserService {
     private http: HttpClient,
   ) {}
 
-  getUsers(page: number, size: number, sortBy: string, sortDir: string,
-      isBannedFilter?: boolean, deletedFilter?: boolean, rolesFilter?: string[],
-      startDateFilter?: string, endDateFilter?: string, searchFilter?: string): Observable<WebsiteUser>
-    {
+  getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<WebsiteUser> {
     let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
   
-      if (isBannedFilter !== undefined) {
-        params = params.set('isBanned', isBannedFilter.toString());
-      }
-      if (deletedFilter !== undefined) {
-        params = params.set('isDeleted', deletedFilter.toString());
-      }
-      if (rolesFilter !== undefined && rolesFilter.length > 0) {
-        params = params.set('roleIds', rolesFilter.toString());
-      }
-      if (startDateFilter !== undefined && endDateFilter !== undefined) {
-        params = params.set('joinDateFrom', startDateFilter).set('joinDateTo', endDateFilter);
-      }
-      if (searchFilter !== undefined) {
-        params = params.set('searchText', searchFilter);
-      }
-  
+    if (filters.isBanned !== undefined) {
+      params = params.set('isBanned', filters.isBanned.toString());
+    }
+    if (filters.deleted !== undefined) {
+      params = params.set('isDeleted', filters.deleted.toString());
+    }
+    if (filters.roles !== undefined && filters.roles.length > 0) {
+      params = params.set('roleIds', filters.roles.toString());
+    }
+    if (filters.startDate !== undefined && filters.endDate !== undefined) {
+      params = params.set('joinDateFrom', filters.startDate).set('joinDateTo', filters.endDate);
+    }
+    if (filters.search !== undefined) {
+      params = params.set('searchText', filters.search);
+    }
+    
     return this.http.get<WebsiteUser>(this.baseUrl, { params });
   }
 

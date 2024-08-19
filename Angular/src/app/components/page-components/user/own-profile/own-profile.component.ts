@@ -69,33 +69,35 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
-        this.changeProfileInformationForm.get('description')?.setValue(response.description);
-        this.email = response.email;
+        if (response) {
+          this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
+          this.changeProfileInformationForm.get('description')?.setValue(response.description);
+          this.email = response.email;
 
-        const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
+          const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
 
-        if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
-          const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);
-          if (cachedImage) {
-            this.imageUrl = cachedImage;
+          if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
+            const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);
+            if (cachedImage) {
+              this.imageUrl = cachedImage;
+            }
+
+          } else {
+            const observerProfilePicture: Observer<any> = {
+              next: response2 => {
+                if (response2) {
+                  this.imageUrl = URL.createObjectURL(response2);
+                  this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
+                  this.imageCacheService.cacheProfilePicName("profilePicName" + response.nickname, response.profilepic);
+                }
+              },
+              error: error => {
+                console.error(error);
+              },
+              complete: () => {}
+            };
+            this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
           }
-
-        } else {
-          const observerProfilePicture: Observer<any> = {
-            next: response2 => {
-              if (response2) {
-                this.imageUrl = URL.createObjectURL(response2);
-                this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
-                this.imageCacheService.cacheProfilePicName("profilePicName" + response.nickname, response.profilepic);
-              }
-            },
-            error: error => {
-              console.error(error);
-            },
-            complete: () => {}
-          };
-          this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
         }
       },
       error: error => {
