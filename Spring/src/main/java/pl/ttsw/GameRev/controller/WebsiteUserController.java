@@ -42,7 +42,7 @@ public class WebsiteUserController {
         Page<WebsiteUserDTO> users = websiteUserService
                 .getAllWebsiteUsers(joinDateFrom, joinDateTo, isDeleted, isBanned, roleIds, searchText, pageable);
         if (users.getTotalElements() == 0) {
-            return ResponseEntity.badRequest().body("No users found with the given criteria");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(users);
     }

@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class ForumController {
             Pageable pageable){
         Page<ForumDTO> forumDTOS = forumService.getForum(id, gameId, searchText, pageable);
         if(forumDTOS.getTotalElements() == 0){
-            return ResponseEntity.badRequest().body("No forums found with the given criteria");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(forumDTOS);
     }
