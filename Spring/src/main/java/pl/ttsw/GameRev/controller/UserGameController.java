@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
@@ -28,7 +29,7 @@ public class UserGameController {
             Pageable pageable) throws BadRequestException {
         Page<UserGameDTO> userGameDTOS = userGameService.getUserGame(isFavourite, completionStatus, tagIds, nickname, pageable);
         if (userGameDTOS.getTotalElements() == 0) {
-            return ResponseEntity.badRequest().body("No games found with the given criteria");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(userGameDTOS);
     }

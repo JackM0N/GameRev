@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ReportDTO;
@@ -31,7 +32,7 @@ public class ReportController {
             Pageable pageable) {
         Page<UserReviewDTO> userReviewDTOS = userReviewService.getUserReviewsWithReports(postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
         if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(userReviewDTOS);
     }

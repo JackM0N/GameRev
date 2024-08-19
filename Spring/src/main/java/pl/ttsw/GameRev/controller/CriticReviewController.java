@@ -4,6 +4,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
@@ -22,16 +23,17 @@ public class CriticReviewController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getAll(
-            @RequestParam(value = "gameTitle", required = false) String gameTitle,
             @RequestParam(value = "reviewStatus", required = false) ReviewStatus reviewStatus,
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
+            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
+            @RequestParam(value = "searchText", required = false) String searchText,
             Pageable pageable
     ) throws BadRequestException {
-        gameTitle = gameTitle.replaceAll("-"," ");
-        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(gameTitle, reviewStatus, fromDate, toDate, pageable);
+        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(reviewStatus, fromDate, toDate, scoreFrom, scoreTo, searchText, pageable);
         if (criticReviewDTO.getTotalElements() == 0) {
-            return ResponseEntity.badRequest().body("There are no critic reviews yet");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(criticReviewDTO);
     }

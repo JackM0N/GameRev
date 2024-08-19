@@ -53,8 +53,10 @@ public class WebsiteUserService {
             Boolean isDeleted,
             Boolean isBanned,
             List<Long> roleIds,
+            String searchText,
             Pageable pageable) {
         Specification<WebsiteUser> spec = Specification.where((root, query, builder) -> builder.conjunction());
+
 
         if (joinDateFrom != null) {
             spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("joinDate"), joinDateFrom));
@@ -73,6 +75,17 @@ public class WebsiteUserService {
                 Join<WebsiteUser, Role> rolesJoin = root.join("roles");
                 return rolesJoin.get("id").in(roleIds);
             });
+        }
+        if (searchText != null && !searchText.isEmpty() && !isNumeric(searchText)) {
+            String likePattern = "%" + searchText + "%";
+            spec = spec.and((root, query, builder) -> builder.or(
+                    builder.like(builder.lower(root.get("nickname")), likePattern),
+                    builder.like(builder.lower(root.get("description")), likePattern),
+                    builder.like(builder.lower(root.get("email")), likePattern)
+            ));
+        }
+        if (searchText != null && !searchText.isEmpty() && isNumeric(searchText)) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("id"), Long.parseLong(searchText)));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
         for (WebsiteUser websiteUser : websiteUsers) {
@@ -253,5 +266,17 @@ public class WebsiteUserService {
         String username = authentication.getName();
         return websiteUserRepository.findByUsername(username)
                 .orElseThrow(() -> new BadCredentialsException("You are not logged in"));
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Long.parseLong(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }

@@ -106,12 +106,15 @@ public class UserGameServiceTest {
     }
 
     @Test
-    public void testGetUserGame_EmptyLibrary() {
+    public void testGetUserGame_EmptyLibrary() throws BadRequestException {
         Pageable pageable = PageRequest.of(0, 10);
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null, null, null, "testuser", pageable));
+        Page<UserGameDTO> result = userGameService.getUserGame(null, null, null, "testuser", pageable);
+
+        assertNotNull(result);
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test

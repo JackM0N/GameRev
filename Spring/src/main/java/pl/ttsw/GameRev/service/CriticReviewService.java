@@ -34,25 +34,40 @@ public class CriticReviewService {
     }
 
     public Page<CriticReviewDTO> getAllCriticReviews(
-            String gameTitle,
             ReviewStatus reviewStatus,
             LocalDate fromDate,
             LocalDate toDate,
+            Integer scoreFrom,
+            Integer scoreTo,
+            String searchText,
             Pageable pageable
     ) throws BadRequestException {
         Specification<CriticReview> spec = Specification.where(null);
 
-        if (gameTitle != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("game").get("title"), gameTitle));
-        }
         if (reviewStatus != null) {
             spec = spec.and((root, query, builder) -> builder.equal(root.get("reviewStatus"), reviewStatus));
         }
         if (fromDate != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("reviewDate"), fromDate));
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), fromDate));
         }
         if (toDate != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("reviewDate"), toDate));
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), toDate));
+        }
+        if (scoreFrom != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        }
+        if (scoreTo != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        }
+        if (searchText != null) {
+            String likePattern = "%" + searchText.toLowerCase() + "%";
+            spec = spec.and((root, query, builder) -> builder.or(
+                    builder.like(builder.lower(root.get("content")), likePattern),
+                    builder.like(builder.lower(root.get("user").get("nickname")), likePattern),
+                    builder.like(builder.lower(root.get("user").get("username")), likePattern),
+                    builder.like(builder.lower(root.get("user").get("email")), likePattern),
+                    builder.like(builder.lower(root.get("game").get("title")), likePattern)
+            ));
         }
 
         Page<CriticReview> criticReviews = criticReviewRepository.findAll(spec, pageable);
