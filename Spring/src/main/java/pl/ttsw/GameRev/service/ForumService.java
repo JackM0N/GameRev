@@ -56,7 +56,11 @@ public class ForumService {
 
         Page<Forum> forumPage = new PageImpl<>(forumList, pageable, forums.getTotalElements());
 
-        return forumPage.map(forumMapper::toDto);
+        return forumPage.map(f -> {
+            ForumDTO dto = forumMapper.toDto(f);
+            dto.setNumberOfPosts(f.getForumPosts().size());
+            return dto;
+        });
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) {
