@@ -33,8 +33,7 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private imageCacheService: ImageCacheService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

@@ -1,4 +1,3 @@
-import { CompletionStatus } from "./completionStatus";
 import { Game } from "./game";
 import { WebsiteUser } from "./websiteUser";
 
@@ -7,6 +6,6 @@ export interface UserGame {
 
   game: Game;
   user: WebsiteUser;
-  completionStatus: CompletionStatus;
+  completionStatus: string;
   isFavourite: boolean;
 }

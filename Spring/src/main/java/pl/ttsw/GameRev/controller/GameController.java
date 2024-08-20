@@ -84,7 +84,8 @@ public class GameController {
             @RequestParam(value = "maxUserScore", required = false) Float maxUserScore,
             @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
             @RequestParam(value = "releaseStatuses", required = false) List<ReleaseStatus> releaseStatuses,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         Page<GameDTO> games = gameService.getAllGames(fromDate, toDate, minUserScore, maxUserScore, tagIds, releaseStatuses, pageable);
         if (games.getTotalElements() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

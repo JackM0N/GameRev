@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserReview } from '../interfaces/userReview';
+import { reviewFilters } from '../interfaces/reviewFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,6 @@ export class UserReviewService {
   private baseUrl = 'http://localhost:8080/users-reviews';
   private getByIdUrl = 'http://localhost:8080/users-reviews/id';
   private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
-  private reviewsWithReportsUrl = 'http://localhost:8080/reports';
   private ownReviews = 'http://localhost:8080/users-reviews/my-reviews';
   private adminReviews = 'http://localhost:8080/users-reviews/admin/';
 
@@ -51,14 +51,24 @@ export class UserReviewService {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string, token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getUserReviewsForGame(name: string, token: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    const params = new HttpParams()
+
+    var params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
+
+    if (filters.startDate !== undefined && filters.endDate !== undefined) {
+      params = params.set('postDateFrom', filters.startDate).set('postDateTo', filters.endDate);
+    }
+    if (filters.scoreMin && filters.scoreMax) {
+      params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
+    }
+
     return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers, params });
   }
 
@@ -92,16 +102,5 @@ export class UserReviewService {
       'Authorization': `Bearer ${token}`
     });
     return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
-  }
-
-  getReviewsWithReports(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    const params = new HttpParams()
-      .set('page', (page - 1).toString())
-      .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
-    return this.http.get<UserReview[]>(this.reviewsWithReportsUrl, { headers, params });
   }
 }

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
 import { UserGame } from '../interfaces/userGame';
+import { libraryFilters } from '../interfaces/libraryFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +14,25 @@ export class LibraryService {
 
   constructor(
     private http: HttpClient,
-  ) { }
+  ) {}
 
-  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string): Observable<Game> {
-    const params = new HttpParams()
+  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<Game> {
+    var params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
+    
+    if (filters.isFavorite !== undefined) {
+      params = params.set('isFavourite', filters.isFavorite.toString());
+    }
+    if (filters.tags && filters.tags.length > 0) {
+      params = params.set('tagIds', filters.tags.toString());
+    }
+    if (filters.completionStatus && filters.completionStatus.length > 0) {
+      params = params.set('completionStatus', filters.completionStatus.toString());
+    }
+    
     return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
   }
 

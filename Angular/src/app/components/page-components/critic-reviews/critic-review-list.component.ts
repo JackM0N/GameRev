@@ -1,7 +1,7 @@
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
@@ -9,11 +9,14 @@ import { formatDate } from '../../../util/formatDate';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../interfaces/reviewStatuses';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { MatSelectChange } from '@angular/material/select';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
 
 @Component({
   selector: 'app-critic-review-list',
@@ -25,10 +28,14 @@ export class CriticReviewListComponent implements AfterViewInit {
   public totalReviews: number = 0;
   public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
   public formatDate = formatDate;
+  public reviewStatuses = reviewStatuses;
   public noCriticReviews = false;
+
+  private filters: criticReviewFilters = {};
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
   constructor(
     private criticReviewService: CriticReviewService,
@@ -37,11 +44,23 @@ export class CriticReviewListComponent implements AfterViewInit {
     private _location: Location,
     private notificationService: NotificationService,
     private router: Router,
+    private datePipe: DatePipe,
   ) {}
 
   ngAfterViewInit() {
     this.loadReviews();
     this.paginator.page.subscribe(() => this.loadReviews());
+
+    if (this.searchInput) {
+      fromEvent(this.searchInput.nativeElement, 'input').pipe(
+        map((event: any) => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+
+      ).subscribe(value => {
+        this.onSearchChange(value);
+      });
+    }
   }
 
   loadReviews() {
@@ -62,10 +81,10 @@ export class CriticReviewListComponent implements AfterViewInit {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);
+          this.noCriticReviews = (this.dataSource.data.length == 0);
 
-          if (this.dataSource.data.length == 0) {
-            this.noCriticReviews = true;
-          }
+        } else {
+          this.noCriticReviews = true
         }
       },
       error: error => {
@@ -73,7 +92,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.criticReviewService.getAllReviews(token, page, size, sortBy, sortDir).subscribe(observer);
+    this.criticReviewService.getAllReviews(token, page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -171,5 +190,65 @@ export class CriticReviewListComponent implements AfterViewInit {
 
   editReview(review: CriticReview) {
     this.router.navigate(['/critic-reviews/edit/' + review.id]);
+  }
+
+  // Filters
+
+  onReviewStatusesFilterChange(event: MatSelectChange) {
+    this.filters.reviewStatus = event.value;
+    this.loadReviews();
+  }
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onSearchChange(value: string) {
+    this.filters.search = value;
+    this.loadReviews();
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadReviews();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
+    this.loadReviews();
   }
 }

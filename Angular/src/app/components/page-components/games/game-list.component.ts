@@ -1,10 +1,10 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../interfaces/game';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { AuthService } from '../../../services/auth.service';
@@ -13,6 +13,12 @@ import { BackgroundService } from '../../../services/background.service';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
+import { MatSelectChange } from '@angular/material/select';
+import { Tag } from '../../../interfaces/tag';
+import { TagService } from '../../../services/tag.service';
+import { gameFilters } from '../../../interfaces/gameFilters';
 
 @Component({
   selector: 'app-game-list',
@@ -24,14 +30,22 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   public dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
   public displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
+  public releaseStatuses = releaseStatuses;
+  public tagList: Tag[] = [];
+
+  private filters: gameFilters = {};
+  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
   constructor(
     private gameService: GameService,
     private router: Router,
     private dialog: MatDialog,
     public authService: AuthService,
+    private tagService: TagService,
+    private datePipe: DatePipe,
     private backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -41,6 +55,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
+    this.loadTags();
   }
 
   override ngAfterViewInit() {
@@ -50,10 +65,30 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     this.loadGames();
     
     this.paginator.page.subscribe(() => this.loadGames());
-
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
       this.loadGames();
+    });
+
+    if (this.searchInput) {
+      fromEvent(this.searchInput.nativeElement, 'input').pipe(
+        map((event: any) => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+
+      ).subscribe(value => {
+        this.onSearchChange(value);
+      });
+    }
+  }
+
+  loadTags() {
+    this.tagService.getTags().subscribe({
+      next: (response) => {
+        if (response) {
+          this.tagList = response;
+        }
+      }
     });
   }
 
@@ -65,17 +100,22 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
     const observer: Observer<any> = {
       next: response => {
-        this.gamesList = response.content;
-        this.totalGames = response.totalElements;
-        this.dataSource = new MatTableDataSource<Game>(this.gamesList);
-        this.dataSource.data = this.gamesList;
+        if (response) {
+          this.totalGames = response.totalElements;
+          this.dataSource = new MatTableDataSource<Game>(response.content);
+        } else {
+          this.totalGames = 0;
+          this.dataSource = new MatTableDataSource<Game>([]);
+        }
       },
       error: error => {
+        this.totalGames = 0;
+        this.dataSource = new MatTableDataSource<Game>([]);
         console.error(error);
       },
       complete: () => {}
     };
-    this.gameService.getGames(page, size, sortBy, sortDir).subscribe(observer);
+    this.gameService.getGames(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   routeToAddNewGame() {
@@ -116,9 +156,10 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
     const observer: Observer<any> = {
       next: response => {
-        this.gamesList = response;
-        this.dataSource.data = this.gamesList;
-        this.loadGames();
+        if (response) {
+          this.dataSource.data = response;
+          this.loadGames();
+        }
       },
       error: error => {
         console.error(error);
@@ -140,5 +181,70 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   findReleaseStatusName(status: string) {
     const releaseStatus = releaseStatuses.find(releaseStatus => releaseStatus.className === status);
     return releaseStatus ? releaseStatus.name : undefined;
+  }
+
+  // Filters
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadGames();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadGames();
+      }
+    }
+  }
+
+  onReleaseStatusesFilterChange(event: MatSelectChange) {
+    this.filters.releaseStatus = event.value;
+    this.loadGames();
+  }
+
+  onTagFilterChange(event: MatSelectChange) {
+    this.filters.tags = event.value;
+    this.loadGames();
+  }
+
+  onSearchChange(value: string) {
+    this.filters.search = value;
+    this.loadGames();
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadGames();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
+    this.loadGames();
   }
 }

@@ -11,7 +11,7 @@ import { completionStatuses } from '../../../interfaces/completionStatuses';
 })
 export class LibraryEditDialogComponent implements OnInit {
   updateForm: FormGroup;
-  completionStatus?: CompletionStatus = undefined;
+  completionStatus?: string = undefined;
   completionStatuses: CompletionStatus[] = completionStatuses;
   isFavourite: boolean = false;
   
@@ -31,10 +31,10 @@ export class LibraryEditDialogComponent implements OnInit {
       this.isFavourite = this.data.userGame.isFavourite;
 
       this.completionStatuses.forEach((status) => {
-        if (status.name === this.data.userGame.completionStatus.name) {
-          this.completionStatus = status;
+        if (status.className == this.data.userGame.completionStatus) {
+          this.completionStatus = status.className;
           this.updateForm.patchValue({
-            completionStatus: status
+            completionStatus: status.className
           });
         }
       });
