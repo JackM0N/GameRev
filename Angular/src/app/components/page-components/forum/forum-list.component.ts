@@ -28,7 +28,6 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
-    console.log("guh???")
     super(adService, backgroundService, cdRef);
   }
 
@@ -47,6 +46,11 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   }
 
   loadForum(id: number) {
+    this.currentForum = undefined;
+    this.subForumList = [];
+    this.noSubForums = false;
+    this.totalSubforums = 0;
+
     var page = 1;
     var size = 10;
 

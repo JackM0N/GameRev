@@ -1,34 +1,36 @@
 
 <div *ngIf="currentForum" [hidden]="noSubForums" class="container">
-    <!-- Main Forum as the header -->
-    <table class="forum-table">
-      <thead>
-        <tr>
-          <th colspan="2">
-            <h2>{{ currentForum.forumName }}</h2>
-            <p>description</p>
-          </th>
-        </tr>
-      </thead>
+  <!-- Main Forum as the header -->
+  <table class="forum-table">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <h2><b>{{ currentForum.forumName }}</b></h2>
+          <p>description</p>
+        </th>
+      </tr>
+    </thead>
 
-      <tbody>
-        <!-- Subforum rows -->
-        <tr *ngFor="let subforum of subForumList">
-            <a (click)="navigateToSubforum(subforum.id)" class="subforum-link">
-                {{ subforum.forumName }}
-            </a>
-          <td>description</td>
-        </tr>
-      </tbody>
-    </table>
+    <tbody>
+      <!-- Subforum rows -->
+      <tr *ngFor="let subforum of subForumList">
+        <td>
+          <a (click)="navigateToSubforum(subforum.id)" class="subforum-link"> <b>{{ subforum.forumName }}</b> </a>
+          <p>description</p>
+        </td>
+        <td>
+          {{ subforum.numberOfPosts }} Post(s)
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
   
 <!-- Paginator -->
 <mat-paginator
-    #paginator
-    [length]="totalSubforums"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons>
+  #paginator
+  [length]="totalSubforums"
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
 </mat-paginator>
-  

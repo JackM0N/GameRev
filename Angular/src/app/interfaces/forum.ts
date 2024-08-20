@@ -9,5 +9,6 @@ export interface Forum {
   isDeleted: boolean,
   parentForumId: number,
   forumModerators: ForumModerator[],
-  forumPosts: ForumPost[]
+  forumPosts: ForumPost[],
+  numberOfPosts: number,
 }
