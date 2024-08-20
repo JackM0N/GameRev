@@ -72,8 +72,8 @@ public class ForumService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Forum not found"));
 
-        if (forumDTO.getGame() != null) {
-            Game game = gameRepository.findGameById(forumDTO.getGame().getId())
+        if (forumDTO.getGameTitle() != null) {
+            Game game = gameRepository.findGameByTitle(forumDTO.getGameTitle())
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
         }
