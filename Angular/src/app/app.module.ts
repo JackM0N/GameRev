@@ -59,6 +59,8 @@ import { NotificationService } from './services/notification.service';
 import { EmailChangeComponent } from './components/page-components/user/own-profile/email-change.component';
 import { PasswordChangeComponent } from './components/page-components/user/own-profile/password-change-component';
 import { MatSliderModule } from '@angular/material/slider';
+import { ForumListComponent } from './components/page-components/forum/forum-list.component';
+import { ForumService } from './services/forum.service';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -86,7 +88,8 @@ import { MatSliderModule } from '@angular/material/slider';
         GameInfoCriticReviewComponent,
         GameInfoReviewListComponent,
         EmailChangeComponent,
-        PasswordChangeComponent
+        PasswordChangeComponent,
+        ForumListComponent
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -133,6 +136,7 @@ import { MatSliderModule } from '@angular/material/slider';
         BackgroundService,
         AdService,
         NotificationService,
+        ForumService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         DatePipe,
         provideHttpClient(withInterceptorsFromDi())

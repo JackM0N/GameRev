@@ -32,7 +32,8 @@ export class UserReviewService {
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
     return this.http.get<UserReview[]>(this.ownReviews, { headers, params });
   }
 
@@ -43,7 +44,8 @@ export class UserReviewService {
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
     return this.http.get<UserReview[]>(`${this.adminReviews}/${userId}`, { headers, params });
   }
 
