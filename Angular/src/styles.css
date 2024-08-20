@@ -185,6 +185,11 @@ body {
 }
 
 /*paginator*/
+.mat-mdc-select-trigger
+{
+    width: 70px !important;
+}
+
 .mat-mdc-paginator-page-size{
     text-align: center;
 }
