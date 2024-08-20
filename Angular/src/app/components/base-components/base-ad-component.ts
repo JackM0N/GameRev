@@ -1,4 +1,4 @@
-﻿import { OnInit, AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+﻿import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { BackgroundService } from '../../services/background.service';
 import { AdService } from '../../services/ad.service';
 

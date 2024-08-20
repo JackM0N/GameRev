@@ -5,51 +5,75 @@ import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
 import { Forum } from '../../../interfaces/forum';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-forum-list',
-  templateUrl: './forum-list.component.html'
+  templateUrl: './forum-list.component.html',
+  styleUrls: ['./forum-list.component.css']
 })
 export class ForumListComponent extends BaseAdComponent implements AfterViewInit {
-  public dataSource: MatTableDataSource<Forum> = new MatTableDataSource<Forum>([]);
+  public subForumList: Forum[] = [];
   public totalSubforums = 0;
   public noSubForums = false;
+  public currentForum?: Forum;
+  private forumId: number = 2;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     private forumService: ForumService,
+    private router: Router,
+    private route: ActivatedRoute,
     backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
+    console.log("guh???")
     super(adService, backgroundService, cdRef);
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.forumId = +params['id'];
+        this.loadForum(this.forumId);
+      }
+    });
   }
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
-    
-    this.loadForum();
+    this.loadForum(this.forumId);
   }
 
-  loadForum() {
-    const page = this.paginator.pageIndex + 1;
-    const size = this.paginator.pageSize;
+  loadForum(id: number) {
+    var page = 1;
+    var size = 10;
 
-    this.forumService.getForum(2, page, size).subscribe({
+    if (this.paginator) {
+      page = this.paginator.pageIndex + 1;
+      size = this.paginator.pageSize;
+    }
+
+    this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
         console.log(response);
-        if (response) {
-          this.dataSource = new MatTableDataSource<Forum>(response.content);
-          this.totalSubforums = response.totalElements;
-          this.noSubForums = response.content.length == 0;
+        if (response && response.content.length > 0) {
+          // Separate the first item as the main forum
+          this.currentForum = response.content[0];
+          
+          // Set the remaining items as the subforums
+          const subforums = response.content.slice(1);
+          this.subForumList = subforums;
+          this.totalSubforums = response.totalElements - 1;
+          this.noSubForums = subforums.length == 0;
         }
       },
       error: (error: any) => console.error(error)
     });
+  }
 
+  navigateToSubforum(id: number) {
+    this.router.navigate(['forum', id]);
   }
 }

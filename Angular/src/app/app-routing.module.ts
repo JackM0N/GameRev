@@ -19,6 +19,7 @@ import { ForumListComponent } from './components/page-components/forum/forum-lis
 
 const routes: Routes = [
   { path: '', component: ForumListComponent},
+  { path: 'forum/:id', component: ForumListComponent},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: OwnProfileComponent, canActivate: [AuthGuard]},
