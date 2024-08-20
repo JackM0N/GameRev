@@ -303,3 +303,37 @@ VALUES
     (5, 6, 'For me, its definitely Age of Empires IV. The new expansions have really kept it fresh.', '2024-08-12 16:05:33'),
     (5, 4, 'Im really enjoying Company of Heroes 3. Its a solid blend of tactics and action.', '2024-08-13 10:30:15');
 
+
+--changeset Stanislaw:29 labels:expansion,data
+BEGIN;
+
+ALTER TABLE forum DROP CONSTRAINT check_self_parent;
+ALTER TABLE forum_post DROP CONSTRAINT forum_post_forum_id_fkey;
+ALTER TABLE forum DROP CONSTRAINT forum_parent_forum_id_fkey;
+ALTER TABLE forum_moderator DROP CONSTRAINT forum_moderator_forum_id_fkey;
+
+UPDATE forum SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum SET forum_id = 2 WHERE forum_id = -999;
+
+UPDATE forum SET parent_forum_id = -999 WHERE parent_forum_id = 1;
+UPDATE forum SET parent_forum_id = 1 WHERE parent_forum_id = 2;
+UPDATE forum SET parent_forum_id = 2 WHERE parent_forum_id = -999;
+
+UPDATE forum_post SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum_post SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum_post SET forum_id = 2 WHERE forum_id = -999;
+
+UPDATE forum_moderator SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum_moderator SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum_moderator SET forum_id = 2 WHERE forum_id = -999;
+
+ALTER TABLE forum_post ADD CONSTRAINT forum_post_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum ADD CONSTRAINT forum_parent_forum_id_fkey FOREIGN KEY (parent_forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum_moderator ADD CONSTRAINT forum_moderator_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum
+    ADD CONSTRAINT check_self_parent
+        CHECK (forum_id IS DISTINCT FROM parent_forum_id);
+
+COMMIT;
+
