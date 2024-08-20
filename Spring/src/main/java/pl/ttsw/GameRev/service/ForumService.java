@@ -29,8 +29,11 @@ public class ForumService {
         this.gameRepository = gameRepository;
     }
 
-    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
+    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) throws BadRequestException {
         Forum forum = forumRepository.findById(id).orElse(null);
+        if (forum == null) {
+            return null;
+        }
         Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
         spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"),false));
@@ -50,9 +53,7 @@ public class ForumService {
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());
 
-        if (!forumList.isEmpty()) {
-            forumList.add(0, forum);
-        }
+        forumList.add(0, forum);
 
         Page<Forum> forumPage = new PageImpl<>(forumList, pageable, forums.getTotalElements());
 
