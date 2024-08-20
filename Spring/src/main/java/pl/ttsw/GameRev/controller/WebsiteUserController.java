@@ -100,7 +100,7 @@ public class WebsiteUserController {
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(image);
         } catch (IOException e) {
-            return ResponseEntity.status(404).body(null);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
