@@ -337,3 +337,86 @@ ALTER TABLE forum
 
 COMMIT;
 
+
+--changeset Stanislaw:30 labels:expansion,data
+ALTER TABLE forum
+    ADD COLUMN description    VARCHAR(100) NOT NULL DEFAULT 'MISSING DESCRIPTION',
+    ADD COLUMN post_count     INT          NOT NULL DEFAULT 0,
+    ADD COLUMN last_post_date TIMESTAMP;
+
+ALTER TABLE forum_post
+    ADD COLUMN comment_count INT NOT NULL DEFAULT 0;
+
+UPDATE forum
+SET post_count     = (SELECT COUNT(*)
+                      FROM forum_post
+                      WHERE forum_post.forum_id = forum.forum_id),
+    last_post_date = (SELECT MAX(post_date)
+                      FROM forum_post
+                      WHERE forum_post.forum_id = forum.forum_id);
+
+UPDATE forum_post
+SET comment_count = (SELECT COUNT(*)
+                     FROM forum_comment
+                     WHERE forum_comment.forum_post_id = forum_post.forum_post_id);
+
+
+--triggers
+CREATE OR REPLACE FUNCTION recalculate_forum_post_counts()
+    RETURNS TRIGGER AS '
+BEGIN
+    UPDATE forum
+    SET post_count = (
+        SELECT COUNT(*)
+        FROM forum_post
+        WHERE forum_id = NEW.forum_id
+    ),
+        last_post_date = (
+            SELECT MAX(post_date)
+            FROM forum_post
+            WHERE forum_id = NEW.forum_id
+        )
+    WHERE forum_id = NEW.forum_id;
+
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_post_count
+    AFTER INSERT OR DELETE ON forum_post
+    FOR EACH ROW
+EXECUTE FUNCTION recalculate_forum_post_counts();
+
+
+CREATE OR REPLACE FUNCTION update_forum_post_details()
+    RETURNS TRIGGER AS '
+BEGIN
+    UPDATE forum_post
+    SET last_response_date = (
+        SELECT MAX(post_date)
+        FROM forum_comment
+        WHERE forum_post_id = OLD.forum_post_id
+    ),
+        comment_count = (
+            SELECT COUNT(*)
+            FROM forum_comment
+            WHERE forum_post_id = OLD.forum_post_id
+        )
+    WHERE forum_post_id = OLD.forum_post_id;
+
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_forum_post_details
+    AFTER INSERT OR DELETE ON forum_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_forum_post_details();
+
+DROP TRIGGER trigger_update_forum_post_last_response_date ON forum_comment;
+
+
+UPDATE forum SET description = 'Literally everything is here' WHERE forum_name = 'General';
+UPDATE forum SET description = 'Chaos, control, and everything in between' WHERE forum_name = 'Limbus Company';
+UPDATE forum SET description = 'For strategies, show-offs and suggestions' WHERE forum_name = 'Mirror Dungeon';
+
