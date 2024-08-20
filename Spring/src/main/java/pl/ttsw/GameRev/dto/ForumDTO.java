@@ -19,5 +19,6 @@ public class ForumDTO implements Serializable {
     String forumName;
     Boolean isDeleted;
     Long parentForumId;
+    Integer numberOfPosts;
     List<WebsiteUserDTO> forumModeratorsDTO;
 }
