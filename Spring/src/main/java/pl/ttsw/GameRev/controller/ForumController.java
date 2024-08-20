@@ -5,10 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ForumDTO;
-import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.service.ForumService;
 
 @RestController
@@ -18,6 +16,18 @@ public class ForumController {
 
     public ForumController(ForumService forumService) {
         this.forumService = forumService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getForums(
+            @RequestParam(value = "gameId", required = false) Long gameId,
+            @RequestParam(value = "searchText", required = false) String searchText,
+            Pageable pageable){
+        Page<ForumDTO> forumDTOS = forumService.getForum(1L, gameId, searchText, pageable);
+        if(forumDTOS.getTotalElements() == 0){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(forumDTOS);
     }
 
     @GetMapping("/{id}")

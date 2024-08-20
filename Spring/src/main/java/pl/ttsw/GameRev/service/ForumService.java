@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.service;
 import jakarta.persistence.criteria.Join;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ForumService {
@@ -44,7 +48,15 @@ public class ForumService {
         }
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
-        return forums.map(forumMapper::toDto);
+        List<Forum> forumList = new ArrayList<>(forums.getContent());
+
+        if (!forumList.isEmpty()) {
+            forumList.add(0, forum);
+        }
+
+        Page<Forum> forumPage = new PageImpl<>(forumList, pageable, forums.getTotalElements());
+
+        return forumPage.map(forumMapper::toDto);
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) {
@@ -60,8 +72,8 @@ public class ForumService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Forum not found"));
 
-        if (forumDTO.getGame() != null) {
-            Game game = gameRepository.findGameById(forumDTO.getGame().getId())
+        if (forumDTO.getGameTitle() != null) {
+            Game game = gameRepository.findGameByTitle(forumDTO.getGameTitle())
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
         }
