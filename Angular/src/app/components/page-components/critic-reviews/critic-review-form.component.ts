@@ -79,8 +79,7 @@ export class CriticReviewFormComponent implements OnInit {
                 });
               }
             },
-            error: error => {
-            },
+            error: () => {},
             complete: () => {}
           };
           this.criticReviewService.getCriticReviewById(params['id'], token).subscribe(observer);

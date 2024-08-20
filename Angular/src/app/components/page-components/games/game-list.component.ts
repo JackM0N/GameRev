@@ -32,7 +32,6 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   public releaseStatuses = releaseStatuses;
   public tagList: Tag[] = [];
-
   private filters: gameFilters = {};
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;

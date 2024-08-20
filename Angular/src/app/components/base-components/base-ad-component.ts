@@ -17,9 +17,9 @@ export abstract class BaseAdComponent implements AfterViewInit {
 
     this._adService.adBoxActive$.subscribe(isActive => {
       if (isActive) {
-        this._backgroundService.setMainContentStyle({ 'padding-left': '220px' });
+        this._backgroundService.setMainContentStyle({ 'margin-left': '220px' });
       } else {
-        this._backgroundService.setMainContentStyle({ 'padding-left': '0px' });
+        this._backgroundService.setMainContentStyle({ 'margin-left': '0px' });
       }
     });
 
