@@ -41,6 +41,12 @@ public class ForumPost {
     @Column(name = "picture")
     private String picture;
 
+    @Column(name = "last_response_date")
+    private LocalDate lastResponseDate;
+
+    @Column(name = "comment_count", nullable = false)
+    private Integer commentCount;
+
     @OneToMany(mappedBy = "forumPost")
     private List<ForumComment> forumComments = new ArrayList<>();
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ public class ForumDTO implements Serializable {
     String forumName;
     Boolean isDeleted;
     Long parentForumId;
-    Integer numberOfPosts;
+    String description;
+    Integer postCount;
+    LocalDateTime lastPostDate;
     List<WebsiteUserDTO> forumModeratorsDTO;
 }
