@@ -29,7 +29,7 @@ public class ForumService {
         this.gameRepository = gameRepository;
     }
 
-    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) throws BadRequestException {
+    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
         Forum forum = forumRepository.findById(id).orElse(null);
         if (forum == null) {
             return null;
