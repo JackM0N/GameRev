@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +35,19 @@ public class Utils {
 
         StringBuilder result = new StringBuilder();
         Class<?> objClass = obj.getClass();
+
+        if (obj instanceof Collection) {
+            result.append(objClass.getSimpleName()).append(" [\n");
+            Collection<?> collection = (Collection<?>) obj;
+            for (Object element : collection) {
+                result.append("  ")
+                        .append(objectToString(element, recursive, visited).replaceAll("(?m)^", "    "))
+                        .append("\n");
+            }
+            result.append("]");
+            return result.toString();
+        }
+
         result.append(objClass.getSimpleName()).append(" {\n");
 
         Field[] fields = objClass.getDeclaredFields();

@@ -7,10 +7,12 @@ import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
 import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
-import { UserReviewService } from '../../../services/user-review.service';
 import { formatDate } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { reviewFilters } from '../../../interfaces/reviewFilters';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -24,13 +26,14 @@ class ReportInformation {
   styleUrl: './report-list.component.css'
 })
 export class ReportListComponent implements AfterViewInit {
-  reviewsList: UserReview[] = [];
-  totalReviews: number = 0;
+  public reviewsList: UserReview[] = [];
+  public totalReviews: number = 0;
   public noReviews = false;
 
-  reportsList: ReportInformation[] = [];
-  displayedColumns: string[] = ['id', 'user', 'content', 'options'];
-  formatDate = formatDate;
+  public reportsList: ReportInformation[] = [];
+  public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
+  public formatDate = formatDate;
+  private filters: reviewFilters = {};
 
   @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
   @ViewChildren(MatPaginator) paginators!: QueryList<MatPaginator>;
@@ -38,15 +41,14 @@ export class ReportListComponent implements AfterViewInit {
 
   constructor(
     private reportService: ReportService,
-    private userReviewService: UserReviewService,
     private authService: AuthService,
-    public dialog: MatDialog,
     private notificationService: NotificationService,
+    public dialog: MatDialog,
+    private datePipe: DatePipe,
   ) {}
 
   ngAfterViewInit() {
     this.loadReviews();
-
     this.reviewsPaginator.page.subscribe(() => this.loadReviews());
   }
 
@@ -67,9 +69,9 @@ export class ReportListComponent implements AfterViewInit {
           this.reviewsList = response.content;
           this.totalReviews = response.totalElements;
           this.reportsList = [];
-          if (this.reviewsList.length == 0) {
-            this.noReviews = true;
-          }
+          this.noReviews = (this.reviewsList.length == 0);
+        } else {
+          this.noReviews = true;
         }
       },
       error: error => {
@@ -77,7 +79,7 @@ export class ReportListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.userReviewService.getReviewsWithReports(token, page, size, "id", "asc").subscribe(observer);
+    this.reportService.getReviewsWithReports(token, page, size, "id", "asc", this.filters).subscribe(observer);
   }
 
   loadReportsForReview(review: UserReview, refreshing: boolean = false) {
@@ -87,13 +89,8 @@ export class ReportListComponent implements AfterViewInit {
 
     const token = this.authService.getToken();
 
-    if (!review.id) {
-      console.log("Review id is null");
-      return;
-    }
-
-    if (token === null) {
-      console.log("Token is null");
+    if (!review.id || token === null) {
+      console.log("Token or review id is null");
       return;
     }
 
@@ -222,5 +219,55 @@ export class ReportListComponent implements AfterViewInit {
       },
       error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
     });
+  }
+
+  // Filters
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadReviews();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
+    this.loadReviews();
   }
 }

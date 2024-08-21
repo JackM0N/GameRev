@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
+import { gameFilters } from '../interfaces/gameFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +13,38 @@ export class GameService {
 
   constructor(
     private http: HttpClient,
-  ) { }
+  ) {}
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string): Observable<Game> {
-    var params;
-    if (page && size && sortBy && sortDir) {
-      params = new HttpParams()
-        .set('page', (page - 1).toString())
-        .set('size', size.toString())
-        .set('sort', sortBy + ',' + sortDir);
-    } else {
-      params = new HttpParams();
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game> {
+    var params = new HttpParams();
+
+    if (page) {
+      params = params.set('page', (page - 1).toString());
     }
+    if (size) {
+      params = params.set('size', size.toString());
+    }
+    if (sortBy && sortDir) {
+      params = params.set('sort', sortBy + ',' + sortDir);
+    }
+    if (filters) {
+      if (filters.startDate && filters.endDate) {
+        params = params.set('fromDate', filters.startDate).set('toDate', filters.endDate);
+      }
+      if (filters.releaseStatus && filters.releaseStatus.length > 0) {
+        params = params.set('releaseStatuses', filters.releaseStatus.toString());
+      }
+      if (filters.tags && filters.tags.length > 0) {
+        params = params.set('tagIds', filters.tags.toString());
+      }
+      if (filters.search) {
+        params = params.set('searchText', filters.search);
+      }
+      if (filters.scoreMin && filters.scoreMax) {
+        params = params.set('minUserScore', filters.scoreMin.toString()).set('maxUserScore', filters.scoreMax.toString());
+      }
+    }
+
     return this.http.get<Game>(this.baseUrl, { params });
   }
 

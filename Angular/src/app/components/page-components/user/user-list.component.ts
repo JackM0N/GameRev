@@ -1,15 +1,20 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { MatSelectChange } from '@angular/material/select';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
+import { Role } from '../../../interfaces/role';
+import { userFilters } from '../../../interfaces/userFilters';
 
 @Component({
   selector: 'app-user-list',
@@ -17,21 +22,32 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
 export class UserListComponent implements AfterViewInit {
-  usersList: WebsiteUser[] = [];
-  totalUsers: number = 0;
-  dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>(this.usersList);
-  displayedColumns: string[] = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'options'];
-  
+  public totalUsers: number = 0;
+  public dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
+  public displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+  public isAdminOrCritic = false;
+
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+
+  private filters: userFilters = {};
 
   constructor(
     private userService: UserService,
-    public dialog: MatDialog,
     private notificationService: NotificationService,
     private authService: AuthService,
-    private router: Router
-  ) {
+    private router: Router,
+    private datePipe: DatePipe,
+    public dialog: MatDialog
+  ) {}
+
+  ngInit() {
+    this.isAdminOrCritic = this.authService.hasAnyRole(['Admin', 'Critic']);
+    if (this.isAdminOrCritic) {
+      this.displayedColumns = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+    }
   }
 
   ngAfterViewInit() {
@@ -44,6 +60,17 @@ export class UserListComponent implements AfterViewInit {
       this.paginator.pageIndex = 0;
       this.loadUsers();
     });
+
+    if (this.searchInput) {
+      fromEvent(this.searchInput.nativeElement, 'input').pipe(
+        map((event: any) => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+
+      ).subscribe(value => {
+        this.onSearchChange(value);
+      });
+    }
   }
 
   loadUsers() {
@@ -54,21 +81,21 @@ export class UserListComponent implements AfterViewInit {
 
     const observer: Observer<any> = {
       next: response => {
-        this.usersList = response.content;
-        this.totalUsers = response.totalElements;
-        this.dataSource = new MatTableDataSource<WebsiteUser>(this.usersList);
-        this.dataSource.data = this.usersList;
+        if (response) {
+          this.totalUsers = response.totalElements;
+          this.dataSource = new MatTableDataSource<WebsiteUser>(response.content);
+        } else {
+          this.totalUsers = 0;
+          this.dataSource = new MatTableDataSource<WebsiteUser>([]);
+        }
       },
       error: error => {
         console.error(error);
       },
       complete: () => {}
     };
-    this.userService.getUsers(page, size, sortBy, sortDir).subscribe(observer);
-  }
-
-  sortData(sort: Sort) {
-    this.loadUsers();
+    
+    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -143,5 +170,61 @@ export class UserListComponent implements AfterViewInit {
 
   openUserReviews(user: WebsiteUser) {
     this.router.navigate(['/user-reviews/' + user.id]);
+  }
+
+  onBannedFilterChange(event: MatSelectChange) {
+    this.filters.isBanned = event.value;
+    this.loadUsers();
+  }
+
+  onRolesFilterChange(event: MatSelectChange) {
+    this.filters.roles = event.value;
+    this.loadUsers();
+  }
+
+  onDeletedFilterChange(event: MatSelectChange) {
+    this.filters.deleted = event.value;
+    this.loadUsers();
+  }
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadUsers();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadUsers();
+      }
+    }
+  }
+
+  onSearchChange(value: string) {
+    this.filters.search = value;
+    this.loadUsers();
+  }
+
+  parseRoles(roles: Role[]): string {
+    return roles.map(role => role.roleName).join(', ');
   }
 }

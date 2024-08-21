@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Report } from '../interfaces/report';
 import { UserReview } from '../interfaces/userReview';
+import { reviewFilters } from '../interfaces/reviewFilters';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class ReportService {
   constructor(
     private http: HttpClient,
     public jwtHelper: JwtHelperService
-  ) { }
+  ) {}
 
   reportReview(report: Report, token: string): Observable<Report> {
     const headers = new HttpHeaders({
@@ -26,19 +27,41 @@ export class ReportService {
     return this.http.put<Report>(this.reportUrl, report, { headers: headers });
   }
 
+  getReviewsWithReports(token: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    var params = new HttpParams()
+      .set('page', (page - 1).toString())
+      .set('size', size.toString())
+      .set('sort', sortBy + ',' + sortDir
+    );
+
+    if (filters.startDate !== undefined && filters.endDate !== undefined) {
+      params = params.set('postDateFrom', filters.startDate).set('postDateTo', filters.endDate);
+    }
+    if (filters.scoreMin && filters.scoreMax) {
+      params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
+    }
+
+    return this.http.get<UserReview[]>(this.baseUrl, { headers, params });
+  }
+
   getReportsForReview(reviewId: number, token: string, sortBy: string, sortDir: string, page?: number, size?: number): Observable<UserReview[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
     var params = new HttpParams()
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
 
-    if (page && size) {
-      params = new HttpParams()
-        .set('page', (page - 1).toString())
-        .set('size', size.toString())
-        .set('sort', sortBy + ',' + sortDir);
+    if (page) {
+      params = params.set('page', (page - 1).toString());
+    }
+    if (size) {
+      params = params.set('size', size.toString());
     }
 
     return this.http.get<UserReview[]>(`${this.baseUrl}/${reviewId}`, { headers, params });

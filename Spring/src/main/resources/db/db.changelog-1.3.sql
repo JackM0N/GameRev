@@ -265,3 +265,158 @@ UPDATE club_post
 SET title = 'This new RR is great!'
 WHERE title = 'MISSING TITLE';
 
+
+--changeset Stanislaw:27 labels:expansion,schema
+--trigger to delete all child forums
+CREATE OR REPLACE FUNCTION soft_delete_child_forums()
+    RETURNS TRIGGER AS
+'
+    BEGIN
+        UPDATE forum
+        SET is_deleted = TRUE
+        WHERE parent_forum_id = OLD.forum_id;
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_forum_soft_delete
+    BEFORE UPDATE OF is_deleted
+    ON forum
+    FOR EACH ROW
+    WHEN (NEW.is_deleted = TRUE)
+EXECUTE FUNCTION soft_delete_child_forums();
+
+
+--changeset Stanislaw:28 labels:expansion,data
+-- Forum Posts
+INSERT INTO forum_post(forum_id, author_id, title, content, post_date, picture, last_response_date)
+VALUES
+    (2, 6, 'Looking for recommendations', 'Ive recently finished Elden Ring, it was fun. Im looking for something similar but with a different setting. Any suggestions?', '2024-08-14 11:16:23', NULL, '2024-08-16 09:30:45'),
+    (2, 5, 'Best strategy games of 2024?', 'Ive been into strategy games lately and was wondering what everyones favorite from this year is?', '2024-08-12 13:45:12', NULL, '2024-08-14 18:22:10'),
+    (2, 4, 'Favorite Indie Games?', 'I love discovering hidden indie gems. What are some of your favorite indie games of all time?', '2024-08-15 09:55:45', NULL, '2024-08-15 11:25:32');
+
+-- Forum Comments
+INSERT INTO forum_comment(forum_post_id, author_id, content, post_date)
+VALUES
+    (4, 5, 'You should try Sekiro: Shadows Die Twice if you havent already. It has a different setting but the same challenging combat.', '2024-08-14 13:22:50'),
+    (4, 4, 'If you want something a bit different, maybe check out Dark Souls 3 or Bloodborne. They have a similar vibe.', '2024-08-15 08:14:29'),
+    (5, 6, 'For me, its definitely Age of Empires IV. The new expansions have really kept it fresh.', '2024-08-12 16:05:33'),
+    (5, 4, 'Im really enjoying Company of Heroes 3. Its a solid blend of tactics and action.', '2024-08-13 10:30:15');
+
+
+--changeset Stanislaw:29 labels:expansion,data
+BEGIN;
+
+ALTER TABLE forum DROP CONSTRAINT check_self_parent;
+ALTER TABLE forum_post DROP CONSTRAINT forum_post_forum_id_fkey;
+ALTER TABLE forum DROP CONSTRAINT forum_parent_forum_id_fkey;
+ALTER TABLE forum_moderator DROP CONSTRAINT forum_moderator_forum_id_fkey;
+
+UPDATE forum SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum SET forum_id = 2 WHERE forum_id = -999;
+
+UPDATE forum SET parent_forum_id = -999 WHERE parent_forum_id = 1;
+UPDATE forum SET parent_forum_id = 1 WHERE parent_forum_id = 2;
+UPDATE forum SET parent_forum_id = 2 WHERE parent_forum_id = -999;
+
+UPDATE forum_post SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum_post SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum_post SET forum_id = 2 WHERE forum_id = -999;
+
+UPDATE forum_moderator SET forum_id = -999 WHERE forum_id = 1;
+UPDATE forum_moderator SET forum_id = 1 WHERE forum_id = 2;
+UPDATE forum_moderator SET forum_id = 2 WHERE forum_id = -999;
+
+ALTER TABLE forum_post ADD CONSTRAINT forum_post_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum ADD CONSTRAINT forum_parent_forum_id_fkey FOREIGN KEY (parent_forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum_moderator ADD CONSTRAINT forum_moderator_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES forum (forum_id);
+ALTER TABLE forum
+    ADD CONSTRAINT check_self_parent
+        CHECK (forum_id IS DISTINCT FROM parent_forum_id);
+
+COMMIT;
+
+
+--changeset Stanislaw:30 labels:expansion,data
+ALTER TABLE forum
+    ADD COLUMN description    VARCHAR(100) NOT NULL DEFAULT 'MISSING DESCRIPTION',
+    ADD COLUMN post_count     INT          NOT NULL DEFAULT 0,
+    ADD COLUMN last_post_date TIMESTAMP;
+
+ALTER TABLE forum_post
+    ADD COLUMN comment_count INT NOT NULL DEFAULT 0;
+
+UPDATE forum
+SET post_count     = (SELECT COUNT(*)
+                      FROM forum_post
+                      WHERE forum_post.forum_id = forum.forum_id),
+    last_post_date = (SELECT MAX(post_date)
+                      FROM forum_post
+                      WHERE forum_post.forum_id = forum.forum_id);
+
+UPDATE forum_post
+SET comment_count = (SELECT COUNT(*)
+                     FROM forum_comment
+                     WHERE forum_comment.forum_post_id = forum_post.forum_post_id);
+
+
+--triggers
+CREATE OR REPLACE FUNCTION recalculate_forum_post_counts()
+    RETURNS TRIGGER AS '
+BEGIN
+    UPDATE forum
+    SET post_count = (
+        SELECT COUNT(*)
+        FROM forum_post
+        WHERE forum_id = NEW.forum_id
+    ),
+        last_post_date = (
+            SELECT MAX(post_date)
+            FROM forum_post
+            WHERE forum_id = NEW.forum_id
+        )
+    WHERE forum_id = NEW.forum_id;
+
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_post_count
+    AFTER INSERT OR DELETE ON forum_post
+    FOR EACH ROW
+EXECUTE FUNCTION recalculate_forum_post_counts();
+
+
+CREATE OR REPLACE FUNCTION update_forum_post_details()
+    RETURNS TRIGGER AS '
+BEGIN
+    UPDATE forum_post
+    SET last_response_date = (
+        SELECT MAX(post_date)
+        FROM forum_comment
+        WHERE forum_post_id = OLD.forum_post_id
+    ),
+        comment_count = (
+            SELECT COUNT(*)
+            FROM forum_comment
+            WHERE forum_post_id = OLD.forum_post_id
+        )
+    WHERE forum_post_id = OLD.forum_post_id;
+
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_forum_post_details
+    AFTER INSERT OR DELETE ON forum_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_forum_post_details();
+
+DROP TRIGGER trigger_update_forum_post_last_response_date ON forum_comment;
+
+
+UPDATE forum SET description = 'Literally everything is here' WHERE forum_name = 'General';
+UPDATE forum SET description = 'Chaos, control, and everything in between' WHERE forum_name = 'Limbus Company';
+UPDATE forum SET description = 'For strategies, show-offs and suggestions' WHERE forum_name = 'Mirror Dungeon';
+

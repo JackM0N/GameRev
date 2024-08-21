@@ -58,6 +58,7 @@ import { GameInfoReviewListComponent } from './components/page-components/games/
 import { NotificationService } from './services/notification.service';
 import { EmailChangeComponent } from './components/page-components/user/own-profile/email-change.component';
 import { PasswordChangeComponent } from './components/page-components/user/own-profile/password-change-component';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -106,6 +107,7 @@ import { PasswordChangeComponent } from './components/page-components/user/own-p
         MatButtonToggleModule,
         MatSortModule,
         MatExpansionModule,
+        MatSliderModule,
         QuillModule.forRoot(),
         JwtModule.forRoot({
             config: {
