@@ -10,10 +10,15 @@ import { forumFilters } from '../interfaces/forumFilters';
 // Service for handling forums
 export class ForumService {
   private baseUrl = 'http://localhost:8080/forum';
+  private pathUrl = 'http://localhost:8080/path';
 
   constructor(
     private http: HttpClient,
   ) {}
+
+  getForumPath(id: number): Observable<Forum> {
+    return this.http.get<Forum>(`${this.pathUrl}/${id}`);
+  }
 
   getForum(id?: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
     var params = new HttpParams();

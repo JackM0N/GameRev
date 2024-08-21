@@ -8,7 +8,7 @@ export interface ForumPost {
   author: WebsiteUser,
   title: string,
   content: string,
-  postDate: Date,
+  postDate: [],
   picture: string,
   forumComments: ForumComment[]
 }

@@ -15,17 +15,13 @@
   margin-top: 20px;
 }
 
-.forum-posts-table td {
+.forum-posts-table td, th {
   padding: 10px;
   border: 1px solid #ccc;
 }
 
-.post-odd {
-  background-color: #f9f9f9;
-}
-
-.post-even {
-  background-color: #fff;
+.forum-posts-table th {
+  background-color: #f2f2f2;
 }
 
 .post-title {

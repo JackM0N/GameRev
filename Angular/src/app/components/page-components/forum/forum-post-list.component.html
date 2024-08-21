@@ -1,3 +1,12 @@
+
+<nav class="breadcrumb">
+  <ng-container *ngFor="let segment of path; let i = index">
+    <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="breadcrumb-link cursor-pointer"><b>{{ segment.forumName }}</b></a>
+    <span *ngIf="i < path.length - 1"> > </span>
+    <span *ngIf="i === path.length - 1">{{ segment.forumName }}</span>
+  </ng-container>
+</nav>
+
 <div class="forum-page container">
   <!-- Forum Header -->
   <header class="forum-header">
@@ -18,7 +27,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let post of postList; let i = index" [ngClass]="{'post-odd': i % 2 === 0, 'post-even': i % 2 !== 0}">
+        <tr *ngFor="let post of postList; let i = index">
           <td>
             <a (click)="navigateToPost(post.id)" class="subforum-link cursor-pointer"> <strong>{{ post.title }}</strong> </a>
           </td>

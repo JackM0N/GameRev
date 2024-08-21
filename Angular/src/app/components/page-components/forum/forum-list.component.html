@@ -1,5 +1,13 @@
 
-<div *ngIf="!isSingleForum; else forumPageTemplate">
+<div *ngIf="!isSingleForum; else forumPostListTemplate">
+  <nav class="breadcrumb">
+    <ng-container *ngFor="let segment of path; let i = index">
+      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="breadcrumb-link cursor-pointer"><b>{{ segment.forumName }}</b></a>
+      <span *ngIf="i < path.length - 1"> > </span>
+      <span *ngIf="i === path.length - 1">{{ segment.forumName }}</span>
+    </ng-container>
+  </nav>
+
   <div *ngIf="currentForum" [hidden]="noSubForums" class="container">
     <!-- Main Forum as the header -->
     <table class="forum-table">
@@ -7,7 +15,7 @@
         <tr>
           <th colspan="3">
             <h2><b>{{ currentForum.forumName }}</b></h2>
-            <p>description</p>
+            <p>{{ currentForum.description }}</p>
           </th>
         </tr>
       </thead>
@@ -17,10 +25,10 @@
         <tr *ngFor="let subforum of subForumList">
           <td>
             <a (click)="navigateToSubforum(subforum.id)" class="subforum-link cursor-pointer"> <b>{{ subforum.forumName }}</b> </a>
-            <p>description</p>
+            <p>{{ subforum.description }}</p>
           </td>
           <td>
-            {{ subforum.numberOfPosts }} Post(s)
+            {{ subforum.postCount }} Post(s)
           </td>
           <td>
             <p>Last post by user</p>
@@ -42,6 +50,6 @@
   </mat-paginator>
 </div>
 
-<ng-template #forumPageTemplate>
+<ng-template #forumPostListTemplate>
   <app-forum-post-list [currentForum]="currentForum"></app-forum-post-list>
 </ng-template>

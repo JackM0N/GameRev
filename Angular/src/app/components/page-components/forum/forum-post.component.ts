@@ -8,6 +8,7 @@ import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { formatDate } from '../../../util/formatDate';
+import { ForumService } from '../../../services/forum.service';
 
 @Component({
   selector: 'app-forum-post',
@@ -18,10 +19,12 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   @Input() post?: ForumPost;
   public commentsList: any[] = [];
   public totalComments: number = 0;
+  public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
   public formatDate = formatDate;
 
   constructor(
+    private forumService: ForumService,
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
     private route: ActivatedRoute,
@@ -35,17 +38,33 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      if (params['forumid']) {
-      }
       if (params['postid']) {
         this.loadPost(params['postid']);
         this.loadComments(params['postid']);
+      }
+      if (params['forumid']) {
+        this.loadPath(params['forumid']);
       }
     });
   }
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
+  }
+
+  loadPath(id: number) {
+    this.path = undefined;
+
+    this.forumService.getForumPath(id).subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.path = response;
+          this.path = this.path.reverse();
+          this.path.push({ id: this.post?.id, forumName: this.post?.title });
+        }
+      },
+      error: (error: any) => console.error(error)
+    });
   }
 
   loadPost(id: number) {
@@ -55,7 +74,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       next: (response: any) => {
         console.log("post", response);
         if (response && response.content.length > 0) {
-          this.post = response.content;
+          this.post = response;
         }
       },
       error: (error: any) => console.error(error)
@@ -82,9 +101,5 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       },
       error: (error: any) => console.error(error)
     });
-  }
-
-  navigateToPost(id: number) {
-    
   }
 }

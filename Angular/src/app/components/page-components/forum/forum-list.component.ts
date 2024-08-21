@@ -19,6 +19,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public currentForum?: Forum;
   private forumId?: number;
   public isSingleForum: boolean = false;
+  public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
@@ -37,6 +38,9 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
       if (params['id']) {
         this.forumId = +params['id'];
         this.loadForum(this.forumId);
+        if (this.forumId) {
+          this.loadPath(this.forumId);
+        }
       }
     });
   }
@@ -44,6 +48,23 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   override ngAfterViewInit() {
     super.ngAfterViewInit();
     this.loadForum(this.forumId);
+    if (this.forumId) {
+      this.loadPath(this.forumId);
+    }
+  }
+
+  loadPath(id: number) {
+    this.path = undefined;
+
+    this.forumService.getForumPath(id).subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.path = response;
+          this.path = this.path.reverse();
+        }
+      },
+      error: (error: any) => console.error(error)
+    });
   }
 
   loadForum(id?: number) {
@@ -52,6 +73,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     this.noSubForums = false;
     this.totalSubforums = 0;
     this.isSingleForum = false;
+    this.path = undefined;
 
     var page = 1;
     var size = 10;

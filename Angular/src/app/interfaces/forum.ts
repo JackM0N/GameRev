@@ -10,5 +10,6 @@ export interface Forum {
   parentForumId: number,
   forumModerators: ForumModerator[],
   forumPosts: ForumPost[],
-  numberOfPosts: number,
+  postCount: number,
+  description: string,
 }
