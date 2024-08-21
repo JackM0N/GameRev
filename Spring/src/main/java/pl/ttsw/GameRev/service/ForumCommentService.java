@@ -38,8 +38,7 @@ public class ForumCommentService {
         if (post == null) {
             return null;
         }
-        Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("post"), post));
-
+        Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("forumPost"), post));
         if (userId != null) {
             spec = spec.and((root, query, builder) -> {
                 Join<ForumComment, WebsiteUser> join = root.join("author");
@@ -52,8 +51,9 @@ public class ForumCommentService {
             String likePattern = "%" + searchText + "%";
             spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
         }
-
+        System.out.println("What?");
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
+        System.out.println("Vro");
         return forumComments.map(forumCommentMapper::toDto);
     }
 
