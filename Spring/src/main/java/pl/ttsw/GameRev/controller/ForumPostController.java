@@ -1,6 +1,5 @@
 package pl.ttsw.GameRev.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -12,14 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
-import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.service.ForumPostService;
 
 import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/forum-post")
 public class ForumPostController {
     private final ForumPostService forumPostService;
 
@@ -41,7 +39,7 @@ public class ForumPostController {
         return ResponseEntity.ok(forumPostDTOS);
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<?> create(
             @RequestParam(value = "post") String postJson,
             @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
