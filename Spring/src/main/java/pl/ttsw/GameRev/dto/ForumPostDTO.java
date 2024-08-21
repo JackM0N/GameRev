@@ -8,6 +8,7 @@ import lombok.Value;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,5 +25,7 @@ public class ForumPostDTO implements Serializable {
     String content;
     LocalDate postDate;
     String picture;
+    LocalDateTime lastResponseDate;
+    Integer commentCount;
     List<ForumCommentDTO> forumComments;
 }
