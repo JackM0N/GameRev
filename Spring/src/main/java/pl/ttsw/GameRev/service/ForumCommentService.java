@@ -7,7 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumCommentDTO;
+import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.mapper.ForumCommentMapper;
+import pl.ttsw.GameRev.mapper.ForumPostMapper;
 import pl.ttsw.GameRev.model.ForumComment;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -23,13 +25,15 @@ public class ForumCommentService {
     private final ForumPostRepository forumPostRepository;
     private final RoleRepository roleRepository;
     private final ForumCommentMapper forumCommentMapper;
+    private final ForumPostMapper forumPostMapper;
     private final WebsiteUserService websiteUserService;
 
-    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, WebsiteUserService websiteUserService) {
+    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, ForumPostMapper forumPostMapper, WebsiteUserService websiteUserService) {
         this.forumCommentRepository = forumCommentRepository;
         this.forumPostRepository = forumPostRepository;
         this.roleRepository = roleRepository;
         this.forumCommentMapper = forumCommentMapper;
+        this.forumPostMapper = forumPostMapper;
         this.websiteUserService = websiteUserService;
     }
 
@@ -53,6 +57,14 @@ public class ForumCommentService {
         }
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
         return forumComments.map(forumCommentMapper::toDto);
+    }
+
+    public ForumPostDTO getOriginalPost(Long id) {
+        ForumPost post = forumPostRepository.findById(id).orElse(null);
+        if (post == null) {
+            return null;
+        }
+        return forumPostMapper.toDto(post);
     }
 
     public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO) {

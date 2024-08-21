@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ForumCommentDTO;
+import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.service.ForumCommentService;
 
 @RestController
@@ -15,6 +16,15 @@ public class ForumCommentController {
 
     public ForumCommentController(ForumCommentService forumCommentService) {
         this.forumCommentService = forumCommentService;
+    }
+
+    @GetMapping("/origin/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        ForumPostDTO forumPostDTO = forumCommentService.getOriginalPost(id);
+        if (forumPostDTO == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(forumPostDTO);
     }
 
     @GetMapping("/{id}")
