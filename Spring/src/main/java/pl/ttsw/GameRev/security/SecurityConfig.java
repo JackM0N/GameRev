@@ -35,12 +35,13 @@ public class SecurityConfig {
                                 "/critics-reviews/delete/**", "/critics-reviews/list",
                                 "/critics-reviews/id/**").hasAnyRole("Critic", "Admin")
                         .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**",
-                                "/user/edit/**", "/user/delete/**", "/user/roles/**", "/forum/create",
+                                "/user/edit/**", "/user/delete/**", "/user/roles/**","/forum-post/create",
+                                "/forum-post/delete/**", "/forum-post/edit/**", "/forum/create",
                                 "/forum/delete/**", "/forum/edit/**").hasRole("Admin")
                         .requestMatchers("/login/**", "/register/**", "/games/**","/tags/**",
                                 "/release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
                                 "/user/**", "/library/**", "/password-reset/**", "/critics-reviews/**",
-                                "/forum/**", "/post/**").permitAll()
+                                "/forum-post/**","/forum/**", "/post/**").permitAll()
                         .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
                                 "/post/delete/").authenticated()
                         .anyRequest()
