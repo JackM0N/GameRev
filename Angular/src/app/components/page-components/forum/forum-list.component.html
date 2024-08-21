@@ -1,36 +1,42 @@
 
-<div *ngIf="currentForum" [hidden]="noSubForums" class="container">
-  <!-- Main Forum as the header -->
-  <table class="forum-table">
-    <thead>
-      <tr>
-        <th colspan="2">
-          <h2><b>{{ currentForum.forumName }}</b></h2>
-          <p>description</p>
-        </th>
-      </tr>
-    </thead>
+<div *ngIf="!isSingleForum; else forumPageTemplate">
+  <div *ngIf="currentForum" [hidden]="noSubForums" class="container">
+    <!-- Main Forum as the header -->
+    <table class="forum-table">
+      <thead>
+        <tr>
+          <th colspan="2">
+            <h2><b>{{ currentForum.forumName }}</b></h2>
+            <p>description</p>
+          </th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <!-- Subforum rows -->
-      <tr *ngFor="let subforum of subForumList">
-        <td>
-          <a (click)="navigateToSubforum(subforum.id)" class="subforum-link"> <b>{{ subforum.forumName }}</b> </a>
-          <p>description</p>
-        </td>
-        <td>
-          {{ subforum.numberOfPosts }} Post(s)
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <!-- Subforum rows -->
+        <tr *ngFor="let subforum of subForumList">
+          <td>
+            <a (click)="navigateToSubforum(subforum.id)" class="subforum-link cursor-pointer"> <b>{{ subforum.forumName }}</b> </a>
+            <p>description</p>
+          </td>
+          <td>
+            {{ subforum.numberOfPosts }} Post(s)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    #paginator
+    [length]="totalSubforums"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
 </div>
-  
-<!-- Paginator -->
-<mat-paginator
-  #paginator
-  [length]="totalSubforums"
-  [pageSize]="10"
-  [pageSizeOptions]="[5, 10, 20]"
-  showFirstLastButtons>
-</mat-paginator>
+
+<ng-template #forumPageTemplate>
+  <app-forum-page [currentForum]="currentForum"></app-forum-page>
+</ng-template>

@@ -1,0 +1,44 @@
+
+<div class="forum-page container">
+  <!-- Forum Header -->
+  <header class="forum-header">
+    <h1>{{ currentForum?.forumName }}</h1>
+    <p>description</p>
+  </header>
+
+  <!-- Forum Posts -->
+  <div class="forum-posts">
+    <div *ngFor="let post of postList; let i = index" [ngClass]="{'post-odd': i % 2 === 0, 'post-even': i % 2 !== 0}" class="post-container">
+      <div class="post-header">
+        <span class="post-number">Post #{{ i + 1 }}</span>
+      </div>
+
+      <div class="post-body">
+        <!-- User Info -->
+        <div class="user-info">
+          <div class="user-avatar">
+            <img [src]="post.userAvatarUrl" alt="User Avatar" />
+          </div>
+          <div class="user-details">
+            <strong>{{ post.username }}</strong>
+            <p>{{ post.joinDate }}</p>
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-content">
+          <p>{{ post.content }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    #paginator
+    [length]="totalPosts"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

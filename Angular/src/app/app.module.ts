@@ -61,6 +61,8 @@ import { PasswordChangeComponent } from './components/page-components/user/own-p
 import { MatSliderModule } from '@angular/material/slider';
 import { ForumListComponent } from './components/page-components/forum/forum-list.component';
 import { ForumService } from './services/forum.service';
+import { ForumPageComponent } from './components/page-components/forum/forum-page.component';
+import { ForumPostService } from './services/forumPost.service';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -89,7 +91,8 @@ import { ForumService } from './services/forum.service';
         GameInfoReviewListComponent,
         EmailChangeComponent,
         PasswordChangeComponent,
-        ForumListComponent
+        ForumListComponent,
+        ForumPageComponent
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -137,6 +140,7 @@ import { ForumService } from './services/forum.service';
         AdService,
         NotificationService,
         ForumService,
+        ForumPostService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         DatePipe,
         provideHttpClient(withInterceptorsFromDi())
