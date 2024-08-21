@@ -60,8 +60,15 @@ public class ForumService {
         return forumPage.map(forumMapper::toDto);
     }
 
-    public ForumDTO createForum(ForumDTO forumDTO) {
-        Forum forum = forumMapper.toEntity(forumDTO);
+    public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
+        Forum forum = new Forum();
+        forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
+                .orElseThrow(() -> new BadRequestException("Game not found")));
+        forum.setForumName(forumDTO.getForumName());
+        forum.setDescription(forumDTO.getDescription());
+        forum.setParentForum(forumRepository.findById(forumDTO.getParentForumId())
+                .orElseThrow(() -> new BadRequestException("Parent forum not found")));
+        forum.setPostCount(0);
         forum.setIsDeleted(false);
         forum = forumRepository.save(forum);
         return forumMapper.toDto(forum);
