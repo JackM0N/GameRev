@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/**", "/register/**", "/games/**","/tags/**",
                                 "/release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
                                 "/user/**", "/library/**", "/password-reset/**", "/critics-reviews/**",
-                                "/forum-post/**","/forum/**", "/post/**").permitAll()
+                                "/forum-post/**","/forum/**", "/post/**", "/path/**").permitAll()
                         .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
                                 "/post/delete/").authenticated()
                         .anyRequest()
