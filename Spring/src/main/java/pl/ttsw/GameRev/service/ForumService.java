@@ -66,9 +66,7 @@ public class ForumService {
 
     public ForumDTO createForum(ForumDTO forumDTO) {
         Forum forum = forumMapper.toEntity(forumDTO);
-        if (forumDTO.getIsDeleted() == null) {
-            forum.setIsDeleted(false);
-        }
+        forum.setIsDeleted(false);
         forum = forumRepository.save(forum);
         return forumMapper.toDto(forum);
     }
