@@ -1,0 +1,50 @@
+
+.forum-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.forum-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.forum-posts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.forum-posts-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.post-odd {
+  background-color: #f9f9f9;
+}
+
+.post-even {
+  background-color: #fff;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.post-author,
+.post-replies,
+.post-last {
+  font-size: 14px;
+}
+
+.post-author span,
+.post-replies span,
+.post-last span {
+  display: block;
+}
+
+.post-last {
+  color: #666;
+}

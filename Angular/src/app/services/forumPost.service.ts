@@ -10,10 +10,15 @@ import { ForumPost } from '../interfaces/forumPost';
 // Service for handling forum posts
 export class ForumPostService {
   private baseUrl = 'http://localhost:8080/forum-post';
+  private postByIdUrl = 'http://localhost:8080/forum-post/origin';
 
   constructor(
     private http: HttpClient,
   ) {}
+
+  getPost(id: number): Observable<ForumPost[]> {
+    return this.http.get<ForumPost[]>(`${this.postByIdUrl}/${id}`);
+  }
 
   getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<ForumPost[]> {
     var params = new HttpParams();

@@ -16,10 +16,12 @@ import { LibraryComponent } from './components/page-components/library/library.c
 import { UserListComponent } from './components/page-components/user/user-list.component';
 import { AuthGuard } from './auth.guard';
 import { ForumListComponent } from './components/page-components/forum/forum-list.component';
+import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 
 const routes: Routes = [
   { path: '', component: ForumListComponent},
   { path: 'forum/:id', component: ForumListComponent},
+  { path: 'forum/:forumid/post/:postid', component: ForumPostComponent},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: OwnProfileComponent, canActivate: [AuthGuard]},

@@ -1,0 +1,47 @@
+<div class="forum-page container">
+  <!-- Forum Header -->
+  <header class="forum-header">
+    <h1>{{ currentForum?.forumName }}</h1>
+    <p>description</p>
+  </header>
+
+  <!-- Forum Posts Table -->
+  <div class="forum-posts">
+    <table class="forum-posts-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Replies</th>
+          <th>Last Post</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let post of postList; let i = index" [ngClass]="{'post-odd': i % 2 === 0, 'post-even': i % 2 !== 0}">
+          <td>
+            <a (click)="navigateToPost(post.id)" class="subforum-link cursor-pointer"> <strong>{{ post.title }}</strong> </a>
+          </td>
+          <td>
+            <div>{{ post.author.nickname }}</div>
+          </td>
+          <td>
+            <div>{{ post.repliesCount }}</div>
+          </td>
+          <td>
+            <div>{{ post.lastPostDate }} by {{ post.lastPostAuthor }}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    #paginator
+    [length]="totalPosts"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

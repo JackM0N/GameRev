@@ -1,0 +1,36 @@
+
+<div class="post-page container">
+  <!-- Original Post -->
+  <div class="original-post">
+    <div class="post-header">
+      <h2>{{ post?.title }}</h2>
+      <div class="post-info">
+        <span>By {{ post?.author?.nickname }} on {{ post?.postDate }}</span>
+      </div>
+    </div>
+    <div class="post-body">
+      <p>{{ post?.content }}</p>
+    </div>
+  </div>
+
+  <!-- Replies Section -->
+  <div class="comments-section">
+    <div class="comment" *ngFor="let comment of commentsList; let i = index" [ngClass]="{'comment-odd': i % 2 === 0, 'comment-even': i % 2 !== 0}">
+      <div class="comment-header">
+        <span><strong>{{ comment.author.nickname }}</strong> replied on {{ formatDate(comment.postDate) }}</span>
+      </div>
+      <div class="comment-body">
+        <p>{{ comment.content }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    #paginator
+    [length]="totalComments"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

@@ -61,8 +61,9 @@ import { PasswordChangeComponent } from './components/page-components/user/own-p
 import { MatSliderModule } from '@angular/material/slider';
 import { ForumListComponent } from './components/page-components/forum/forum-list.component';
 import { ForumService } from './services/forum.service';
-import { ForumPageComponent } from './components/page-components/forum/forum-page.component';
 import { ForumPostService } from './services/forumPost.service';
+import { ForumPostListComponent } from './components/page-components/forum/forum-post-list.component';
+import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -92,7 +93,8 @@ import { ForumPostService } from './services/forumPost.service';
         EmailChangeComponent,
         PasswordChangeComponent,
         ForumListComponent,
-        ForumPageComponent
+        ForumPostListComponent,
+        ForumPostComponent
     ],
     bootstrap: [AppComponent],
     imports: [
