@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Setter
 public class ForumCommentDTO implements Serializable {
     Long id;
-    ForumPostDTO forumPost;
+    Long forumPostId;
     WebsiteUserDTO author;
     String content;
     LocalDate postDate;

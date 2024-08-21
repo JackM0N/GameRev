@@ -59,7 +59,7 @@ public class ForumCommentService {
 
     public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO) {
         ForumComment forumComment = new ForumComment();
-        forumComment.setForumPost(forumPostRepository.findById(forumCommentDTO.getForumPost().getId())
+        forumComment.setForumPost(forumPostRepository.findById(forumCommentDTO.getForumPostId())
                 .orElseThrow(() -> new RuntimeException("Forum post not found")));
         forumComment.setAuthor(websiteUserService.getCurrentUser());
         forumComment.setContent(forumCommentDTO.getContent());

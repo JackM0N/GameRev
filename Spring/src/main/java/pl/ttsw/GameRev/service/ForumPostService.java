@@ -47,14 +47,12 @@ public class ForumPostService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum not found"));
         Specification<ForumPost> spec = (root, query, builder) -> builder.equal(root.get("forum"), forum);
-
         if (postDateFrom != null) {
             spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
         }
         if (postDateTo != null) {
             spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
         }
-
         if (searchText != null) {
             searchText = searchText.toLowerCase();
             String likePattern = "%" + searchText + "%";
