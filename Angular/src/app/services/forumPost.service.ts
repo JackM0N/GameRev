@@ -9,7 +9,7 @@ import { ForumPost } from '../interfaces/forumPost';
 })
 // Service for handling forum posts
 export class ForumPostService {
-  private baseUrl = 'http://localhost:8080/post';
+  private baseUrl = 'http://localhost:8080/forum-post';
 
   constructor(
     private http: HttpClient,

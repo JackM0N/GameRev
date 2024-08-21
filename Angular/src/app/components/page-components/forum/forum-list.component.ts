@@ -17,7 +17,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public totalSubforums = 0;
   public noSubForums = false;
   public currentForum?: Forum;
-  private forumId: number = 2;
+  private forumId?: number;
   public isSingleForum: boolean = false;
   @ViewChild('paginator') paginator!: MatPaginator;
 
@@ -46,7 +46,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     this.loadForum(this.forumId);
   }
 
-  loadForum(id: number) {
+  loadForum(id?: number) {
     this.currentForum = undefined;
     this.subForumList = [];
     this.noSubForums = false;

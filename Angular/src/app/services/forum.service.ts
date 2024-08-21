@@ -15,7 +15,7 @@ export class ForumService {
     private http: HttpClient,
   ) {}
 
-  getForum(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
+  getForum(id?: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
     var params = new HttpParams();
 
     if (page) {
@@ -36,6 +36,11 @@ export class ForumService {
       }
     }
 
-    return this.http.get<Forum>(`${this.baseUrl}/${id}`, { params });
+    var url = this.baseUrl;
+    if (id) {
+      url += `/${id}`;
+    }
+
+    return this.http.get<Forum>(url, { params });
   }
 }
