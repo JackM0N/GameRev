@@ -29,7 +29,7 @@ public class ForumService {
         this.gameRepository = gameRepository;
     }
 
-    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) throws BadRequestException {
+    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
         Forum forum = forumRepository.findById(id).orElse(null);
         if (forum == null) {
             return null;
@@ -57,18 +57,12 @@ public class ForumService {
 
         Page<Forum> forumPage = new PageImpl<>(forumList, pageable, forums.getTotalElements());
 
-        return forumPage.map(f -> {
-            ForumDTO dto = forumMapper.toDto(f);
-            dto.setNumberOfPosts(f.getForumPosts().size());
-            return dto;
-        });
+        return forumPage.map(forumMapper::toDto);
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) {
         Forum forum = forumMapper.toEntity(forumDTO);
-        if (forumDTO.getIsDeleted() == null) {
-            forum.setIsDeleted(false);
-        }
+        forum.setIsDeleted(false);
         forum = forumRepository.save(forum);
         return forumMapper.toDto(forum);
     }

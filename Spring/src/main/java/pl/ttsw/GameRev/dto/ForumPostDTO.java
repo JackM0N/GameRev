@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,5 +26,6 @@ public class ForumPostDTO implements Serializable {
     String content;
     LocalDate postDate;
     String picture;
-    List<ForumCommentDTO> forumComments;
+    LocalDateTime lastResponseDate;
+    Integer commentCount;
 }

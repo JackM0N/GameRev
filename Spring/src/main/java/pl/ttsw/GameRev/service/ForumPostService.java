@@ -62,6 +62,14 @@ public class ForumPostService {
             ));
         }
         Page<ForumPost> forumPosts = forumPostRepository.findAll(spec, pageable);
+        for (ForumPost forumPost : forumPosts) {
+            forumPost.getAuthor().setPassword(null);
+            forumPost.getAuthor().setUsername(null);
+            forumPost.getAuthor().setEmail(null);
+            forumPost.getAuthor().setIsBanned(null);
+            forumPost.getAuthor().setIsDeleted(null);
+            forumPost.getAuthor().setRoles(null);
+        }
         return forumPosts.map(forumPostMapper::toDto);
     }
 

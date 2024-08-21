@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,6 +31,17 @@ public class Forum {
     @ColumnDefault("false")
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
+
+    @ColumnDefault("MISSING DESCRIPTION")
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @ColumnDefault("0")
+    @Column(name = "post_count", nullable = false)
+    private Integer postCount;
+
+    @Column(name = "last_post_date")
+    private LocalDate lastPostDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_forum_id")
