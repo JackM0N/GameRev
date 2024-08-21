@@ -56,6 +56,15 @@ public class ForumCommentService {
             spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
         }
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
+        //TODO: Add SimplifiedUserDTO for those types of situations
+        for (ForumComment forumComment : forumComments) {
+            forumComment.getAuthor().setPassword(null);
+            forumComment.getAuthor().setUsername(null);
+            forumComment.getAuthor().setEmail(null);
+            forumComment.getAuthor().setIsBanned(null);
+            forumComment.getAuthor().setIsDeleted(null);
+            forumComment.getAuthor().setRoles(null);
+        }
         return forumComments.map(forumCommentMapper::toDto);
     }
 
