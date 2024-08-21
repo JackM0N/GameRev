@@ -51,9 +51,7 @@ public class ForumCommentService {
             String likePattern = "%" + searchText + "%";
             spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
         }
-        System.out.println("What?");
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
-        System.out.println("Vro");
         return forumComments.map(forumCommentMapper::toDto);
     }
 
