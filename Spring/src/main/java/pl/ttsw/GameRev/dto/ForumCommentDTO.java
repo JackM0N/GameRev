@@ -3,11 +3,8 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import pl.ttsw.GameRev.model.ForumPost;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
 
 /**
@@ -18,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 public class ForumCommentDTO implements Serializable {
     Long id;
-    ForumPostDTO forumPost;
+    Long forumPostId;
     WebsiteUserDTO author;
     String content;
     LocalDate postDate;
