@@ -420,3 +420,15 @@ UPDATE forum SET description = 'Literally everything is here' WHERE forum_name =
 UPDATE forum SET description = 'Chaos, control, and everything in between' WHERE forum_name = 'Limbus Company';
 UPDATE forum SET description = 'For strategies, show-offs and suggestions' WHERE forum_name = 'Mirror Dungeon';
 
+
+--changeset Stanislaw:31 labels:expansion,fix
+DO '
+DECLARE
+    new_start_value integer;
+BEGIN
+    SELECT COALESCE(MAX(forum_id), 0) + 1 INTO new_start_value FROM forum;
+
+    EXECUTE ''ALTER SEQUENCE forum_forum_id_seq RESTART WITH '' || new_start_value;
+END
+';
+

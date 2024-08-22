@@ -44,7 +44,7 @@ public class ForumController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createForum(@RequestBody ForumDTO forumDTO){
+    public ResponseEntity<?> createForum(@RequestBody ForumDTO forumDTO) throws BadRequestException {
         if (forumDTO == null){
             return ResponseEntity.badRequest().body("There was an error creating this forum");
         }
