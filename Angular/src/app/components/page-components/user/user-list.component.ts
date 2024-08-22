@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -21,12 +21,11 @@ import { userFilters } from '../../../interfaces/userFilters';
   templateUrl: './user-list.component.html',
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
-export class UserListComponent implements AfterViewInit {
+export class UserListComponent implements OnInit, AfterViewInit {
   public totalUsers: number = 0;
   public dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
   public displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
-  public isAdminOrCritic = false;
-
+  public isAdmin = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -43,9 +42,9 @@ export class UserListComponent implements AfterViewInit {
     public dialog: MatDialog
   ) {}
 
-  ngInit() {
-    this.isAdminOrCritic = this.authService.hasAnyRole(['Admin', 'Critic']);
-    if (this.isAdminOrCritic) {
+  ngOnInit() {
+    this.isAdmin = this.authService.isAdmin();
+    if (this.isAdmin) {
       this.displayedColumns = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
     }
   }
@@ -123,10 +122,12 @@ export class UserListComponent implements AfterViewInit {
   openUnbanDialog(user: WebsiteUser) {
     const dialogTitle = 'User unbanning';
     const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
+    const submitText = 'Unban';
+    const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',
-      data: { dialogTitle, dialogContent }
+      data: { dialogTitle, dialogContent, submitText, cancelText  }
     });
 
     dialogRef.afterClosed().subscribe(result => {

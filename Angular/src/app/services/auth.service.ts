@@ -128,6 +128,10 @@ export class AuthService {
     const userRoles = this.getRoles();
     return userRoles.some(rl1 => roles.some(rl2 => rl1.roleName === rl2));
   }
+  
+  isAdmin(): boolean {
+    return this.hasRole('Admin');
+  }
 
   getUserProfileInformation(token: string): Observable<WebsiteUser> {
     const headers = new HttpHeaders({

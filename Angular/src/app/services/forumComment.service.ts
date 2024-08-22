@@ -11,6 +11,7 @@ import { forumCommentFilters } from '../interfaces/forumCommentFilters';
 export class ForumCommentService {
   private baseUrl = 'http://localhost:8080/post';
   private addUrl = 'http://localhost:8080/post/create';
+  private deleteUrl = 'http://localhost:8080/post/delete';
 
   constructor(
     private http: HttpClient,
@@ -45,5 +46,12 @@ export class ForumCommentService {
       'Authorization': `Bearer ${token}`
     });
     return this.http.post<ForumComment>(this.addUrl, comment, { headers });
+  }
+
+  deleteComment(token: string, id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.delete(`${this.deleteUrl}/${id}`, { headers });
   }
 }

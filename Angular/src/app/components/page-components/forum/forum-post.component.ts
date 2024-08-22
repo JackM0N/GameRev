@@ -12,11 +12,13 @@ import { ForumService } from '../../../services/forum.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ForumComment } from '../../../interfaces/forumComment';
+import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-forum-post',
-  templateUrl: './forum-post.component.html',
-  styleUrls: ['./forum-post.component.css']
+  templateUrl: './forum-post.component.html'
 })
 export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
   @Input() post?: ForumPost;
@@ -36,6 +38,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     private notificationService: NotificationService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
+    public dialog: MatDialog,
     backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -125,13 +128,57 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
         forumPostId: this.post?.id
       };
 
-      //this.commentsList.push(newComment);
-      //this.commentForm.reset();
-
       this.forumCommentService.addComment(token, newComment).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Comment posted successfully', false); },
+        next: () => {
+          this.notificationService.popSuccessToast('Comment posted successfully', false);
+          window.location.reload();
+        },
         error: error => this.notificationService.popErrorToast('Comment posting failed', error)
       });
     }
+  }
+
+  canEditComment(comment: ForumComment) {
+    return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname());
+  }
+
+  canDeleteComment(comment: ForumComment) {
+    return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname()) || this.authService.isAdmin();
+  }
+
+  editComment(comment: any) {
+  }
+
+  openDeleteDialog(comment: ForumComment) {
+    const dialogTitle = 'Deleting comment';
+    const dialogContent = 'Are you sure you want to delete this comment?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.deleteComment(comment.id);
+      }
+    });
+  }
+
+  deleteComment(id: number) {
+    const token = this.authService.getToken();
+
+    if (token === null) {
+      console.error('Token is null');
+      return;
+    }
+
+    this.forumCommentService.deleteComment(token, id).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Comment deleted successfully', false);
+        this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);
+      },
+      error: error => this.notificationService.popErrorToast('Comment deletion failed', error)
+    });
   }
 }
