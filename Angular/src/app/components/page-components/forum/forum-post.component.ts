@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateTime } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   public totalComments: number = 0;
   public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDate = formatDate;
+  public formatDateTime = formatDateTime;
 
   constructor(
     private forumService: ForumService,

@@ -7,6 +7,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumService } from '../../../services/forum.service';
+import { formatDateTime } from '../../../util/formatDate';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -19,6 +20,7 @@ export class ForumPostListComponent extends BaseAdComponent implements AfterView
   public totalPosts: number = 0;
   public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
+  public formatDateTime = formatDateTime;
 
   constructor(
     private forumService: ForumService,

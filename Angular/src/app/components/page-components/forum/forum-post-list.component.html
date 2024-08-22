@@ -21,6 +21,7 @@
         <tr>
           <th>Title</th>
           <th>Author</th>
+          <th>Post date</th>
           <th>Replies</th>
           <th>Last Post</th>
         </tr>
@@ -35,10 +36,13 @@
             <div>{{ post.author.nickname }}</div>
           </td>
           <td>
-            <div>{{ post.repliesCount }}</div>
+            <div>{{ formatDateTime(post.postDate) }}</div>
           </td>
           <td>
-            <div>{{ post.lastPostDate }} by {{ post.lastPostAuthor }}</div>
+            <div>{{ post.commentCount }}</div>
+          </td>
+          <td>
+            <div>{{ post.lastResponseDate ? formatDateTime(post.lastResponseDate) : '-' }}</div>
           </td>
         </tr>
       </tbody>

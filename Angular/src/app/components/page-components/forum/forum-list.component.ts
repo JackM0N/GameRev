@@ -47,10 +47,12 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
+    /*
     this.loadForum(this.forumId);
     if (this.forumId) {
       this.loadPath(this.forumId);
     }
+    */
   }
 
   loadPath(id: number) {
@@ -85,6 +87,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
+        console.log(response);
         if (response && response.content.length > 0) {
           // Separate the first item as the main forum
           this.currentForum = response.content[0];

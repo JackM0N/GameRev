@@ -13,7 +13,7 @@
     <div class="post-header">
       <h2>{{ post.title }}</h2>
       <div class="post-info">
-        <span>By {{ post.author.nickname }} on {{ formatDate(post.postDate) }}</span>
+        <span>By {{ post.author.nickname }} on {{ formatDateTime(post.postDate) }}</span>
       </div>
     </div>
     <div class="post-body">
@@ -25,7 +25,7 @@
   <div class="comments-section">
     <div class="comment" *ngFor="let comment of commentsList; let i = index" [ngClass]="{'comment-odd': i % 2 === 0, 'comment-even': i % 2 !== 0}">
       <div class="comment-header">
-        <span><strong>{{ comment.author.nickname }}</strong> replied on {{ formatDate(comment.postDate) }}</span>
+        <span><strong>{{ comment.author.nickname }}</strong> replied on {{ formatDateTime(comment.postDate) }}</span>
       </div>
       <div class="comment-body">
         <p>{{ comment.content }}</p>
