@@ -51,3 +51,24 @@
 .comment-body {
   font-size: 16px;
 }
+
+.add-comment-section {
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.add-comment-section .post-header h2 {
+  margin: 0 0 10px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.submit-button {
+  margin-top: 20px;
+}
+

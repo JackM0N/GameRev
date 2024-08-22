@@ -9,6 +9,9 @@ import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { formatDateTime } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../../services/auth.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-forum-post',
@@ -17,22 +20,30 @@ import { ForumService } from '../../../services/forum.service';
 })
 export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
   @Input() post?: ForumPost;
-  public commentsList: any[] = [];
-  public totalComments: number = 0;
-  public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
   public formatDateTime = formatDateTime;
 
+  public commentsList: any[] = [];
+  public totalComments: number = 0;
+  public path?: any;
+  public commentForm: FormGroup;
+
   constructor(
+    public authService: AuthService,
     private forumService: ForumService,
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
+    private notificationService: NotificationService,
     private route: ActivatedRoute,
+    private fb: FormBuilder,
     backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
+    this.commentForm = this.fb.group({
+      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(5)]]
+    });
   }
 
   ngOnInit(): void {
@@ -98,5 +109,29 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       },
       error: (error: any) => console.error(error)
     });
+  }
+
+  submitComment() {
+    if (this.commentForm.valid) {
+      const token = this.authService.getToken();
+
+      if (token === null) {
+        console.error('Token is null');
+        return;
+      }
+
+      const newComment = {
+        content: this.commentForm.value.content,
+        forumPostId: this.post?.id
+      };
+
+      //this.commentsList.push(newComment);
+      //this.commentForm.reset();
+
+      this.forumCommentService.addComment(token, newComment).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Comment posted successfully', false); },
+        error: error => this.notificationService.popErrorToast('Comment posting failed', error)
+      });
+    }
   }
 }

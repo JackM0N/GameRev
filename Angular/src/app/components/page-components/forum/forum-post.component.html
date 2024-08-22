@@ -33,6 +33,24 @@
     </div>
   </div>
 
+  <!-- Add comment -->
+  <div class="add-comment-section">
+    <div class="post-header">
+      <h2>Add a Comment</h2>
+    </div>
+    <div class="post-body">
+      <form [formGroup]="commentForm" (ngSubmit)="submitComment()" >
+        <mat-form-field class="full-width">
+          <textarea matInput [placeholder]="authService.isAuthenticated() ? 'Write your comment here...': 'Log in to be able to post a comment'" formControlName="content" rows="4"></textarea>
+        </mat-form-field>
+  
+        <div class="submit-button">
+          <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Paginator -->
   <mat-paginator
     #paginator

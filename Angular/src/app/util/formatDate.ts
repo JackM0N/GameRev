@@ -27,7 +27,7 @@ export function formatDateTime(dateTimeArray: number[] | undefined): string {
     return 'Unknown';
   }
 
-  if (dateTimeArray.length !== 6) {
+  if (dateTimeArray.length < 6) {
     return 'Invalid date';
   }
 

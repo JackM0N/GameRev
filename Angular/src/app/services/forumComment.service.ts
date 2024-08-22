@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ForumComment } from '../interfaces/forumComment';
 import { forumCommentFilters } from '../interfaces/forumCommentFilters';
@@ -10,6 +10,7 @@ import { forumCommentFilters } from '../interfaces/forumCommentFilters';
 // Service for handling forum comments
 export class ForumCommentService {
   private baseUrl = 'http://localhost:8080/post';
+  private addUrl = 'http://localhost:8080/post/create';
 
   constructor(
     private http: HttpClient,
@@ -37,5 +38,12 @@ export class ForumCommentService {
     }
 
     return this.http.get<ForumComment[]>(`${this.baseUrl}/${id}`, { params });
+  }
+
+  addComment(token: string, comment: any): Observable<ForumComment> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<ForumComment>(this.addUrl, comment, { headers });
   }
 }
