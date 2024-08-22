@@ -3,7 +3,7 @@ import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
@@ -28,7 +28,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
     private route: ActivatedRoute,
-    private router: Router,
     backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -72,7 +71,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumPostService.getPost(id).subscribe({
       next: (response: any) => {
-        console.log("post", response);
         if (response && response.content.length > 0) {
           this.post = response;
         }
@@ -94,7 +92,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumCommentService.getComments(id, page, size).subscribe({
       next: (response: any) => {
-        console.log("comments", response);
         if (response && response.content.length > 0) {
           this.commentsList = response.content;
         }

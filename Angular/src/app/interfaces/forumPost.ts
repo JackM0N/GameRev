@@ -10,5 +10,7 @@ export interface ForumPost {
   content: string,
   postDate: [],
   picture: string,
-  forumComments: ForumComment[]
+  forumComments: ForumComment[],
+  commentCount: number,
+  lastResponseDate: []
 }

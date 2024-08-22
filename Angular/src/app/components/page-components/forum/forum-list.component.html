@@ -31,9 +31,7 @@
             {{ subforum.postCount }} Post(s)
           </td>
           <td>
-            <p>Last post by user</p>
-            <p>in <a class="cursor-pointer"> postTitle </a></p>
-            <p>on date</p>
+            <p>Last post on {{ formatDateTime(subforum.lastPostDate) }}</p>
           </td>
         </tr>
       </tbody>

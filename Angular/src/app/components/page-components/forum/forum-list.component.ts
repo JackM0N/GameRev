@@ -6,6 +6,7 @@ import { ForumService } from '../../../services/forum.service';
 import { Forum } from '../../../interfaces/forum';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatDateTime } from '../../../util/formatDate';
 
 @Component({
   selector: 'app-forum-list',
@@ -21,6 +22,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public isSingleForum: boolean = false;
   public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
+  public formatDateTime = formatDateTime;
 
   constructor(
     private forumService: ForumService,
@@ -35,24 +37,17 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.forumId = +params['id'];
-        this.loadForum(this.forumId);
-        if (this.forumId) {
-          this.loadPath(this.forumId);
-        }
-      }
+      this.forumId = params['id'];
     });
   }
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
-    /*
+    
     this.loadForum(this.forumId);
     if (this.forumId) {
       this.loadPath(this.forumId);
     }
-    */
   }
 
   loadPath(id: number) {
@@ -87,7 +82,6 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
-        console.log(response);
         if (response && response.content.length > 0) {
           // Separate the first item as the main forum
           this.currentForum = response.content[0];
@@ -106,6 +100,8 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   }
 
   navigateToSubforum(id: number) {
-    this.router.navigate(['forum', id]);
+    this.router.navigateByUrl('/dummyRoute', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['forum', id]);
+    });
   }
 }

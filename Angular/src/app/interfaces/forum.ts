@@ -12,4 +12,5 @@ export interface Forum {
   forumPosts: ForumPost[],
   postCount: number,
   description: string,
+  lastPostDate: []
 }

@@ -17,8 +17,11 @@ import { UserListComponent } from './components/page-components/user/user-list.c
 import { AuthGuard } from './auth.guard';
 import { ForumListComponent } from './components/page-components/forum/forum-list.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
+import { DummyRouteComponent } from './components/general-components/dummy-route.component';
 
 const routes: Routes = [
+  { path: 'dummyRoute', component: DummyRouteComponent},
+
   { path: '', component: ForumListComponent},
   { path: 'forum/:id', component: ForumListComponent},
   { path: 'forum/:forumid/post/:postid', component: ForumPostComponent},

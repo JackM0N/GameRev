@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumService } from '../../../services/forum.service';
 import { formatDateTime } from '../../../util/formatDate';
+import { ForumPost } from '../../../interfaces/forumPost';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -16,7 +17,7 @@ import { formatDateTime } from '../../../util/formatDate';
 })
 export class ForumPostListComponent extends BaseAdComponent implements AfterViewInit {
   @Input() currentForum?: Forum;
-  public postList: any[] = [];
+  public postList: ForumPost[] = [];
   public totalPosts: number = 0;
   public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
@@ -71,7 +72,6 @@ export class ForumPostListComponent extends BaseAdComponent implements AfterView
 
     this.forumPostService.getPosts(id, page, size).subscribe({
       next: (response: any) => {
-        console.log(response);
         if (response && response.content.length > 0) {
           this.postList = response.content;
         }
