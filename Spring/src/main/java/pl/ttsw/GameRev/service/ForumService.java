@@ -86,9 +86,12 @@ public class ForumService {
         if (forumDTO.getForumName() != null) {
             forum.setForumName(forumDTO.getForumName());
         }
+        if (forumDTO.getDescription() != null) {
+            forum.setDescription(forumDTO.getDescription());
+        }
         if (forumDTO.getParentForumId() != null){
             Forum foundForum = forumRepository.findById(forumDTO.getParentForumId())
-                    .orElseThrow(() -> new BadRequestException("Forum not found"));
+                    .orElseThrow(() -> new BadRequestException("Parent forum not found"));
             forum.setParentForum(foundForum);
         }
         return forumMapper.toDto(forum);
