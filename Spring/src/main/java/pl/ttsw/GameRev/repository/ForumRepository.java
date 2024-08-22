@@ -23,11 +23,11 @@ public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecific
             "  INNER JOIN forum f ON f.forum_id = fp.forum_id " +
             "  LEFT JOIN forum_comment fc ON fc.forum_post_id = fp.forum_post_id " +
             "  LEFT JOIN website_user wu ON fc.author_id = wu.user_id " +
-            "  WHERE f.parent_forum_id = :parentForumId " +
+            "  WHERE f.forum_id = :forumId " +
             ") " +
             "SELECT forum_id, forum_name, forum_post_id, title, last_response_date, nickname " +
             "FROM RankedPosts " +
             "WHERE rn = 1",
             nativeQuery = true)
-    List<String[]> findTopPostsForSubforums(@Param("parentForumId") Long parentForumId);
+    String[] findTopPostForForum(@Param("forumId") Long forumId);
 }

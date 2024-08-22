@@ -13,8 +13,6 @@ import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.service.ForumService;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -127,12 +125,10 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void howToUnpack_findTopPostsForSubforums() {
-        List<String[]> result = forumRepository.findTopPostsForSubforums(1L);
-        for (String[] row : result) {
-            for (String obj : row) {
-                System.out.println(obj);
-            }
+    public void howToUnpack_findTopPostForForum() {
+        String[] result = forumRepository.findTopPostForForum(1L);
+        for (String str : result) {
+            System.out.println(str);
         }
     }
 }
