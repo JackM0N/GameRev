@@ -7,8 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.Forum;
 
-import java.util.List;
-
 @Repository
 public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecificationExecutor<Forum> {
     @Query(value = "WITH RankedPosts AS ( " +
@@ -29,5 +27,5 @@ public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecific
             "FROM RankedPosts " +
             "WHERE rn = 1",
             nativeQuery = true)
-    String[] findTopPostForForum(@Param("forumId") Long forumId);
+    String findTopPostForForum(@Param("forumId") Long forumId);
 }

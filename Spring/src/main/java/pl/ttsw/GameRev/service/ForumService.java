@@ -57,7 +57,11 @@ public class ForumService {
 
         Page<Forum> forumPage = new PageImpl<>(forumList, pageable, forums.getTotalElements());
 
-        return forumPage.map(forumMapper::toDto);
+        return forumPage.map(f -> {
+            ForumDTO dto = forumMapper.toDto(f);
+            dto.setTopPost(forumRepository.findTopPostForForum(dto.getId()));
+            return dto;
+        });
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
