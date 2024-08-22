@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class ForumPostService {
@@ -80,7 +81,7 @@ public class ForumPostService {
                 .orElseThrow(() -> new RuntimeException("Forum not found")));
         forumPost.setAuthor(websiteUserService.getCurrentUser());
         forumPost.setContent(forumPostDTO.getContent());
-        forumPost.setPostDate(LocalDate.now());
+        forumPost.setPostDate(LocalDateTime.now());
         forumPost.setTitle(forumPostDTO.getTitle());
 
         Path filepath = null;

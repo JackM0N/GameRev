@@ -4,12 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -36,13 +33,13 @@ public class ForumPost {
     private String content;
 
     @Column(name = "post_date", nullable = false)
-    private LocalDate postDate;
+    private LocalDateTime postDate;
 
     @Column(name = "picture")
     private String picture;
 
     @Column(name = "last_response_date")
-    private LocalDate lastResponseDate;
+    private LocalDateTime lastResponseDate;
 
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount;
