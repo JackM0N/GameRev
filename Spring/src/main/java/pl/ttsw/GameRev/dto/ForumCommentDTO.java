@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.ForumComment}
@@ -18,5 +18,5 @@ public class ForumCommentDTO implements Serializable {
     Long forumPostId;
     WebsiteUserDTO author;
     String content;
-    LocalDate postDate;
+    LocalDateTime postDate;
 }

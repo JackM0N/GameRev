@@ -17,7 +17,7 @@ import pl.ttsw.GameRev.repository.ForumCommentRepository;
 import pl.ttsw.GameRev.repository.ForumPostRepository;
 import pl.ttsw.GameRev.repository.RoleRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class ForumCommentService {
@@ -82,7 +82,7 @@ public class ForumCommentService {
                 .orElseThrow(() -> new RuntimeException("Forum post not found")));
         forumComment.setAuthor(websiteUserService.getCurrentUser());
         forumComment.setContent(forumCommentDTO.getContent());
-        forumComment.setPostDate(LocalDate.now());
+        forumComment.setPostDate(LocalDateTime.now());
         forumCommentRepository.save(forumComment);
         return forumCommentMapper.toDto(forumComment);
     }
