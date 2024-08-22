@@ -23,5 +23,6 @@ public class ForumDTO implements Serializable {
     String description;
     Integer postCount;
     LocalDateTime lastPostDate;
+    String topPost;
     List<WebsiteUserDTO> forumModeratorsDTO;
 }
