@@ -26,8 +26,6 @@ import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserGameService;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -100,11 +98,14 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
-    public void testGetUserGame_EmptyLibrary() {
+    public void testGetUserGame_EmptyLibrary() throws BadRequestException {
         Pageable pageable = PageRequest.of(0, 10);
         userGameRepository.findByUserNickname("testcritic", pageable);
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null,null,null,"testcritic", pageable));
+        Page<UserGameDTO> result = userGameService.getUserGame(null,null,null,"testcritic", pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
