@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Forum {
     private Integer postCount;
 
     @Column(name = "last_post_date")
-    private LocalDate lastPostDate;
+    private LocalDateTime lastPostDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_forum_id")
