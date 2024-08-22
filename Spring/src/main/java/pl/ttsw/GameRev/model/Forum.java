@@ -5,12 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -49,9 +46,13 @@ public class Forum {
     private Forum parentForum;
 
     @OneToMany(mappedBy = "forum")
-    private List<ForumModerator> forumModerators = new ArrayList<>();
-
-    @OneToMany(mappedBy = "forum")
     private List<ForumPost> forumPosts = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(
+            name = "forum_moderator",
+            joinColumns = @JoinColumn(name = "forum_id"),
+            inverseJoinColumns = @JoinColumn(name = "moderator_id")
+    )
+    private List<WebsiteUser> forumModerators = new ArrayList<>();
 }
