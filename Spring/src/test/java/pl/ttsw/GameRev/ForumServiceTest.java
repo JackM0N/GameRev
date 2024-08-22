@@ -1,6 +1,5 @@
 package pl.ttsw.GameRev;
 
-import jakarta.persistence.criteria.Join;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,19 +80,64 @@ class ForumServiceTest {
     }
 
     @Test
-    public void testCreateForum_Success() {
+    public void testCreateForum_Success() throws BadRequestException {
         ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setGameTitle("Limbus Company");
+        forumDTO.setForumName("New Forum");
+        forumDTO.setDescription("Description of the new forum");
+        forumDTO.setParentForumId(1L);
+
+        Game game = new Game();
+        when(gameRepository.findGameByTitle(forumDTO.getGameTitle())).thenReturn(Optional.of(game));
+        Forum parentForum = new Forum();
+        when(forumRepository.findById(forumDTO.getParentForumId())).thenReturn(Optional.of(parentForum));
         Forum forum = new Forum();
-        when(forumMapper.toEntity(forumDTO)).thenReturn(forum);
-        when(forumRepository.save(forum)).thenReturn(forum);
-        when(forumMapper.toDto(forum)).thenReturn(forumDTO);
+        when(forumRepository.save(any(Forum.class))).thenReturn(forum);
+        ForumDTO expectedForumDTO = new ForumDTO();
+        when(forumMapper.toDto(any(Forum.class))).thenReturn(expectedForumDTO);
 
         ForumDTO result = forumService.createForum(forumDTO);
 
         assertNotNull(result);
-        verify(forumMapper).toEntity(forumDTO);
-        verify(forumRepository).save(forum);
+        verify(gameRepository).findGameByTitle(forumDTO.getGameTitle());
+        verify(forumRepository).findById(forumDTO.getParentForumId());
+        verify(forumRepository).save(any(Forum.class));
         verify(forumMapper).toDto(forum);
+    }
+
+    @Test
+    public void testCreateForum_GameNotFound() {
+        ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setGameTitle("Gimbus Company");
+        forumDTO.setParentForumId(1L);
+
+        when(gameRepository.findGameByTitle(forumDTO.getGameTitle())).thenReturn(Optional.empty());
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> forumService.createForum(forumDTO));
+
+        assertEquals("Game not found", exception.getMessage());
+
+        verify(gameRepository).findGameByTitle(forumDTO.getGameTitle());
+        verify(forumRepository, never()).save(any(Forum.class));
+        verify(forumMapper, never()).toDto(any(Forum.class));
+    }
+
+    @Test
+    public void testCreateForum_ParentForumNotFound() {
+        ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setGameTitle("Limbus Company");
+        forumDTO.setParentForumId(999L);
+
+        Game game = new Game();
+        when(gameRepository.findGameByTitle(forumDTO.getGameTitle())).thenReturn(Optional.of(game));
+        when(forumRepository.findById(forumDTO.getParentForumId())).thenReturn(Optional.empty());
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> forumService.createForum(forumDTO));
+        assertEquals("Parent forum not found", exception.getMessage());
+
+        verify(gameRepository).findGameByTitle(forumDTO.getGameTitle());
+        verify(forumRepository).findById(forumDTO.getParentForumId());
+        verify(forumRepository, never()).save(any(Forum.class));
+        verify(forumMapper, never()).toDto(any(Forum.class));
     }
 
     @Test

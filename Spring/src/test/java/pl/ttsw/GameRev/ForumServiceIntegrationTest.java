@@ -10,7 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.ForumDTO;
+import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.service.ForumService;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +25,8 @@ public class ForumServiceIntegrationTest {
     private ForumService forumService;
 
     Pageable pageable = PageRequest.of(0, 10);
+    @Autowired
+    private ForumRepository forumRepository;
 
     @Test
     @Transactional
@@ -49,10 +54,11 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testCreateForum_Success() {
+    public void testCreateForum_Success() throws BadRequestException {
         ForumDTO forumDTO = new ForumDTO();
-        forumDTO.setForumName("New Forum");
         forumDTO.setGameTitle("Limbus Company");
+        forumDTO.setForumName("New Forum");
+        forumDTO.setDescription("Description of the new forum");
         forumDTO.setParentForumId(1L);
 
         ForumDTO createdForum = forumService.createForum(forumDTO);
@@ -60,7 +66,36 @@ public class ForumServiceIntegrationTest {
         assertNotNull(createdForum);
         assertEquals("New Forum", createdForum.getForumName());
         assertEquals("Limbus Company", createdForum.getGameTitle());
+        assertEquals("Description of the new forum", createdForum.getDescription());
         assertEquals(1L, createdForum.getParentForumId());
+        assertEquals(0, createdForum.getPostCount());
+        assertFalse(createdForum.getIsDeleted());
+    }
+
+    @Test
+    @Transactional
+    public void testCreateForum_GameNotFound() {
+        ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setGameTitle("Gimbus Company");
+        forumDTO.setForumName("New Forum");
+        forumDTO.setDescription("Description of the new forum");
+        forumDTO.setParentForumId(1L);
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> forumService.createForum(forumDTO));
+        assertEquals("Game not found", exception.getMessage());
+    }
+
+    @Test
+    @Transactional
+    public void testCreateForum_ParentForumNotFound() {
+        ForumDTO forumDTO = new ForumDTO();
+        forumDTO.setGameTitle("Limbus Company");
+        forumDTO.setForumName("New Forum");
+        forumDTO.setDescription("Description of the new forum");
+        forumDTO.setParentForumId(999L);
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> forumService.createForum(forumDTO));
+        assertEquals("Parent forum not found", exception.getMessage());
     }
 
     @Test
@@ -88,5 +123,16 @@ public class ForumServiceIntegrationTest {
         Page<ForumDTO> forums = forumService.getForum(1L, null, null, PageRequest.of(0, 10));
         assertFalse(forums.getContent().stream()
                 .anyMatch(forum -> forum.getId().equals(forumId) && !forum.getIsDeleted()));
+    }
+
+    @Test
+    @Transactional
+    public void howToUnpack_findTopPostsForSubforums() {
+        List<String[]> result = forumRepository.findTopPostsForSubforums(1L);
+        for (String[] row : result) {
+            for (String obj : row) {
+                System.out.println(obj);
+            }
+        }
     }
 }
