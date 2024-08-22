@@ -3,14 +3,9 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.ForumPost}
@@ -24,7 +19,7 @@ public class ForumPostDTO implements Serializable {
     WebsiteUserDTO author;
     String title;
     String content;
-    LocalDate postDate;
+    LocalDateTime postDate;
     String picture;
     LocalDateTime lastResponseDate;
     Integer commentCount;
