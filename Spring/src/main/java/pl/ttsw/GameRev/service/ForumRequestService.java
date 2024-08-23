@@ -35,6 +35,14 @@ public class ForumRequestService {
         return forumRequests.map(forumRequestMapper::toDto);
     }
 
+    public Page<ForumRequestDTO> getAllForumRequestsByUser(Boolean approved, Pageable pageable) {
+        Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("author"), websiteUserService.getCurrentUser()));
+
+        Page<ForumRequest> forumRequests = forumRequestRepository.findAll(spec, pageable);
+        return forumRequests.map(forumRequestMapper::toDto);
+    }
+
     public ForumRequestDTO getForumRequestById(Long id) {
         ForumRequest forumRequest = forumRequestRepository.findById(id).orElse(null);
         if(forumRequest == null) {
@@ -42,6 +50,7 @@ public class ForumRequestService {
         }
         return forumRequestMapper.toDto(forumRequest);
     }
+
 
     public ForumRequestDTO createForumRequest(ForumRequestDTO forumRequestDTO) throws BadRequestException {
         if(forumRepository.existsForumByForumName(forumRequestDTO.getForumName())){
@@ -76,6 +85,13 @@ public class ForumRequestService {
             forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())
                     .orElseThrow(() -> new RuntimeException("Parent forum not found")));
         }
+        return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
+    }
+
+    public ForumRequestDTO approveForumRequest(Long id, Boolean approval) throws BadRequestException {
+        ForumRequest forumRequest = forumRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forum request not found"));
+        forumRequest.setApproved(approval);
         return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
     }
 
