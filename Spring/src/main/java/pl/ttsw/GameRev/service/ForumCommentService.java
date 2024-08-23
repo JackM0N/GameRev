@@ -74,6 +74,12 @@ public class ForumCommentService {
         if (post == null) {
             return null;
         }
+        post.getAuthor().setPassword(null);
+        post.getAuthor().setUsername(null);
+        post.getAuthor().setEmail(null);
+        post.getAuthor().setIsBanned(null);
+        post.getAuthor().setIsDeleted(null);
+        post.getAuthor().setRoles(null);
         return forumPostMapper.toDto(post);
     }
 
