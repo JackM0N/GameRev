@@ -60,7 +60,7 @@ public class ForumRequestController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> updateForumRequest(@RequestBody ForumRequestDTO forumRequestDTO, @PathVariable Long id) throws BadRequestException {
+    public ResponseEntity<?> updateForumRequest(@RequestBody ForumRequestDTO forumRequestDTO, @PathVariable Long id) {
         if (forumRequestDTO == null) {
             return ResponseEntity.badRequest().body("There was an error editing this forum request");
         }
@@ -77,7 +77,7 @@ public class ForumRequestController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteForumRequest(@PathVariable Long id) throws BadRequestException {
+    public ResponseEntity<?> deleteForumRequest(@PathVariable Long id) {
         boolean deleted = forumRequestService.deleteForumRequest(id);
         if (!deleted) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

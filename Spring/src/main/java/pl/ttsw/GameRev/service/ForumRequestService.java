@@ -4,10 +4,12 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumRequestDTO;
 import pl.ttsw.GameRev.mapper.ForumRequestMapper;
 import pl.ttsw.GameRev.model.ForumRequest;
+import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.ForumRequestRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
@@ -68,24 +70,33 @@ public class ForumRequestService {
         return forumRequestMapper.toDto(forumRequest);
     }
 
-    public ForumRequestDTO updateForumRequest(Long id, ForumRequestDTO forumRequestDTO) throws BadRequestException {
+    public ForumRequestDTO updateForumRequest(Long id, ForumRequestDTO forumRequestDTO) {
         ForumRequest forumRequest = forumRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum request not found"));
-        if (forumRequestDTO.getGame().getId() != null){
-            forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
-                    .orElseThrow(() -> new RuntimeException("Game not found")));
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+
+        boolean isAuthor = forumRequest.getAuthor().equals(currentUser);
+        boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()));
+        if(isAuthor || isAdmin) {
+            if (forumRequestDTO.getGame().getId() != null) {
+                forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
+                        .orElseThrow(() -> new RuntimeException("Game not found")));
+            }
+            if (forumRequestDTO.getForumName() != null) {
+                forumRequest.setForumName(forumRequestDTO.getForumName());
+            }
+            if (forumRequestDTO.getDescription() != null) {
+                forumRequest.setDescription(forumRequestDTO.getDescription());
+            }
+            if (forumRequestDTO.getParentForum() != null) {
+                forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())
+                        .orElseThrow(() -> new RuntimeException("Parent forum not found")));
+            }
+            return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
+        }else {
+            throw new BadCredentialsException("You dont have permission to perform this action");
         }
-        if (forumRequestDTO.getForumName() != null) {
-            forumRequest.setForumName(forumRequestDTO.getForumName());
-        }
-        if (forumRequestDTO.getDescription() != null) {
-            forumRequest.setDescription(forumRequestDTO.getDescription());
-        }
-        if (forumRequestDTO.getParentForum() != null) {
-            forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())
-                    .orElseThrow(() -> new RuntimeException("Parent forum not found")));
-        }
-        return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
     }
 
     public ForumRequestDTO approveForumRequest(Long id, Boolean approval) throws BadRequestException {
@@ -98,7 +109,16 @@ public class ForumRequestService {
     public boolean deleteForumRequest(Long id) {
         ForumRequest forumRequest = forumRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum request not found"));
-        forumRequestRepository.delete(forumRequest);
-        return true;
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+
+        boolean isAuthor = forumRequest.getAuthor().equals(currentUser);
+        boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()));
+        if(isAuthor || isAdmin) {
+            forumRequestRepository.delete(forumRequest);
+            return true;
+        }else {
+            throw new BadCredentialsException("You dont have permission to perform this action");
+        }
     }
 }
