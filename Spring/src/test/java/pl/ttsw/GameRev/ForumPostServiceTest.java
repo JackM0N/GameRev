@@ -209,10 +209,10 @@ public class ForumPostServiceTest {
         ForumPost forumPost = new ForumPost();
         forumPost.setId(postId);
         WebsiteUser author = new WebsiteUser();
-        author.setNickname("aa");
+        author.setNickname("author");
         forumPost.setAuthor(author);
         WebsiteUser otherUser = new WebsiteUser();
-        otherUser.setNickname("bb");
+        otherUser.setNickname("otherUser");
         assertNotEquals(author, otherUser);
 
         when(forumPostRepository.findById(postId)).thenReturn(Optional.of(forumPost));
