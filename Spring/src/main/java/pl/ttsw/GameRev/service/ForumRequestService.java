@@ -1,5 +1,9 @@
 package pl.ttsw.GameRev.service;
 
+import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumRequestDTO;
 import pl.ttsw.GameRev.mapper.ForumRequestMapper;
@@ -24,7 +28,25 @@ public class ForumRequestService {
         this.forumRequestMapper = forumRequestMapper;
     }
 
-    public ForumRequestDTO createForumRequest(ForumRequestDTO forumRequestDTO) {
+    public Page<ForumRequestDTO> getAllForumRequests(Boolean approved, Pageable pageable) {
+        Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
+
+        Page<ForumRequest> forumRequests = forumRequestRepository.findAll(spec, pageable);
+        return forumRequests.map(forumRequestMapper::toDto);
+    }
+
+    public ForumRequestDTO getForumRequestById(Long id) {
+        ForumRequest forumRequest = forumRequestRepository.findById(id).orElse(null);
+        if(forumRequest == null) {
+            return null;
+        }
+        return forumRequestMapper.toDto(forumRequest);
+    }
+
+    public ForumRequestDTO createForumRequest(ForumRequestDTO forumRequestDTO) throws BadRequestException {
+        if(forumRepository.existsForumByForumName(forumRequestDTO.getForumName())){
+            throw new BadRequestException("Forum name already exists");
+        }
         ForumRequest forumRequest = new ForumRequest();
         forumRequest.setForumName(forumRequestDTO.getForumName());
         forumRequest.setDescription(forumRequestDTO.getDescription());

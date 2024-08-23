@@ -28,4 +28,5 @@ public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecific
             "WHERE rn = 1",
             nativeQuery = true)
     String findTopPostForForum(@Param("forumId") Long forumId);
+    boolean existsForumByForumName(String forumName);
 }
