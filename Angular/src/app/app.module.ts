@@ -64,6 +64,7 @@ import { ForumService } from './services/forum.service';
 import { ForumPostService } from './services/forumPost.service';
 import { ForumPostListComponent } from './components/page-components/forum/forum-post-list.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
+import { ForumCommentEditDialogComponent } from './components/page-components/forum/forum-comment-edit-dialog.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -94,7 +95,8 @@ import { ForumPostComponent } from './components/page-components/forum/forum-pos
         PasswordChangeComponent,
         ForumListComponent,
         ForumPostListComponent,
-        ForumPostComponent
+        ForumPostComponent,
+        ForumCommentEditDialogComponent
     ],
     bootstrap: [AppComponent],
     imports: [

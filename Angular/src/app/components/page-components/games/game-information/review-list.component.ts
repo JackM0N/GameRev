@@ -12,7 +12,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
 import { Game } from '../../../../interfaces/game';
 import { Report } from '../../../../interfaces/report';
-import { formatDateArray } from '../../../../util/formatDate';
+import { formatDate } from '../../../../util/formatDate';
 import { NotificationService } from '../../../../services/notification.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
@@ -34,7 +34,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   public reviewList: UserReview[] = [];
   public totalReviews: number = 0;
-  public formatDate = formatDateArray;
+  public formatDate = formatDate;
   private filters: reviewFilters = {};
 
   private report: Report = {

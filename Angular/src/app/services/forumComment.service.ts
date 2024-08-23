@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ForumComment } from '../interfaces/forumComment';
 import { forumCommentFilters } from '../interfaces/forumCommentFilters';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,12 @@ import { forumCommentFilters } from '../interfaces/forumCommentFilters';
 export class ForumCommentService {
   private baseUrl = 'http://localhost:8080/post';
   private addUrl = 'http://localhost:8080/post/create';
+  private editUrl = 'http://localhost:8080/edit';
   private deleteUrl = 'http://localhost:8080/post/delete';
 
   constructor(
     private http: HttpClient,
+    private sanitizer: DomSanitizer
   ) {}
 
   getComments(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumCommentFilters): Observable<ForumComment[]> {
@@ -41,11 +44,28 @@ export class ForumCommentService {
     return this.http.get<ForumComment[]>(`${this.baseUrl}/${id}`, { params });
   }
 
-  addComment(token: string, comment: any): Observable<ForumComment> {
+  editComment(token: string, comment: any): Observable<ForumComment> {
+    const sanitizedComment = {
+      ...comment,
+      content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
+    };
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.post<ForumComment>(this.addUrl, comment, { headers });
+    return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, sanitizedComment, { headers });
+  }
+
+  addComment(token: string, comment: any): Observable<ForumComment> {
+    const sanitizedComment = {
+      ...comment,
+      content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
+    };
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<ForumComment>(this.addUrl, sanitizedComment, { headers });
   }
 
   deleteComment(token: string, id: number): Observable<any> {

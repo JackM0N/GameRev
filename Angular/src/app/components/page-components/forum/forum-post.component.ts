@@ -14,7 +14,9 @@ import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumComment } from '../../../interfaces/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
+import { trimmedValidator } from '../../../validators/trimmedValidator';
 
 @Component({
   selector: 'app-forum-post',
@@ -29,6 +31,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   public totalComments: number = 0;
   public path?: any;
   public commentForm: FormGroup;
+  public minLength: number = 4;
 
   constructor(
     public authService: AuthService,
@@ -45,7 +48,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   ) {
     super(adService, backgroundService, cdRef);
     this.commentForm = this.fb.group({
-      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(5)]]
+      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]]
     });
   }
 
@@ -146,7 +149,22 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname()) || this.authService.isAdmin();
   }
 
-  editComment(comment: any) {
+
+  openEditCommentDialog(comment: ForumComment) {
+    const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
+      width: '300px',
+      data: { commentContent: comment.content }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.editComment(comment, dialogRef);
+      }
+    });
+  }
+
+  editComment(comment: ForumComment, dialogRef: MatDialogRef<ForumCommentEditDialogComponent>) {
+    
   }
 
   openDeleteDialog(comment: ForumComment) {
