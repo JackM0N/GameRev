@@ -44,6 +44,12 @@ public class ForumPost {
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToMany(mappedBy = "forumPost")
     private List<ForumComment> forumComments = new ArrayList<>();
 }
