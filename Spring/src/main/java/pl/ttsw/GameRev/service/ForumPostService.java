@@ -10,11 +10,8 @@ import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.ForumPostRepository;
-import pl.ttsw.GameRev.repository.ForumRepository;
+import pl.ttsw.GameRev.repository.*;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
-import pl.ttsw.GameRev.repository.RoleRepository;
-import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,16 +27,18 @@ public class ForumPostService {
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserRepository websiteUserRepository;
     private final RoleRepository roleRepository;
+    private final ForumModeratorRepository forumModeratorRepository;
 
     private final String postPicDirectory = "../Pictures/post_pics";
     private final WebsiteUserService websiteUserService;
 
-    public ForumPostService(ForumPostRepository forumPostRepository, ForumRepository forumRepository, ForumPostMapper forumPostMapper, WebsiteUserRepository websiteUserRepository, RoleRepository roleRepository, WebsiteUserService websiteUserService) {
+    public ForumPostService(ForumPostRepository forumPostRepository, ForumRepository forumRepository, ForumPostMapper forumPostMapper, WebsiteUserRepository websiteUserRepository, RoleRepository roleRepository, ForumModeratorRepository forumModeratorRepository, WebsiteUserService websiteUserService) {
         this.forumPostRepository = forumPostRepository;
         this.forumRepository = forumRepository;
         this.forumPostMapper = forumPostMapper;
         this.websiteUserRepository = websiteUserRepository;
         this.roleRepository = roleRepository;
+        this.forumModeratorRepository = forumModeratorRepository;
         this.websiteUserService = websiteUserService;
     }
 
@@ -83,6 +82,7 @@ public class ForumPostService {
         forumPost.setContent(forumPostDTO.getContent());
         forumPost.setPostDate(LocalDateTime.now());
         forumPost.setTitle(forumPostDTO.getTitle());
+        forumPost.setCommentCount(0);
 
         Path filepath = null;
         try {
@@ -150,7 +150,15 @@ public class ForumPostService {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumPost forumPost = forumPostRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum post not found"));
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumPost.getAuthor()){
+        Forum forum = forumPost.getForum();
+
+        boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()));
+        boolean isAuthor = currentUser.equals(forumPost.getAuthor());
+
+        boolean isModerator = forumModeratorRepository.existsByForumAndModerator(forum, currentUser);
+
+        if (isAdmin || isAuthor || isModerator) {
             forumPostRepository.delete(forumPost);
             return true;
         }else {

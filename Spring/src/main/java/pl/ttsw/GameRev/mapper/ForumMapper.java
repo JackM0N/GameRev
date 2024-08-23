@@ -8,10 +8,12 @@ import pl.ttsw.GameRev.model.Forum;
 public interface ForumMapper {
     @Mapping(source = "gameTitle", target = "game.title")
     @Mapping(source = "parentForumId", target = "parentForum.id")
+    @Mapping(target = "forumModerators", ignore = true)
     Forum toEntity(ForumDTO forumDTO);
 
     @Mapping(source = "parentForum.id", target = "parentForumId")
     @Mapping(source = "game.title", target = "gameTitle")
+    @Mapping(source = "forumModerators", target = "forumModeratorsDTO")
     ForumDTO toDto(Forum forum);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

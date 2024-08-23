@@ -9,10 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.mapper.ForumMapper;
+import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
+import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
+import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,13 @@ public class ForumService {
     private final ForumRepository forumRepository;
     private final ForumMapper forumMapper;
     private final GameRepository gameRepository;
+    private final WebsiteUserRepository websiteUserRepository;
 
-    public ForumService(ForumRepository forumRepository, ForumMapper forumMapper, GameRepository gameRepository) {
+    public ForumService(ForumRepository forumRepository, ForumMapper forumMapper, GameRepository gameRepository, WebsiteUserRepository websiteUserRepository) {
         this.forumRepository = forumRepository;
         this.forumMapper = forumMapper;
         this.gameRepository = gameRepository;
+        this.websiteUserRepository = websiteUserRepository;
     }
 
     public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
@@ -74,6 +79,10 @@ public class ForumService {
                 .orElseThrow(() -> new BadRequestException("Parent forum not found")));
         forum.setPostCount(0);
         forum.setIsDeleted(false);
+        if (forumDTO.getForumModeratorsIds() != null) {
+            List<WebsiteUser> moderators = websiteUserRepository.findAllById(forumDTO.getForumModeratorsIds());
+            forum.setForumModerators(moderators);
+        }
         forum = forumRepository.save(forum);
         return forumMapper.toDto(forum);
     }
