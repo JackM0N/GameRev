@@ -35,7 +35,7 @@ public class ForumRequestService {
         return forumRequests.map(forumRequestMapper::toDto);
     }
 
-    public Page<ForumRequestDTO> getAllForumRequestsByUser(Boolean approved, Pageable pageable) {
+    public Page<ForumRequestDTO> getAllForumRequestsByOwner(Boolean approved, Pageable pageable) {
         Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
         spec = spec.and((root, query, builder) -> builder.equal(root.get("author"), websiteUserService.getCurrentUser()));
 
