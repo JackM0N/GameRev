@@ -52,7 +52,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
     this.loadTags();
   }

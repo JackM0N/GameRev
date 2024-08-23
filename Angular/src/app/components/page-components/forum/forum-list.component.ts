@@ -5,9 +5,10 @@ import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
 import { Forum } from '../../../interfaces/forum';
 import { MatPaginator } from '@angular/material/paginator';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { formatDateTime } from '../../../util/formatDate';
 import { parseTopPost } from '../../../util/parseTopPost';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-forum-list',
@@ -23,6 +24,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
   public formatDateTime = formatDateTime;
+  private routeParamsSubscription?: Subscription = undefined;
 
   constructor(
     private forumService: ForumService,
@@ -35,19 +37,36 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
+  override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.routeParamsSubscription = this.route.params.subscribe(params => {
       this.forumId = params['id'];
+      this.loadForum(this.forumId);
+      if (this.forumId) {
+        this.loadPath(this.forumId);
+      }
+    });
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this._adService.adBoxActive$.subscribe(isActive => {
+          super.adjustMargin(isActive);
+        });
+      }
     });
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-    
-    this.loadForum(this.forumId);
-    if (this.forumId) {
-      this.loadPath(this.forumId);
+  override ngOnDestroy(): void {
+    if (this.routeParamsSubscription) {
+      this.routeParamsSubscription.unsubscribe();
     }
+    super.ngOnDestroy();
+  }
+
+  override ngAfterViewInit() {
+    console.log("ngAfterViewInit");
+    super.ngAfterViewInit();
   }
 
   loadPath(id: number) {
@@ -107,8 +126,6 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   }
 
   navigateToSubforum(id: number) {
-    this.router.navigateByUrl('/dummyRoute', { skipLocationChange: true }).then(() => {
-      this.router.navigate(['forum', id]);
-    });
+    this.router.navigate(['forum', id]);
   }
 }

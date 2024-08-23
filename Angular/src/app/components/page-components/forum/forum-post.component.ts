@@ -52,7 +52,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     });
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params['postid']) {
         this.loadPost(params['postid']);

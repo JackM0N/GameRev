@@ -51,7 +51,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');

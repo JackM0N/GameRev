@@ -33,7 +33,7 @@ export class ForumPostListComponent extends BaseAdComponent implements AfterView
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     if (this.currentForum) {
       this.loadPosts(this.currentForum.id);
       this.loadPath(this.currentForum.id);

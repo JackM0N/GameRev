@@ -57,7 +57,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.backgroundService.setClasses(['matrixNumbers']);
 
     const token = this.authService.getToken();
