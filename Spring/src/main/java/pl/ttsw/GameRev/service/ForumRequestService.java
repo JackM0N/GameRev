@@ -58,4 +58,31 @@ public class ForumRequestService {
         forumRequest = forumRequestRepository.save(forumRequest);
         return forumRequestMapper.toDto(forumRequest);
     }
+
+    public ForumRequestDTO updateForumRequest(Long id, ForumRequestDTO forumRequestDTO) throws BadRequestException {
+        ForumRequest forumRequest = forumRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forum request not found"));
+        if (forumRequestDTO.getGame().getId() != null){
+            forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
+                    .orElseThrow(() -> new RuntimeException("Game not found")));
+        }
+        if (forumRequestDTO.getForumName() != null) {
+            forumRequest.setForumName(forumRequestDTO.getForumName());
+        }
+        if (forumRequestDTO.getDescription() != null) {
+            forumRequest.setDescription(forumRequestDTO.getDescription());
+        }
+        if (forumRequestDTO.getParentForum() != null) {
+            forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())
+                    .orElseThrow(() -> new RuntimeException("Parent forum not found")));
+        }
+        return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
+    }
+
+    public boolean deleteForumRequest(Long id) {
+        ForumRequest forumRequest = forumRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forum request not found"));
+        forumRequestRepository.delete(forumRequest);
+        return true;
+    }
 }
