@@ -60,6 +60,9 @@ public class WebsiteUser {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserGame> userGames = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "forumModerators")
+    private List<Forum> forums = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

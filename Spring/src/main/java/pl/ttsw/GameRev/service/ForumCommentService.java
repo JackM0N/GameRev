@@ -10,12 +10,11 @@ import pl.ttsw.GameRev.dto.ForumCommentDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.mapper.ForumCommentMapper;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
+import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumComment;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.ForumCommentRepository;
-import pl.ttsw.GameRev.repository.ForumPostRepository;
-import pl.ttsw.GameRev.repository.RoleRepository;
+import pl.ttsw.GameRev.repository.*;
 
 import java.time.LocalDateTime;
 
@@ -27,14 +26,16 @@ public class ForumCommentService {
     private final ForumCommentMapper forumCommentMapper;
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserService websiteUserService;
+    private final ForumModeratorRepository forumModeratorRepository;
 
-    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, ForumPostMapper forumPostMapper, WebsiteUserService websiteUserService) {
+    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, ForumPostMapper forumPostMapper, WebsiteUserService websiteUserService, ForumModeratorRepository forumModeratorRepository) {
         this.forumCommentRepository = forumCommentRepository;
         this.forumPostRepository = forumPostRepository;
         this.roleRepository = roleRepository;
         this.forumCommentMapper = forumCommentMapper;
         this.forumPostMapper = forumPostMapper;
         this.websiteUserService = websiteUserService;
+        this.forumModeratorRepository = forumModeratorRepository;
     }
 
     public Page<ForumCommentDTO> getForumCommentsByPost(Long id, Long userId, String searchText, Pageable pageable) {
@@ -104,7 +105,16 @@ public class ForumCommentService {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumComment.getAuthor()) {
+        Forum forum = forumComment.getForumPost().getForum();
+
+        boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()));
+
+        boolean isAuthor = currentUser.equals(forumComment.getAuthor());
+
+        boolean isModerator = forumModeratorRepository.existsByForumAndModerator(forum, currentUser);
+
+        if (isAdmin || isAuthor || isModerator) {
             forumCommentRepository.delete(forumComment);
             return true;
         }else {
