@@ -1,48 +1,45 @@
-
-<nav class="breadcrumb flex space-x-2 text-sm">
+<nav class="breadcrumb flex space-x-2 text-sm mb-4">
   <ng-container *ngFor="let segment of path; let i = index">
-    <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="breadcrumb-link text-blue-500 cursor-pointer font-bold"><b>{{ segment.forumName }}</b></a>
-    <span *ngIf="i < path.length - 1"> > </span>
+    <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-blue-500 cursor-pointer font-bold">
+      {{ segment.forumName }}
+    </a>
+    <span *ngIf="i < path.length - 1"> &gt; </span>
     <span *ngIf="i === path.length - 1" class="font-bold">{{ segment.forumName }}</span>
   </ng-container>
 </nav>
 
-<div class="forum-page container">
+<div class="forum-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
   <!-- Forum Header -->
-  <header class="forum-header">
-    <h1><b>{{ currentForum?.forumName }}</b></h1>
-    <p>{{ currentForum?.description }}</p>
+  <header class="forum-header text-center mb-8">
+    <h1 class="text-2xl font-bold">{{ currentForum?.forumName }}</h1>
+    <p class="text-base text-gray-700">{{ currentForum?.description }}</p>
   </header>
 
   <!-- Forum Posts Table -->
   <div class="forum-posts">
-    <table class="forum-posts-table">
+    <table class="forum-posts-table w-full table-auto border-collapse">
       <thead>
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Post date</th>
-          <th>Replies</th>
-          <th>Last Post</th>
+        <tr class="bg-gray-200 text-left">
+          <th class="p-4 border border-gray-300">Title</th>
+          <th class="p-4 border border-gray-300">Author</th>
+          <th class="p-4 border border-gray-300">Post date</th>
+          <th class="p-4 border border-gray-300">Replies</th>
+          <th class="p-4 border border-gray-300">Last Post</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let post of postList; let i = index">
-          <td>
-            <a (click)="navigateToPost(post.id)" class="subforum-link cursor-pointer"> <strong>{{ post.title }}</strong> </a>
+        <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
+          <td class="p-4 border border-gray-300">
+            <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
+              {{ post.title }}
+            </a>
           </td>
-          <td>
-            <div>{{ post.author.nickname }}</div>
-          </td>
-          <td>
-            <div>{{ formatDateTime(post.postDate) }}</div>
-          </td>
-          <td>
-            <div>{{ post.commentCount }}</div>
-          </td>
-          <td>
-            <div>{{ post.lastResponseDate ? formatDateTime(post.lastResponseDate) : '-' }}</div>
+          <td class="p-4 border border-gray-300">{{ post.author.nickname }}</td>
+          <td class="p-4 border border-gray-300">{{ formatDateTime(post.postDate) }}</td>
+          <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
+          <td class="p-4 border border-gray-300">
+            {{ post.lastResponseDate ? formatDateTime(post.lastResponseDate) : '-' }}
           </td>
         </tr>
       </tbody>

@@ -11,8 +11,7 @@ import { parseTopPost } from '../../../util/parseTopPost';
 
 @Component({
   selector: 'app-forum-list',
-  templateUrl: './forum-list.component.html',
-  styleUrls: ['./forum-list.component.css']
+  templateUrl: './forum-list.component.html'
 })
 export class ForumListComponent extends BaseAdComponent implements AfterViewInit {
   public subForumList: Forum[] = [];

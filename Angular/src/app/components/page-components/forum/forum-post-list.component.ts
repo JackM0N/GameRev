@@ -12,8 +12,7 @@ import { ForumPost } from '../../../interfaces/forumPost';
 
 @Component({
   selector: 'app-forum-post-list',
-  templateUrl: './forum-post-list.component.html',
-  styleUrls: ['./forum-post-list.component.css']
+  templateUrl: './forum-post-list.component.html'
 })
 export class ForumPostListComponent extends BaseAdComponent implements AfterViewInit {
   @Input() currentForum?: Forum;
