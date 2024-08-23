@@ -30,8 +30,13 @@
           <td>
             {{ subforum.postCount }} Post(s)
           </td>
-          <td>
-            <p>Last post on {{ formatDateTime(subforum.lastPostDate) }}</p>
+          <td *ngIf="subforum.lastPost">
+            <p>Last post by {{ subforum.lastPost.nickname }}</p>
+            <p>in <a class="cursor-pointer">{{ subforum.lastPost.title }}</a> </p>
+            <p>on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
+          </td>
+          <td *ngIf="!subforum.lastPost">
+            <p>No interactions yet</p>
           </td>
         </tr>
       </tbody>

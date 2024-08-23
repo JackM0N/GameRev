@@ -7,6 +7,7 @@ import { Forum } from '../../../interfaces/forum';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDateTime } from '../../../util/formatDate';
+import { parseTopPost } from '../../../util/parseTopPost';
 
 @Component({
   selector: 'app-forum-list',
@@ -82,6 +83,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
+        console.log(response);
         if (response && response.content.length > 0) {
           // Separate the first item as the main forum
           this.currentForum = response.content[0];
@@ -93,6 +95,12 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
           this.noSubForums = subforums.length == 0;
 
           this.isSingleForum = (this.totalSubforums == 0);
+
+          this.subForumList.forEach(subforum => {
+            if (subforum.topPost) {
+              subforum.lastPost = parseTopPost(subforum.topPost);
+            }
+          });
         }
       },
       error: (error: any) => console.error(error)

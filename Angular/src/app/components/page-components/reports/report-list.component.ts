@@ -7,7 +7,7 @@ import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
 import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { reviewFilters } from '../../../interfaces/reviewFilters';
@@ -32,7 +32,7 @@ export class ReportListComponent implements AfterViewInit {
 
   public reportsList: ReportInformation[] = [];
   public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
   private filters: reviewFilters = {};
 
   @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;

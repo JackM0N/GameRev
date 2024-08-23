@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rx
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../interfaces/reviewStatuses';
@@ -27,7 +27,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
   public totalReviews: number = 0;
   public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
   public reviewStatuses = reviewStatuses;
   public noCriticReviews = false;
 

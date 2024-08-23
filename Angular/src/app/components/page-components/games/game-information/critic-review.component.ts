@@ -1,7 +1,7 @@
 ﻿import { Component, Input } from '@angular/core';
 import { CriticReview } from '../../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../../services/critic-review.service';
-import { formatDate } from '../../../../util/formatDate';
+import { formatDateArray } from '../../../../util/formatDate';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ export class GameInfoCriticReviewComponent {
   @Input() gameTitle?: string;
   
   public criticReview?: CriticReview;
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
 
   constructor(
     private criticReviewService: CriticReviewService,

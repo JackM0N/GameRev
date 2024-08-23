@@ -1,6 +1,7 @@
 import { ForumModerator } from "./forumModerator";
 import { ForumPost } from "./forumPost";
 import { Game } from "./game";
+import { LastPost } from "./lastPost";
 
 export interface Forum {
   id: number,
@@ -12,5 +13,7 @@ export interface Forum {
   forumPosts: ForumPost[],
   postCount: number,
   description: string,
-  lastPostDate: []
+
+  topPost: string,
+  lastPost?: LastPost,
 }

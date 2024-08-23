@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
-import { formatDateTime } from '../../../util/formatDate';
+import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
@@ -23,7 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
   @Input() post?: ForumPost;
   @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTime = formatDateTime;
+  public formatDateTime = formatDateTimeArray;
 
   public commentsList: any[] = [];
   public totalComments: number = 0;

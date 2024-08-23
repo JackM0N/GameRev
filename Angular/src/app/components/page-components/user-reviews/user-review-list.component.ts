@@ -7,7 +7,7 @@ import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 import { MatSort } from '@angular/material/sort';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,7 +22,7 @@ export class UserReviewListComponent implements AfterViewInit {
   totalReviews: number = 0;
   displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score'];
   userId?: number;
-  formatDate = formatDate;
+  formatDate = formatDateArray;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

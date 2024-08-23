@@ -4,7 +4,7 @@ import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { ImageCacheService } from '../../../services/imageCache.service';
 
 @Component({
@@ -18,7 +18,7 @@ import { ImageCacheService } from '../../../services/imageCache.service';
 export class ProfileComponent implements OnInit {
   selectedImage: File | null = null;
   imageUrl: string = '';
-  formatDate = formatDate;
+  formatDate = formatDateArray;
 
   user: WebsiteUser = {
     nickname: '',

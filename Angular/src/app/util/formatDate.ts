@@ -1,5 +1,24 @@
 
-export function formatDate(dateArray: number[] | undefined): string {
+export function formatDate(date: Date | undefined): string {
+  return new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(date);
+}
+
+export function formatDateTime(date: Date | undefined): string {
+  return new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  }).format(date);
+}
+
+export function formatDateArray(dateArray: number[] | undefined): string {
   if (!dateArray) {
     return 'Unknown';
   }
@@ -22,7 +41,7 @@ export function formatDate(dateArray: number[] | undefined): string {
   }).format(date);
 }
 
-export function formatDateTime(dateTimeArray: number[] | undefined): string {
+export function formatDateTimeArray(dateTimeArray: number[] | undefined): string {
   if (!dateTimeArray) {
     return 'Unknown';
   }
