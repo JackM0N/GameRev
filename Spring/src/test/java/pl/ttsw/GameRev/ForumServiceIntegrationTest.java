@@ -122,13 +122,4 @@ public class ForumServiceIntegrationTest {
         assertFalse(forums.getContent().stream()
                 .anyMatch(forum -> forum.getId().equals(forumId) && !forum.getIsDeleted()));
     }
-
-    @Test
-    @Transactional
-    public void howToUnpack_findTopPostForForum() {
-        String[] result = forumRepository.findTopPostForForum(1L);
-        for (String str : result) {
-            System.out.println(str);
-        }
-    }
 }
