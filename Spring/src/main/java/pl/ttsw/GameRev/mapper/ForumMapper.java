@@ -13,7 +13,7 @@ public interface ForumMapper {
 
     @Mapping(source = "parentForum.id", target = "parentForumId")
     @Mapping(source = "game.title", target = "gameTitle")
-    @Mapping(source = "forumModerators", target = "forumModeratorsDTO")
+    @Mapping(source = "forumModerators", target = "forumModerators")
     ForumDTO toDto(Forum forum);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
