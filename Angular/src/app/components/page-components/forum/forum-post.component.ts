@@ -25,7 +25,7 @@ import { trimmedValidator } from '../../../validators/trimmedValidator';
 export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
   @Input() post?: ForumPost;
   @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTime = formatDateTimeArray;
+  public formatDateTimeArray = formatDateTimeArray;
 
   public commentsList: any[] = [];
   public totalComments: number = 0;
@@ -88,6 +88,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumPostService.getPost(id).subscribe({
       next: (response: any) => {
+        console.log(response);
         if (response && response.content.length > 0) {
           this.post = response;
         }

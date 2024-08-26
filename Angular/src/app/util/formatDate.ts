@@ -46,11 +46,11 @@ export function formatDateTimeArray(dateTimeArray: number[] | undefined): string
     return 'Unknown';
   }
 
-  if (dateTimeArray.length < 6) {
+  if (dateTimeArray.length < 5) {
     return 'Invalid date';
   }
 
-  const [year, month, day, hour, minutes, seconds] = dateTimeArray;
+  const [year, month, day, hour, minutes, seconds = 0] = dateTimeArray;
   const date = new Date(year, month - 1, day, 15);
   date.setHours(hour);
   date.setMinutes(minutes);
