@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
+import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
@@ -28,26 +30,10 @@ public class ForumService {
     private final GameRepository gameRepository;
     private final WebsiteUserRepository websiteUserRepository;
 
-    public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
-        Forum forum = forumRepository.findById(id).orElse(null);
-        if (forum == null) {
-            return null;
-        }
-        Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
-
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"),false));
-
-        if (gameId != null) {
-            spec = spec.and((root, query, builder) -> {
-                Join<Forum, Game> gameJoin = root.join("game");
-                return builder.equal(gameJoin.get("id"), gameId);
-            });
-        }
-        if (searchText != null) {
-            searchText = searchText.toLowerCase();
-            String likePattern = "%" + searchText + "%";
-            spec = spec.and((root, query, builder) ->  builder.like(builder.lower(root.get("forumName")), likePattern));
-        }
+    public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
+        Specification<Forum> spec = getForumSpecification(forumFilter, forum);
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());
@@ -104,11 +90,29 @@ public class ForumService {
         return forumMapper.toDto(forumRepository.save(forum));
     }
 
-    public boolean deleteForum(Long id) throws BadRequestException {
+    public boolean deleteForum(Long id, Boolean isDeleted) throws BadRequestException {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Forum not found"));
-        forum.setIsDeleted(!forum.getIsDeleted());
+        forum.setIsDeleted(isDeleted);
         forumRepository.save(forum);
         return true;
+    }
+
+    private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum) {
+        Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
+
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"),false));
+
+        if (forumFilter.getGameId() != null) {
+            spec = spec.and((root, query, builder) -> {
+                Join<Forum, Game> gameJoin = root.join("game");
+                return builder.equal(gameJoin.get("id"), forumFilter.getGameId());
+            });
+        }
+        if (forumFilter.getSearchText() != null) {
+            String likePattern = "%" + forumFilter.getSearchText().toLowerCase() + "%";
+            spec = spec.and((root, query, builder) ->  builder.like(builder.lower(root.get("forumName")), likePattern));
+        }
+        return spec;
     }
 }
