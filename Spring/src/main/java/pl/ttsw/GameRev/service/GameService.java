@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
     private final GameRepository gameRepository;
     private final TagRepository tagRepository;
@@ -34,11 +36,6 @@ public class GameService {
     @Value("${game.pics.directory}")
     private final String gamePicsDirectory = "../Pictures/game_pics";
 
-    public GameService(GameRepository gameRepository, TagRepository tagRepository, GameMapper gameMapper) {
-        this.gameRepository = gameRepository;
-        this.tagRepository = tagRepository;
-        this.gameMapper = gameMapper;
-    }
 
     public Page<GameDTO> getAllGames(
             LocalDate fromDate, LocalDate toDate,

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.RatingDTO;
@@ -12,19 +13,12 @@ import pl.ttsw.GameRev.repository.UserReviewRepository;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RatingService {
     private final UserReviewRepository userReviewRepository;
     private final WebsiteUserService websiteUserService;
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
-
-    public RatingService(RatingRepository ratingRepository, UserReviewRepository userReviewRepository,
-                         WebsiteUserService websiteUserService, RatingMapper ratingMapper) {
-        this.ratingRepository = ratingRepository;
-        this.userReviewRepository = userReviewRepository;
-        this.websiteUserService = websiteUserService;
-        this.ratingMapper = ratingMapper;
-    }
 
     public RatingDTO updateRating(UserReviewDTO userReviewDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())

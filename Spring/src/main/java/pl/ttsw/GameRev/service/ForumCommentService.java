@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import pl.ttsw.GameRev.repository.*;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ForumCommentService {
     private final ForumCommentRepository forumCommentRepository;
     private final ForumPostRepository forumPostRepository;
@@ -27,16 +29,6 @@ public class ForumCommentService {
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserService websiteUserService;
     private final ForumModeratorRepository forumModeratorRepository;
-
-    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, ForumPostMapper forumPostMapper, WebsiteUserService websiteUserService, ForumModeratorRepository forumModeratorRepository) {
-        this.forumCommentRepository = forumCommentRepository;
-        this.forumPostRepository = forumPostRepository;
-        this.roleRepository = roleRepository;
-        this.forumCommentMapper = forumCommentMapper;
-        this.forumPostMapper = forumPostMapper;
-        this.websiteUserService = websiteUserService;
-        this.forumModeratorRepository = forumModeratorRepository;
-    }
 
     public Page<ForumCommentDTO> getForumCommentsByPost(Long id, Long userId, String searchText, Pageable pageable) {
         ForumPost post = forumPostRepository.findById(id).orElse(null);

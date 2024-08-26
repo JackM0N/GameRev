@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,18 +15,12 @@ import pl.ttsw.GameRev.repository.UserReviewRepository;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ReportService {
     private final ReportRepository reportRepository;
     private final UserReviewRepository userReviewRepository;
     private final WebsiteUserService websiteUserService;
     private final ReportMapper reportMapper;
-
-    public ReportService(ReportRepository reportRepository, UserReviewRepository userReviewRepository, WebsiteUserService websiteUserService, ReportMapper reportMapper) {
-        this.reportRepository = reportRepository;
-        this.userReviewRepository = userReviewRepository;
-        this.websiteUserService = websiteUserService;
-        this.reportMapper = reportMapper;
-    }
 
     public ReportDTO getReportById(Long id) {
         Optional<Report> reportOptional = reportRepository.findById(id);

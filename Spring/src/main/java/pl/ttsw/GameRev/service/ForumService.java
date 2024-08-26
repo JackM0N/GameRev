@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,18 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ForumService {
     private final ForumRepository forumRepository;
     private final ForumMapper forumMapper;
     private final GameRepository gameRepository;
     private final WebsiteUserRepository websiteUserRepository;
-
-    public ForumService(ForumRepository forumRepository, ForumMapper forumMapper, GameRepository gameRepository, WebsiteUserRepository websiteUserRepository) {
-        this.forumRepository = forumRepository;
-        this.forumMapper = forumMapper;
-        this.gameRepository = gameRepository;
-        this.websiteUserRepository = websiteUserRepository;
-    }
 
     public Page<ForumDTO> getForum(Long id, Long gameId, String searchText , Pageable pageable) {
         Forum forum = forumRepository.findById(id).orElse(null);

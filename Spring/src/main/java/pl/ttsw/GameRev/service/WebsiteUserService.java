@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WebsiteUserService {
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,14 +40,6 @@ public class WebsiteUserService {
 
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics";
-
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository, WebsiteUserMapper websiteUserMapper) {
-        this.websiteUserRepository = websiteUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationFacade = authenticationFacade;
-        this.roleRepository = roleRepository;
-        this.websiteUserMapper = websiteUserMapper;
-    }
 
     public Page<WebsiteUserDTO> getAllWebsiteUsers(
             LocalDate joinDateFrom,
