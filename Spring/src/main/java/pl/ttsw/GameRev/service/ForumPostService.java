@@ -164,7 +164,10 @@ public class ForumPostService {
             forumPost.setIsDeleted(isDeleted);
             if (isDeleted) {
                 forumPost.setDeletedAt(LocalDateTime.now());
+            }else{
+                forumPost.setDeletedAt(null);
             }
+            forumPostRepository.save(forumPost);
             return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");
