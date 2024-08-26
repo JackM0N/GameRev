@@ -69,9 +69,12 @@ export class ForumCommentService {
   }
 
   deleteComment(token: string, id: number): Observable<any> {
+    const params = new HttpParams().set('isDeleted', true);
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.delete(`${this.deleteUrl}/${id}`, { headers });
+
+    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }
 }
