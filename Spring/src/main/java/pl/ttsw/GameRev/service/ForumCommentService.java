@@ -44,6 +44,7 @@ public class ForumCommentService {
             return null;
         }
         Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("forumPost"), post));
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
         if (userId != null) {
             spec = spec.and((root, query, builder) -> {
                 Join<ForumComment, WebsiteUser> join = root.join("author");
@@ -74,6 +75,12 @@ public class ForumCommentService {
         if (post == null) {
             return null;
         }
+        post.getAuthor().setPassword(null);
+        post.getAuthor().setUsername(null);
+        post.getAuthor().setEmail(null);
+        post.getAuthor().setIsBanned(null);
+        post.getAuthor().setIsDeleted(null);
+        post.getAuthor().setRoles(null);
         return forumPostMapper.toDto(post);
     }
 
@@ -101,7 +108,7 @@ public class ForumCommentService {
         }
     }
 
-    public boolean deleteForumComment(Long id) {
+    public boolean deleteForumComment(Long id, Boolean isDeleted) {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
@@ -115,7 +122,10 @@ public class ForumCommentService {
         boolean isModerator = forumModeratorRepository.existsByForumAndModerator(forum, currentUser);
 
         if (isAdmin || isAuthor || isModerator) {
-            forumCommentRepository.delete(forumComment);
+            forumComment.setIsDeleted(isDeleted);
+            if (isDeleted) {
+                forumComment.setDeletedAt(LocalDateTime.now());
+            }
             return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");

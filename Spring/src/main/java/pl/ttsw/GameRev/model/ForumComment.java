@@ -30,4 +30,10 @@ public class ForumComment {
     @Column(name = "post_date", nullable = false)
     private LocalDateTime postDate;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
 }
