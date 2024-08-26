@@ -197,10 +197,12 @@ public class ForumPostServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(user);
         when(forumModeratorRepository.existsByForumAndModerator(any(),any())).thenReturn(false);
 
-        boolean result = forumPostService.deleteForumPost(postId);
+        boolean result = forumPostService.deleteForumPost(postId, true);
 
         assertTrue(result);
-        verify(forumPostRepository).delete(forumPost);
+        verify(forumPostRepository).save(forumPost);
+        ForumPost deletedPost = forumPostRepository.findById(postId).get();
+        assertTrue(deletedPost.getIsDeleted());
     }
 
     @Test
@@ -219,7 +221,7 @@ public class ForumPostServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(otherUser);
         when(forumModeratorRepository.existsByForumAndModerator(any(),any())).thenReturn(false);
 
-        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(postId));
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(postId, true));
         assertEquals("You dont have permission to perform this action", exception.getMessage());
     }
 }

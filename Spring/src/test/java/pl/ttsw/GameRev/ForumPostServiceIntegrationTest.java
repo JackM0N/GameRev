@@ -119,11 +119,11 @@ public class ForumPostServiceIntegrationTest {
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
 
-        boolean result = forumPostService.deleteForumPost(createdPost.getId());
+        boolean result = forumPostService.deleteForumPost(createdPost.getId(), true);
 
         assertTrue(result);
         Optional<ForumPost> deletedPost = forumPostRepository.findById(createdPost.getId());
-        assertFalse(deletedPost.isPresent());
+        assertTrue(deletedPost.get().getIsDeleted());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ForumPostServiceIntegrationTest {
         forumPostService.updateForumPost(createdPost.getId(), createdPost, null);
 
         ForumPostDTO finalForumPost = createdPost;
-        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(finalForumPost.getId()));
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(finalForumPost.getId(), true));
         assertEquals("You dont have permission to perform this action", exception.getMessage());
     }
 }

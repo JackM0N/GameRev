@@ -85,6 +85,7 @@ public class ForumPostService {
         forumPost.setPostDate(LocalDateTime.now());
         forumPost.setTitle(forumPostDTO.getTitle());
         forumPost.setCommentCount(0);
+        forumPost.setIsDeleted(false);
 
         Path filepath = null;
         try {
