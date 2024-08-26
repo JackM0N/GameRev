@@ -6,7 +6,6 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
@@ -71,7 +70,7 @@ public class CriticReviewService {
     }
 
     public CriticReviewDTO getCriticReviewById(Long id) {
-       CriticReview criticReview = criticReviewRepository.findById(id)
+        CriticReview criticReview = criticReviewRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Critic review not found"));
         return criticReviewMapper.toDto(criticReview);
     }

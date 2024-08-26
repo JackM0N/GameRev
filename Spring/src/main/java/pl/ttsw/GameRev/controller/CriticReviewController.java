@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.filter.CriticReviewFilter;
 import pl.ttsw.GameRev.service.CriticReviewService;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/critics-reviews")
@@ -27,11 +24,7 @@ public class CriticReviewController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<CriticReviewDTO> getById(@PathVariable long id) {
-        CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewById(id);
-        if (criticReviewDTO == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(criticReviewDTO);
+        return ResponseEntity.ok(criticReviewService.getCriticReviewById(id));
     }
 
     @GetMapping("/{title}")
