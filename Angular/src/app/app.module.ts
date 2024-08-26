@@ -59,12 +59,13 @@ import { NotificationService } from './services/notification.service';
 import { EmailChangeComponent } from './components/page-components/user/own-profile/email-change.component';
 import { PasswordChangeComponent } from './components/page-components/user/own-profile/password-change-component';
 import { MatSliderModule } from '@angular/material/slider';
-import { ForumListComponent } from './components/page-components/forum/forum-list.component';
+import { ForumComponent } from './components/page-components/forum/forum.component';
 import { ForumService } from './services/forum.service';
 import { ForumPostService } from './services/forumPost.service';
 import { ForumPostListComponent } from './components/page-components/forum/forum-post-list.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 import { ForumCommentEditDialogComponent } from './components/page-components/forum/forum-comment-edit-dialog.component';
+import { ForumFormDialogComponent } from './components/page-components/forum/forum-form-dialog.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -93,10 +94,11 @@ import { ForumCommentEditDialogComponent } from './components/page-components/fo
         GameInfoReviewListComponent,
         EmailChangeComponent,
         PasswordChangeComponent,
-        ForumListComponent,
+        ForumComponent,
         ForumPostListComponent,
         ForumPostComponent,
-        ForumCommentEditDialogComponent
+        ForumCommentEditDialogComponent,
+        ForumFormDialogComponent
     ],
     bootstrap: [AppComponent],
     imports: [

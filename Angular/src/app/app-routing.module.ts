@@ -15,12 +15,12 @@ import { ProfileComponent } from './components/page-components/user/profile.comp
 import { LibraryComponent } from './components/page-components/library/library.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
 import { AuthGuard } from './auth.guard';
-import { ForumListComponent } from './components/page-components/forum/forum-list.component';
+import { ForumComponent } from './components/page-components/forum/forum.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 
 const routes: Routes = [
-  { path: '', component: ForumListComponent},
-  { path: 'forum/:id', component: ForumListComponent},
+  { path: '', component: ForumComponent},
+  { path: 'forum/:id', component: ForumComponent},
   { path: 'forum/:forumid/post/:postid', component: ForumPostComponent},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},

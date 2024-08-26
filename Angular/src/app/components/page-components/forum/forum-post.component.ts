@@ -149,7 +149,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     return this.authService.isAuthenticated() && (comment.author.nickname === this.authService.getNickname() || this.authService.isAdmin());
   }
 
-
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
       width: '300px',

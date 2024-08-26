@@ -11,12 +11,15 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
 import { parseTopPost } from '../../../util/parseTopPost';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { ForumFormDialogComponent } from './forum-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-forum-list',
-  templateUrl: './forum-list.component.html'
+  selector: 'app-forum',
+  templateUrl: './forum.component.html'
 })
-export class ForumListComponent extends BaseAdComponent implements AfterViewInit {
+export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   public subForumList: Forum[] = [];
   public totalSubforums = 0;
   public noSubForums = false;
@@ -36,10 +39,12 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public formatDateTimeArray = formatDateTimeArray;
 
   constructor(
+    public authService: AuthService,
     private forumService: ForumService,
     private forumPostService: ForumPostService,
     private router: Router,
     private route: ActivatedRoute,
+    public dialog: MatDialog,
     backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -150,7 +155,16 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     });
   }
 
-  navigateToSubforum(id: number) {
+  openAddSubforumDialog() {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
+      width: '300px',
+      data: {
+        parentForumId: this.forumId
+      }
+    });
+  }
+
+  navigateToSubforum(id?: number) {
     this.router.navigate(['forum', id]);
   }
 

@@ -15,7 +15,7 @@ export class GameService {
     private http: HttpClient,
   ) {}
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game> {
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game[]> {
     var params = new HttpParams();
 
     if (page) {
@@ -45,7 +45,7 @@ export class GameService {
       }
     }
 
-    return this.http.get<Game>(this.baseUrl, { params });
+    return this.http.get<Game[]>(this.baseUrl, { params });
   }
 
   getGameByName(name: string): Observable<Game> {

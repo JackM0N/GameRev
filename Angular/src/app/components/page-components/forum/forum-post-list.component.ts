@@ -34,7 +34,7 @@ export class ForumPostListComponent extends BaseAdComponent implements AfterView
   }
 
   override ngOnInit(): void {
-    if (this.currentForum) {
+    if (this.currentForum && this.currentForum.id) {
       this.loadPosts(this.currentForum.id);
       this.loadPath(this.currentForum.id);
     }

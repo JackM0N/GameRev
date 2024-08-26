@@ -52,6 +52,11 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Add new subforum -->
+    <div class="mt-4" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+      <button mat-raised-button color="primary" (click)="openAddSubforumDialog()">Add Subforum</button>
+    </div>
   </div>
 
   <!-- Paginator for Forums -->

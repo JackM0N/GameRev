@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Forum } from '../interfaces/forum';
 import { forumFilters } from '../interfaces/forumFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,12 @@ import { forumFilters } from '../interfaces/forumFilters';
 export class ForumService {
   private baseUrl = 'http://localhost:8080/forum';
   private pathUrl = 'http://localhost:8080/path';
+  private addUrl = 'http://localhost:8080/forum/create';
+  private editUrl = 'http://localhost:8080/forum/edit';
 
   constructor(
     private http: HttpClient,
+    public authService: AuthService,
   ) {}
 
   getForumPath(id: number): Observable<Forum> {
@@ -47,5 +51,20 @@ export class ForumService {
     }
 
     return this.http.get<Forum>(url, { params });
+  }
+
+  addForum(forum: Forum): Observable<Forum> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error("Cannot add forum, token is null");
+    }
+
+    console.log(forum);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<Forum>(this.addUrl, forum, { headers });
   }
 }
