@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,13 +13,10 @@ import pl.ttsw.GameRev.security.JWTService;
 import pl.ttsw.GameRev.service.AuthenticationService;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthenticationController {
     private AuthenticationService authenticationService;
     private JWTService jwtService;
-
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody WebsiteUser request) {

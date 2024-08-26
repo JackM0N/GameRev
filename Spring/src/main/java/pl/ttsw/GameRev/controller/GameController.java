@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
+@RequiredArgsConstructor
 public class GameController {
     private final GameService gameService;
-
-    public GameController(GameService gameService) {
-        this.gameService = gameService;
-    }
 
     @PostMapping("")
     public ResponseEntity<?> createGame(@RequestParam(value = "picture", required = false) MultipartFile picture,

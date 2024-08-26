@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -11,12 +12,9 @@ import pl.ttsw.GameRev.service.ForumCommentService;
 
 @RestController
 @RequestMapping("/post")
+@RequiredArgsConstructor
 public class ForumCommentController {
     private final ForumCommentService forumCommentService;
-
-    public ForumCommentController(ForumCommentService forumCommentService) {
-        this.forumCommentService = forumCommentService;
-    }
 
     @GetMapping("/origin/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
