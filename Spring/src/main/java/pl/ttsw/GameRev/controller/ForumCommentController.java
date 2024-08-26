@@ -57,8 +57,8 @@ public class ForumCommentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        boolean gotDeleted = forumCommentService.deleteForumComment(id);
+    public ResponseEntity<?> delete(@PathVariable Long id, @RequestParam(name = "isDeleted") Boolean isDeleted) {
+        boolean gotDeleted = forumCommentService.deleteForumComment(id, isDeleted);
         if(!gotDeleted){
             return ResponseEntity.badRequest().body("There was an error deleting this comment");
         }

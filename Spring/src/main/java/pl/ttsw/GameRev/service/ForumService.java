@@ -106,7 +106,7 @@ public class ForumService {
                     .orElseThrow(() -> new BadRequestException("Parent forum not found"));
             forum.setParentForum(foundForum);
         }
-        return forumMapper.toDto(forum);
+        return forumMapper.toDto(forumRepository.save(forum));
     }
 
     public boolean deleteForum(Long id) throws BadRequestException {
