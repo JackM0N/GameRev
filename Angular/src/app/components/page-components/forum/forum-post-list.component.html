@@ -1,53 +1,42 @@
-<nav class="breadcrumb flex space-x-2 text-sm mb-4">
-  <ng-container *ngFor="let segment of path; let i = index">
-    <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-blue-500 cursor-pointer font-bold">
-      {{ segment.forumName }}
-    </a>
-    <span *ngIf="i < path.length - 1"> &gt; </span>
-    <span *ngIf="i === path.length - 1" class="font-bold">{{ segment.forumName }}</span>
-  </ng-container>
-</nav>
 
-<div class="forum-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  <!-- Forum Header -->
-  <header class="forum-header text-center mb-8">
-    <h1 class="text-2xl font-bold">{{ currentForum?.forumName }}</h1>
-    <p class="text-base text-gray-700">{{ currentForum?.description }}</p>
-  </header>
+<!-- Forum Posts Table -->
 
-  <!-- Forum Posts Table -->
-  <div class="forum-posts">
-    <h2 class="text-xl font-bold mb-4">Posts</h2>
-    <table class="forum-posts-table w-full table-auto border-collapse">
-      <thead>
-        <tr class="bg-gray-200 text-left">
-          <th class="p-4 border border-gray-300">Post</th>
-          <th class="p-4 border border-gray-300">Author</th>
-          <th class="p-4 border border-gray-300">Post date</th>
-          <th class="p-4 border border-gray-300">Replies</th>
-          <th class="p-4 border border-gray-300">Last reply</th>
-        </tr>
-      </thead>
+<div class="forum-posts">
+  <h2 class="text-xl font-bold mb-4">Posts</h2>
+  <table class="forum-posts-table w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-gray-200 text-left">
+        <th class="p-4 border border-gray-300">Post</th>
+        <th class="p-4 border border-gray-300">Author</th>
+        <th class="p-4 border border-gray-300">Post date</th>
+        <th class="p-4 border border-gray-300">Replies</th>
+        <th class="p-4 border border-gray-300">Last reply</th>
+      </tr>
+    </thead>
 
-      <tbody>
-        <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
-          <td class="p-4 border border-gray-300">
-            <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
-              {{ post.title }}
-            </a>
-          </td>
-          <td class="p-4 border border-gray-300">{{ post.author.nickname }}</td>
-          <td class="p-4 border border-gray-300">{{ formatDateTime(post.postDate) }}</td>
-          <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
-          <td class="p-4 border border-gray-300">
-            {{ post.lastResponseDate ? formatDateTime(post.lastResponseDate) : '-' }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <tbody>
+      <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
+        <td class="p-4 border border-gray-300">
+          <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
+            {{ post.title }}
+          </a>
+        </td>
+        <td class="p-4 border border-gray-300">{{ post.author.nickname }}</td>
+        <td class="p-4 border border-gray-300">{{ formatDateTimeArray(post.postDate) }}</td>
+        <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
+        <td class="p-4 border border-gray-300">
+          {{ (post.lastResponseDate && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
+        </td>
+      </tr>
+      <tr *ngIf="totalPosts == 0">
+        <td class="p-4 border border-gray-300 text-center" colspan="5">No posts yet</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  <!-- Paginator -->
+<!-- Paginator -->
+<div [hidden]="totalPosts < 5">
   <mat-paginator
     #paginator
     [length]="totalPosts"

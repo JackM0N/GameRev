@@ -1,12 +1,7 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
-import { BackgroundService } from '../../../services/background.service';
-import { BaseAdComponent } from '../../base-components/base-ad-component';
-import { AdService } from '../../../services/ad.service';
-import { Forum } from '../../../interfaces/forum';
+import { AfterViewInit, Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
-import { ForumService } from '../../../services/forum.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumPost } from '../../../interfaces/forumPost';
 
@@ -14,65 +9,44 @@ import { ForumPost } from '../../../interfaces/forumPost';
   selector: 'app-forum-post-list',
   templateUrl: './forum-post-list.component.html'
 })
-export class ForumPostListComponent extends BaseAdComponent implements AfterViewInit {
-  @Input() currentForum?: Forum;
+export class ForumPostListComponent implements AfterViewInit {
+  @Input() currentForumId?: number;
   public postList: ForumPost[] = [];
   public totalPosts: number = 0;
-  public path?: any;
   @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTime = formatDateTimeArray;
+  public formatDateTimeArray = formatDateTimeArray;
 
   constructor(
-    private forumService: ForumService,
     private forumPostService: ForumPostService,
-    private router: Router,
-    backgroundService: BackgroundService,
-    adService: AdService,
-    cdRef: ChangeDetectorRef
-  ) {
-    super(adService, backgroundService, cdRef);
-  }
+    private router: Router
+  ) {}
 
-  override ngOnInit(): void {
-    if (this.currentForum && this.currentForum.id) {
-      this.loadPosts(this.currentForum.id);
-      this.loadPath(this.currentForum.id);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentForumId'] && changes['currentForumId'].currentValue) {
+      this.loadPosts(changes['currentForumId'].currentValue);
     }
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-  }
-
-  loadPath(id: number) {
-    this.path = undefined;
-
-    this.forumService.getForumPath(id).subscribe({
-      next: (response: any) => {
-        if (response) {
-          this.path = response;
-          this.path = this.path.reverse();
-        }
-      },
-      error: (error: any) => console.error(error)
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(() => {
+      if (this.currentForumId) {
+        this.loadPosts(this.currentForumId);
+      }
     });
   }
 
   loadPosts(id: number) {
     this.postList = [];
+    this.totalPosts = 0;
 
-    var page = 1;
-    var size = 10;
-
-    if (this.paginator) {
-      page = this.paginator.pageIndex + 1;
-      size = this.paginator.pageSize;
-    }
+    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const size = this.paginator ? this.paginator.pageSize : 10;
 
     this.forumPostService.getPosts(id, page, size).subscribe({
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.postList = response.content;
+          this.totalPosts = response.totalElements;
         }
       },
       error: (error: any) => console.error(error)
@@ -80,6 +54,6 @@ export class ForumPostListComponent extends BaseAdComponent implements AfterView
   }
 
   navigateToPost(id: number) {
-    this.router.navigate([`forum/${this.currentForum?.id ?? 0}/post/${id}`]);
+    this.router.navigate([`forum/${this.currentForumId ?? 0}/post/${id}`]);
   }
 }
