@@ -65,7 +65,6 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   }
 
   override ngAfterViewInit() {
-    console.log("ngAfterViewInit");
     super.ngAfterViewInit();
   }
 
@@ -101,7 +100,6 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
-        console.log(response);
         if (response && response.content.length > 0) {
           // Separate the first item as the main forum
           this.currentForum = response.content[0];
@@ -127,5 +125,9 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
   navigateToSubforum(id: number) {
     this.router.navigate(['forum', id]);
+  }
+
+  navigateToPost(lastPost: any) {
+    this.router.navigate(['forum/' + lastPost.forum_id + '/post/' + lastPost.forum_post_id]);
   }
 }

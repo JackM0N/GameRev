@@ -23,7 +23,6 @@ export abstract class BaseAdComponent implements AfterViewInit {
   }
 
   public adjustMargin(isActive: boolean): void {
-    console.log("setting margin");
     if (isActive) {
       this._backgroundService.setMainContentStyle({ 'margin-left': '220px' });
     } else {
