@@ -125,7 +125,10 @@ public class ForumCommentService {
             forumComment.setIsDeleted(isDeleted);
             if (isDeleted) {
                 forumComment.setDeletedAt(LocalDateTime.now());
+            }else {
+                forumComment.setDeletedAt(null);
             }
+            forumCommentRepository.save(forumComment);
             return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");
