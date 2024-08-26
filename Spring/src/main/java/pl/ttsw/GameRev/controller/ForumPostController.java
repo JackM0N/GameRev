@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,12 +19,9 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/forum-post")
+@RequiredArgsConstructor
 public class ForumPostController {
     private final ForumPostService forumPostService;
-
-    public ForumPostController(ForumPostService forumPostService) {
-        this.forumPostService = forumPostService;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,12 +12,9 @@ import pl.ttsw.GameRev.service.ForumRequestService;
 
 @RestController
 @RequestMapping("/forum-request")
+@RequiredArgsConstructor
 public class ForumRequestController {
     private final ForumRequestService forumRequestService;
-
-    public ForumRequestController(ForumRequestService forumRequestService) {
-        this.forumRequestService = forumRequestService;
-    }
 
     @GetMapping("/list")
     public ResponseEntity<?> getAllForumRequests(

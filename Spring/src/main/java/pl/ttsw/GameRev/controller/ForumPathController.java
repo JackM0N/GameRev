@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/path")
+@RequiredArgsConstructor
 public class ForumPathController {
     private final ForumRepository forumRepository;
-
-    public ForumPathController(ForumRepository forumRepository) {
-        this.forumRepository = forumRepository;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getForumPath(@PathVariable("id") Long id) {

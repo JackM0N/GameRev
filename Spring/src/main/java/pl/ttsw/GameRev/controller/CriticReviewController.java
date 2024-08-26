@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,12 +15,9 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/critics-reviews")
+@RequiredArgsConstructor
 public class CriticReviewController {
     private final CriticReviewService criticReviewService;
-
-    public CriticReviewController(CriticReviewService criticReviewService) {
-        this.criticReviewService = criticReviewService;
-    }
 
     @GetMapping("/list")
     public ResponseEntity<?> getAll(

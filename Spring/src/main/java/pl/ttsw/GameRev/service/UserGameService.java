@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -23,22 +24,13 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class UserGameService {
     private final WebsiteUserService websiteUserService;
     private final UserGameMapper userGameMapper;
     private final GameRepository gameRepository;
     private final UserGameRepository userGameRepository;
     private final WebsiteUserRepository websiteUserRepository;
-
-    public UserGameService(GameRepository gameRepository,
-                           UserGameRepository userGameRepository, WebsiteUserService websiteUserService,
-                           UserGameMapper userGameMapper, WebsiteUserRepository websiteUserRepository) {
-        this.gameRepository = gameRepository;
-        this.userGameRepository = userGameRepository;
-        this.websiteUserService = websiteUserService;
-        this.userGameMapper = userGameMapper;
-        this.websiteUserRepository = websiteUserRepository;
-    }
 
     public Page<UserGameDTO> getUserGame(
             Boolean isFavourite,

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,18 +12,15 @@ import pl.ttsw.GameRev.service.ForumService;
 
 @RestController
 @RequestMapping("/forum")
+@RequiredArgsConstructor
 public class ForumController {
     private final ForumService forumService;
-
-    public ForumController(ForumService forumService) {
-        this.forumService = forumService;
-    }
 
     @GetMapping("")
     public ResponseEntity<?> getForums(
             @RequestParam(value = "gameId", required = false) Long gameId,
             @RequestParam(value = "searchText", required = false) String searchText,
-            Pageable pageable) throws BadRequestException {
+            Pageable pageable){
         Page<ForumDTO> forumDTOS = forumService.getForum(1L, gameId, searchText, pageable);
         if(forumDTOS == null || forumDTOS.getTotalElements() == 0){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -35,7 +33,7 @@ public class ForumController {
             @PathVariable Long id,
             @RequestParam(value = "gameId", required = false) Long gameId,
             @RequestParam(value = "searchText", required = false) String searchText,
-            Pageable pageable) throws BadRequestException {
+            Pageable pageable) {
         Page<ForumDTO> forumDTOS = forumService.getForum(id, gameId, searchText, pageable);
         if(forumDTOS == null || forumDTOS.getTotalElements() == 0){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
