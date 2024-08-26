@@ -146,7 +146,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   }
 
   canDeleteComment(comment: ForumComment) {
-    return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname()) || this.authService.isAdmin();
+    return this.authService.isAuthenticated() && (comment.author.nickname === this.authService.getNickname() || this.authService.isAdmin());
   }
 
 
