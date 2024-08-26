@@ -24,12 +24,10 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   public totalSubforums = 0;
   public noSubForums = false;
   public currentForum?: Forum;
-  public postList: ForumPost[] = [];
   public totalPosts: number = 0;
-  public isSingleForum: boolean = false;
   public path?: any;
 
-  private forumId?: number;
+  public forumId?: number;
   private routeParamsSubscription?: Subscription;
 
   @ViewChild('paginator') paginator!: MatPaginator;
@@ -60,7 +58,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
       this.loadForum(this.forumId);
       if (this.forumId) {
         this.loadPath(this.forumId);
-        this.loadPosts(this.forumId);
       }
     });
 
@@ -86,12 +83,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.paginator.page.subscribe(() => {
       this.loadForum(this.forumId);
     });
-
-    this.paginatorPosts.page.subscribe(() => {
-      if (this.forumId) {
-        this.loadPosts(this.forumId);
-      }
-    });
   }
 
   loadPath(id: number) {
@@ -111,7 +102,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.subForumList = [];
     this.noSubForums = false;
     this.totalSubforums = 0;
-    this.isSingleForum = false;
     this.path = undefined;
 
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
@@ -126,29 +116,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
           this.subForumList = subforums;
           this.totalSubforums = response.totalElements - 1;
           this.noSubForums = subforums.length === 0;
-          this.isSingleForum = this.totalSubforums === 0;
 
           this.subForumList.forEach(subforum => {
             if (subforum.topPost) {
               subforum.lastPost = parseTopPost(subforum.topPost);
             }
           });
-        }
-      },
-      error: (error: any) => console.error(error)
-    });
-  }
-
-  loadPosts(id: number) {
-    this.postList = [];
-    const page = this.paginatorPosts ? this.paginatorPosts.pageIndex + 1 : 1;
-    const size = this.paginatorPosts ? this.paginatorPosts.pageSize : 10;
-
-    this.forumPostService.getPosts(id, page, size).subscribe({
-      next: (response: any) => {
-        if (response && response.content.length > 0) {
-          this.postList = response.content;
-          this.totalPosts = response.totalElements;
         }
       },
       error: (error: any) => console.error(error)

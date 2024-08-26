@@ -1,5 +1,5 @@
 
-<div *ngIf="!isSingleForum; else forumPostListTemplate">
+<div>
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
@@ -52,11 +52,11 @@
         </tr>
       </tbody>
     </table>
-
-    <!-- Add new subforum -->
-    <div class="mt-4" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-      <button mat-raised-button color="primary" (click)="openAddSubforumDialog()">Add Subforum</button>
-    </div>
+  </div>
+  
+  <!-- Add new subforum -->
+  <div class="mt-4" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+    <button mat-raised-button color="primary" (click)="openAddSubforumDialog()">Add Subforum</button>
   </div>
 
   <!-- Paginator for Forums -->
@@ -71,36 +71,7 @@
   </div>
 
   <!-- Forum Posts Table -->
-  <div class="forum-posts mt-8" *ngIf="postList.length > 0">
-    <h2 class="text-xl font-bold mb-4">Posts</h2>
-    <table class="forum-posts-table w-full table-auto border-collapse">
-      <thead>
-        <tr class="bg-gray-200 text-left">
-          <th class="p-4 border border-gray-300">Post</th>
-          <th class="p-4 border border-gray-300">Author</th>
-          <th class="p-4 border border-gray-300">Post date</th>
-          <th class="p-4 border border-gray-300">Replies</th>
-          <th class="p-4 border border-gray-300">Last reply</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
-          <td class="p-4 border border-gray-300">
-            <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
-              {{ post.title }}
-            </a>
-          </td>
-          <td class="p-4 border border-gray-300">{{ post.author.nickname }}</td>
-          <td class="p-4 border border-gray-300">{{ formatDateTimeArray(post.postDate) }}</td>
-          <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
-          <td class="p-4 border border-gray-300">
-            {{ (post.lastResponseDate && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
 
   <!-- Paginator for Posts -->
   <div [hidden]="totalPosts < 5">
@@ -113,7 +84,3 @@
     </mat-paginator>
   </div>
 </div>
-
-<ng-template #forumPostListTemplate>
-  <app-forum-post-list [currentForum]="currentForum"></app-forum-post-list>
-</ng-template>
