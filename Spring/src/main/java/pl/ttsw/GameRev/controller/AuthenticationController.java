@@ -15,8 +15,8 @@ import pl.ttsw.GameRev.service.AuthenticationService;
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private AuthenticationService authenticationService;
-    private JWTService jwtService;
+    private final AuthenticationService authenticationService;
+    private final JWTService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody WebsiteUser request) {
