@@ -37,6 +37,17 @@
     </div>
   </div>
 
+  <!-- Paginator -->
+  <div [hidden]="totalComments < 5">
+    <mat-paginator
+      #paginator
+      [length]="totalComments"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
   <!-- Add Comment -->
   <div class="add-comment-section bg-gray-100 border border-gray-300 p-6 rounded-lg mb-8">
     <div class="post-header">
@@ -58,13 +69,4 @@
       </form>
     </div>
   </div>
-
-  <!-- Paginator -->
-  <mat-paginator
-    #paginator
-    [length]="totalComments"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
 </div>

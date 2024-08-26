@@ -1,6 +1,6 @@
 
 export function formatDate(date: Date | undefined): string {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -8,7 +8,7 @@ export function formatDate(date: Date | undefined): string {
 }
 
 export function formatDateTime(date: Date | undefined): string {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -34,7 +34,7 @@ export function formatDateArray(dateArray: number[] | undefined): string {
     return 'Invalid date';
   }
 
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -60,7 +60,7 @@ export function formatDateTimeArray(dateTimeArray: number[] | undefined): string
     return 'Invalid date';
   }
 
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

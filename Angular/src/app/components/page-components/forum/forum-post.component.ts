@@ -88,7 +88,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
     this.forumPostService.getPost(id).subscribe({
       next: (response: any) => {
-        console.log(response);
         if (response && response.content.length > 0) {
           this.post = response;
         }

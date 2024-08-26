@@ -3,10 +3,12 @@ import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
+import { ForumPostService } from '../../../services/forumPost.service';
 import { Forum } from '../../../interfaces/forum';
+import { ForumPost } from '../../../interfaces/forumPost';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { formatDateTime } from '../../../util/formatDate';
+import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
 import { parseTopPost } from '../../../util/parseTopPost';
 import { Subscription } from 'rxjs';
 
@@ -19,15 +21,23 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
   public totalSubforums = 0;
   public noSubForums = false;
   public currentForum?: Forum;
-  private forumId?: number;
+  public postList: ForumPost[] = [];
+  public totalPosts: number = 0;
   public isSingleForum: boolean = false;
   public path?: any;
+
+  private forumId?: number;
+  private routeParamsSubscription?: Subscription;
+
   @ViewChild('paginator') paginator!: MatPaginator;
+  @ViewChild('paginatorPosts') paginatorPosts!: MatPaginator;
+
   public formatDateTime = formatDateTime;
-  private routeParamsSubscription?: Subscription = undefined;
+  public formatDateTimeArray = formatDateTimeArray;
 
   constructor(
     private forumService: ForumService,
+    private forumPostService: ForumPostService,
     private router: Router,
     private route: ActivatedRoute,
     backgroundService: BackgroundService,
@@ -45,6 +55,7 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
       this.loadForum(this.forumId);
       if (this.forumId) {
         this.loadPath(this.forumId);
+        this.loadPosts(this.forumId);
       }
     });
 
@@ -66,16 +77,24 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
+
+    this.paginator.page.subscribe(() => {
+      this.loadForum(this.forumId);
+    });
+
+    this.paginatorPosts.page.subscribe(() => {
+      if (this.forumId) {
+        this.loadPosts(this.forumId);
+      }
+    });
   }
 
   loadPath(id: number) {
     this.path = undefined;
-
     this.forumService.getForumPath(id).subscribe({
       next: (response: any) => {
         if (response) {
-          this.path = response;
-          this.path = this.path.reverse();
+          this.path = response.reverse();
         }
       },
       error: (error: any) => console.error(error)
@@ -90,27 +109,19 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     this.isSingleForum = false;
     this.path = undefined;
 
-    var page = 1;
-    var size = 10;
-
-    if (this.paginator) {
-      page = this.paginator.pageIndex + 1;
-      size = this.paginator.pageSize;
-    }
+    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const size = this.paginator ? this.paginator.pageSize : 10;
 
     this.forumService.getForum(id, page, size).subscribe({
       next: (response: any) => {
         if (response && response.content.length > 0) {
-          // Separate the first item as the main forum
           this.currentForum = response.content[0];
-          
-          // Set the remaining items as the subforums
+
           const subforums = response.content.slice(1);
           this.subForumList = subforums;
           this.totalSubforums = response.totalElements - 1;
-          this.noSubForums = subforums.length == 0;
-
-          this.isSingleForum = (this.totalSubforums == 0);
+          this.noSubForums = subforums.length === 0;
+          this.isSingleForum = this.totalSubforums === 0;
 
           this.subForumList.forEach(subforum => {
             if (subforum.topPost) {
@@ -123,11 +134,31 @@ export class ForumListComponent extends BaseAdComponent implements AfterViewInit
     });
   }
 
+  loadPosts(id: number) {
+    this.postList = [];
+    const page = this.paginatorPosts ? this.paginatorPosts.pageIndex + 1 : 1;
+    const size = this.paginatorPosts ? this.paginatorPosts.pageSize : 10;
+
+    this.forumPostService.getPosts(id, page, size).subscribe({
+      next: (response: any) => {
+        if (response && response.content.length > 0) {
+          this.postList = response.content;
+          this.totalPosts = response.totalElements;
+        }
+      },
+      error: (error: any) => console.error(error)
+    });
+  }
+
   navigateToSubforum(id: number) {
     this.router.navigate(['forum', id]);
   }
 
-  navigateToPost(lastPost: any) {
+  navigateToLastPost(lastPost: any) {
     this.router.navigate(['forum/' + lastPost.forum_id + '/post/' + lastPost.forum_post_id]);
+  }
+
+  navigateToPost(postId: number) {
+    this.router.navigate(['forum', this.forumId, 'post', postId]);
   }
 }

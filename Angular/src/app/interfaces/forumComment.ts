@@ -7,4 +7,5 @@ export interface ForumComment {
   author: WebsiteUser,
   content: string,
   postDate: Date,
+  isDeleted?: boolean
 }
