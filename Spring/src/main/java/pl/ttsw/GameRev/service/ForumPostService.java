@@ -47,6 +47,8 @@ public class ForumPostService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum not found"));
         Specification<ForumPost> spec = (root, query, builder) -> builder.equal(root.get("forum"), forum);
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
+
         if (postDateFrom != null) {
             spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
         }
@@ -146,7 +148,7 @@ public class ForumPostService {
         }
     }
 
-    public boolean deleteForumPost(Long id) {
+    public boolean deleteForumPost(Long id, Boolean isDeleted) {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumPost forumPost = forumPostRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum post not found"));
@@ -159,7 +161,10 @@ public class ForumPostService {
         boolean isModerator = forumModeratorRepository.existsByForumAndModerator(forum, currentUser);
 
         if (isAdmin || isAuthor || isModerator) {
-            forumPostRepository.delete(forumPost);
+            forumPost.setIsDeleted(isDeleted);
+            if (isDeleted) {
+                forumPost.setDeletedAt(LocalDateTime.now());
+            }
             return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");

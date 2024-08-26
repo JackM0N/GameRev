@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.mapper.ForumMapper;
-import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -107,7 +106,7 @@ public class ForumService {
                     .orElseThrow(() -> new BadRequestException("Parent forum not found"));
             forum.setParentForum(foundForum);
         }
-        return forumMapper.toDto(forum);
+        return forumMapper.toDto(forumRepository.save(forum));
     }
 
     public boolean deleteForum(Long id) throws BadRequestException {

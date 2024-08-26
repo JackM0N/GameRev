@@ -19,4 +19,7 @@ public class ForumCommentDTO implements Serializable {
     WebsiteUserDTO author;
     String content;
     LocalDateTime postDate;
+    Boolean isDeleted;
+    LocalDateTime deletedAt;
+
 }
