@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
+import pl.ttsw.GameRev.filter.CriticReviewFilter;
 import pl.ttsw.GameRev.mapper.CriticReviewMapper;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.CriticReview;
@@ -28,33 +30,28 @@ public class CriticReviewService {
     private final GameService gameService;
 
     public Page<CriticReviewDTO> getAllCriticReviews(
-            ReviewStatus reviewStatus,
-            LocalDate fromDate,
-            LocalDate toDate,
-            Integer scoreFrom,
-            Integer scoreTo,
-            String searchText,
+            CriticReviewFilter criticReviewFilter,
             Pageable pageable
-    ) throws BadRequestException {
+    ) {
         Specification<CriticReview> spec = Specification.where(null);
 
-        if (reviewStatus != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("reviewStatus"), reviewStatus));
+        if (criticReviewFilter.getReviewStatus() != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("reviewStatus"), criticReviewFilter.getReviewStatus()));
         }
-        if (fromDate != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), fromDate));
+        if (criticReviewFilter.getFromDate() != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), criticReviewFilter.getFromDate()));
         }
-        if (toDate != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), toDate));
+        if (criticReviewFilter.getToDate() != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), criticReviewFilter.getToDate()));
         }
-        if (scoreFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        if (criticReviewFilter.getScoreFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), criticReviewFilter.getScoreFrom()));
         }
-        if (scoreTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        if (criticReviewFilter.getScoreTo() != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), criticReviewFilter.getScoreTo()));
         }
-        if (searchText != null) {
-            String likePattern = "%" + searchText.toLowerCase() + "%";
+        if (criticReviewFilter.getSearchText() != null) {
+            String likePattern = "%" + criticReviewFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) -> builder.or(
                     builder.like(builder.lower(root.get("content")), likePattern),
                     builder.like(builder.lower(root.get("user").get("nickname")), likePattern),
@@ -74,8 +71,9 @@ public class CriticReviewService {
     }
 
     public CriticReviewDTO getCriticReviewById(Long id) {
-        Optional<CriticReview> criticReview = criticReviewRepository.findById(id);
-        return criticReview.map(criticReviewMapper::toDto).orElse(null);
+       CriticReview criticReview = criticReviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Critic review not found"));
+        return criticReviewMapper.toDto(criticReview);
     }
 
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
@@ -88,9 +86,6 @@ public class CriticReviewService {
 
     public CriticReviewDTO createCriticReview(CriticReviewDTO criticReviewDTO) throws BadRequestException {
         WebsiteUser websiteUser = websiteUserService.getCurrentUser();
-        if (websiteUser == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
         if (criticReviewRepository.findByGameTitle(criticReviewDTO.getGameTitle()).isPresent()){
             throw new BadRequestException("Critic review already exists");
         }
@@ -108,9 +103,6 @@ public class CriticReviewService {
 
     public CriticReviewDTO updateCriticReview(Long id, CriticReviewDTO criticReviewDTO) throws BadRequestException {
         WebsiteUser websiteUser = websiteUserService.getCurrentUser();
-        if (websiteUser == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
         CriticReview criticReview = criticReviewRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
 
@@ -132,9 +124,6 @@ public class CriticReviewService {
 
     public CriticReviewDTO reviewCriticReview(Long id, ReviewStatus reviewStatus) throws BadRequestException {
         WebsiteUser websiteUser = websiteUserService.getCurrentUser();
-        if (websiteUser == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
         Optional<CriticReview> criticReview = criticReviewRepository.findById(id);
         if (criticReview.isEmpty()) {
             throw new BadRequestException("This review doesnt exist");
@@ -149,7 +138,7 @@ public class CriticReviewService {
         if (criticReview.isEmpty()) {
             throw new BadRequestException("This review doesnt exist");
         }
-        criticReviewRepository.delete(criticReview.get());
+        criticReviewRepository.deleteById(id);
         return true;
     }
 }

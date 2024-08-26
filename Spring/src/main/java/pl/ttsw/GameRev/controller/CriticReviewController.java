@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
+import pl.ttsw.GameRev.filter.CriticReviewFilter;
 import pl.ttsw.GameRev.service.CriticReviewService;
 import java.time.LocalDate;
 
@@ -20,33 +21,21 @@ public class CriticReviewController {
     private final CriticReviewService criticReviewService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAll(
-            @RequestParam(value = "reviewStatus", required = false) ReviewStatus reviewStatus,
-            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
-            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
-            @RequestParam(value = "searchText", required = false) String searchText,
-            Pageable pageable
-    ) throws BadRequestException {
-        Page<CriticReviewDTO> criticReviewDTO = criticReviewService.getAllCriticReviews(reviewStatus, fromDate, toDate, scoreFrom, scoreTo, searchText, pageable);
-        if (criticReviewDTO.getTotalElements() == 0) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(criticReviewDTO);
+    public ResponseEntity<Page<CriticReviewDTO>> getAll(CriticReviewFilter criticReviewFilter, Pageable pageable){
+        return ResponseEntity.ok(criticReviewService.getAllCriticReviews(criticReviewFilter, pageable));
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> getById(@PathVariable long id) {
+    public ResponseEntity<CriticReviewDTO> getById(@PathVariable long id) {
         CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewById(id);
         if (criticReviewDTO == null) {
-            return ResponseEntity.badRequest().body("There are no critic reviews for this id");
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(criticReviewDTO);
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<?> getByTitle(@PathVariable String title) throws BadRequestException {
+    public ResponseEntity<CriticReviewDTO> getByTitle(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-", " ");
         CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewByTitle(title);
         if (criticReviewDTO == null) {
@@ -56,27 +45,27 @@ public class CriticReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CriticReviewDTO criticReviewDTO) throws BadRequestException {
+    public ResponseEntity<CriticReviewDTO> create(@RequestBody CriticReviewDTO criticReviewDTO) throws BadRequestException {
         if (criticReviewDTO == null) {
-            return ResponseEntity.badRequest().body("There was an error creating this critic review");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(criticReviewService.createCriticReview(criticReviewDTO));
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> update(@RequestBody CriticReviewDTO criticReviewDTO,
+    public ResponseEntity<CriticReviewDTO> update(@RequestBody CriticReviewDTO criticReviewDTO,
                                     @PathVariable long id) throws BadRequestException {
         if (criticReviewDTO == null) {
-            return ResponseEntity.badRequest().body("There was an error editing this critic review");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(criticReviewService.updateCriticReview(id,criticReviewDTO));
     }
 
     @PutMapping("/review/{id}")
-    public ResponseEntity<?> review(@RequestParam ReviewStatus reviewStatus,
+    public ResponseEntity<CriticReviewDTO> review(@RequestParam ReviewStatus reviewStatus,
                                     @PathVariable long id) throws BadRequestException {
         if (reviewStatus == null) {
-            return ResponseEntity.badRequest().body("There was an error editing this critic review");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(criticReviewService.reviewCriticReview(id, reviewStatus));
     }
@@ -85,7 +74,7 @@ public class CriticReviewController {
     public ResponseEntity<?> delete(@PathVariable long id) throws BadRequestException {
         boolean deleted = criticReviewService.deleteCriticReview(id);
         if (!deleted) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
     }
