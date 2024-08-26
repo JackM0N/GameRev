@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ForumPostService {
     private final ForumPostRepository forumPostRepository;
     private final ForumRepository forumRepository;
@@ -31,16 +33,6 @@ public class ForumPostService {
 
     private final String postPicDirectory = "../Pictures/post_pics";
     private final WebsiteUserService websiteUserService;
-
-    public ForumPostService(ForumPostRepository forumPostRepository, ForumRepository forumRepository, ForumPostMapper forumPostMapper, WebsiteUserRepository websiteUserRepository, RoleRepository roleRepository, ForumModeratorRepository forumModeratorRepository, WebsiteUserService websiteUserService) {
-        this.forumPostRepository = forumPostRepository;
-        this.forumRepository = forumRepository;
-        this.forumPostMapper = forumPostMapper;
-        this.websiteUserRepository = websiteUserRepository;
-        this.roleRepository = roleRepository;
-        this.forumModeratorRepository = forumModeratorRepository;
-        this.websiteUserService = websiteUserService;
-    }
 
     public Page<ForumPostDTO> getForumPosts(Long id,  LocalDate postDateFrom,
                                             LocalDate postDateTo, String searchText, Pageable pageable) {

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,22 +17,13 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
-
-    public AuthenticationService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder,
-                                 JWTService jwtService, AuthenticationManager authenticationManager,
-                                 RoleRepository roleRepository) {
-        this.websiteUserRepository = websiteUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
-    }
 
     public AuthenticationResponse register(WebsiteUser request) {
         WebsiteUser user = new WebsiteUser();

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserReviewService{
     private final WebsiteUserRepository websiteUserRepository;
     private final GameRepository gameRepository;
@@ -28,15 +30,6 @@ public class UserReviewService{
     private final RatingRepository ratingRepository;
     private final WebsiteUserService websiteUserService;
     private final UserReviewMapper userReviewMapper;
-
-    public UserReviewService(UserReviewRepository userReviewRepository, WebsiteUserRepository websiteUserRepository, GameRepository gameRepository, RatingRepository ratingRepository, WebsiteUserService websiteUserService, UserReviewMapper userReviewMapper) {
-        this.userReviewRepository = userReviewRepository;
-        this.websiteUserRepository = websiteUserRepository;
-        this.gameRepository = gameRepository;
-        this.ratingRepository = ratingRepository;
-        this.websiteUserService = websiteUserService;
-        this.userReviewMapper = userReviewMapper;
-    }
 
     public Page<UserReviewDTO> getUserReviewByGame(
             String title,

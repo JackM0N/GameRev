@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,20 +16,13 @@ import pl.ttsw.GameRev.repository.ForumRequestRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 
 @Service
+@RequiredArgsConstructor
 public class ForumRequestService {
     private final ForumRequestRepository forumRequestRepository;
     private final GameRepository gameRepository;
     private final ForumRepository forumRepository;
     private final WebsiteUserService websiteUserService;
     private final ForumRequestMapper forumRequestMapper;
-
-    public ForumRequestService(ForumRequestRepository forumRequestRepository, GameRepository gameRepository, ForumRepository forumRepository, WebsiteUserService websiteUserService, ForumRequestMapper forumRequestMapper) {
-        this.forumRequestRepository = forumRequestRepository;
-        this.gameRepository = gameRepository;
-        this.forumRepository = forumRepository;
-        this.websiteUserService = websiteUserService;
-        this.forumRequestMapper = forumRequestMapper;
-    }
 
     public Page<ForumRequestDTO> getAllForumRequests(Boolean approved, Pageable pageable) {
         Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);

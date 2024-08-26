@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +23,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class WebsiteUserController {
     private final WebsiteUserService websiteUserService;
-
-    public WebsiteUserController(WebsiteUserService websiteUserService) {
-        this.websiteUserService = websiteUserService;
-    }
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsers(
