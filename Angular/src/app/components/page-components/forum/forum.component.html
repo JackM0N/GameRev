@@ -1,4 +1,3 @@
-
 <div>
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
@@ -26,6 +25,7 @@
           <th class="p-4 border border-gray-300 text-left font-bold">Subforum</th>
           <th class="p-4 border border-gray-300 text-left font-bold">Posts</th>
           <th class="p-4 border border-gray-300 text-left font-bold">Last Post</th>
+          <th class="p-4 border border-gray-300 text-left font-bold">Actions</th> <!-- New Actions column -->
         </tr>
       </thead>
 
@@ -48,6 +48,13 @@
           </td>
           <td *ngIf="!subforum.lastPost" class="p-4 border border-gray-300">
             <p class="text-gray-500">No interactions yet</p>
+          </td>
+
+          <!-- Actions column with edit button -->
+          <td class="p-4 border border-gray-300">
+            <button *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()" mat-button color="accent" (click)="openEditSubforumDialog(subforum)">
+              Edit
+            </button>
           </td>
         </tr>
       </tbody>

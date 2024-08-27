@@ -73,22 +73,15 @@ export class UserReviewFormComponent implements OnInit {
         ...this.userReviewForm.value
       };
 
-      const token = this.authService.getToken();
-
-      if (token === null) {
-        console.log("Token is null");
-        return;
-      }
-
       if (this.isEditRoute) {
-        this.userReviewService.editUserReview(reviewData, token).subscribe({
+        this.userReviewService.editUserReview(reviewData).subscribe({
           next: () => this.notificationService.popSuccessToast('Edited review successfully', true),
           error: error => this.notificationService.popErrorToast('Editing review failed', error)
         });
         return;
       }
 
-      this.userReviewService.addUserReview(reviewData, token).subscribe({
+      this.userReviewService.addUserReview(reviewData).subscribe({
         next: () => this.notificationService.popSuccessToast('Added review successfully', true),
         error: error => this.notificationService.popErrorToast('Adding review failed', error)
       });

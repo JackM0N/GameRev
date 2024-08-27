@@ -33,10 +33,9 @@ export class PasswordChangeComponent {
   onSubmitPasswordChange() {
     if (this.changePasswordForm.valid) {
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Password change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Password change failed', "Username not found");
         return;
       }
 
@@ -46,7 +45,7 @@ export class PasswordChangeComponent {
         newPassword: this.changePasswordForm.get('password')?.value,
       };
 
-      this.authService.changeProfile(newData, token).subscribe({
+      this.authService.changeProfile(newData).subscribe({
         next: () => { this.notificationService.popSuccessToast('Password change successful!', false); },
         error: error => this.notificationService.popErrorToast('Password change failed', error)
       });

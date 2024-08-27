@@ -138,28 +138,14 @@ export class UserListComponent implements OnInit, AfterViewInit {
   }
 
   banUser(user: WebsiteUser) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.error('Token is null');
-      return;
-    }
-
-    this.userService.banUser(user, token).subscribe({
+    this.userService.banUser(user).subscribe({
       next: () => { this.notificationService.popSuccessToast('User banned successfuly!', false); },
       error: error => this.notificationService.popErrorToast('User ban failed', error)
     });
   }
 
   unbanUser(user: WebsiteUser) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.error('Token is null');
-      return;
-    }
-
-    this.userService.unbanUser(user, token).subscribe({
+    this.userService.unbanUser(user).subscribe({
       next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!', false); },
       error: error => this.notificationService.popErrorToast('User unban failed', error)
     });

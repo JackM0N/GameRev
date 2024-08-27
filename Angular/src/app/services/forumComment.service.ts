@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ForumComment } from '../interfaces/forumComment';
 import { forumCommentFilters } from '../interfaces/forumCommentFilters';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class ForumCommentService {
   private deleteUrl = 'http://localhost:8080/post/delete';
 
   constructor(
+    public authService: AuthService,
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {}
@@ -44,7 +46,9 @@ export class ForumCommentService {
     return this.http.get<ForumComment[]>(`${this.baseUrl}/${id}`, { params });
   }
 
-  editComment(token: string, comment: any): Observable<ForumComment> {
+  editComment(comment: any): Observable<ForumComment> {
+    const token = this.authService.getToken();
+
     const sanitizedComment = {
       ...comment,
       content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
@@ -56,7 +60,9 @@ export class ForumCommentService {
     return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, sanitizedComment, { headers });
   }
 
-  addComment(token: string, comment: any): Observable<ForumComment> {
+  addComment(comment: any): Observable<ForumComment> {
+    const token = this.authService.getToken();
+
     const sanitizedComment = {
       ...comment,
       content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
@@ -68,7 +74,9 @@ export class ForumCommentService {
     return this.http.post<ForumComment>(this.addUrl, sanitizedComment, { headers });
   }
 
-  deleteComment(token: string, id: number): Observable<any> {
+  deleteComment(id: number): Observable<any> {
+    const token = this.authService.getToken();
+
     const params = new HttpParams().set('isDeleted', true);
 
     const headers = new HttpHeaders({

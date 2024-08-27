@@ -16,8 +16,8 @@ export class ForumService {
   private editUrl = 'http://localhost:8080/forum/edit';
 
   constructor(
-    private http: HttpClient,
     public authService: AuthService,
+    private http: HttpClient,
   ) {}
 
   getForumPath(id: number): Observable<Forum> {

@@ -60,13 +60,6 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     if (this.gameTitle === undefined) {
       console.log("Game title is undefined");
       return;
@@ -92,7 +85,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.userReviewService.getUserReviewsForGame(this.gameTitle, token, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+    this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
@@ -115,13 +108,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   deleteReview(review: UserReview) {
     if (review.id) {
-      const token = this.authService.getToken();
       const username = this.authService.getUsername();
-
-      if (token === null) {
-        console.log("Token is null");
-        return;
-      }
 
       if (username === null) {
         console.log("Username is null");
@@ -130,7 +117,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
       review.userUsername = username;
 
-      this.userReviewService.deleteUserReview(review, token).subscribe({
+      this.userReviewService.deleteUserReview(review).subscribe({
         next: () => {
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
           this.usersScoreUpdated.emit(review.score);
@@ -176,26 +163,12 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   sendRatingInformation(review: UserReview) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.userReviewService.updateUserReviewRating(review, token).subscribe({
+    this.userReviewService.updateUserReviewRating(review).subscribe({
       error: error => console.error(error)
     });
   }
 
   sendReportInformation(review: UserReview, dialogRef: MatDialogRef<ReviewReportDialogComponent>) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     if (!dialogRef || !dialogRef.componentRef) {
       return;
     }
@@ -213,7 +186,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       return;
     }
 
-    this.reportService.reportReview(this.report, token).subscribe({
+    this.reportService.reportReview(this.report).subscribe({
       next: () => { this.notificationService.popSuccessToast('Report sent successfully', false); },
       error: error => this.notificationService.popErrorToast('Report submission failed', error)
     });

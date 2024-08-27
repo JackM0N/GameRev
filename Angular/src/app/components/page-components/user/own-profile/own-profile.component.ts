@@ -60,13 +60,6 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
   override ngOnInit(): void {
     this.backgroundService.setClasses(['matrixNumbers']);
 
-    const token = this.authService.getToken();
-  
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const observer: Observer<any> = {
       next: response => {
         if (response) {
@@ -96,7 +89,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
               },
               complete: () => {}
             };
-            this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+            this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
           }
         }
       },
@@ -105,7 +98,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       },
       complete: () => {}
     };
-    this.authService.getUserProfileInformation(token).subscribe(observer);
+    this.authService.getUserProfileInformation().subscribe(observer);
   }
 
   openLogoutDialog() {
@@ -144,9 +137,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   deleteAccount(dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>) {
     const userName = this.authService.getUsername();
-    const token = this.authService.getToken();
   
-    if (!userName || !token || !dialogRef || !dialogRef.componentRef) {
+    if (!userName || !dialogRef || !dialogRef.componentRef) {
       this.notificationService.popErrorToast('Account deletion failed');
       return;
     }
@@ -157,7 +149,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       currentPassword: dialogRef.componentRef.instance.deleteAccountForm.get('currentPassword')?.value,
     };
 
-    this.authService.deleteOwnAccount(userData, token).subscribe({
+    this.authService.deleteOwnAccount(userData).subscribe({
       next: () => {
         this.notificationService.popSuccessToast('Account deleted successfuly!', false);
         this.authService.logout();
@@ -170,10 +162,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
   onSubmitProfileInformationChange() {
     if (this.changeProfileInformationForm.valid) {
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Profile picture change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Profile picture change failed', "Username not found");
         return;
       }
 
@@ -184,7 +175,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
         description: this.changeProfileInformationForm.get('description')?.value,
       };
 
-      this.authService.changeProfile(newData, token).subscribe({
+      this.authService.changeProfile(newData).subscribe({
         next: () => { this.notificationService.popSuccessToast('Profile information change successful!', false); },
         error: error => this.notificationService.popErrorToast('Profile information change failed', error)
       });
@@ -200,14 +191,13 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     if (this.changeProfilePictureForm.valid && this.selectedImage) {
       const nickName = this.authService.getNickname();
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Profile picture change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Profile picture change failed', "Username not found");
         return;
       }
 
-      this.authService.changeProfilePicture(userName, this.selectedImage, token).subscribe({
+      this.authService.changeProfilePicture(userName, this.selectedImage).subscribe({
         next: () => {
           this.notificationService.popSuccessToast('Profile picture change successful!', false);
           if (nickName) {

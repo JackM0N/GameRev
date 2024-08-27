@@ -41,9 +41,8 @@ export class ProfileComponent implements OnInit {
         const observer: Observer<WebsiteUser> = {
           next: response => {
             this.user = response;
-            const token = this.authService.getToken();
 
-            if (response.profilepic && response.nickname && token) {
+            if (response.profilepic && response.nickname) {
               const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
 
               if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
@@ -65,7 +64,7 @@ export class ProfileComponent implements OnInit {
                   },
                   complete: () => {}
                 };
-                this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+                this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
               }
             }
           },

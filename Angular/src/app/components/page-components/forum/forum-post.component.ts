@@ -119,19 +119,12 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   submitComment() {
     if (this.commentForm.valid) {
-      const token = this.authService.getToken();
-
-      if (token === null) {
-        console.error('Token is null');
-        return;
-      }
-
       const newComment = {
         content: this.commentForm.value.content,
         forumPostId: this.post?.id
       };
 
-      this.forumCommentService.addComment(token, newComment).subscribe({
+      this.forumCommentService.addComment(newComment).subscribe({
         next: () => {
           this.notificationService.popSuccessToast('Comment posted successfully', false);
           window.location.reload();
@@ -183,14 +176,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   }
 
   deleteComment(id: number) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.error('Token is null');
-      return;
-    }
-
-    this.forumCommentService.deleteComment(token, id).subscribe({
+    this.forumCommentService.deleteComment(id).subscribe({
       next: () => {
         this.notificationService.popSuccessToast('Comment deleted successfully', false);
         this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);

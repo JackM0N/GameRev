@@ -133,15 +133,21 @@ export class AuthService {
     return this.hasRole('Admin');
   }
 
-  getUserProfileInformation(token: string): Observable<WebsiteUser> {
+  getUserProfileInformation(): Observable<WebsiteUser> {
+    const token = this.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.get<WebsiteUser>(this.profileInformationUrl, { headers });
   }
 
-  changeProfile(userData: NewCredentials, token: string): Observable<any> {
+  changeProfile(userData: NewCredentials): Observable<any> {
+    const token = this.getToken();
+
     const url = `${this.profileChangeUrl}/${userData.username}`;
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -149,7 +155,9 @@ export class AuthService {
     return this.http.put<WebsiteUser>(url, userData, { headers });
   }
 
-  changeProfilePicture(username: string, profilePicture: File, token: string): Observable<any> {
+  changeProfilePicture(username: string, profilePicture: File): Observable<any> {
+    const token = this.getToken();
+
     const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
 
     const headers = new HttpHeaders({
@@ -164,12 +172,16 @@ export class AuthService {
     });
   }
 
-  deleteOwnAccount(userData: NewCredentials, token: string): Observable<any> {
+  deleteOwnAccount(userData: NewCredentials): Observable<any> {
+    const token = this.getToken();
+
     const url = `${this.profileChangeUrl}/${userData.username}`;
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
+
     return this.http.put<WebsiteUser>(url, userData, { headers });
   }
 

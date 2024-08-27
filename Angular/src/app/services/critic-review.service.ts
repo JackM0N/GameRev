@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CriticReview } from '../interfaces/criticReview';
 import { criticReviewFilters } from '../interfaces/criticReviewFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class CriticReviewService {
   private deleteUrl = 'http://localhost:8080/critics-reviews/delete';
 
   constructor(
+    private authService: AuthService,
     private http: HttpClient,
     public jwtHelper: JwtHelperService
   ) {}
@@ -27,14 +29,19 @@ export class CriticReviewService {
     return this.http.get<CriticReview>(`${this.baseUrl}/${gameTitle}`);
   }
 
-  getCriticReviewById(id: number, token: string): Observable<CriticReview> {
+  getCriticReviewById(id: number): Observable<CriticReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
-  getAllReviews(token: string, page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
+  getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -61,21 +68,29 @@ export class CriticReviewService {
     return this.http.get<CriticReview[]>(this.allUrl, { headers, params });
   }
 
-  addCriticReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+  addCriticReview(criticReview: CriticReview): Observable<CriticReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.post<CriticReview>(this.addUrl, criticReview, { headers });
   }
 
-  editCriticReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+  editCriticReview(criticReview: CriticReview): Observable<CriticReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.put<CriticReview>(`${this.editUrl}/${criticReview.id}`, criticReview, { headers });
   }
 
-  reviewReview(criticReview: CriticReview, token: string): Observable<CriticReview> {
+  reviewReview(criticReview: CriticReview): Observable<CriticReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -90,10 +105,13 @@ export class CriticReviewService {
     return this.http.put<CriticReview>(`${this.reviewUrl}/${criticReview.id}`, criticReview.reviewStatus, { headers, params });
   }
 
-  deleteReview(id: number, token: string): Observable<void> {
+  deleteReview(id: number): Observable<void> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers: headers });
   }
 }

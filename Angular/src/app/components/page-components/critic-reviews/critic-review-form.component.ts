@@ -65,25 +65,21 @@ export class CriticReviewFormComponent implements OnInit {
       }
 
       if (params["id"] && this.isEditRoute) {
-        const token = this.authService.getToken();
+        const observer: Observer<any> = {
+          next: response => {
+            if (response) {
+              this.criticReview = response;
 
-        if (token) {
-          const observer: Observer<any> = {
-            next: response => {
-              if (response) {
-                this.criticReview = response;
-
-                this.criticReviewForm.setValue({
-                  content: response.content,
-                  score: response.score
-                });
-              }
-            },
-            error: () => {},
-            complete: () => {}
-          };
-          this.criticReviewService.getCriticReviewById(params['id'], token).subscribe(observer);
-        }
+              this.criticReviewForm.setValue({
+                content: response.content,
+                score: response.score
+              });
+            }
+          },
+          error: () => {},
+          complete: () => {}
+        };
+        this.criticReviewService.getCriticReviewById(params['id']).subscribe(observer);
       }
     });
   }
@@ -95,22 +91,15 @@ export class CriticReviewFormComponent implements OnInit {
         ...this.criticReviewForm.value
       };
 
-      const token = this.authService.getToken();
-
-      if (token === null) {
-        console.log("Token is null");
-        return;
-      }
-
       if (this.isEditRoute) {
-        this.criticReviewService.editCriticReview(reviewData, token).subscribe({
+        this.criticReviewService.editCriticReview(reviewData).subscribe({
           next: () => { this.notificationService.popSuccessToast('Edited review successfuly', true); },
           error: error => this.notificationService.popErrorToast('Editing review failed', error)
         });
         return;
       }
 
-      this.criticReviewService.addCriticReview(reviewData, token).subscribe({
+      this.criticReviewService.addCriticReview(reviewData).subscribe({
         next: () => { this.notificationService.popSuccessToast('Added review successfuly', true); },
         error: error => this.notificationService.popErrorToast('Adding review failed', error)
       });

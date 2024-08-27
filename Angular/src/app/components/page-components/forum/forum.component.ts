@@ -136,6 +136,14 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     });
   }
 
+  openEditSubforumDialog(subForum: Forum) {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
+      width: '300px',
+      data: {
+      }
+    });
+  }
+
   navigateToSubforum(id?: number) {
     this.router.navigate(['forum', id]);
   }

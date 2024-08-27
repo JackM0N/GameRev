@@ -64,13 +64,6 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -92,7 +85,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.criticReviewService.getAllReviews(token, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -104,16 +97,9 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   approveReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null) {
-      console.log("Token is null");
-      return;
-    }
-
     review.reviewStatus = 'APPROVED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
+    this.criticReviewService.reviewReview(review).subscribe({
       next: () => { this.notificationService.popSuccessToast('Review approved', false); },
       error: error => this.notificationService.popErrorToast('Approving failed', error)
     });
@@ -141,30 +127,21 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   softDeleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
-      return;
-    }
-
     review.reviewStatus = 'DELETED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
+    this.criticReviewService.reviewReview(review).subscribe({
       next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
 
   deleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
+    if (review.id == null) {
+      console.log("Review is null");
       return;
     }
 
-    this.criticReviewService.deleteReview(review.id, token).subscribe({
+    this.criticReviewService.deleteReview(review.id).subscribe({
       next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });

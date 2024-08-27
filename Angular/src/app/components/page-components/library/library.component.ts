@@ -133,14 +133,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   editUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.updateUserGame(userGame, token).subscribe({
+    this.libraryService.updateUserGame(userGame).subscribe({
       next: () => { this.notificationService.popSuccessToast('Game updated successfully', false); },
       error: error => this.notificationService.popErrorToast('Game updating failed', error)
     });
@@ -178,14 +171,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   addUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.addUserGame(userGame, token).subscribe({
+    this.libraryService.addUserGame(userGame).subscribe({
       next: () => {
         this.gamesList.push(userGame);
 
@@ -220,13 +206,6 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   deleteGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     if (!userGame || !userGame.id) {
       console.log('Game ID is not valid.');
       return;
@@ -243,7 +222,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.libraryService.deleteUserGame(userGame.id, token).subscribe(observer);
+    this.libraryService.deleteUserGame(userGame.id).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

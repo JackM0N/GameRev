@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
 import { UserGame } from '../interfaces/userGame';
 import { libraryFilters } from '../interfaces/libraryFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class LibraryService {
   private baseUrl = 'http://localhost:8080/library';
 
   constructor(
+    private authService: AuthService,
     private http: HttpClient,
   ) {}
 
@@ -36,21 +38,27 @@ export class LibraryService {
     return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
   }
 
-  updateUserGame(userReview: UserGame, token: string): Observable<UserGame> {
+  updateUserGame(userReview: UserGame): Observable<UserGame> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
     return this.http.put<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
 
-  addUserGame(userReview: UserGame, token: string): Observable<UserGame> {
+  addUserGame(userReview: UserGame): Observable<UserGame> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
     return this.http.post<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
 
-  deleteUserGame(id: number, token: string): Observable<void> {
+  deleteUserGame(id: number): Observable<void> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
