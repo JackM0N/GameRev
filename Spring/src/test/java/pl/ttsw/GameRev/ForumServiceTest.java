@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
@@ -19,6 +20,7 @@ import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.service.ForumService;
+import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,9 @@ class ForumServiceTest {
     @Mock
     private ForumFilter forumFilter;
 
+    @Mock
+    private WebsiteUserService websiteUserService;
+
     @InjectMocks
     private ForumService forumService;
 
@@ -51,7 +56,7 @@ class ForumServiceTest {
     }
 
     @Test
-    public void testGetForum_Success() throws BadRequestException {
+    public void testGetForum_Success(){
         Long id = 1L;
         Pageable pageable = mock(Pageable.class);
         Forum forum = new Forum();
@@ -63,6 +68,7 @@ class ForumServiceTest {
         Page<Forum> forums = new PageImpl<>(forumsList);
         when(forumRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(forums);
         when(forumMapper.toDto(any(Forum.class))).thenReturn(new ForumDTO());
+        when(websiteUserService.getCurrentUser()).thenThrow(new BadCredentialsException("You are not logged in"));
 
         Page<ForumDTO> result = forumService.getForum(id, forumFilter, pageable);
 
