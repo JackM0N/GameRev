@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
@@ -108,29 +110,29 @@ public class UserReviewService{
     }
 
     public UserReviewDTO getUserReviewById(Long id) {
-        Optional<UserReview> userReview = (userReviewRepository.findById(id));
-        return userReview.map(userReviewMapper::toDto).orElse(null);
+        UserReview userReview = (userReviewRepository.findById(id))
+                .orElseThrow(() -> new EntityNotFoundException("User review not found"));
+        return userReviewMapper.toDto(userReview);
     }
 
-    public Page<UserReviewDTO> getUserReviewsWithReports(
-            LocalDate postDateFrom,
-            LocalDate postDateTo,
-            Integer scoreFrom,
-            Integer scoreTo,
-            Pageable pageable) {
+    public Page<UserReviewDTO> getUserReviewsWithReports(UserReviewFilter userReviewFilter, Pageable pageable) {
         Specification<UserReview> spec = (root, query, builder) -> builder.isNotEmpty(root.get("reports"));
 
-        if (postDateFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        if (userReviewFilter.getPostDateFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .greaterThanOrEqualTo(root.get("postDate"), userReviewFilter.getPostDateFrom()));
         }
-        if (postDateTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        if (userReviewFilter.getPostDateTo() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .lessThanOrEqualTo(root.get("postDate"), userReviewFilter.getPostDateTo()));
         }
-        if (scoreFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("score"), scoreFrom));
+        if (userReviewFilter.getScoreFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .greaterThanOrEqualTo(root.get("score"), userReviewFilter.getScoreFrom()));
         }
-        if (scoreTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("score"), scoreTo));
+        if (userReviewFilter.getScoreTo() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .lessThanOrEqualTo(root.get("score"), userReviewFilter.getScoreTo()));
         }
 
         Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
