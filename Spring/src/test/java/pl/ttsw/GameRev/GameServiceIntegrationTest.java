@@ -7,18 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
+import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -192,50 +193,64 @@ public class GameServiceIntegrationTest {
     @Transactional
     public void testGetAllGamesWithFilters() {
         Pageable pageable = PageRequest.of(0, 10);
-        LocalDate fromDate = LocalDate.of(2022, 1, 1);
-        LocalDate toDate = LocalDate.of(2023, 12, 31);
-        Page<GameDTO> result = gameService.getAllGames(fromDate, toDate, null, null, null, null, pageable);
+
+        // Test filtering by date range
+        LocalDate fromDate = LocalDate.of(2000, 1, 1);
+        LocalDate toDate = LocalDate.of(2024, 12, 31);
+        GameFilter dateFilter = new GameFilter();
+        dateFilter.setFromDate(fromDate);
+        dateFilter.setToDate(toDate);
+
+        Page<GameDTO> result = gameService.getAllGames(dateFilter, pageable);
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
-        assertTrue(result.getContent().stream().allMatch(game ->
-                game.getReleaseDate().isAfter(fromDate.minusDays(1)) && game.getReleaseDate().isBefore(toDate.plusDays(1))
-        ));
+        assertTrue(result.getContent().stream().allMatch(game -> game.getReleaseDate().isAfter(fromDate.minusDays(1)) && game.getReleaseDate().isBefore(toDate.plusDays(1))));
 
+        // Test filtering by user score
         Float minUsersScore = 8.0f;
         Float maxUsersScore = 10.0f;
-        result = gameService.getAllGames(null, null, minUsersScore, maxUsersScore, null, null, pageable);
+        GameFilter scoreFilter = new GameFilter();
+        scoreFilter.setMinUserScore(minUsersScore);
+        scoreFilter.setMaxUserScore(maxUsersScore);
+
+        result = gameService.getAllGames(scoreFilter, pageable);
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
-        assertTrue(result.getContent().stream().allMatch(game ->
-                game.getUsersScore() >= minUsersScore && game.getUsersScore() <= maxUsersScore
-        ));
+        assertTrue(result.getContent().stream().allMatch(game -> game.getUsersScore() >= minUsersScore && game.getUsersScore() <= maxUsersScore));
 
+        // Test filtering by tags
         List<Long> tagIds = List.of(1L);
-        result = gameService.getAllGames(null, null, null, null, tagIds, null, pageable);
+        GameFilter tagFilter = new GameFilter();
+        tagFilter.setTagIds(tagIds);
+
+        result = gameService.getAllGames(tagFilter, pageable);
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
-        assertTrue(result.getContent().stream().allMatch(game ->
-                game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId()))
-        ));
+        assertTrue(result.getContent().stream().allMatch(game -> game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId()))));
 
+        // Test filtering by release status
         List<ReleaseStatus> releaseStatuses = List.of(ReleaseStatus.RELEASED);
-        result = gameService.getAllGames(null, null, null, null, null, releaseStatuses, pageable);
-        assertNotNull(result);
-        assertTrue(result.getTotalElements() > 0);
-        assertTrue(result.getContent().stream().allMatch(game ->
-                releaseStatuses.contains(game.getReleaseStatus())
-        ));
+        GameFilter statusFilter = new GameFilter();
+        statusFilter.setReleaseStatuses(releaseStatuses);
 
-        result = gameService.getAllGames(fromDate, toDate, minUsersScore, maxUsersScore, tagIds, releaseStatuses, pageable);
+        result = gameService.getAllGames(statusFilter, pageable);
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
-        assertTrue(result.getContent().stream().allMatch(game ->
-                game.getReleaseDate().isAfter(fromDate.minusDays(1)) &&
-                        game.getReleaseDate().isBefore(toDate.plusDays(1)) &&
-                        game.getUsersScore() >= minUsersScore &&
-                        game.getUsersScore() <= maxUsersScore &&
-                        game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId())) &&
-                        releaseStatuses.contains(game.getReleaseStatus())
-        ));
+        assertTrue(result.getContent().stream().allMatch(game -> releaseStatuses.contains(game.getReleaseStatus())));
+
+        // Test filtering by date range, user score, tags, and release status
+        GameFilter combinedFilter = new GameFilter();
+        combinedFilter.setFromDate(fromDate);
+        combinedFilter.setToDate(toDate);
+        combinedFilter.setMinUserScore(minUsersScore);
+        combinedFilter.setMaxUserScore(maxUsersScore);
+        combinedFilter.setTagIds(tagIds);
+        combinedFilter.setReleaseStatuses(releaseStatuses);
+
+        result = gameService.getAllGames(combinedFilter, pageable);
+        assertNotNull(result);
+        assertTrue(result.getTotalElements() > 0);
+        assertTrue(result.getContent().stream().allMatch(game -> game.getReleaseDate().isAfter(fromDate.minusDays(1)) && game.getReleaseDate().isBefore(toDate.plusDays(1)) && game.getUsersScore() >= minUsersScore && game.getUsersScore() <= maxUsersScore && game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId())) && releaseStatuses.contains(game.getReleaseStatus())));
     }
+
 }
