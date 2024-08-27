@@ -1,5 +1,5 @@
 
-<h1 mat-dialog-title>{{editing ? "Editing a forum": "Adding a new forum"}}</h1>
+<h1 mat-dialog-title>{{data?.editing ? "Editing a forum": "Adding a new forum"}}</h1>
 
 <form [formGroup]="forumForm" (ngSubmit)="onConfirm()">
   <div>

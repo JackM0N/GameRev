@@ -12,8 +12,6 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './forum-form-dialog.component.html',
 })
 export class ForumFormDialogComponent {
-  @Input() editing: boolean = false;
-  
   public forumForm: FormGroup;
   public nameMinLength: number = 4;
   public descriptionMinLength: number = 8;
@@ -33,8 +31,9 @@ export class ForumFormDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data?: {
       name?: string,
       description?: string,
-      game?: Game,
-      parentForumId?: number
+      gameTitle?: string,
+      parentForumId?: number,
+      editing?: boolean
     }
   ) {
     this.forumForm = this.formBuilder.group({
@@ -45,8 +44,9 @@ export class ForumFormDialogComponent {
   }
 
   ngOnInit(): void {
-    if (this.data) {
+    this.loadGames();
 
+    if (this.data) {
       if (this.data.name) {
         this.name = this.data.name;
         this.forumForm.patchValue({
@@ -61,19 +61,23 @@ export class ForumFormDialogComponent {
         });
       }
 
-      if (this.data.game) {
-        this.game = this.data.game;
-        this.forumForm.patchValue({
-          game: this.data.game
-        });
+      if (this.data.gameTitle) {
+        const findGame = this.gameList.find(game => game.title === this.data?.gameTitle);
+
+        if (findGame) {
+          this.game = findGame;
+          this.forumForm.patchValue({
+            game: findGame
+          });
+        } else {
+          console.error('Game not found');
+        }
       }
 
       if (this.data.parentForumId) {
         this.parentForumId = this.data.parentForumId;
       }
-
     }
-    this.loadGames();
   }
 
   loadGames() {
@@ -107,10 +111,19 @@ export class ForumFormDialogComponent {
         parentForumId: this.parentForumId
       }
 
+      if (this.data && this.data.editing) {
+        newForum.parentForumId = undefined;
+        this.forumService.editForum(newForum).subscribe({
+          next: () => { this.notificationService.popSuccessToast('Forum edited', true); },
+          error: error => this.notificationService.popErrorToast('Forum editing failed', error)
+        });
+        return;
+      }
       this.forumService.addForum(newForum).subscribe({
         next: () => { this.notificationService.popSuccessToast('Forum added', true); },
         error: error => this.notificationService.popErrorToast('Forum adding failed', error)
       });
+
     } else {
       console.error('Form is invalid');
     }

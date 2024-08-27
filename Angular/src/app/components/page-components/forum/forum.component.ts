@@ -131,7 +131,8 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
-        parentForumId: this.forumId
+        parentForumId: this.forumId,
+        editing: false
       }
     });
   }
@@ -140,6 +141,10 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
+        editing: true,
+        name: subForum.forumName,
+        description: subForum.description,
+        gameTitle: subForum.gameTitle
       }
     });
   }

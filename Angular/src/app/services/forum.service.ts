@@ -56,15 +56,20 @@ export class ForumService {
   addForum(forum: Forum): Observable<Forum> {
     const token = this.authService.getToken();
 
-    if (!token) {
-      console.error("Cannot add forum, token is null");
-    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
 
-    console.log(forum);
+    return this.http.post<Forum>(this.addUrl, forum, { headers });
+  }
+
+  editForum(forum: Forum): Observable<Forum> {
+    const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.post<Forum>(this.addUrl, forum, { headers });
+    
+    return this.http.post<Forum>(this.editUrl, forum, { headers });
   }
 }

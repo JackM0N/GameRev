@@ -7,7 +7,7 @@ export interface Forum {
   gameTitle: string,
   forumName: string,
   isDeleted?: boolean,
-  parentForumId: number,
+  parentForumId?: number,
   forumModerators?: ForumModerator[],
   forumPosts?: ForumPost[],
   postCount?: number,
