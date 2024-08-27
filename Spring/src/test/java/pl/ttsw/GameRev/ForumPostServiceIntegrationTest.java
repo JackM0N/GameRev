@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
@@ -44,11 +45,13 @@ public class ForumPostServiceIntegrationTest {
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
 
-    private Forum testForum;
     @Autowired
     private ForumMapper forumMapper;
+
     @Autowired
     private WebsiteUserMapper websiteUserMapper;
+
+    private Forum testForum;
 
     @BeforeEach
     public void setUp() {
@@ -57,7 +60,8 @@ public class ForumPostServiceIntegrationTest {
 
     @Test
     public void testGetForumPosts_Success() {
-        Page<ForumPostDTO> forumPosts = forumPostService.getForumPosts(testForum.getId(), null, null, null, Pageable.unpaged());
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
+        Page<ForumPostDTO> forumPosts = forumPostService.getForumPosts(testForum.getId(), forumPostFilter, Pageable.unpaged());
 
         assertNotNull(forumPosts);
         assertFalse(forumPosts.getContent().isEmpty());
