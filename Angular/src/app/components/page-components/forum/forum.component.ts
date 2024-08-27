@@ -3,9 +3,7 @@ import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
-import { ForumPostService } from '../../../services/forumPost.service';
 import { Forum } from '../../../interfaces/forum';
-import { ForumPost } from '../../../interfaces/forumPost';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
@@ -38,7 +36,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   constructor(
     public authService: AuthService,
     private forumService: ForumService,
-    private forumPostService: ForumPostService,
     private router: Router,
     private route: ActivatedRoute,
     public dialog: MatDialog,
@@ -142,6 +139,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
       width: '300px',
       data: {
         editing: true,
+        id: subForum.id,
         name: subForum.forumName,
         description: subForum.description,
         gameTitle: subForum.gameTitle

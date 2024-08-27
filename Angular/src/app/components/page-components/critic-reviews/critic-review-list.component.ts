@@ -8,7 +8,7 @@ import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
-import { reviewStatuses } from '../../../interfaces/reviewStatuses';
+import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
@@ -100,7 +100,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     review.reviewStatus = 'APPROVED'
 
     this.criticReviewService.reviewReview(review).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review approved', false); },
+      next: () => { this.notificationService.popSuccessToast('Review approved'); },
       error: error => this.notificationService.popErrorToast('Approving failed', error)
     });
   }
@@ -130,7 +130,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     review.reviewStatus = 'DELETED'
 
     this.criticReviewService.reviewReview(review).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
@@ -142,7 +142,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     }
 
     this.criticReviewService.deleteReview(review.id).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }

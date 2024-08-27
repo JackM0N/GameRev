@@ -126,7 +126,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
       this.forumCommentService.addComment(newComment).subscribe({
         next: () => {
-          this.notificationService.popSuccessToast('Comment posted successfully', false);
+          this.notificationService.popSuccessToast('Comment posted successfully');
           window.location.reload();
         },
         error: error => this.notificationService.popErrorToast('Comment posting failed', error)
@@ -178,7 +178,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   deleteComment(id: number) {
     this.forumCommentService.deleteComment(id).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Comment deleted successfully', false);
+        this.notificationService.popSuccessToast('Comment deleted successfully');
         this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);
       },
       error: error => this.notificationService.popErrorToast('Comment deletion failed', error)

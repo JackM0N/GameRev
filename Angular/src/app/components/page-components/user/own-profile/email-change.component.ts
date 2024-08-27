@@ -62,7 +62,7 @@ export class EmailChangeComponent {
       };
 
       this.authService.changeProfile(newData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Email change successful', false); },
+        next: () => { this.notificationService.popSuccessToast('Email change successful'); },
         error: error => this.notificationService.popErrorToast('Email change failed', error)
       });
     }

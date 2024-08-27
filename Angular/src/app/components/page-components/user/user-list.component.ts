@@ -139,14 +139,14 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   banUser(user: WebsiteUser) {
     this.userService.banUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User banned successfuly!', false); },
+      next: () => { this.notificationService.popSuccessToast('User banned successfuly!'); },
       error: error => this.notificationService.popErrorToast('User ban failed', error)
     });
   }
 
   unbanUser(user: WebsiteUser) {
     this.userService.unbanUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!', false); },
+      next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!'); },
       error: error => this.notificationService.popErrorToast('User unban failed', error)
     });
   }

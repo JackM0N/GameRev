@@ -121,7 +121,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         next: () => {
           this.reviewList = this.reviewList.filter(r => r.id !== review.id);
           this.usersScoreUpdated.emit(review.score);
-          this.notificationService.popSuccessToast('Deleted review successfuly', false);
+          this.notificationService.popSuccessToast('Deleted review successfuly');
         },
         error: error => this.notificationService.popErrorToast('Deleting review failed', error)
       });
@@ -187,7 +187,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     }
 
     this.reportService.reportReview(this.report).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report sent successfully', false); },
+      next: () => { this.notificationService.popSuccessToast('Report sent successfully'); },
       error: error => this.notificationService.popErrorToast('Report submission failed', error)
     });
   }

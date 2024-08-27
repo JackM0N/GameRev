@@ -151,14 +151,14 @@ export class ReportListComponent implements AfterViewInit {
 
   approveReport(report: Report) {
     this.reportService.approveReport(report).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report approved', false); },
+      next: () => { this.notificationService.popSuccessToast('Report approved'); },
       error: error => this.notificationService.popErrorToast('Report approving failed', error)
     });
   }
 
   disapproveReport(report: Report) {
     this.reportService.disapproveReport(report).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report disapproved', false); },
+      next: () => { this.notificationService.popSuccessToast('Report disapproved'); },
       error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
     });
   }
@@ -184,7 +184,7 @@ export class ReportListComponent implements AfterViewInit {
   deleteReview(review: UserReview) {
     this.reportService.deleteReview(review).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Report disapproved', false);
+        this.notificationService.popSuccessToast('Report disapproved');
         this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
       error: error => this.notificationService.popErrorToast('Report disapproving failed', error)

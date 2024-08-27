@@ -5,7 +5,7 @@ import { GameService } from '../../../../services/game.service';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDateArray } from '../../../../util/formatDate';
-import { releaseStatuses } from '../../../../interfaces/releaseStatuses';
+import { releaseStatuses } from '../../../../enums/releaseStatuses';
 import { ReleaseStatus } from '../../../../interfaces/releaseStatus';
 import { BackgroundService } from '../../../../services/background.service';
 import { BaseAdComponent } from '../../../base-components/base-ad-component';

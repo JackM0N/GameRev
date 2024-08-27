@@ -21,6 +21,7 @@ export class ForumFormDialogComponent {
   private name: string = '';
   private game?: Game;
   private parentForumId?: number;
+  private forumId?: number;
   
   constructor(
     private forumService: ForumService,
@@ -29,6 +30,7 @@ export class ForumFormDialogComponent {
     public dialogRef: MatDialogRef<ForumFormDialogComponent>,
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data?: {
+      id?: number,
       name?: string,
       description?: string,
       gameTitle?: string,
@@ -47,6 +49,10 @@ export class ForumFormDialogComponent {
     this.loadGames();
 
     if (this.data) {
+      if (this.data.id) {
+        this.forumId = this.data.id;
+      }
+
       if (this.data.name) {
         this.name = this.data.name;
         this.forumForm.patchValue({
@@ -61,19 +67,6 @@ export class ForumFormDialogComponent {
         });
       }
 
-      if (this.data.gameTitle) {
-        const findGame = this.gameList.find(game => game.title === this.data?.gameTitle);
-
-        if (findGame) {
-          this.game = findGame;
-          this.forumForm.patchValue({
-            game: findGame
-          });
-        } else {
-          console.error('Game not found');
-        }
-      }
-
       if (this.data.parentForumId) {
         this.parentForumId = this.data.parentForumId;
       }
@@ -82,7 +75,22 @@ export class ForumFormDialogComponent {
 
   loadGames() {
     this.gameService.getGames().subscribe({
-      next: (response: any) => { this.gameList = response.content; },
+      next: (response: any) => {
+        this.gameList = response.content;
+
+        if (this.data && this.data.gameTitle) {
+          const findGame = this.gameList.find(game => game.title === this.data?.gameTitle);
+  
+          if (findGame) {
+            this.game = findGame;
+            this.forumForm.patchValue({
+              game: findGame
+            });
+          } else {
+            console.error('Game not found');
+          }
+        }
+      },
       error: (error: any) => { console.error(error); }
     });
   }
@@ -99,11 +107,6 @@ export class ForumFormDialogComponent {
 
   submitForm() {
     if (this.forumForm.valid) {
-      if (!this.parentForumId) {
-        console.error('Parent forum is not set');
-        return;
-      }
-
       const newForum: Forum = {
         forumName: this.forumForm.get('name')?.value,
         description: this.forumForm.get('description')?.value,
@@ -113,14 +116,21 @@ export class ForumFormDialogComponent {
 
       if (this.data && this.data.editing) {
         newForum.parentForumId = undefined;
+        newForum.id = this.forumId;
         this.forumService.editForum(newForum).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Forum edited', true); },
+          next: () => { this.notificationService.popSuccessToast('Forum edited'); },
           error: error => this.notificationService.popErrorToast('Forum editing failed', error)
         });
         return;
       }
+
+      if (!this.parentForumId) {
+        console.error('Parent forum is not set');
+        return;
+      }
+
       this.forumService.addForum(newForum).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Forum added', true); },
+        next: () => { this.notificationService.popSuccessToast('Forum added'); },
         error: error => this.notificationService.popErrorToast('Forum adding failed', error)
       });
 

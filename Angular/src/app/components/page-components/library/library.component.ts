@@ -14,7 +14,7 @@ import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
-import { completionStatuses } from '../../../interfaces/completionStatuses';
+import { completionStatuses } from '../../../enums/completionStatuses';
 import { MatSelectChange } from '@angular/material/select';
 import { libraryFilters } from '../../../interfaces/libraryFilters';
 import { Tag } from '../../../interfaces/tag';
@@ -134,7 +134,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
 
   editUserGame(userGame: UserGame) {
     this.libraryService.updateUserGame(userGame).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Game updated successfully', false); },
+      next: () => { this.notificationService.popSuccessToast('Game updated successfully'); },
       error: error => this.notificationService.popErrorToast('Game updating failed', error)
     });
   }
@@ -179,7 +179,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
         this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
 
-        this.notificationService.popSuccessToast('Game added successfully', false);
+        this.notificationService.popSuccessToast('Game added successfully');
 
         this.loadGames();
       },

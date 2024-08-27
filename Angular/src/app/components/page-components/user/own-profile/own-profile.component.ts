@@ -13,6 +13,7 @@ import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-
 import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { NotificationService } from '../../../../services/notification.service';
+import { NotificationAction } from '../../../../enums/notificationActions';
 
 @Component({
   selector: 'app-own-profile',
@@ -121,8 +122,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/']);
-    this.notificationService.popSuccessToast('Successfully logged out', false);
+    this.notificationService.popSuccessToast('Successfully logged out', NotificationAction.GO_TO_HOME);
   }
 
   openAccountDeletionDialog() {
@@ -151,9 +151,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
     this.authService.deleteOwnAccount(userData).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Account deleted successfuly!', false);
+        this.notificationService.popSuccessToast('Account deleted successfuly!', NotificationAction.GO_TO_HOME);
         this.authService.logout();
-        this.router.navigate(['/']);
       },
       error: error => this.notificationService.popErrorToast('Account deletion failed', error)
     });
@@ -176,7 +175,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       };
 
       this.authService.changeProfile(newData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Profile information change successful!', false); },
+        next: () => { this.notificationService.popSuccessToast('Profile information change successful!'); },
         error: error => this.notificationService.popErrorToast('Profile information change failed', error)
       });
     }
@@ -199,9 +198,12 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
       this.authService.changeProfilePicture(userName, this.selectedImage).subscribe({
         next: () => {
-          this.notificationService.popSuccessToast('Profile picture change successful!', false);
+          this.notificationService.popSuccessToast('Profile picture change successful!');
           if (nickName) {
             this.imageCacheService.deleteCachedImage("profilePic" + nickName);
+          }
+          if (this.selectedImage) {
+            this.imageUrl = URL.createObjectURL(this.selectedImage);
           }
         },
         error: error => this.notificationService.popErrorToast('Profile picture change failed', error)

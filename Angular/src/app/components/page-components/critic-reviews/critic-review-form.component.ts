@@ -8,6 +8,7 @@ import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-critic-review-form',
@@ -93,14 +94,14 @@ export class CriticReviewFormComponent implements OnInit {
 
       if (this.isEditRoute) {
         this.criticReviewService.editCriticReview(reviewData).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited review successfuly', true); },
+          next: () => { this.notificationService.popSuccessToast('Edited review successfuly', NotificationAction.GO_BACK); },
           error: error => this.notificationService.popErrorToast('Editing review failed', error)
         });
         return;
       }
 
       this.criticReviewService.addCriticReview(reviewData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Added review successfuly', true); },
+        next: () => { this.notificationService.popSuccessToast('Added review successfuly', NotificationAction.GO_BACK); },
         error: error => this.notificationService.popErrorToast('Adding review failed', error)
       });
     }

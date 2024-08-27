@@ -70,6 +70,6 @@ export class ForumService {
       'Authorization': `Bearer ${token}`
     });
     
-    return this.http.post<Forum>(this.editUrl, forum, { headers });
+    return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
   }
 }

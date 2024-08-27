@@ -46,7 +46,7 @@ export class PasswordChangeComponent {
       };
 
       this.authService.changeProfile(newData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Password change successful!', false); },
+        next: () => { this.notificationService.popSuccessToast('Password change successful!'); },
         error: error => this.notificationService.popErrorToast('Password change failed', error)
       });
     }
