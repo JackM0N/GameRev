@@ -2,7 +2,6 @@ package pl.ttsw.GameRev;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
-import org.hibernate.action.internal.EntityActionVetoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class ReportServiceTest {
 
@@ -105,14 +104,13 @@ public class ReportServiceTest {
     public void testGetReportById_NotFound() {
         when(reportRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () ->reportService.getReportById(1L));
+        assertThrows(EntityNotFoundException.class, () -> reportService.getReportById(1L));
     }
 
     @Test
     public void testGetReportsByReview_Found() {
         Page<Report> reportPage = new PageImpl<>(Collections.singletonList(testReport), PageRequest.of(0, 10), 1);
-        when(reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(anyLong(), any(Pageable.class)))
-                .thenReturn(reportPage);
+        when(reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(anyLong(), any(Pageable.class))).thenReturn(reportPage);
         when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
 
         Page<ReportDTO> result = reportService.getReportsByReview(testUserReviewDTO, PageRequest.of(0, 10));
@@ -125,8 +123,7 @@ public class ReportServiceTest {
     @Test
     public void testGetReportsByReview_NotFound() {
         Page<Report> reportPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
-        when(reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(anyLong(), any(Pageable.class)))
-                .thenReturn(reportPage);
+        when(reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(anyLong(), any(Pageable.class))).thenReturn(reportPage);
 
         Page<ReportDTO> result = reportService.getReportsByReview(testUserReviewDTO, PageRequest.of(0, 10));
 
@@ -137,8 +134,7 @@ public class ReportServiceTest {
     public void testCreateReport_Success() throws BadRequestException {
         when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
-        when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class)))
-                .thenReturn(Optional.empty());
+        when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class))).thenReturn(Optional.empty());
         when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
         when(reportRepository.save(any(Report.class))).thenReturn(testReport);
 
@@ -165,8 +161,7 @@ public class ReportServiceTest {
     public void testCreateReport_AlreadyReported() {
         when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
-        when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class)))
-                .thenReturn(Optional.of(testReport));
+        when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class))).thenReturn(Optional.of(testReport));
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             reportService.createReport(testReportDTO);

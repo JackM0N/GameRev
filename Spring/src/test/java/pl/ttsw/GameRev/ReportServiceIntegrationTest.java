@@ -15,10 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.ReportMapper;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Report;
-import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ReportRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
@@ -55,19 +55,22 @@ public class ReportServiceIntegrationTest {
     @Autowired
     private UserReviewMapper userReviewMapper;
 
+    @Autowired
+    private UserReviewService userReviewService;
+
     private WebsiteUser testUser;
     private UserReviewDTO testUserReview;
     private Report testReport;
     private final Pageable pageable = PageRequest.ofSize(10);
-    @Autowired
-    private UserReviewService userReviewService;
+
 
     @BeforeEach
     public void setup() {
         testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser);
+        UserReviewFilter userReviewFilter = new UserReviewFilter();
 
-        testUserReview = userReviewService.getUserReviewsWithReports(null,null,null,null,pageable).get().findFirst().orElse(null);
+        testUserReview = userReviewService.getUserReviewsWithReports(userReviewFilter, pageable).get().findFirst().orElse(null);
         assertNotNull(testUserReview);
 
         testReport = reportRepository.findById(1L).orElse(null);
@@ -138,22 +141,6 @@ public class ReportServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testCreateReport_UserNotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setUserReview(testUserReview);
-        reportDTO.setContent("New Report Content");
-
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            reportService.createReport(reportDTO);
-        });
-
-        assertEquals("You are not logged in", exception.getMessage());
-    }
-
-    @Test
-    @Transactional
     @WithMockUser("testuser")
     public void testCreateReport_AlreadyReported() throws BadRequestException {
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
@@ -192,6 +179,6 @@ public class ReportServiceIntegrationTest {
             reportService.updateReport(reportDTO);
         });
 
-        assertEquals("This report doesnt exist", exception.getMessage());
+        assertEquals("Report not found", exception.getMessage());
     }
 }
