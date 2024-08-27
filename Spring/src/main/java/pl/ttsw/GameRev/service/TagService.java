@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TagService {
-    private TagRepository tagRepository;
-    private TagMapper tagMapper;
+    private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
     public List<TagDTO> getAllTags() {
         List<Tag> tags = tagRepository.findAll();
