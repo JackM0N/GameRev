@@ -36,10 +36,11 @@ public class SecurityConfig {
                                 "/critics-reviews/id/**")
                         .hasAnyRole("Critic", "Admin")
 
-                        .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**",
-                                "/user/edit/**", "/user/delete/**", "/user/roles/**", "/forum/create",
-                                "/forum/delete/**", "/forum/edit/**", "/forum-request/list", "/forum-request/**",
-                                "/forum-request/create", "/forum-request/approve/**")
+                        .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**", "/games/create",
+                                "/games/edit/**", "/games/delete/**", "/user/edit/**", "/user/delete/**",
+                                "/user/roles/**", "/forum/create", "/forum/delete/**", "/forum/edit/**",
+                                "/forum-request/list", "/forum-request/**", "/forum-request/create",
+                                "/forum-request/approve/**")
                         .hasRole("Admin")
 
                         .requestMatchers("/login/**", "/register/**", "/games/**","/tags/**",
