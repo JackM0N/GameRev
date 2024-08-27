@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.UserGameDTO;
+import pl.ttsw.GameRev.filter.UserGameFilter;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
 import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.model.Game;
@@ -33,10 +34,8 @@ public class UserGameService {
     private final WebsiteUserRepository websiteUserRepository;
 
     public Page<UserGameDTO> getUserGame(
-            Boolean isFavourite,
-            CompletionStatus completionStatus,
-            List<Long> tagIds,
             String nickname,
+            UserGameFilter userGameFilter,
             Pageable pageable) throws BadRequestException {
         if (websiteUserRepository.findByNickname(nickname).isEmpty()) {
             throw new BadRequestException("This user doesn't exist");
@@ -45,17 +44,19 @@ public class UserGameService {
         Specification<UserGame> spec = Specification.where((root, query, builder) ->
                 builder.equal(root.get("user").get("nickname"), nickname));
 
-        if (isFavourite != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("isFavourite"), isFavourite));
+        if (userGameFilter.getIsFavourite() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .equal(root.get("isFavourite"), userGameFilter.getIsFavourite()));
         }
-        if (completionStatus != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("completionStatus"), completionStatus));
+        if (userGameFilter.getCompletionStatus() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .equal(root.get("completionStatus"), userGameFilter.getCompletionStatus()));
         }
-        if (tagIds != null && !tagIds.isEmpty()) {
+        if (userGameFilter.getTagsIds() != null && !userGameFilter.getTagsIds().isEmpty()) {
             spec = spec.and((root, query, builder) -> {
                 Join<UserGame, Game> gameJoin = root.join("game");
                 Join<Game, Tag> tags = gameJoin.join("tags");
-                return tags.get("id").in(tagIds);
+                return tags.get("id").in(userGameFilter.getTagsIds());
             });
         }
         Page<UserGame> userGames = userGameRepository.findAll(spec, pageable);
@@ -64,9 +65,6 @@ public class UserGameService {
 
     public UserGameDTO addGameToUser(UserGameDTO userGameDTO) throws BadRequestException {
         WebsiteUser user = websiteUserService.getCurrentUser();
-        if (user == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
 
         WebsiteUser userFromDTO = websiteUserRepository.findByUsername(userGameDTO.getUser().getUsername())
                 .orElseThrow(() -> new BadRequestException("This user doesn't exist"));
@@ -98,15 +96,9 @@ public class UserGameService {
     }
 
     public UserGameDTO updateGame(UserGameDTO userGameDTO) throws BadRequestException {
-        UserGame userGame = userGameRepository.findById(userGameDTO.getId()).orElse(null);
-        if (userGame == null) {
-            throw new BadRequestException("Game not found");
-        }
-
+        UserGame userGame = userGameRepository.findById(userGameDTO.getId())
+                .orElseThrow(() -> new BadRequestException("This game doesn't exist"));
         WebsiteUser user = websiteUserService.getCurrentUser();
-        if (user == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
 
         if (!Objects.equals(userGame.getUser(), user)) {
             throw new BadCredentialsException("You can only update your own library");
@@ -127,13 +119,12 @@ public class UserGameService {
 
     public boolean deleteGame(Long id) throws BadRequestException {
         WebsiteUser user = websiteUserService.getCurrentUser();
-        if (user == null) {
-            throw new BadCredentialsException("You have to login first");
-        }
 
-        UserGame userGame = userGameRepository.findById(id).orElse(null);
-        if (userGame == null) {
-            throw new BadRequestException("Game not found");
+        UserGame userGame = userGameRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("This game doesn't exist"));
+
+        if (!Objects.equals(userGame.getUser(), user)) {
+            throw new BadCredentialsException("You can only delete a game from your own library");
         }
 
         userGameRepository.delete(userGame);
