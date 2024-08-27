@@ -7,8 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
+import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.service.RatingService;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
@@ -24,28 +27,16 @@ public class UserReviewController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getUserReviewById(@PathVariable Long id) {
-        UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(id);
-        if (userReviewDTO == null) {
-            return ResponseEntity.badRequest().body("There are no user reviews for this id");
-        }
-        return ResponseEntity.ok(userReviewDTO);
+        return ResponseEntity.ok(userReviewService.getUserReviewById(id));
     }
 
     @GetMapping("/{title}")
     public ResponseEntity<?> getUserReviewByGame(
             @PathVariable String title,
-            @RequestParam(value = "postDateFrom", required = false) LocalDate postDateFrom,
-            @RequestParam(value = "postDateTo", required = false) LocalDate postDateTo,
-            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
-            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
+            UserReviewFilter userReviewFilter,
             Pageable pageable) {
         title = title.replaceAll("-", " ");
-        Page<UserReviewDTO> userReviewDTO = userReviewService
-                .getUserReviewByGame(title, postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
-        if (userReviewDTO == null || userReviewDTO.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(userReviewDTO);
+        return ResponseEntity.ok(userReviewService.getUserReviewByGame(title, userReviewFilter, pageable));
     }
 
     @PostMapping("")
@@ -74,48 +65,32 @@ public class UserReviewController {
     }
 
     @GetMapping("/admin/{id}")
-    public ResponseEntity<?> getUserReviewByUserId(
+    public ResponseEntity<Page<UserReviewDTO>> getUserReviewByUserId(
             @PathVariable Long id,
-            @RequestParam(value = "postDateFrom", required = false) LocalDate postDateFrom,
-            @RequestParam(value = "postDateTo", required = false) LocalDate postDateTo,
-            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
-            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
+            UserReviewFilter userReviewFilter,
             Pageable pageable) throws BadRequestException {
-        Page<UserReviewDTO> userReviewDTOS = userReviewService
-                .getUserReviewByUser(id, postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
-        if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(userReviewDTOS);
+        return ResponseEntity.ok(userReviewService.getUserReviewByUser(id, userReviewFilter, pageable));
     }
 
     @GetMapping("/my-reviews")
-    public ResponseEntity<?> getUserReviews(
-            @RequestParam(value = "postDateFrom", required = false) LocalDate postDateFrom,
-            @RequestParam(value = "postDateTo", required = false) LocalDate postDateTo,
-            @RequestParam(value = "scoreFrom", required = false) Integer scoreFrom,
-            @RequestParam(value = "scoreTo", required = false) Integer scoreTo,
-            Pageable pageable) throws BadRequestException {
-        Page<UserReviewDTO> userReviewDTOS = userReviewService
-                .getUserReviewByOwner( postDateFrom, postDateTo, scoreFrom, scoreTo, pageable);
-        if (userReviewDTOS == null || userReviewDTOS.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(userReviewDTOS);
+    public ResponseEntity<Page<UserReviewDTO>> getUserReviews(
+            UserReviewFilter userReviewFilter,
+            Pageable pageable) {
+        return ResponseEntity.ok(userReviewService.getUserReviewByOwner(userReviewFilter, pageable));
     }
 
     @PutMapping("/add-rating")
-    public ResponseEntity<?> addUserReviewRating(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
+    public ResponseEntity<RatingDTO> addUserReviewRating(@RequestBody UserReviewDTO userReviewDTO) throws BadRequestException {
         if (userReviewDTO == null) {
-            return ResponseEntity.badRequest().body("There was an error rating the user review");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(ratingService.updateRating(userReviewDTO));
     }
 
     @PutMapping("/report")
-    public ResponseEntity<?> reportUserReview(@RequestBody ReportDTO reportDTO) throws BadRequestException {
+    public ResponseEntity<ReportDTO> reportUserReview(@RequestBody ReportDTO reportDTO) throws BadRequestException {
         if (reportDTO == null){
-            return ResponseEntity.badRequest().body("There was an error when trying to report this users review");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));
     }

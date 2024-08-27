@@ -47,7 +47,7 @@ public class GameService {
         }
         if (gameFilter.getToDate() != null) {
             spec = spec.and((root, query, builder) -> builder
-                    .lessThanOrEqualTo(root.get("releaseDate"), gameFilter.getFromDate()));
+                    .lessThanOrEqualTo(root.get("releaseDate"), gameFilter.getToDate()));
         }
         if (gameFilter.getMinUserScore() != null) {
             spec = spec.and((root, query, builder) -> builder
