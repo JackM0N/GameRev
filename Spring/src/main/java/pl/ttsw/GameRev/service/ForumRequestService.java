@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -40,10 +41,8 @@ public class ForumRequestService {
     }
 
     public ForumRequestDTO getForumRequestById(Long id) {
-        ForumRequest forumRequest = forumRequestRepository.findById(id).orElse(null);
-        if(forumRequest == null) {
-            return null;
-        }
+        ForumRequest forumRequest = forumRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Forum request not found"));
         return forumRequestMapper.toDto(forumRequest);
     }
 
@@ -93,7 +92,7 @@ public class ForumRequestService {
         }
     }
 
-    public ForumRequestDTO approveForumRequest(Long id, Boolean approval) throws BadRequestException {
+    public ForumRequestDTO approveForumRequest(Long id, Boolean approval) {
         ForumRequest forumRequest = forumRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum request not found"));
         forumRequest.setApproved(approval);

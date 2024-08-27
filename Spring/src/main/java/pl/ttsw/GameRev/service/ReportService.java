@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -10,9 +11,9 @@ import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.ReportMapper;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
+import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ReportRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,52 +24,38 @@ public class ReportService {
     private final ReportMapper reportMapper;
 
     public ReportDTO getReportById(Long id) {
-        Optional<Report> reportOptional = reportRepository.findById(id);
-        return reportOptional.map(reportMapper::toDto).orElse(null);
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Report not found"));
+        return reportMapper.toDto(report);
     }
 
     public Page<ReportDTO> getReportsByReview(UserReviewDTO userReviewDTO, Pageable pageable) {
         Page<Report> reports = reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(userReviewDTO.getId(), pageable);
-        if (reports.isEmpty()) {
-            return null;
-        }
         return reports.map(reportMapper::toDto);
     }
 
     public ReportDTO createReport(ReportDTO reportDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(reportDTO.getUserReview().getId())
                 .orElseThrow(() -> new BadRequestException("User review not found"));
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        if (userReview == null) {
-            throw new BadRequestException("This review doesnt exist");
-        }
-
-        if(websiteUserService.getCurrentUser() == null){
-            throw new BadRequestException("You are not logged in");
-        }
-
-        Optional<Report> reportOptional = reportRepository.findByUserAndUserReview(
-                websiteUserService.getCurrentUser(),
-                userReview
-        );
-
-        if (reportOptional.isPresent()) {
+        Report report = reportRepository.findByUserAndUserReview(currentUser, userReview)
+                .orElse(null);
+        if (report != null) {
             throw new BadRequestException("You've already reported this review");
         }
 
-        Report report = new Report();
-        report.setUser(websiteUserService.getCurrentUser());
-        report.setUserReview(userReview);
-        report.setContent(reportDTO.getContent());
-
-        return reportMapper.toDto(reportRepository.save(report));
+        Report newReport = new Report();
+        newReport.setUser(currentUser);
+        newReport.setUserReview(userReview);
+        newReport.setContent(reportDTO.getContent());
+        reportRepository.save(newReport);
+        return reportMapper.toDto(newReport);
     }
 
     public ReportDTO updateReport(ReportDTO reportDTO) throws BadRequestException {
-        Report report = reportRepository.findById(reportDTO.getId()).orElse(null);
-        if (report == null) {
-            throw new BadRequestException("This report doesnt exist");
-        }
+        Report report = reportRepository.findById(reportDTO.getId())
+                .orElseThrow(() -> new BadRequestException("Report not found"));
         report.setApproved(reportDTO.getApproved());
         return reportMapper.toDto(reportRepository.save(report));
     }
