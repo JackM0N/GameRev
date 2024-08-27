@@ -139,6 +139,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
       width: '300px',
       data: {
         editing: true,
+        parentForumId: this.forumId,
         id: subForum.id,
         name: subForum.forumName,
         description: subForum.description,

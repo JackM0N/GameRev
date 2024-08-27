@@ -24,6 +24,10 @@ export class ForumService {
     return this.http.get<Forum>(`${this.pathUrl}/${id}`);
   }
 
+  getForums(): Observable<Forum[]> {
+    return this.http.get<Forum[]>(this.baseUrl);
+  }
+
   getForum(id?: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
     var params = new HttpParams();
 

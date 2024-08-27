@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GameService } from '../../../services/game.service';
@@ -16,6 +16,7 @@ export class ForumFormDialogComponent {
   public nameMinLength: number = 4;
   public descriptionMinLength: number = 8;
   public gameList: Game[] = [];
+  public forumList: Forum[] = [];
 
   private description: string = '';
   private name: string = '';
@@ -39,6 +40,7 @@ export class ForumFormDialogComponent {
     }
   ) {
     this.forumForm = this.formBuilder.group({
+      parentForum: [this.parentForumId],
       name: [this.name, [Validators.required, Validators.minLength(this.nameMinLength)]],
       description: [this.description, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
       game: [this.game, [Validators.required]]
@@ -69,8 +71,12 @@ export class ForumFormDialogComponent {
 
       if (this.data.parentForumId) {
         this.parentForumId = this.data.parentForumId;
+      } else {
+        this.parentForumId = 1;
       }
     }
+
+    this.loadForums();
   }
 
   loadGames() {
@@ -95,6 +101,31 @@ export class ForumFormDialogComponent {
     });
   }
 
+  loadForums() {
+    this.forumList = [];
+
+    this.forumService.getForums().subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.forumList = response.content;
+
+          if (this.parentForumId) {
+            const findForum = this.forumList.find(forum => forum.id == this.parentForumId);
+    
+            if (findForum) {
+              this.forumForm.patchValue({
+                parentForum: findForum
+              });
+            } else {
+              console.error('Forum not found');
+            }
+          }
+        }
+      },
+      error: (error: any) => { console.error(error); }
+    });
+  }
+
   isGameInvalid() {
     const gameControl = this.forumForm.get('game');
 
@@ -111,11 +142,10 @@ export class ForumFormDialogComponent {
         forumName: this.forumForm.get('name')?.value,
         description: this.forumForm.get('description')?.value,
         gameTitle: this.forumForm.get('game')?.value.title,
-        parentForumId: this.parentForumId
+        parentForumId: this.forumForm.get('parentForum')?.value.id,
       }
 
       if (this.data && this.data.editing) {
-        newForum.parentForumId = undefined;
         newForum.id = this.forumId;
         this.forumService.editForum(newForum).subscribe({
           next: () => { this.notificationService.popSuccessToast('Forum edited'); },
