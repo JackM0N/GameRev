@@ -118,7 +118,7 @@ public class GameService {
                 try {
                     Files.delete(filepath);
                 } catch (IOException ioException) {
-                    System.err.println("Failed to delete file after an error: " + filepath.toString());
+                    System.err.println("Failed to delete file after an error: " + filepath);
                 }
             }
             throw e;

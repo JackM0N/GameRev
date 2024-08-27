@@ -4,18 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.filter.UserReviewFilter;
-import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.service.RatingService;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/users-reviews")

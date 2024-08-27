@@ -4,14 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.UserGameDTO;
-import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.filter.UserGameFilter;
 import pl.ttsw.GameRev.service.UserGameService;
-import java.util.List;
 
 @RestController
 @RequestMapping("/library")
