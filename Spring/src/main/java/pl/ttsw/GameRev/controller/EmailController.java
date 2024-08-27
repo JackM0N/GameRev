@@ -3,6 +3,7 @@ package pl.ttsw.GameRev.controller;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
@@ -10,12 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class EmailController {
     private final GreenMail greenMail;
-
-    public EmailController(GreenMail greenMail) {
-        this.greenMail = greenMail;
-    }
 
     @GetMapping("/emails")
     public String getEmails() {

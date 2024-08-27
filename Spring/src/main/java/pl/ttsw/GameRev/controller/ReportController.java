@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +15,10 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/reports")
+@RequiredArgsConstructor
 public class ReportController {
     private final UserReviewService userReviewService;
     private final ReportService reportService;
-
-    public ReportController(UserReviewService userReviewService, ReportService reportService) {
-        this.userReviewService = userReviewService;
-        this.reportService = reportService;
-    }
 
     @GetMapping
     public ResponseEntity<?> reviewsWithReports(

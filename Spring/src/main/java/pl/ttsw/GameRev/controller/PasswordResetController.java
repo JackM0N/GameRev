@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.controller;
 
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +14,13 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/password-reset")
+@RequiredArgsConstructor
 public class PasswordResetController {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordResetTokenService passwordResetTokenService;
 
-    public PasswordResetController(PasswordResetTokenService passwordResetTokenService, EmailService emailService, PasswordEncoder passwordEncoder, WebsiteUserRepository websiteUserRepository) {
-        this.passwordResetTokenService = passwordResetTokenService;
-        this.emailService = emailService;
-        this.passwordEncoder = passwordEncoder;
-        this.websiteUserRepository = websiteUserRepository;
-    }
 
     @PostMapping("/request")
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) throws MessagingException, IOException {

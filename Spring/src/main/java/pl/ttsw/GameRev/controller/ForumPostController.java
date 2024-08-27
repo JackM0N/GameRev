@@ -3,44 +3,31 @@ package pl.ttsw.GameRev.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.service.ForumPostService;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/forum-post")
+@RequiredArgsConstructor
 public class ForumPostController {
     private final ForumPostService forumPostService;
 
-    public ForumPostController(ForumPostService forumPostService) {
-        this.forumPostService = forumPostService;
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(
-            @PathVariable Long id,
-            @RequestParam(value = "postDateFrom", required = false)  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate postDateFrom,
-            @RequestParam(value = "postDateTo", required = false)  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate postDateTo,
-            @RequestParam(value = "searchText", required = false)  String searchText,
-            Pageable pageable){
-        Page<ForumPostDTO> forumPostDTOS = forumPostService.getForumPosts(id, postDateFrom, postDateTo, searchText, pageable);
-        if (forumPostDTOS.getTotalElements() == 0){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(forumPostDTOS);
+    public ResponseEntity<Page<ForumPostDTO>> getById(@PathVariable Long id, ForumPostFilter forumPostFilter, Pageable pageable){
+        return ResponseEntity.ok(forumPostService.getForumPosts(id, forumPostFilter, pageable));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(
+    public ResponseEntity<ForumPostDTO> create(
             @RequestParam(value = "post") String postJson,
             @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
         ObjectMapper objectMapper = JsonMapper.builder()
@@ -49,13 +36,13 @@ public class ForumPostController {
         ForumPostDTO request = objectMapper.readValue(postJson, ForumPostDTO.class);
         ForumPostDTO post = forumPostService.createForumPost(request, picture);
         if (post == null){
-            return ResponseEntity.badRequest().body("Post creation failed");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(post);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> edit(
+    public ResponseEntity<ForumPostDTO> edit(
             @PathVariable Long id,
             @RequestParam(value = "post") String postJson,
             @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
@@ -71,7 +58,7 @@ public class ForumPostController {
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestParam(name = "isDeleted") Boolean isDeleted){
         boolean gotDeleted = forumPostService.deleteForumPost(id, isDeleted);
         if (!gotDeleted){
-            return ResponseEntity.badRequest().body("There was an error deleting this post");
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
     }

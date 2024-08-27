@@ -149,7 +149,8 @@ class ForumServiceTest {
         Game game = new Game();
         when(forumRepository.findById(id)).thenReturn(Optional.of(forum));
         when(gameRepository.findGameByTitle(forumDTO.getGameTitle())).thenReturn(Optional.of(game));
-        when(forumMapper.toDto(any(Forum.class))).thenReturn(forumDTO);
+        when(forumMapper.toDto(any())).thenReturn(forumDTO);
+        when(forumRepository.save(any(Forum.class))).thenReturn(forum);
 
         ForumDTO result = forumService.updateForum(id, forumDTO);
 

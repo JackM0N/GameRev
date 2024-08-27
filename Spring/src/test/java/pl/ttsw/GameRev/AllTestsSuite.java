@@ -22,7 +22,9 @@ import org.junit.platform.suite.api.Suite;
 		CriticReviewServiceTest.class,
 		CriticReviewServiceIntegrationTest.class,
 		ForumServiceTest.class,
-		ForumServiceIntegrationTest.class
+		ForumServiceIntegrationTest.class,
+		ForumPostServiceTest.class,
+		ForumPostServiceIntegrationTest.class
 })
 public class AllTestsSuite {
 	// yes, this should be empty

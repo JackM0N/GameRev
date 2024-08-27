@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.mapper.TagMapper;
@@ -9,14 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TagService {
     private TagRepository tagRepository;
     private TagMapper tagMapper;
-
-    public TagService(TagRepository tagRepository , TagMapper tagMapper) {
-        this.tagRepository = tagRepository;
-        this.tagMapper = tagMapper;
-    }
 
     public List<TagDTO> getAllTags() {
         List<Tag> tags = tagRepository.findAll();

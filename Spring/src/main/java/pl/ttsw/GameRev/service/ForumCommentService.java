@@ -1,6 +1,8 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumCommentDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumCommentFilter;
 import pl.ttsw.GameRev.mapper.ForumCommentMapper;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
 import pl.ttsw.GameRev.model.Forum;
@@ -19,6 +22,7 @@ import pl.ttsw.GameRev.repository.*;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ForumCommentService {
     private final ForumCommentRepository forumCommentRepository;
     private final ForumPostRepository forumPostRepository;
@@ -28,35 +32,10 @@ public class ForumCommentService {
     private final WebsiteUserService websiteUserService;
     private final ForumModeratorRepository forumModeratorRepository;
 
-    public ForumCommentService(ForumCommentRepository forumCommentRepository, ForumPostRepository forumPostRepository, RoleRepository roleRepository, ForumCommentMapper forumCommentMapper, ForumPostMapper forumPostMapper, WebsiteUserService websiteUserService, ForumModeratorRepository forumModeratorRepository) {
-        this.forumCommentRepository = forumCommentRepository;
-        this.forumPostRepository = forumPostRepository;
-        this.roleRepository = roleRepository;
-        this.forumCommentMapper = forumCommentMapper;
-        this.forumPostMapper = forumPostMapper;
-        this.websiteUserService = websiteUserService;
-        this.forumModeratorRepository = forumModeratorRepository;
-    }
-
-    public Page<ForumCommentDTO> getForumCommentsByPost(Long id, Long userId, String searchText, Pageable pageable) {
-        ForumPost post = forumPostRepository.findById(id).orElse(null);
-        if (post == null) {
-            return null;
-        }
-        Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("forumPost"), post));
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
-        if (userId != null) {
-            spec = spec.and((root, query, builder) -> {
-                Join<ForumComment, WebsiteUser> join = root.join("author");
-                return builder.equal(join.get("id"), userId);
-            });
-        }
-
-        if (searchText != null) {
-            searchText = searchText.toLowerCase();
-            String likePattern = "%" + searchText + "%";
-            spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
-        }
+    public Page<ForumCommentDTO> getForumCommentsByPost(Long id, ForumCommentFilter forumCommentFilter, Pageable pageable) {
+        ForumPost post = forumPostRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
+        Specification<ForumComment> spec = getForumCommentSpecification(forumCommentFilter, post);
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
         //TODO: Add SimplifiedUserDTO for those types of situations
         for (ForumComment forumComment : forumComments) {
@@ -71,10 +50,8 @@ public class ForumCommentService {
     }
 
     public ForumPostDTO getOriginalPost(Long id) {
-        ForumPost post = forumPostRepository.findById(id).orElse(null);
-        if (post == null) {
-            return null;
-        }
+        ForumPost post = forumPostRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
         post.getAuthor().setPassword(null);
         post.getAuthor().setUsername(null);
         post.getAuthor().setEmail(null);
@@ -125,10 +102,30 @@ public class ForumCommentService {
             forumComment.setIsDeleted(isDeleted);
             if (isDeleted) {
                 forumComment.setDeletedAt(LocalDateTime.now());
+            }else {
+                forumComment.setDeletedAt(null);
             }
+            forumCommentRepository.save(forumComment);
             return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
+    }
+
+    private static Specification<ForumComment> getForumCommentSpecification(ForumCommentFilter forumCommentFilter, ForumPost post) {
+        Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("forumPost"), post));
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
+        if (forumCommentFilter.getUserId() != null) {
+            spec = spec.and((root, query, builder) -> {
+                Join<ForumComment, WebsiteUser> join = root.join("author");
+                return builder.equal(join.get("id"), forumCommentFilter.getUserId());
+            });
+        }
+
+        if (forumCommentFilter.getSearchText() != null) {
+            String likePattern = "%" + forumCommentFilter.getSearchText().toLowerCase() + "%";
+            spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
+        }
+        return spec;
     }
 }

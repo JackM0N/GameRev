@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordResetTokenService {
     private PasswordResetTokenRepository passwordResetTokenRepository;
     private WebsiteUserRepository websiteUserRepository;
-
-    public PasswordResetTokenService(PasswordResetTokenRepository passwordResetTokenRepository, WebsiteUserRepository websiteUserRepository) {
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
-        this.websiteUserRepository = websiteUserRepository;
-    }
 
     public String createPasswordResetToken(String email) {
         WebsiteUser user = websiteUserRepository.findByEmail(email)
