@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -18,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -34,22 +35,20 @@ public class ForumPostService {
     private final String postPicDirectory = "../Pictures/post_pics";
     private final WebsiteUserService websiteUserService;
 
-    public Page<ForumPostDTO> getForumPosts(Long id,  LocalDate postDateFrom,
-                                            LocalDate postDateTo, String searchText, Pageable pageable) {
+    public Page<ForumPostDTO> getForumPosts(Long id, ForumPostFilter forumPostFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Forum not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
         Specification<ForumPost> spec = (root, query, builder) -> builder.equal(root.get("forum"), forum);
         spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
 
-        if (postDateFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        if (forumPostFilter.getPostDateFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), forumPostFilter.getPostDateFrom()));
         }
-        if (postDateTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        if (forumPostFilter.getPostDateTo() != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), forumPostFilter.getPostDateTo()));
         }
-        if (searchText != null) {
-            searchText = searchText.toLowerCase();
-            String likePattern = "%" + searchText + "%";
+        if (forumPostFilter.getSearchText() != null) {
+            String likePattern = "%" + forumPostFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) -> builder.or(
                     builder.like(builder.lower(root.get("title")), likePattern),
                     builder.like(builder.lower(root.get("content")), likePattern)
