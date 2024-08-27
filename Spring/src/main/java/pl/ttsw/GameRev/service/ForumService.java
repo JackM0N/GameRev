@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
@@ -36,11 +37,16 @@ public class ForumService {
                 .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
         Specification<Forum> spec = getForumSpecification(forumFilter, forum);
 
-        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+        try {
+            WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+            if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+                forumFilter.setIsDeleted(false);
+            }
+        }catch (BadCredentialsException e){
             forumFilter.setIsDeleted(false);
         }
+
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());
