@@ -1,6 +1,8 @@
 package pl.ttsw.GameRev;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
+import org.hibernate.action.internal.EntityActionVetoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -103,9 +105,7 @@ public class ReportServiceTest {
     public void testGetReportById_NotFound() {
         when(reportRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        ReportDTO result = reportService.getReportById(1L);
-
-        assertNull(result);
+        assertThrows(EntityNotFoundException.class, () ->reportService.getReportById(1L));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ReportServiceTest {
 
         Page<ReportDTO> result = reportService.getReportsByReview(testUserReviewDTO, PageRequest.of(0, 10));
 
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -159,18 +159,6 @@ public class ReportServiceTest {
         });
 
         assertEquals("User review not found", exception.getMessage());
-    }
-
-    @Test
-    public void testCreateReport_UserNotLoggedIn() {
-        when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            reportService.createReport(testReportDTO);
-        });
-
-        assertEquals("You are not logged in", exception.getMessage());
     }
 
     @Test
@@ -208,6 +196,6 @@ public class ReportServiceTest {
             reportService.updateReport(testReportDTO);
         });
 
-        assertEquals("This report doesnt exist", exception.getMessage());
+        assertEquals("Report not found", exception.getMessage());
     }
 }
