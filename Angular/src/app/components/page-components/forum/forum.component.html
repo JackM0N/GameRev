@@ -72,15 +72,4 @@
 
   <!-- Forum Posts Table -->
   <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
-
-  <!-- Paginator for Posts -->
-  <div [hidden]="totalPosts < 5">
-    <mat-paginator
-      #paginatorPosts
-      [length]="totalPosts"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
-  </div>
 </div>

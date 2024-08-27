@@ -24,7 +24,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   public totalSubforums = 0;
   public noSubForums = false;
   public currentForum?: Forum;
-  public totalPosts: number = 0;
   public path?: any;
 
   public forumId?: number;
