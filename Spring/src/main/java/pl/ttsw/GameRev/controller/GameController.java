@@ -25,7 +25,7 @@ import java.util.List;
 public class GameController {
     private final GameService gameService;
 
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<?> createGame(@RequestParam(value = "picture", required = false) MultipartFile picture,
                                         @RequestParam("game") String gameJson) throws IOException {
         ObjectMapper objectMapper = JsonMapper.builder()
@@ -49,7 +49,7 @@ public class GameController {
         return ResponseEntity.ok(gameService.getGameByTitle(title));
     }
 
-    @PutMapping("/{title}")
+    @PutMapping("/edit/{title}")
     public ResponseEntity<?> editGame(@RequestParam(value = "picture", required = false) MultipartFile picture,
                                       @PathVariable String title,
                                       @RequestParam("game") String gameJson) throws IOException {
@@ -65,7 +65,7 @@ public class GameController {
         return ResponseEntity.ok(updatedGame);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGame(@PathVariable Long id) {
         boolean gotRemoved = gameService.deleteGame(id);
         if (!gotRemoved) {
