@@ -22,9 +22,10 @@ public class ForumServiceIntegrationTest {
     @Autowired
     private ForumService forumService;
 
-    Pageable pageable = PageRequest.of(0, 10);
     @Autowired
     private ForumRepository forumRepository;
+
+    Pageable pageable = PageRequest.of(0, 10);
 
     @Test
     @Transactional

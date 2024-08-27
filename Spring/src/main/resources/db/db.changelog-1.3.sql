@@ -456,3 +456,4 @@ ALTER TABLE forum_comment
 UPDATE forum
 SET last_post_date = NULL
 where post_count = 0
+

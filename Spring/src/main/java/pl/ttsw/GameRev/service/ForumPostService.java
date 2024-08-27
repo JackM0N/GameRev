@@ -77,6 +77,7 @@ public class ForumPostService {
         forumPost.setPostDate(LocalDateTime.now());
         forumPost.setTitle(forumPostDTO.getTitle());
         forumPost.setCommentCount(0);
+        forumPost.setIsDeleted(false);
 
         Path filepath = null;
         try {
@@ -105,7 +106,7 @@ public class ForumPostService {
         ForumPost forumPost = forumPostRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum post not found"));
 
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumPost.getAuthor()) {
+        if (currentUser == forumPost.getAuthor() || currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())) {
             if (forumPostDTO.getForum() != null) {
                 forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
                         .orElseThrow(() -> new RuntimeException("Forum not found")));
@@ -135,7 +136,7 @@ public class ForumPostService {
 
             forumPost = forumPostRepository.save(forumPost);
             return forumPostMapper.toDto(forumPost);
-        }else {
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }
