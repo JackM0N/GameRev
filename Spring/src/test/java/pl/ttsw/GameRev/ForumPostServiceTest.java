@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
@@ -72,12 +73,13 @@ public class ForumPostServiceTest {
         ForumPost forumPost = new ForumPost();
         forumPost.setForum(forum);
         forumPost.setAuthor(new WebsiteUser());
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
 
         when(forumRepository.findById(forumId)).thenReturn(Optional.of(forum));
         when(forumPostRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(forumPost)));
         when(forumPostMapper.toDto(any())).thenReturn(new ForumPostDTO());
 
-        Page<ForumPostDTO> result = forumPostService.getForumPosts(forumId, null, null, null, pageable);
+        Page<ForumPostDTO> result = forumPostService.getForumPosts(forumId, forumPostFilter, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
@@ -88,10 +90,11 @@ public class ForumPostServiceTest {
     @Test
     public void testGetForumPosts_ForumNotFound() {
         Long forumId = 999L;
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
 
         when(forumRepository.findById(forumId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> forumPostService.getForumPosts(forumId, null, null, null, pageable));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> forumPostService.getForumPosts(forumId, forumPostFilter, pageable));
         assertEquals("Forum not found", exception.getMessage());
     }
 
