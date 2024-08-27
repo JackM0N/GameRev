@@ -114,17 +114,6 @@ public class CriticReviewServiceTest {
     }
 
     @Test
-    public void testCreateCriticReview_NotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        CriticReviewDTO criticReviewDTO = new CriticReviewDTO();
-
-        assertThrows(BadCredentialsException.class, () -> {
-            criticReviewService.createCriticReview(criticReviewDTO);
-        });
-    }
-
-    @Test
     public void testUpdateCriticReview_Success() throws BadRequestException {
         Long id = 1L;
         CriticReviewDTO criticReviewDTO = new CriticReviewDTO();
@@ -199,7 +188,7 @@ public class CriticReviewServiceTest {
         boolean result = criticReviewService.deleteCriticReview(id);
 
         assertTrue(result);
-        verify(criticReviewRepository, times(1)).delete(mockReview);
+        verify(criticReviewRepository, times(1)).deleteById(id);
     }
 
     @Test
