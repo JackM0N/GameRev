@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
@@ -31,6 +33,7 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
+    @WithAnonymousUser
     public void testGetForum_Success() throws BadRequestException {
         Long forumId = 1L; // General
         ForumFilter forumFilter = new ForumFilter();
@@ -115,16 +118,18 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
+    @WithMockUser("testadmin")
     public void testDeleteForum_Success() throws BadRequestException {
-//        Long forumId = 2L;
-//        ForumFilter forumFilter = new ForumFilter();
-//
-//        boolean result = forumService.deleteForum(forumId, true);
-//
-//        assertTrue(result);
-//        Page<ForumDTO> forums = forumService.getForum(1L, forumFilter, PageRequest.of(0, 10));
-//        System.out.println(Utils.getAllFieldsToString(forums.getContent(),false));
-//        assertTrue( forums.getContent().get(1).getIsDeleted());
-        throw(new BadRequestException("TODO: Not implemented yet"));
+        Long forumId = 2L;
+        ForumFilter forumFilter = new ForumFilter();
+        forumFilter.setIsDeleted(true);
+
+        boolean result = forumService.deleteForum(forumId, true);
+
+        assertTrue(result);
+        Page<ForumDTO> forums = forumService.getForum(1L, forumFilter, PageRequest.of(0, 10));
+        System.out.println(Utils.getAllFieldsToString(forums.getContent(), false));
+        assertTrue(forums.getTotalElements() >= 2);
+        assertTrue(forums.getContent().get(1).getIsDeleted());
     }
 }

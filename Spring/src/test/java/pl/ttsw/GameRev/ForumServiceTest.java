@@ -56,7 +56,7 @@ class ForumServiceTest {
     }
 
     @Test
-    public void testGetForum_Success(){
+    public void testGetForum_Success() {
         Long id = 1L;
         Pageable pageable = mock(Pageable.class);
         Forum forum = new Forum();
