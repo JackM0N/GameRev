@@ -21,11 +21,7 @@ public class ForumRequestController {
             @RequestParam(value = "approved", required = false) Boolean approved,
             Pageable pageable
     ) {
-        Page<ForumRequestDTO> forumRequestDTOS = forumRequestService.getAllForumRequests(approved, pageable);
-        if (forumRequestDTOS.getTotalElements() == 0 || forumRequestDTOS.getContent().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(forumRequestDTOS);
+        return ResponseEntity.ok(forumRequestService.getAllForumRequests(approved, pageable));
     }
 
     @GetMapping("/own-requests")
@@ -33,7 +29,6 @@ public class ForumRequestController {
             @RequestParam(value = "approved", required = false) Boolean approved,
             Pageable pageable
     ) {
-      Page<ForumRequestDTO> forumRequestDTOS = forumRequestService.getAllForumRequestsByOwner(approved, pageable);
         return ResponseEntity.ok(forumRequestService.getAllForumRequestsByOwner(approved, pageable));
     }
 
