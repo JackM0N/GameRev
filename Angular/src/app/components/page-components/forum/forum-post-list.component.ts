@@ -53,6 +53,10 @@ export class ForumPostListComponent implements AfterViewInit {
     });
   }
 
+  openNewPostDialog() {
+    
+  }
+
   navigateToPost(id: number) {
     this.router.navigate([`forum/${this.currentForumId ?? 0}/post/${id}`]);
   }
