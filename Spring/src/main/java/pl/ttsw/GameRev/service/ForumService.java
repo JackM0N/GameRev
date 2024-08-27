@@ -29,11 +29,18 @@ public class ForumService {
     private final ForumMapper forumMapper;
     private final GameRepository gameRepository;
     private final WebsiteUserRepository websiteUserRepository;
+    private final WebsiteUserService websiteUserService;
 
     public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
         Specification<Forum> spec = getForumSpecification(forumFilter, forum);
+
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+
+        if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+            forumFilter.setIsDeleted(false);
+        }
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());
@@ -101,7 +108,7 @@ public class ForumService {
     private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum) {
         Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"),false));
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
 
         if (forumFilter.getGameId() != null) {
             spec = spec.and((root, query, builder) -> {
