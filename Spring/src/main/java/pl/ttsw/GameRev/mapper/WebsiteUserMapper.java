@@ -12,4 +12,11 @@ public interface WebsiteUserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     WebsiteUser partialUpdate(WebsiteUserDTO websiteUserDTO, @MappingTarget WebsiteUser websiteUser);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    WebsiteUserDTO toDtoWithoutSensitiveData(WebsiteUser websiteUser);
 }

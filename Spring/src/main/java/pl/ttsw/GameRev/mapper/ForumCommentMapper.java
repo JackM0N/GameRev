@@ -4,8 +4,9 @@ import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.ForumCommentDTO;
 import pl.ttsw.GameRev.model.ForumComment;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = SimplifiedUserMapper.class)
 public interface ForumCommentMapper {
+    @Mapping(source = "author", target = "author")
     @Mapping(source = "forumPostId", target = "forumPost.id")
     ForumComment toEntity(ForumCommentDTO forumCommentDTO);
 
