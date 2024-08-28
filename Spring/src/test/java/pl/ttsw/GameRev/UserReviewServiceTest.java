@@ -32,7 +32,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class UserReviewServiceTest {
-    private final Pageable pageable = PageRequest.ofSize(10);
 
     @Mock
     private UserReviewRepository userReviewRepository;
@@ -54,6 +53,8 @@ class UserReviewServiceTest {
 
     @InjectMocks
     private UserReviewService userReviewService;
+
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     void setUp() {

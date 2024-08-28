@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
@@ -71,7 +70,7 @@ public class CriticReviewServiceTest {
         CriticReviewDTO result = criticReviewService.getCriticReviewByTitle("Some Game");
 
         assertNotNull(result);
-        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Some Game",ReviewStatus.APPROVED);
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Some Game", ReviewStatus.APPROVED);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class CriticReviewServiceTest {
             criticReviewService.getCriticReviewByTitle("Unknown Game");
         });
 
-        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Unknown Game",ReviewStatus.APPROVED);
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Unknown Game", ReviewStatus.APPROVED);
     }
 
     @Test

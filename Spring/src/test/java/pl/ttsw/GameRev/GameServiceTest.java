@@ -37,12 +37,6 @@ import static org.mockito.Mockito.*;
 class GameServiceTest {
 
     @Mock
-    private GameMapper gameMapper;
-
-    @InjectMocks
-    private GameService gameService;
-
-    @Mock
     private GameRepository gameRepository;
 
     @Mock
@@ -50,6 +44,12 @@ class GameServiceTest {
 
     @Mock
     private MultipartFile picture;
+
+    @Mock
+    private GameMapper gameMapper;
+
+    @InjectMocks
+    private GameService gameService;
 
     @BeforeEach
     public void setUp() {

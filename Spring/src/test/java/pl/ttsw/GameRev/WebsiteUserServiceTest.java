@@ -35,19 +35,25 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class WebsiteUserServiceTest {
 
-    private final String username = "testuser";
     @Mock
     private WebsiteUserRepository websiteUserRepository;
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @Mock
     private IAuthenticationFacade authenticationFacade;
+
     @Spy
     private WebsiteUserMapper websiteUserMapper;
+
     @InjectMocks
     private WebsiteUserService websiteUserService;
+
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics/";
+
+    private final String username = "testuser";
     private WebsiteUserDTO userDTO_old;
     private WebsiteUserDTO userDTO_new;
     private WebsiteUser user_new;

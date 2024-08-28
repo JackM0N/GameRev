@@ -42,9 +42,6 @@ class ForumServiceTest {
     private GameRepository gameRepository;
 
     @Mock
-    private ForumFilter forumFilter;
-
-    @Mock
     private WebsiteUserService websiteUserService;
 
     @InjectMocks
