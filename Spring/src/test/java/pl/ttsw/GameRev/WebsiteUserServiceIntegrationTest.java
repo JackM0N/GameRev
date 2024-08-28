@@ -2,7 +2,6 @@ package pl.ttsw.GameRev;
 
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,21 +11,19 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import pl.ttsw.GameRev.controller.AuthenticationController;
 import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-import pl.ttsw.GameRev.service.AuthenticationService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,34 +31,25 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class WebsiteUserServiceIntegrationTest {
 
-    private final String username = "testuser";
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private WebsiteUserService websiteUserService;
+
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory;
-    @Autowired
-    private AuthenticationService authenticationService;
-    @Autowired
-    private AuthenticationController authenticationController;
 
-    @BeforeEach
-    public void setUp() {
-        tearDown();
-    }
+    private final String username = "testuser";
 
     @AfterEach
     public void tearDown() {
         try {
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_newPic.jpg"));
             Files.deleteIfExists(Path.of(profilePicsDirectory + "/" + username + "2_profilePic.jpg"));
-            Optional<WebsiteUser> user = websiteUserRepository.findByUsername(username + "2");
-            if (user.isPresent()) {
-                websiteUserRepository.delete(user.get());
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,6 +68,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testFindByNickname() {
         WebsiteUser user = copyForTesting();
         websiteUserRepository.save(user);
@@ -90,6 +79,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser2")
     public void testUpdateUserProfile_Success() throws BadRequestException {
         WebsiteUser user = copyForTesting();
@@ -108,6 +98,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser2")
     public void testUpdateUserProfile_PasswordMismatch() {
         WebsiteUser user = copyForTesting();
@@ -123,6 +114,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser2")
     public void testUploadProfilePicture_Success() throws IOException {
         WebsiteUser user = copyForTesting();
@@ -144,6 +136,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testGetProfilePicture_Success() throws IOException {
         WebsiteUser user = copyForTesting();
         user.setProfilepic(profilePicsDirectory + "/testuser2_profilePic.jpg");
@@ -161,6 +154,7 @@ public class WebsiteUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testGetProfilePicture_NotFound() {
         WebsiteUser user = copyForTesting();
         websiteUserRepository.save(user);

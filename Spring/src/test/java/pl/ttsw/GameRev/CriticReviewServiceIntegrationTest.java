@@ -11,14 +11,8 @@ import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.mapper.CriticReviewMapper;
 import pl.ttsw.GameRev.model.CriticReview;
-import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.CriticReviewRepository;
-import pl.ttsw.GameRev.repository.GameRepository;
-import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.CriticReviewService;
-
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,9 +25,7 @@ class CriticReviewServiceIntegrationTest {
 
     @Autowired
     private CriticReviewRepository criticReviewRepository;
-    private GameRepository gameRepository;
-    @Autowired
-    private WebsiteUserRepository websiteUserRepository;
+
     @Autowired
     private CriticReviewMapper criticReviewMapper;
 
@@ -128,7 +120,7 @@ class CriticReviewServiceIntegrationTest {
 
         assertNotNull(result);
         assertEquals(ReviewStatus.APPROVED, result.getReviewStatus());
-        assertEquals("testuser",result.getStatusChangedBy().getNickname());
+        assertEquals("testuser", result.getStatusChangedBy().getNickname());
     }
 
     @Test

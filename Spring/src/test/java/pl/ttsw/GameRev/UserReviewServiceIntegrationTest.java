@@ -1,7 +1,6 @@
 package pl.ttsw.GameRev;
 
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,61 +13,46 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
-import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
 public class UserReviewServiceIntegrationTest {
 
-    private final Pageable pageable = PageRequest.ofSize(10);
     @Autowired
     private UserReviewService userReviewService;
-    @Autowired
-    private UserReviewRepository userReviewRepository;
+
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
+
     @Autowired
     private GameRepository gameRepository;
+
     @Autowired
     private TagRepository tagRepository;
+
     private Game game;
     private WebsiteUser testUser;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setup() {
-        Optional<Game> gameToDelete = gameRepository.findGameByTitle("Limbus Company 2");
-        if (gameToDelete.isPresent()) {
-            gameRepository.delete(game);
-        }
         testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser, "Test user should already exist in the database");
 
         game = createGameForTesting();
         game = gameRepository.save(game);
-    }
-
-    @AfterEach
-    public void teardown() {
-        Page<UserReview> reviews = userReviewRepository.findByUser(testUser, pageable);
-        userReviewRepository.deleteAll(reviews);
-        Optional<Game> gameToDelete = gameRepository.findGameByTitle("Limbus Company 2");
-        if (gameToDelete.isPresent()) {
-            gameRepository.delete(game);
-        }
     }
 
     private Game createGameForTesting() {
@@ -92,16 +76,18 @@ public class UserReviewServiceIntegrationTest {
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
+        UserReviewFilter userReviewFilter = new UserReviewFilter();
 
         UserReviewDTO createdReview = userReviewService.createUserReview(userReviewDTO);
         assertNotNull(createdReview);
         assertEquals("Great game!", createdReview.getContent());
 
-        Page<UserReviewDTO> userReviews = userReviewService.getUserReviewByGame(game.getTitle(), null, null, null, null, PageRequest.of(0, 10));
+
+        Page<UserReviewDTO> userReviews = userReviewService.getUserReviewByGame(game.getTitle(), userReviewFilter, PageRequest.of(0, 10));
         assertFalse(userReviews.isEmpty());
         assertEquals(1, userReviews.getTotalElements());
 
-        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(), null, null, null, null, pageable);
+        Page<UserReviewDTO> userReviewsByUser = userReviewService.getUserReviewByUser(testUser.getId(), userReviewFilter, pageable);
         assertFalse(userReviewsByUser.isEmpty());
         assertEquals(1, userReviewsByUser.getTotalElements());
     }
@@ -137,6 +123,7 @@ public class UserReviewServiceIntegrationTest {
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
+        UserReviewFilter userReviewFilter = new UserReviewFilter();
 
         UserReviewDTO createdReview = userReviewService.createUserReview(userReviewDTO);
         assertNotNull(createdReview);
@@ -144,8 +131,9 @@ public class UserReviewServiceIntegrationTest {
         boolean deleted = userReviewService.deleteUserReviewByOwner(createdReview);
         assertTrue(deleted);
 
-        assertThrows(BadRequestException.class, () -> {
-            userReviewService.getUserReviewByUser(testUser.getId(), null, null, null, null, pageable);
-        });
+        Page<UserReviewDTO> shouldBeDeleted = userReviewService.getUserReviewByUser(testUser.getId(), userReviewFilter, pageable);
+        for (UserReviewDTO review : shouldBeDeleted.getContent()) {
+            assertNotEquals(createdReview.getGameTitle(), review.getGameTitle());
+        }
     }
 }
