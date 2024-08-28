@@ -10,6 +10,7 @@
         <th class="p-4 border border-gray-300">Post date</th>
         <th class="p-4 border border-gray-300">Replies</th>
         <th class="p-4 border border-gray-300">Last reply</th>
+        <th class="p-4 border border-gray-300">Actions</th>
       </tr>
     </thead>
 
@@ -20,15 +21,23 @@
             {{ post.title }}
           </a>
         </td>
-        <td class="p-4 border border-gray-300">{{ post.author.nickname }}</td>
+        <td class="p-4 border border-gray-300">{{ post.author?.nickname }}</td>
         <td class="p-4 border border-gray-300">{{ formatDateTimeArray(post.postDate) }}</td>
         <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
         <td class="p-4 border border-gray-300">
-          {{ (post.lastResponseDate && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
+          {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
+        </td>
+        <td class="p-4 border border-gray-300">
+          <button mat-icon-button (click)="openEditPostDialog(post)" *ngIf="canEditPost(post)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openDeletePostDialog(post)" *ngIf="authService.isAdmin()">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
       </tr>
       <tr *ngIf="totalPosts == 0">
-        <td class="p-4 border border-gray-300 text-center" colspan="5">No posts yet</td>
+        <td class="p-4 border border-gray-300 text-center" colspan="6">No posts yet</td>
       </tr>
     </tbody>
   </table>

@@ -17,6 +17,7 @@ import { PopupDialogComponent } from '../../general-components/popup-dialog.comp
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
 import { trimmedValidator } from '../../../validators/trimmedValidator';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-forum-post',
@@ -162,7 +163,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     
   }
 
-  openDeleteDialog(comment: ForumComment) {
+  openDeleteCommentDialog(comment: ForumComment) {
     const dialogTitle = 'Deleting comment';
     const dialogContent = 'Are you sure you want to delete this comment?';
 
@@ -185,6 +186,33 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
         this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);
       },
       error: error => this.notificationService.popErrorToast('Comment deletion failed', error)
+    });
+  }
+
+  canDeletePost(post: ForumPost) {
+    return this.authService.isAuthenticated() && (post.author?.nickname === this.authService.getNickname() || this.authService.isAdmin());
+  }
+
+  openDeletePostDialog(post: ForumPost) {
+    const dialogTitle = 'Deleting post';
+    const dialogContent = 'Are you sure you want to delete this post?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true && post.id) {
+        this.deletePost(post.id);
+      }
+    });
+  }
+
+  deletePost(id: number) {
+    this.forumPostService.deletePost(id).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Post deleted successfully', NotificationAction.GO_BACK); },
+      error: error => this.notificationService.popErrorToast('Post deletion failed', error)
     });
   }
 }

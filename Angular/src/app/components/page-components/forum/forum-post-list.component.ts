@@ -4,6 +4,11 @@ import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { NotificationService } from '../../../services/notification.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -18,6 +23,9 @@ export class ForumPostListComponent implements AfterViewInit {
 
   constructor(
     private forumPostService: ForumPostService,
+    private notificationService: NotificationService,
+    public dialog: MatDialog,
+    public authService: AuthService,
     private router: Router
   ) {}
 
@@ -54,10 +62,78 @@ export class ForumPostListComponent implements AfterViewInit {
   }
 
   openNewPostDialog() {
-    
+    const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
+      width: '300px',
+      data: {
+        forumId: this.currentForumId,
+        editing: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((response) => {
+      if (response) {
+        this.loadPosts(this.currentForumId ?? 0);
+      }
+    });
   }
 
-  navigateToPost(id: number) {
-    this.router.navigate([`forum/${this.currentForumId ?? 0}/post/${id}`]);
+  canEditPost(post: ForumPost) {
+    return this.authService.isAuthenticated() && (post.author?.nickname == this.authService.getNickname() || this.authService.isAdmin());
+  }
+
+  openEditPostDialog(post: ForumPost) {
+    const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
+      width: '300px',
+      data: {
+        forumId: this.currentForumId,
+        editing: true,
+        content: post.content,
+        title: post.title,
+        id: post.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((response) => {
+      if (response) {
+        this.loadPosts(this.currentForumId ?? 0);
+      }
+    });
+  }
+
+  openDeletePostDialog(post: ForumPost | undefined) {
+    if (!post) {
+      console.error('No post to delete');
+      return;
+    }
+
+    const dialogTitle = 'Deleting comment';
+    const dialogContent = 'Are you sure you want to delete this comment?';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true && post.id) {
+        this.deletePost(post.id);
+      }
+    });
+  }
+
+  deletePost(id: number) {
+    this.forumPostService.deletePost(id).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Post deleted successfully');
+        this.loadPosts(this.currentForumId ?? 0);
+      },
+      error: error => this.notificationService.popErrorToast('Post deletion failed', error)
+    });
+  }
+
+  navigateToPost(id: number | undefined) {
+    if (id) {
+      this.router.navigate([`forum/${this.currentForumId ?? 0}/post/${id}`]);
+    }
   }
 }

@@ -104,7 +104,7 @@ export class ForumFormDialogComponent {
   loadForums() {
     this.forumList = [];
 
-    this.forumService.getForums().subscribe({
+    this.forumService.getForum(this.parentForumId).subscribe({
       next: (response: any) => {
         if (response) {
           this.forumList = response.content;

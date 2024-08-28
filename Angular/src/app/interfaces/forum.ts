@@ -4,14 +4,14 @@ import { LastPost } from "./lastPost";
 
 export interface Forum {
   id?: number,
-  gameTitle: string,
-  forumName: string,
+  gameTitle?: string,
+  forumName?: string,
   isDeleted?: boolean,
   parentForumId?: number,
   forumModerators?: ForumModerator[],
   forumPosts?: ForumPost[],
   postCount?: number,
-  description: string,
+  description?: string,
 
   topPost?: string,
   lastPost?: LastPost,

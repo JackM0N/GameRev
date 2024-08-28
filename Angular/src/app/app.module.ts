@@ -66,6 +66,7 @@ import { ForumPostListComponent } from './components/page-components/forum/forum
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 import { ForumCommentEditDialogComponent } from './components/page-components/forum/forum-comment-edit-dialog.component';
 import { ForumFormDialogComponent } from './components/page-components/forum/forum-form-dialog.component';
+import { ForumPostFormDialogComponent } from './components/page-components/forum/forum-post-form-dialog.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -98,7 +99,8 @@ import { ForumFormDialogComponent } from './components/page-components/forum/for
         ForumPostListComponent,
         ForumPostComponent,
         ForumCommentEditDialogComponent,
-        ForumFormDialogComponent
+        ForumFormDialogComponent,
+        ForumPostFormDialogComponent
     ],
     bootstrap: [AppComponent],
     imports: [

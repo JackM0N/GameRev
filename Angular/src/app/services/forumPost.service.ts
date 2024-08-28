@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { forumPostFilters } from '../interfaces/forumPostFilters';
 import { ForumPost } from '../interfaces/forumPost';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,13 @@ import { ForumPost } from '../interfaces/forumPost';
 export class ForumPostService {
   private baseUrl = 'http://localhost:8080/forum-post';
   private postByIdUrl = 'http://localhost:8080/post/origin';
+  private deleteUrl = 'http://localhost:8080/forum-post/delete';
+  private addUrl = 'http://localhost:8080/forum-post/create';
+  private editUrl = 'http://localhost:8080/forum-post/edit';
 
   constructor(
     private http: HttpClient,
+    private authService: AuthService,
   ) {}
 
   getPost(id: number): Observable<ForumPost[]> {
@@ -42,5 +47,52 @@ export class ForumPostService {
     }
 
     return this.http.get<ForumPost[]>(`${this.baseUrl}/${id}`, { params });
+  }
+
+  addPost(post: ForumPost, picture?: File): Observable<any> {
+    const token = this.authService.getToken();
+  
+    const formData = new FormData();
+    formData.append('post', JSON.stringify(post));
+  
+    if (picture) {
+      formData.append('picture', picture);
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  
+    return this.http.post(this.addUrl, formData, { headers });
+  }
+  
+
+  editPost(post: ForumPost, picture?: File): Observable<any> {
+    const token = this.authService.getToken();
+  
+    const formData = new FormData();
+    formData.append('post', JSON.stringify(post));
+  
+    if (picture) {
+      formData.append('picture', picture);
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.put(`${this.editUrl}/${post.id}`, formData, { headers });
+  }
+
+  deletePost(id: number): Observable<any> {
+    const token = this.authService.getToken();
+
+    var params = new HttpParams().set('isDeleted', true);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }
 }

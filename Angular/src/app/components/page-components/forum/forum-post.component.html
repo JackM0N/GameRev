@@ -10,10 +10,15 @@
 <div class="post-page container mx-auto max-w-[800px] p-[20px] py-8">
   <!-- Original Post -->
   <div class="original-post bg-gray-100 border border-gray-300 p-6 rounded-lg mb-8" *ngIf="post">
-    <div class="post-header">
-      <h2 class="text-xl font-bold mb-2">{{ post.title }}</h2>
-      <div class="post-info text-gray-600 text-sm">
-        <span>By {{ post.author.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
+    <div class="post-header flex justify-between items-center">
+      <div>
+        <h2 class="text-xl font-bold mb-2">{{ post.title }}</h2>
+        <div class="post-info text-gray-600 text-sm">
+          <span>By {{ post.author?.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
+        </div>
+      </div>
+      <div class="post-actions">
+        <button *ngIf="canDeletePost(post)" (click)="openDeletePostDialog(post)" class="text-red-500 hover:text-red-700">Delete</button>
       </div>
     </div>
     <div class="post-body mt-4">
@@ -28,7 +33,7 @@
         <span><strong>{{ comment.author.nickname }}</strong> replied on {{ formatDateTimeArray(comment.postDate) }}</span>
         <div class="comment-actions flex space-x-4">
           <button *ngIf="canEditComment(comment)" (click)="openEditCommentDialog(comment)" class="text-blue-500 hover:text-blue-700">Edit</button>
-          <button *ngIf="canDeleteComment(comment)" (click)="openDeleteDialog(comment)" class="text-red-500 hover:text-red-700">Delete</button>
+          <button *ngIf="canDeleteComment(comment)" (click)="openDeleteCommentDialog(comment)" class="text-red-500 hover:text-red-700">Delete</button>
         </div>
       </div>
       <div class="comment-body text-gray-800">

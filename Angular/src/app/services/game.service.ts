@@ -64,7 +64,7 @@ export class GameService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.post<Game>(this.addUrl, game);
+    return this.http.post<Game>(this.addUrl, game, { headers });
   }
 
   editGame(title: string, game: Game): Observable<Game> {
@@ -74,7 +74,7 @@ export class GameService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.put<Game>(`${this.editUrl}/${title}`, game);
+    return this.http.put<Game>(`${this.editUrl}/${title}`, game, { headers });
   }
 
   deleteGame(id: number): Observable<Game> {
@@ -84,6 +84,6 @@ export class GameService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.delete<Game>(`${this.deleteUrl}/${id}`);
+    return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
   }
 }
