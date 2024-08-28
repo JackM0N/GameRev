@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 public class ForumCommentService {
     private final ForumCommentRepository forumCommentRepository;
     private final ForumPostRepository forumPostRepository;
-    private final RoleRepository roleRepository;
     private final ForumCommentMapper forumCommentMapper;
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserService websiteUserService;
@@ -37,27 +36,12 @@ public class ForumCommentService {
                 .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
         Specification<ForumComment> spec = getForumCommentSpecification(forumCommentFilter, post);
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
-        //TODO: Add SimplifiedUserDTO for those types of situations
-        for (ForumComment forumComment : forumComments) {
-            forumComment.getAuthor().setPassword(null);
-            forumComment.getAuthor().setUsername(null);
-            forumComment.getAuthor().setEmail(null);
-            forumComment.getAuthor().setIsBanned(null);
-            forumComment.getAuthor().setIsDeleted(null);
-            forumComment.getAuthor().setRoles(null);
-        }
         return forumComments.map(forumCommentMapper::toDto);
     }
 
     public ForumPostDTO getOriginalPost(Long id) {
         ForumPost post = forumPostRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
-        post.getAuthor().setPassword(null);
-        post.getAuthor().setUsername(null);
-        post.getAuthor().setEmail(null);
-        post.getAuthor().setIsBanned(null);
-        post.getAuthor().setIsDeleted(null);
-        post.getAuthor().setRoles(null);
         return forumPostMapper.toDto(post);
     }
 
@@ -77,7 +61,8 @@ public class ForumCommentService {
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
         forumComment.setContent(forumCommentDTO.getContent());
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumComment.getAuthor()) {
+        if (currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))
+                || currentUser == forumComment.getAuthor()) {
             forumCommentRepository.save(forumComment);
             return forumCommentMapper.toDto(forumComment);
         }else {

@@ -29,7 +29,6 @@ public class ForumPostService {
     private final ForumRepository forumRepository;
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserRepository websiteUserRepository;
-    private final RoleRepository roleRepository;
     private final ForumModeratorRepository forumModeratorRepository;
 
     private final String postPicDirectory = "../Pictures/post_pics";
@@ -55,14 +54,6 @@ public class ForumPostService {
             ));
         }
         Page<ForumPost> forumPosts = forumPostRepository.findAll(spec, pageable);
-        for (ForumPost forumPost : forumPosts) {
-            forumPost.getAuthor().setPassword(null);
-            forumPost.getAuthor().setUsername(null);
-            forumPost.getAuthor().setEmail(null);
-            forumPost.getAuthor().setIsBanned(null);
-            forumPost.getAuthor().setIsDeleted(null);
-            forumPost.getAuthor().setRoles(null);
-        }
         return forumPosts.map(forumPostMapper::toDto);
     }
 
@@ -91,7 +82,7 @@ public class ForumPostService {
                 try {
                     Files.delete(filepath);
                 } catch (IOException ioException) {
-                    System.err.println("Failed to delete file after an error: " + filepath.toString());
+                    System.err.println("Failed to delete file after an error: " + filepath);
                 }
             }
             throw e;
@@ -105,7 +96,8 @@ public class ForumPostService {
         ForumPost forumPost = forumPostRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum post not found"));
 
-        if (currentUser == forumPost.getAuthor() || currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())) {
+        if (currentUser == forumPost.getAuthor() || currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()))) {
             if (forumPostDTO.getForum() != null) {
                 forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
                         .orElseThrow(() -> new RuntimeException("Forum not found")));

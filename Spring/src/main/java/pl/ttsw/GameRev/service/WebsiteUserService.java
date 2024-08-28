@@ -84,10 +84,7 @@ public class WebsiteUserService {
                     .equal(root.get("id"), Long.parseLong(websiteUserFilter.getSearchText())));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
-        for (WebsiteUser websiteUser : websiteUsers) {
-            websiteUser.setPassword(null);
-        }
-        return websiteUsers.map(websiteUserMapper::toDto);
+        return websiteUsers.map(websiteUserMapper::toDtoWithoutSensitiveData);
     }
 
     public WebsiteUserDTO findByCurrentUser() {
@@ -98,11 +95,7 @@ public class WebsiteUserService {
     public WebsiteUserDTO findByNickname(String nickname) {
         WebsiteUser user = websiteUserRepository.findByNickname(nickname)
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
-        user.setId(null);
-        user.setUsername(null);
-        user.setPassword(null);
-        user.setIsDeleted(null);
-        return websiteUserMapper.toDto(user);
+        return websiteUserMapper.toDtoWithoutSensitiveData(user);
     }
 
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
@@ -147,7 +140,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         WebsiteUser currentUser = getCurrentUser();
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
+        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
 
@@ -202,7 +195,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
         WebsiteUser currentUser = getCurrentUser();
 
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
+        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
         if (user.getIsDeleted() != null && user.getIsDeleted()) {
