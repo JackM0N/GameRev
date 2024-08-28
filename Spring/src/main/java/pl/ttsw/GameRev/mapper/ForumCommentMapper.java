@@ -8,6 +8,7 @@ import pl.ttsw.GameRev.model.ForumComment;
 public interface ForumCommentMapper {
     @Mapping(source = "author", target = "author")
     @Mapping(source = "forumPostId", target = "forumPost.id")
+    @Mapping(target = "postDate", expression = "java(LocalDateTime.now())")
     ForumComment toEntity(ForumCommentDTO forumCommentDTO);
 
     @Mapping(source = "forumPost.id", target = "forumPostId")

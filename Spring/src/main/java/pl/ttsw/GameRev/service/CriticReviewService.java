@@ -15,8 +15,6 @@ import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.CriticReview;
 import pl.ttsw.GameRev.repository.CriticReviewRepository;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 public class CriticReviewService {
@@ -81,10 +79,8 @@ public class CriticReviewService {
         }
         CriticReview criticReview = criticReviewMapper.toEntity(criticReviewDTO);
 
-        criticReview.setPostDate(LocalDate.now());
         criticReview.setGame(gameMapper.toEntity(gameService.getGameByTitle(criticReviewDTO.getGameTitle())));
         criticReview.setUser(websiteUserService.getCurrentUser());
-        criticReview.setReviewStatus(ReviewStatus.PENDING);
 
         return criticReviewMapper.toDto(criticReviewRepository.save(criticReview));
     }

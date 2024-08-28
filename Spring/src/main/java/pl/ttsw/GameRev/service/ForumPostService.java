@@ -28,7 +28,6 @@ public class ForumPostService {
     private final ForumPostRepository forumPostRepository;
     private final ForumRepository forumRepository;
     private final ForumPostMapper forumPostMapper;
-    private final WebsiteUserRepository websiteUserRepository;
     private final ForumModeratorRepository forumModeratorRepository;
 
     private final String postPicDirectory = "../Pictures/post_pics";
@@ -61,9 +60,6 @@ public class ForumPostService {
         ForumPost forumPost = forumPostMapper.toEntity(forumPostDTO);
 
         forumPost.setAuthor(websiteUserService.getCurrentUser());
-        forumPost.setPostDate(LocalDateTime.now());
-        forumPost.setCommentCount(0);
-        forumPost.setIsDeleted(false);
 
         Path filepath = null;
         try {
