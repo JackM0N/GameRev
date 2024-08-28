@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.model.ForumPost;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = SimplifiedUserMapper.class)
 public interface ForumPostMapper {
     ForumPost toEntity(ForumPostDTO forumPostDTO);
 
@@ -13,6 +13,7 @@ public interface ForumPostMapper {
         forumPost.getForumComments().forEach(forumComment -> forumComment.setForumPost(forumPost));
     }
 
+    @Mapping(source = "author", target = "author")
     ForumPostDTO toDto(ForumPost forumPost);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

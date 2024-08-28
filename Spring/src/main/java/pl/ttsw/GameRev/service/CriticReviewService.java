@@ -61,10 +61,6 @@ public class CriticReviewService {
         }
 
         Page<CriticReview> criticReviews = criticReviewRepository.findAll(spec, pageable);
-        for (CriticReview criticReview : criticReviews) {
-            criticReview.getUser().setPassword(null);
-            criticReview.getUser().setDescription(null);
-        }
 
         return criticReviews.map(criticReviewMapper::toDto);
     }
@@ -78,8 +74,6 @@ public class CriticReviewService {
     public CriticReviewDTO getCriticReviewByTitle(String gameTitle) throws BadRequestException {
         CriticReview criticReview = criticReviewRepository.findByGameTitleAndReviewStatus(gameTitle, ReviewStatus.APPROVED)
                 .orElseThrow(() -> new BadRequestException("Critic review not found"));
-        criticReview.getUser().setPassword(null);
-        criticReview.getUser().setDescription(null);
         return criticReviewMapper.toDto(criticReview);
     }
 

@@ -4,9 +4,10 @@ import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.model.CriticReview;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = SimplifiedUserMapper.class)
 public interface CriticReviewMapper {
     @Mapping(source = "gameTitle", target = "game.title")
+    @Mapping(source = "user", target = "user")
     CriticReview toEntity(CriticReviewDTO criticReviewDTO);
 
     @Mapping(source = "game.title", target = "gameTitle")
