@@ -14,7 +14,7 @@ export class GameInfoCriticReviewComponent {
   @Input() gameTitle?: string;
   
   public criticReview?: CriticReview;
-  public formatDate = formatDateArray;
+  public formatDateArray = formatDateArray;
 
   constructor(
     private criticReviewService: CriticReviewService,
