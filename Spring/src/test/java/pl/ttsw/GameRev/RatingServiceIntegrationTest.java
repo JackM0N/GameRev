@@ -2,7 +2,6 @@ package pl.ttsw.GameRev;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,10 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.RatingService;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
 public class RatingServiceIntegrationTest {
 
@@ -55,12 +52,11 @@ public class RatingServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        teardown();
-        try{
+        try {
             testUser = websiteUserRepository.findByUsername("testuser").get();
             testUser2 = websiteUserRepository.findByUsername("testadmin").get();
             game = gameRepository.findGameByTitle("Limbus Company").get();
-        }catch(EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Test data not found");
         }
         testUserReview = new UserReview();
@@ -72,18 +68,8 @@ public class RatingServiceIntegrationTest {
         testUserReview = userReviewRepository.save(testUserReview);
     }
 
-    @AfterEach
-    public void teardown() {
-        Optional<Rating> rating = ratingRepository.findByUserAndUserReview(testUser, testUserReview);
-        if (rating.isPresent()) {
-            ratingRepository.delete(rating.get());
-        }
-        if (testUserReview != null) {
-            userReviewRepository.delete(testUserReview);
-        }
-    }
-
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateRating_CreateNewRating() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
@@ -95,12 +81,12 @@ public class RatingServiceIntegrationTest {
         assertNotNull(result);
         assertTrue(result.getIsPositive());
 
-        Rating savedRating = ratingRepository.findByUserAndUserReview(testUser, testUserReview)
-                .orElseThrow(() -> new EntityNotFoundException("Rating not found"));
+        Rating savedRating = ratingRepository.findByUserAndUserReview(testUser, testUserReview).orElseThrow(() -> new EntityNotFoundException("Rating not found"));
         assertEquals(true, savedRating.getIsPositive());
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateRating_UpdateExistingRating() throws BadRequestException {
         Rating initialRating = new Rating();
@@ -118,12 +104,12 @@ public class RatingServiceIntegrationTest {
         assertNotNull(result);
         assertFalse(result.getIsPositive());
 
-        Rating updatedRating = ratingRepository.findByUserAndUserReview(testUser, testUserReview)
-                .orElseThrow(() -> new EntityNotFoundException("Rating not found"));
+        Rating updatedRating = ratingRepository.findByUserAndUserReview(testUser, testUserReview).orElseThrow(() -> new EntityNotFoundException("Rating not found"));
         assertEquals(false, updatedRating.getIsPositive());
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateRating_DeleteRating() throws BadRequestException {
         Rating initialRating = new Rating();
@@ -141,12 +127,12 @@ public class RatingServiceIntegrationTest {
         assertNull(result);
         Rating finalInitialRating = initialRating;
         assertThrows(EmptyResultDataAccessException.class, () -> {
-            ratingRepository.findById(finalInitialRating.getId())
-                    .orElseThrow(() -> new EmptyResultDataAccessException("Rating not found", 1));
+            ratingRepository.findById(finalInitialRating.getId()).orElseThrow(() -> new EmptyResultDataAccessException("Rating not found", 1));
         });
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateRating_ReviewDoesNotExist() {
         UserReviewDTO userReviewDTO = new UserReviewDTO();

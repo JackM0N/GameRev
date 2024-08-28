@@ -1,5 +1,9 @@
 package pl.ttsw.GameRev;
 
+import org.hibernate.Hibernate;
+import org.hibernate.collection.spi.PersistentBag;
+import org.hibernate.proxy.HibernateProxy;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 import java.time.LocalDate;
@@ -7,10 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.hibernate.Hibernate;
-import org.hibernate.collection.spi.PersistentBag;
-import org.hibernate.proxy.HibernateProxy;
 
 public class Utils {
 
@@ -36,9 +36,8 @@ public class Utils {
         StringBuilder result = new StringBuilder();
         Class<?> objClass = obj.getClass();
 
-        if (obj instanceof Collection) {
+        if (obj instanceof Collection<?> collection) {
             result.append(objClass.getSimpleName()).append(" [\n");
-            Collection<?> collection = (Collection<?>) obj;
             for (Object element : collection) {
                 result.append("  ")
                         .append(objectToString(element, recursive, visited).replaceAll("(?m)^", "    "))

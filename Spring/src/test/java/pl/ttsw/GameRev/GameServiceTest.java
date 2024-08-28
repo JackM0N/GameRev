@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
+import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
@@ -36,12 +37,6 @@ import static org.mockito.Mockito.*;
 class GameServiceTest {
 
     @Mock
-    private GameMapper gameMapper;
-
-    @InjectMocks
-    private GameService gameService;
-
-    @Mock
     private GameRepository gameRepository;
 
     @Mock
@@ -49,6 +44,12 @@ class GameServiceTest {
 
     @Mock
     private MultipartFile picture;
+
+    @Mock
+    private GameMapper gameMapper;
+
+    @InjectMocks
+    private GameService gameService;
 
     @BeforeEach
     public void setUp() {
@@ -78,11 +79,12 @@ class GameServiceTest {
         GameDTO gameDTO = new GameDTO();
         Page<Game> gamesPage = new PageImpl<>(Collections.singletonList(game));
         Specification<Game> spec = Specification.anyOf();
+        GameFilter gameFilter = new GameFilter();
 
         when(gameRepository.findAll(spec, pageable)).thenReturn(gamesPage);
         when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
-        Page<GameDTO> result = gameService.getAllGames(null, null, null, null, null, null, pageable);
+        Page<GameDTO> result = gameService.getAllGames(gameFilter, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());

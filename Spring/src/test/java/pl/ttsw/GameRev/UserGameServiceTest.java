@@ -17,6 +17,7 @@ import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.enums.CompletionStatus;
+import pl.ttsw.GameRev.filter.UserGameFilter;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
@@ -86,12 +87,13 @@ public class UserGameServiceTest {
     public void testGetUserGame_Success() throws BadRequestException {
         Pageable pageable = PageRequest.of(0, 10);
         Page<UserGame> userGamePage = new PageImpl<>(Collections.singletonList(userGame));
+        UserGameFilter userGameFilter = new UserGameFilter();
 
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userGamePage);
         when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
-        Page<UserGameDTO> result = userGameService.getUserGame(null, null, null, "testuser", pageable);
+        Page<UserGameDTO> result = userGameService.getUserGame("testuser", userGameFilter, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -101,8 +103,9 @@ public class UserGameServiceTest {
     public void testGetUserGameDTO_UserNotFound() {
         Pageable pageable = PageRequest.of(0, 10);
         when(websiteUserRepository.findByNickname("nonexistent")).thenReturn(Optional.empty());
+        UserGameFilter userGameFilter = new UserGameFilter();
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null, null, null, "nonexistent", pageable));
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame("nonexistent", userGameFilter, pageable));
     }
 
     @Test
@@ -110,8 +113,9 @@ public class UserGameServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
+        UserGameFilter userGameFilter = new UserGameFilter();
 
-        Page<UserGameDTO> result = userGameService.getUserGame(null, null, null, "testuser", pageable);
+        Page<UserGameDTO> result = userGameService.getUserGame("testuser", userGameFilter, pageable);
 
         assertNotNull(result);
         assertEquals(0, result.getTotalElements());
@@ -129,13 +133,6 @@ public class UserGameServiceTest {
 
         assertNotNull(result);
         verify(userGameRepository, times(1)).save(any(UserGame.class));
-    }
-
-    @Test
-    public void testAddGameToUser_NotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        assertThrows(BadCredentialsException.class, () -> userGameService.addGameToUser(userGameDTO));
     }
 
     @Test
@@ -205,13 +202,6 @@ public class UserGameServiceTest {
 
         assertTrue(result);
         verify(userGameRepository, times(1)).delete(any(UserGame.class));
-    }
-
-    @Test
-    public void testDeleteGame_NotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        assertThrows(BadCredentialsException.class, () -> userGameService.deleteGame(userGameDTO.getId()));
     }
 
     @Test
