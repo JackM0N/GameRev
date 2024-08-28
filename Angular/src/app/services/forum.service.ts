@@ -14,6 +14,7 @@ export class ForumService {
   private pathUrl = 'http://localhost:8080/path';
   private addUrl = 'http://localhost:8080/forum/create';
   private editUrl = 'http://localhost:8080/forum/edit';
+  private deleteUrl = 'http://localhost:8080/forum/delete';
 
   constructor(
     public authService: AuthService,
@@ -75,5 +76,16 @@ export class ForumService {
     });
     
     return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
+  }
+
+  deleteForum(id: number): Observable<any> {
+    const params = new HttpParams().set("isDeleted", true);
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }
 }

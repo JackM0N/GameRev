@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { ForumFormDialogComponent } from './forum-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-forum',
@@ -36,6 +38,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   constructor(
     public authService: AuthService,
     private forumService: ForumService,
+    private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute,
     public dialog: MatDialog,
@@ -145,6 +148,39 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
         description: subForum.description,
         gameTitle: subForum.gameTitle
       }
+    });
+  }
+
+  openDeleteSubforumDialog(subForum: Forum) {
+    const dialogTitle = 'Forum deletion';
+    const dialogContent = 'Are you sure you want to delete the forum ' + subForum.forumName + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.deleteSubForum(subForum);
+      }
+    });
+  }
+
+  deleteSubForum(subForum: Forum) {
+    if(!subForum.id) {
+      console.error('No subforum id found');
+      return;
+    }
+
+    this.forumService.deleteForum(subForum.id).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Forum deleted successfully');
+        this.loadForum(this.forumId);
+      },
+      error: error => this.notificationService.popErrorToast('Forum deletion failed', error)
     });
   }
 

@@ -25,7 +25,7 @@
           <th class="p-4 border border-gray-300 text-left font-bold">Subforum</th>
           <th class="p-4 border border-gray-300 text-left font-bold">Posts</th>
           <th class="p-4 border border-gray-300 text-left font-bold">Last Post</th>
-          <th class="p-4 border border-gray-300 text-left font-bold">Actions</th> <!-- New Actions column -->
+          <th class="p-4 border border-gray-300 text-left font-bold" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
         </tr>
       </thead>
 
@@ -51,10 +51,9 @@
           </td>
 
           <!-- Actions column with edit button -->
-          <td class="p-4 border border-gray-300">
-            <button *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()" mat-button color="accent" (click)="openEditSubforumDialog(subforum)">
-              Edit
-            </button>
+          <td class="p-4 border border-gray-300" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+            <button mat-button color="accent" (click)="openEditSubforumDialog(subforum)"> Edit </button>
+            <button mat-button color="accent" (click)="openDeleteSubforumDialog(subforum)"> Delete </button>
           </td>
         </tr>
       </tbody>
