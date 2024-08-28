@@ -52,6 +52,7 @@ public class ForumCommentService {
         forumComment.setAuthor(websiteUserService.getCurrentUser());
         forumComment.setContent(forumCommentDTO.getContent());
         forumComment.setPostDate(LocalDateTime.now());
+        forumComment.setIsDeleted(false);
         forumCommentRepository.save(forumComment);
         return forumCommentMapper.toDto(forumComment);
     }
