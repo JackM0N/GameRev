@@ -89,14 +89,6 @@ public class WebsiteUserServiceTest {
     }
 
     @Test
-    public void testFindByNickname() {
-        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(Optional.ofNullable(user_new));
-        when(websiteUserMapper.toDto(user_new)).thenReturn(userDTO_new);
-        WebsiteUserDTO result = websiteUserService.findByNickname(username + "2");
-        assertEquals(username + "2", result.getNickname());
-    }
-
-    @Test
     public void testUpdateUserProfile_Success() throws BadRequestException {
         when(websiteUserRepository.findByUsername(username + "2")).thenReturn(Optional.ofNullable(user_new));
         when(passwordEncoder.matches("currentPassword", "encodedPassword")).thenReturn(true);

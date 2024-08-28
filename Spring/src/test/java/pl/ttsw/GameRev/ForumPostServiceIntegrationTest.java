@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
+import pl.ttsw.GameRev.mapper.SimplifiedUserMapper;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
@@ -49,6 +50,9 @@ public class ForumPostServiceIntegrationTest {
 
     @Autowired
     private WebsiteUserMapper websiteUserMapper;
+
+    @Autowired
+    private SimplifiedUserMapper simplifiedUserMapper;
 
     private Forum testForum;
 
@@ -145,7 +149,7 @@ public class ForumPostServiceIntegrationTest {
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
         WebsiteUser otherUser = websiteUserRepository.findByUsername("testcritic").get();
-        createdPost.setAuthor(websiteUserMapper.toDto(otherUser));
+        createdPost.setAuthor(simplifiedUserMapper.toSimplifiedDto(websiteUserMapper.toDto(otherUser)));
         forumPostService.updateForumPost(createdPost.getId(), createdPost, null);
 
         ForumPostDTO finalForumPost = createdPost;
