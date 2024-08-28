@@ -14,7 +14,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
-import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.service.ForumService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,15 +25,12 @@ public class ForumServiceIntegrationTest {
     @Autowired
     private ForumService forumService;
 
-    @Autowired
-    private ForumRepository forumRepository;
-
     Pageable pageable = PageRequest.of(0, 10);
 
     @Test
     @Transactional
     @WithAnonymousUser
-    public void testGetForum_Success() throws BadRequestException {
+    public void testGetForum_Success() {
         Long forumId = 1L; // General
         ForumFilter forumFilter = new ForumFilter();
 

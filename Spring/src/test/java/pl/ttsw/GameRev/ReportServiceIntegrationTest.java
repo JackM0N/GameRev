@@ -1,7 +1,6 @@
 package pl.ttsw.GameRev;
 
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,9 @@ import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.ReportMapper;
-import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ReportRepository;
-import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
@@ -41,9 +38,6 @@ public class ReportServiceIntegrationTest {
     private ReportRepository reportRepository;
 
     @Autowired
-    private UserReviewRepository userReviewRepository;
-
-    @Autowired
     private WebsiteUserRepository websiteUserRepository;
 
     @MockBean
@@ -51,9 +45,6 @@ public class ReportServiceIntegrationTest {
 
     @Autowired
     private ReportMapper reportMapper;
-
-    @Autowired
-    private UserReviewMapper userReviewMapper;
 
     @Autowired
     private UserReviewService userReviewService;
@@ -75,14 +66,6 @@ public class ReportServiceIntegrationTest {
 
         testReport = reportRepository.findById(1L).orElse(null);
         assertNotNull(testReport);
-    }
-
-    @AfterEach
-    public void teardown() {
-        Report report = reportRepository.findByUserAndUserReview(testUser, userReviewMapper.toEntity(testUserReview)).orElse(null);
-        if (report != null) {
-            reportRepository.delete(report);
-        }
     }
 
     @Test

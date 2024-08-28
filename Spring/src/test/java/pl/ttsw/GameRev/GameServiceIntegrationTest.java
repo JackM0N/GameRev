@@ -2,8 +2,6 @@ package pl.ttsw.GameRev;
 
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,30 +38,6 @@ public class GameServiceIntegrationTest {
 
     @Autowired
     private TagRepository tagRepository;
-
-    @BeforeEach
-    public void setUp() {
-        Optional<Game> game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game.isPresent()) {
-            gameService.deleteGame(game.get().getId());
-        }
-        game = gameRepository.findGameByTitle("Limbus Company Updated");
-        if (game.isPresent()) {
-            gameService.deleteGame(game.get().getId());
-        }
-    }
-
-    @AfterEach
-    public void tearDown() {
-        Optional<Game> game = gameRepository.findGameByTitle("Limbus Company 2");
-        if (game.isPresent()) {
-            gameService.deleteGame(game.get().getId());
-        }
-        game = gameRepository.findGameByTitle("Limbus Company Updated");
-        if (game.isPresent()) {
-            gameService.deleteGame(game.get().getId());
-        }
-    }
 
     private Game createGameForTesting() {
         Game game = new Game();

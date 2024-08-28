@@ -3,7 +3,6 @@ package pl.ttsw.GameRev;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.enums.CompletionStatus;
@@ -28,11 +26,9 @@ import pl.ttsw.GameRev.service.UserGameService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class UserGameServiceIntegrationTest {
-    private final Pageable pageable = PageRequest.ofSize(10);
 
     @Autowired
     private UserGameService userGameService;
@@ -53,6 +49,7 @@ public class UserGameServiceIntegrationTest {
     private Game game;
     private UserGame userGame;
     private UserGameDTO userGameDTO;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setUp() {

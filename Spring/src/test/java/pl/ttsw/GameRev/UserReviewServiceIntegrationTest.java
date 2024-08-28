@@ -18,30 +18,33 @@ import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
-import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
+
 import java.time.LocalDate;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class UserReviewServiceIntegrationTest {
 
-    private final Pageable pageable = PageRequest.ofSize(10);
     @Autowired
     private UserReviewService userReviewService;
-    @Autowired
-    private UserReviewRepository userReviewRepository;
+
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
+
     @Autowired
     private GameRepository gameRepository;
+
     @Autowired
     private TagRepository tagRepository;
+
     private Game game;
     private WebsiteUser testUser;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setup() {

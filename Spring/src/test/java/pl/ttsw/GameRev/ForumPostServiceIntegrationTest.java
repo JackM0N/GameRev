@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
 @ActiveProfiles("test")
-@Transactional
 public class ForumPostServiceIntegrationTest {
 
     @Autowired
@@ -59,6 +58,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testGetForumPosts_Success() {
         ForumPostFilter forumPostFilter = new ForumPostFilter();
         Page<ForumPostDTO> forumPosts = forumPostService.getForumPosts(testForum.getId(), forumPostFilter, Pageable.unpaged());
@@ -69,6 +69,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testCreateForumPost_Success() throws Exception {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -88,6 +89,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testUpdateForumPost_Success() throws Exception {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -113,6 +115,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testDeleteForumPost_Success() throws IOException {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -131,6 +134,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testDeleteForumPost_NoPermission() throws IOException {
         ForumPostDTO forumPost = new ForumPostDTO();
