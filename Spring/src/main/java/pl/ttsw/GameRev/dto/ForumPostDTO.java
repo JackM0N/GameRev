@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ForumPostDTO implements Serializable {
     Long id;
     ForumDTO forum;
-    WebsiteUserDTO author;
+    SimplifiedUserDTO author;
     String title;
     String content;
     LocalDateTime postDate;

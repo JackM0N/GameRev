@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ForumCommentDTO implements Serializable {
     Long id;
     Long forumPostId;
-    WebsiteUserDTO author;
+    SimplifiedUserDTO author;
     String content;
     LocalDateTime postDate;
     Boolean isDeleted;
