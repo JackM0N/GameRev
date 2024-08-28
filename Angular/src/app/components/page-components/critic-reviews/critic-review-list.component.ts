@@ -152,7 +152,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       return true;
     }
 
-    return review.user && this.authService.hasRole('Critic') && review.user.username === this.authService.getUsername();
+    return review.user && this.authService.hasRole('Critic') && review.user.nickname === this.authService.getNickname();
   }
 
   findReviewStatusName(review: CriticReview) {

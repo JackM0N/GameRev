@@ -6,7 +6,6 @@ import { AuthService } from '../../../services/auth.service';
 import { Location } from '@angular/common';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
-import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';
 
@@ -41,7 +40,6 @@ export class CriticReviewFormComponent implements OnInit {
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private _location: Location,
-    private backgroundService: BackgroundService,
   ) {
     this.criticReviewForm = this.formBuilder.group({
       content: [this.criticReview.content, [Validators.required, Validators.minLength(10)]],
@@ -58,8 +56,6 @@ export class CriticReviewFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.backgroundService.setMainContentStyle({'padding-left': '200px'});
-
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.criticReview.gameTitle = params['name'];
