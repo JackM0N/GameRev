@@ -127,7 +127,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       this.forumCommentService.addComment(newComment).subscribe({
         next: () => {
           this.notificationService.popSuccessToast('Comment posted successfully');
-          window.location.reload();
         },
         error: error => this.notificationService.popErrorToast('Comment posting failed', error)
       });
