@@ -78,13 +78,7 @@ public class GameService {
     }
 
     public GameDTO createGame(GameDTO game, MultipartFile picture) throws IOException {
-        Game newGame = new Game();
-        newGame.setTitle(game.getTitle());
-        newGame.setDeveloper(game.getDeveloper());
-        newGame.setPublisher(game.getPublisher());
-        newGame.setReleaseDate(game.getReleaseDate());
-        newGame.setDescription(game.getDescription());
-        newGame.setUsersScore(0.0f);
+        Game newGame = gameMapper.toEntity(game);
 
         ReleaseStatus releaseStatus = game.getReleaseStatus();
         if (releaseStatus == null || !EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
@@ -128,28 +122,9 @@ public class GameService {
     public GameDTO updateGame(String title, GameDTO game, MultipartFile picture) throws IOException {
         Game updatedGame = gameRepository.findGameByTitle(title)
                 .orElseThrow(() -> new BadRequestException("Game not found"));
-        if (game.getTitle() != null) {
-            updatedGame.setTitle(game.getTitle());
-        }
-        if (game.getDeveloper() != null) {
-            updatedGame.setDeveloper(game.getDeveloper());
-        }
-        if (game.getPublisher() != null) {
-            updatedGame.setPublisher(game.getPublisher());
-        }
-        if (game.getReleaseDate() != null) {
-            updatedGame.setReleaseDate(game.getReleaseDate());
-        }
-        if (game.getDescription() != null) {
-            updatedGame.setDescription(game.getDescription());
-        }
-        if (game.getReleaseStatus() != null) {
-            ReleaseStatus releaseStatus = game.getReleaseStatus();
-            if (!EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
-                throw new BadRequestException("Release status not found");
-            }
-            updatedGame.setReleaseStatus(releaseStatus);
-        }
+
+        gameMapper.partialUpdate(game, updatedGame);
+
         if (game.getTags() != null) {
             List<Tag> tags = game.getTags().stream()
                     .map(tagDTO -> tagRepository.findById(tagDTO.getId())
