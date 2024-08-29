@@ -9,6 +9,8 @@ public interface ForumMapper {
     @Mapping(source = "gameTitle", target = "game.title")
     @Mapping(source = "parentForumId", target = "parentForum.id")
     @Mapping(target = "forumModerators", ignore = true)
+    @Mapping(target = "postCount", constant = "0")
+    @Mapping(target = "isDeleted", constant = "false")
     Forum toEntity(ForumDTO forumDTO);
 
     @Mapping(source = "parentForum.id", target = "parentForumId")

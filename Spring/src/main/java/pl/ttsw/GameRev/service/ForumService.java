@@ -26,7 +26,6 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +35,8 @@ public class ForumService {
     private final GameRepository gameRepository;
     private final WebsiteUserRepository websiteUserRepository;
     private final WebsiteUserService websiteUserService;
-    private final SimplifiedUserMapper simplifiedUserMapper;
     private final WebsiteUserMapper websiteUserMapper;
+    private final SimplifiedUserMapper simplifiedUserMapper;
 
     public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
@@ -50,7 +49,7 @@ public class ForumService {
             if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
                 forumFilter.setIsDeleted(false);
             }
-        }catch (BadCredentialsException e){
+        }catch (Exception e){
             forumFilter.setIsDeleted(false);
         }
 
@@ -77,20 +76,19 @@ public class ForumService {
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
-        Forum forum = new Forum();
+        Forum forum = forumMapper.toEntity(forumDTO);
+
         forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
                 .orElseThrow(() -> new BadRequestException("Game not found")));
-        forum.setForumName(forumDTO.getForumName());
-        forum.setDescription(forumDTO.getDescription());
         forum.setParentForum(forumRepository.findById(forumDTO.getParentForumId())
                 .orElseThrow(() -> new BadRequestException("Parent forum not found")));
-        forum.setPostCount(0);
-        forum.setIsDeleted(false);
+
         if (forumDTO.getForumModeratorsIds() != null) {
             List<WebsiteUser> moderators = websiteUserRepository.findAllById(forumDTO.getForumModeratorsIds());
             forum.setForumModerators(moderators);
         }
-        forum = forumRepository.save(forum);
+
+        forumRepository.save(forum);
         return forumMapper.toDto(forum);
     }
 
@@ -98,16 +96,12 @@ public class ForumService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Forum not found"));
 
+        forumMapper.partialUpdate(forumDTO, forum);
+
         if (forumDTO.getGameTitle() != null) {
             Game game = gameRepository.findGameByTitle(forumDTO.getGameTitle())
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
-        }
-        if (forumDTO.getForumName() != null) {
-            forum.setForumName(forumDTO.getForumName());
-        }
-        if (forumDTO.getDescription() != null) {
-            forum.setDescription(forumDTO.getDescription());
         }
         if (forumDTO.getParentForumId() != null){
             Forum foundForum = forumRepository.findById(forumDTO.getParentForumId())
