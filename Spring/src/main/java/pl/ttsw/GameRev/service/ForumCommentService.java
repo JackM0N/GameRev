@@ -48,6 +48,7 @@ public class ForumCommentService {
     public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO) {
         ForumComment forumComment = forumCommentMapper.toEntity(forumCommentDTO);
         forumComment.setAuthor(websiteUserService.getCurrentUser());
+        forumComment.setPostDate(LocalDateTime.now());
         forumCommentRepository.save(forumComment);
         return forumCommentMapper.toDto(forumComment);
     }

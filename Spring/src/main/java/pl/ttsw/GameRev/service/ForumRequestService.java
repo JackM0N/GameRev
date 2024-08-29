@@ -72,7 +72,7 @@ public class ForumRequestService {
         boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()));
         if(isAuthor || isAdmin) {
-            forumRequestMapper.partialUpdate(forumRequestDTO, forumRequest);
+            
 
             if (forumRequestDTO.getGame().getId() != null) {
                 forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())

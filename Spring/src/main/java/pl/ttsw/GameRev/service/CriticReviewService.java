@@ -15,6 +15,7 @@ import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.CriticReview;
 import pl.ttsw.GameRev.repository.CriticReviewRepository;
 
+
 @Service
 @RequiredArgsConstructor
 public class CriticReviewService {
