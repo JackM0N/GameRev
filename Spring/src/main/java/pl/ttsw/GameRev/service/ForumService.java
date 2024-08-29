@@ -11,8 +11,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
+import pl.ttsw.GameRev.dto.SimplifiedUserDTO;
+import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
+import pl.ttsw.GameRev.mapper.SimplifiedUserMapper;
+import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -22,6 +26,7 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,8 @@ public class ForumService {
     private final GameRepository gameRepository;
     private final WebsiteUserRepository websiteUserRepository;
     private final WebsiteUserService websiteUserService;
+    private final SimplifiedUserMapper simplifiedUserMapper;
+    private final WebsiteUserMapper websiteUserMapper;
 
     public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
@@ -60,6 +67,13 @@ public class ForumService {
             dto.setTopPost(forumRepository.findTopPostForForum(dto.getId()));
             return dto;
         });
+    }
+
+    public List<SimplifiedUserDTO> getModeratorsForForum(Long id) {
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
+        List<WebsiteUserDTO> forumModerators = forum.getForumModerators().stream().map(websiteUserMapper::toDto).toList();
+        return forumModerators.stream().map(simplifiedUserMapper::toSimplifiedDto).toList();
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
