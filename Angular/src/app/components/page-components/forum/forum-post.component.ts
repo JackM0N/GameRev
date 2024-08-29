@@ -150,18 +150,17 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
       width: '300px',
-      data: { commentContent: comment.content }
+      data: {
+        commentId: comment.id,
+        commentContent: comment.content
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.editComment(comment, dialogRef);
+        this.loadComments(this.post?.id || 0);
       }
     });
-  }
-
-  editComment(comment: ForumComment, dialogRef: MatDialogRef<ForumCommentEditDialogComponent>) {
-    
   }
 
   openDeleteCommentDialog(comment: ForumComment) {

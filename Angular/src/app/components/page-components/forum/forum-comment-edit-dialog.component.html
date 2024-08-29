@@ -2,7 +2,6 @@
 <h1 mat-dialog-title>Comment editing</h1>
 
 <form [formGroup]="commentForm" (ngSubmit)="onConfirm()">
-  
   <mat-form-field>
     <mat-label>Content</mat-label>
     <textarea matInput formControlName="content"></textarea>

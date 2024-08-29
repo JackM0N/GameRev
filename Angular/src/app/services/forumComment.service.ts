@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 export class ForumCommentService {
   private baseUrl = 'http://localhost:8080/post';
   private addUrl = 'http://localhost:8080/post/create';
-  private editUrl = 'http://localhost:8080/edit';
+  private editUrl = 'http://localhost:8080/post/edit';
   private deleteUrl = 'http://localhost:8080/post/delete';
 
   constructor(
