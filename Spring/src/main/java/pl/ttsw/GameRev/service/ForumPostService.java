@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -139,5 +140,17 @@ public class ForumPostService {
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
+    }
+
+    public byte[] getPostPicture(Long postId) throws IOException {
+        ForumPost forumPost = forumPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (forumPost.getPicture() == null) {
+            throw new IOException("Users profile picture not found");
+        }
+
+        Path filepath = Paths.get(forumPost.getPicture());
+        return Files.readAllBytes(filepath);
     }
 }
