@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,18 @@ public class ForumPostController {
     @GetMapping("/{id}")
     public ResponseEntity<Page<ForumPostDTO>> getById(@PathVariable Long id, ForumPostFilter forumPostFilter, Pageable pageable){
         return ResponseEntity.ok(forumPostService.getForumPosts(id, forumPostFilter, pageable));
+    }
+
+    @GetMapping("/picture/{id}")
+    public ResponseEntity<byte[]> getPicture(@PathVariable Long id){
+        try {
+            byte[] image = forumPostService.getPostPicture(id);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/create")

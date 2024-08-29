@@ -57,11 +57,9 @@ public class ForumCommentService {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
-
-        forumCommentMapper.partialUpdateContent(forumCommentDTO, forumComment);
-
         if (currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))
                 || currentUser == forumComment.getAuthor()) {
+            forumCommentMapper.partialUpdateContent(forumCommentDTO, forumComment);
             forumCommentRepository.save(forumComment);
             return forumCommentMapper.toDto(forumComment);
         }else {
