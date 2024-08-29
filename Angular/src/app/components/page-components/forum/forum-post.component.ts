@@ -20,6 +20,9 @@ import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { ImageCacheService } from '../../../services/imageCache.service';
+import { Observer } from 'rxjs';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-forum-post',
@@ -36,6 +39,8 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   public commentForm: FormGroup;
   public minLength: number = 4;
   public moderators: WebsiteUser[] = [];
+  public imageUrl?: string;
+  public authorProfilePic?: string;
 
   constructor(
     public authService: AuthService,
@@ -43,6 +48,8 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
     private notificationService: NotificationService,
+    private imageCacheService: ImageCacheService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     public dialog: MatDialog,
@@ -95,6 +102,8 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.post = response;
+          this.loadPostPicture(response.id, response.picture);
+          this.loadUserProfilePicture(response.author.nickname, response.author.profilepic);
         }
       },
       error: (error: any) => console.error(error)
@@ -127,10 +136,87 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.commentsList = response.content;
+          this.commentsList.forEach((comment: any) => {
+            if (comment.author.nickname != this.post?.author?.nickname) {
+              this.loadUserProfilePicture(comment.author.nickname, comment.author.profilepic);
+            }
+          });
         }
       },
       error: (error: any) => console.error(error)
     });
+  }
+
+  loadPostPicture(postId: number, pictureUrl: string) {
+    const didPostPicChange = this.imageCacheService.didPictureNameChange("postPicName" + postId, pictureUrl);
+
+    if (!didPostPicChange && this.imageCacheService.isCached("postPic" + postId)) {
+      const cachedImage = this.imageCacheService.getCachedImage("postPic" + postId);
+      if (cachedImage) {
+        this.imageUrl = cachedImage;
+      }
+
+    } else {
+      const observerPicture: Observer<any> = {
+        next: response2 => {
+          if (response2) {
+            this.imageUrl = URL.createObjectURL(response2);
+            this.imageCacheService.cacheBlob("postPic" + postId, response2);
+            this.imageCacheService.cacheProfilePicName("postPicName" + postId, pictureUrl);
+          }
+        },
+        error: error => {
+          console.error(error);
+        },
+        complete: () => {}
+      };
+      this.forumPostService.getPicture(postId).subscribe(observerPicture);
+    }
+  }
+
+  loadUserProfilePicture(nickName: string, pictureUrl: string) {
+    const didProfilePicChange = this.imageCacheService.didPictureNameChange("profilePicName" + nickName, pictureUrl);
+
+    if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + nickName)) {
+      const cachedImage = this.imageCacheService.getCachedImage("profilePic" + nickName);
+      if (cachedImage) {
+        if (this.post && this.post.author && this.post.author.nickname == nickName) {
+          this.authorProfilePic = cachedImage;
+
+        } else {
+          this.commentsList.forEach((comment: any) => {
+            if (comment.author.nickname == nickName) {
+              comment.author.picture = cachedImage;
+            }
+          });
+        }
+      }
+
+    } else {
+      const observerPicture: Observer<any> = {
+        next: response2 => {
+          if (response2) {
+            if (this.post && this.post.author && this.post.author.nickname == nickName) {
+              this.authorProfilePic = URL.createObjectURL(response2);
+            } else {
+              this.commentsList.forEach((comment: any) => {
+                if (comment.author.nickname == nickName) {
+                  comment.author.picture = URL.createObjectURL(response2);
+                }
+              });
+            }
+            console.log("Loaded profile picture for " + nickName);
+            this.imageCacheService.cacheBlob("profilePic" + nickName, response2);
+            this.imageCacheService.cacheProfilePicName("profilePicName" + nickName, pictureUrl);
+          }
+        },
+        error: error => {
+          console.error(error);
+        },
+        complete: () => {}
+      };
+      this.userService.getProfilePicture(nickName).subscribe(observerPicture);
+    }
   }
 
   submitComment() {
@@ -182,7 +268,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   openDeleteCommentDialog(comment: ForumComment) {
     const dialogTitle = 'Deleting comment';
-    const dialogContent = 'Are you sure you want to delete this comment?';
+    const dialogContent = 'Are you sure you want to delete this comment'+ (comment.author?.nickname ? ` by ${comment.author?.nickname}` : '') + '?';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',

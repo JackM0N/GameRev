@@ -29,7 +29,6 @@ export class ForumPostFormDialogComponent {
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,
-    private imageCacheService: ImageCacheService,
     public dialogRef: MatDialogRef<ForumPostFormDialogComponent>,
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data?: {
@@ -68,7 +67,7 @@ export class ForumPostFormDialogComponent {
       }
 
       if (this.data.picture) {
-        console.log('Picture: ', this.data.picture);
+        this.imageUrl = this.data.picture;
       }
 
       if (this.data.forumId) {
@@ -76,33 +75,6 @@ export class ForumPostFormDialogComponent {
       } else {
         this.forumId = 1;
       }
-    }
-  }
-
-  loadPostPicture(postId: number, pictureUrl: string) {
-    const didProfilePicChange = this.imageCacheService.didPictureNameChange("postPicName" + postId, pictureUrl);
-
-    if (!didProfilePicChange && this.imageCacheService.isCached("postPic" + postId)) {
-      const cachedImage = this.imageCacheService.getCachedImage("postPic" + postId);
-      if (cachedImage) {
-        this.imageUrl = cachedImage;
-      }
-
-    } else {
-      const observerPicture: Observer<any> = {
-        next: response2 => {
-          if (response2) {
-            this.imageUrl = URL.createObjectURL(response2);
-            this.imageCacheService.cacheBlob("postPic" + postId, response2);
-            this.imageCacheService.cacheProfilePicName("postPicName" + postId, pictureUrl);
-          }
-        },
-        error: error => {
-          console.error(error);
-        },
-        complete: () => {}
-      };
-      this.forumPostService.getPicture(postId).subscribe(observerPicture);
     }
   }
 

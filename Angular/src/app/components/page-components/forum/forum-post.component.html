@@ -1,5 +1,4 @@
-
-<nav class="breadcrumb flex space-x-2 text-sm">
+<nav class="breadcrumb flex space-x-2 text-sm mb-4">
   <ng-container *ngFor="let segment of path; let i = index">
     <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="breadcrumb-link text-blue-500 cursor-pointer font-bold">{{ segment.forumName }}</a>
     <span *ngIf="i < path.length - 1">></span>
@@ -10,24 +9,31 @@
 <div class="post-page container mx-auto max-w-[800px] p-[20px] py-8">
   <!-- Original Post -->
   <div class="original-post bg-gray-100 border border-gray-300 p-6 rounded-lg mb-8" *ngIf="post">
-    <div class="post-header flex justify-between items-center">
-      <div>
-        <h2 class="text-xl font-bold mb-2">{{ post.title }}</h2>
-        <div class="post-info text-gray-600 text-sm">
-          <span>By {{ post.author?.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
+    <div class="post-header flex justify-between items-center mb-4">
+      <div class="flex items-center space-x-4">
+        <!-- Author Image -->
+        <img [src]="authorProfilePic" alt="Author Image" class="w-12 h-12 rounded-full border border-gray-300 object-cover">
+        
+        <div>
+          <h2 class="text-xl font-bold mb-1">{{ post.title }}</h2>
+          <div class="post-info text-gray-600 text-sm">
+            <span>By {{ post.author?.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
+          </div>
         </div>
       </div>
+      
       <div class="post-actions" *ngIf="canManagePost(post)">
         <button mat-icon-button (click)="openEditPostDialog(post)">
           <mat-icon>edit</mat-icon>
         </button>
-
         <button mat-icon-button (click)="openDeletePostDialog(post)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
     </div>
+
     <div class="post-body mt-4">
+      <img [src]="imageUrl" alt="Post image" class="h-72 border border-gray-300 object-cover mt-4 mb-4">
       <p class="text-gray-800">{{ post.content }}</p>
     </div>
   </div>
@@ -35,15 +41,22 @@
   <!-- Replies Section -->
   <div class="comments-section">
     <div *ngFor="let comment of commentsList; let i = index" class="comment bg-white p-6 border border-gray-300 rounded-lg mb-4">
-      <div class="comment-header flex justify-between items-center text-sm text-gray-600 mb-3">
-        <span><strong>{{ comment.author.nickname }}</strong> replied on {{ formatDateTimeArray(comment.postDate) }}</span>
-        <div class="comment-actions flex space-x-4">
-          <button *ngIf="canEditComment(comment)" (click)="openEditCommentDialog(comment)" class="text-blue-500 hover:text-blue-700">Edit</button>
-          <button *ngIf="canDeleteComment(comment)" (click)="openDeleteCommentDialog(comment)" class="text-red-500 hover:text-red-700">Delete</button>
+      <div class="flex items-start space-x-4">
+        <!-- Commenter Image -->
+        <img [src]="comment.author.nickname == post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://via.placeholder.com/40')" alt="Commenter Image" class="w-10 h-10 rounded-full border border-gray-300 object-cover">
+
+        <div class="flex-1">
+          <div class="comment-header flex justify-between items-center text-sm text-gray-600 mb-2">
+            <span><strong>{{ comment.author.nickname + (comment.author.nickname == post?.author?.nickname ? " (OP)": "") }}</strong> replied on {{ formatDateTimeArray(comment.postDate) }}</span>
+            <div class="comment-actions flex space-x-4">
+              <button *ngIf="canEditComment(comment)" (click)="openEditCommentDialog(comment)" class="text-blue-500 hover:text-blue-700">Edit</button>
+              <button *ngIf="canDeleteComment(comment)" (click)="openDeleteCommentDialog(comment)" class="text-red-500 hover:text-red-700">Delete</button>
+            </div>
+          </div>
+          <div class="comment-body text-gray-800">
+            <p>{{ comment.content }}</p>
+          </div>
         </div>
-      </div>
-      <div class="comment-body text-gray-800">
-        <p>{{ comment.content }}</p>
       </div>
     </div>
   </div>
@@ -73,7 +86,7 @@
         <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
           Content must be at least {{ minLength }} characters long.
         </div>
-  
+
         <div class="submit-button">
           <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">Submit</button>
         </div>

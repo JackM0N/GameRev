@@ -97,7 +97,7 @@ export class ForumPostService {
   }
 
   getPicture(id: number): Observable<Blob> {
-    return this.http.get<Blob>(`${this.pictureUrl}/picture/${id}`, {
+    return this.http.get<Blob>(`${this.pictureUrl}/${id}`, {
       responseType: 'blob' as 'json'
     });
   }

@@ -63,6 +63,7 @@ export class ForumPostListComponent implements AfterViewInit {
         if (response && response.content.length > 0) {
           this.postList = response.content;
           this.totalPosts = response.totalElements;
+          this.loadPostPictures();
         }
       },
       error: (error: any) => console.error(error)
@@ -140,7 +141,7 @@ export class ForumPostListComponent implements AfterViewInit {
     }
 
     const dialogTitle = 'Deleting comment';
-    const dialogContent = 'Are you sure you want to delete this comment?';
+    const dialogContent = 'Are you sure you want to delete this comment'+ (post.author?.nickname ? ` by ${post.author?.nickname}` : '') + '?';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
       width: '300px',
@@ -164,37 +165,38 @@ export class ForumPostListComponent implements AfterViewInit {
     });
   }
 
-  loadPostPictures(postId: number, pictureUrl: string) {
-    const didProfilePicChange = this.imageCacheService.didPictureNameChange("postPicName" + postId, pictureUrl);
-
-    if (!didProfilePicChange && this.imageCacheService.isCached("postPic" + postId)) {
-      const cachedImage = this.imageCacheService.getCachedImage("postPic" + postId);
-      if (cachedImage) {
-        const post = this.postList.find(post => post.id === postId);
-        if (post) {
-          post.picture = cachedImage;
+  loadPostPictures() {
+    this.postList.forEach(post => {
+      if (post.picture && post.id) {
+        const didPicChange = this.imageCacheService.didPictureNameChange("postPicName" + post.id, post.picture);
+        if (!didPicChange && this.imageCacheService.isCached("postPic" + post.id)) {
+          const cachedImage = this.imageCacheService.getCachedImage("postPic" + post.id);
+          if (cachedImage) {
+            post.picture = cachedImage;
+          }
+    
+        } else {
+          const observerPicture: Observer<any> = {
+            next: response2 => {
+              if (response2) {
+                this.imageCacheService.cacheBlob("postPic" + post.id, response2);
+                if (post.picture) {
+                  this.imageCacheService.cacheProfilePicName("postPicName" + post.id, post.picture);
+                }
+                if (post) {
+                  post.picture = URL.createObjectURL(response2);
+                }
+              }
+            },
+            error: error => {
+              console.error(error);
+            },
+            complete: () => {}
+          };
+          this.forumPostService.getPicture(post.id).subscribe(observerPicture);
         }
       }
-
-    } else {
-      const observerPicture: Observer<any> = {
-        next: response2 => {
-          if (response2) {
-            const post = this.postList.find(post => post.id === postId);
-            if (post) {
-              post.picture = URL.createObjectURL(response2);
-            }
-            this.imageCacheService.cacheBlob("postPic" + postId, response2);
-            this.imageCacheService.cacheProfilePicName("postPicName" + postId, pictureUrl);
-          }
-        },
-        error: error => {
-          console.error(error);
-        },
-        complete: () => {}
-      };
-      this.forumPostService.getPicture(postId).subscribe(observerPicture);
-    }
+    });
   }
 
   navigateToPost(id: number | undefined) {
