@@ -63,19 +63,20 @@ public class ForumService {
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
-        Forum forum = forumMapper.toEntity(forumDTO);
-
+        Forum forum = new Forum();
         forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
                 .orElseThrow(() -> new BadRequestException("Game not found")));
+        forum.setForumName(forumDTO.getForumName());
+        forum.setDescription(forumDTO.getDescription());
         forum.setParentForum(forumRepository.findById(forumDTO.getParentForumId())
                 .orElseThrow(() -> new BadRequestException("Parent forum not found")));
-
+        forum.setPostCount(0);
+        forum.setIsDeleted(false);
         if (forumDTO.getForumModeratorsIds() != null) {
             List<WebsiteUser> moderators = websiteUserRepository.findAllById(forumDTO.getForumModeratorsIds());
             forum.setForumModerators(moderators);
         }
-
-        forumRepository.save(forum);
+        forum = forumRepository.save(forum);
         return forumMapper.toDto(forum);
     }
 
@@ -83,12 +84,16 @@ public class ForumService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Forum not found"));
 
-        forumMapper.partialUpdate(forumDTO, forum);
-
         if (forumDTO.getGameTitle() != null) {
             Game game = gameRepository.findGameByTitle(forumDTO.getGameTitle())
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
+        }
+        if (forumDTO.getForumName() != null) {
+            forum.setForumName(forumDTO.getForumName());
+        }
+        if (forumDTO.getDescription() != null) {
+            forum.setDescription(forumDTO.getDescription());
         }
         if (forumDTO.getParentForumId() != null){
             Forum foundForum = forumRepository.findById(forumDTO.getParentForumId())
