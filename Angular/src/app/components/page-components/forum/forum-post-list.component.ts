@@ -97,14 +97,17 @@ export class ForumPostListComponent implements AfterViewInit {
   canManagePost(post: ForumPost) {
     return this.authService.isAuthenticated() &&
     (post.author?.nickname === this.authService.getNickname()
-    || this.moderators.some(moderator => moderator.nickname === post.author?.nickname)
     || this.authService.isAdmin());
+  }
+
+  isModerator() {
+    return this.moderators.some(moderator => moderator.nickname === this.authService.getNickname());
   }
 
   canManageAnyPost() {
     return this.authService.isAuthenticated() &&
     (this.postList.some(post => post.author?.nickname === this.authService.getNickname())
-    || this.moderators.some(moderator => moderator.nickname === this.authService.getNickname())
+    || this.isModerator()
     || this.authService.isAdmin());
   }
 

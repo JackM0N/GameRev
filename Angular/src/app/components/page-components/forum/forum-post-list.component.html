@@ -27,8 +27,8 @@
         <td class="p-4 border border-gray-300">
           {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
         </td>
-        <td class="p-4 border border-gray-300" *ngIf="canManagePost(post)">
-          <button mat-icon-button (click)="openEditPostDialog(post)">
+        <td class="p-4 border border-gray-300" *ngIf="canManagePost(post) || isModerator()">
+          <button mat-icon-button (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button (click)="openDeletePostDialog(post)">
