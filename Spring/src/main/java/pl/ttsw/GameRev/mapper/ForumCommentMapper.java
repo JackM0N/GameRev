@@ -9,6 +9,7 @@ public interface ForumCommentMapper {
     @Mapping(source = "author", target = "author")
     @Mapping(source = "forumPostId", target = "forumPost.id")
     @Mapping(target = "postDate", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "isDeleted", constant = "false")
     ForumComment toEntity(ForumCommentDTO forumCommentDTO);
 
     @Mapping(source = "forumPost.id", target = "forumPostId")
@@ -16,5 +17,6 @@ public interface ForumCommentMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "content", source = "content")
+    @Mapping(target = "author", ignore = true)
     ForumComment partialUpdateContent(ForumCommentDTO forumCommentDTO, @MappingTarget ForumComment forumComment);
 }
