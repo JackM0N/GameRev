@@ -14,11 +14,12 @@ import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumComment } from '../../../interfaces/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
 import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
+import { WebsiteUser } from '../../../interfaces/websiteUser';
 
 @Component({
   selector: 'app-forum-post',
@@ -34,6 +35,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   public path?: any;
   public commentForm: FormGroup;
   public minLength: number = 4;
+  public moderators: WebsiteUser[] = [];
 
   constructor(
     public authService: AuthService,
@@ -62,6 +64,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       }
       if (params['forumid']) {
         this.loadPath(params['forumid']);
+        this.loadModerators(params['forumid']);
       }
     });
   }
@@ -92,6 +95,18 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.post = response;
+        }
+      },
+      error: (error: any) => console.error(error)
+    });
+  }
+
+  loadModerators(forumId: number) {
+    this.forumService.getModerators(forumId).subscribe({
+      next: (response: any) => {
+        if (response && response.length > 0) {
+          console.log(response);
+          this.moderators = response;
         }
       },
       error: (error: any) => console.error(error)
@@ -144,7 +159,10 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   }
 
   canDeleteComment(comment: ForumComment) {
-    return this.authService.isAuthenticated() && (comment.author.nickname === this.authService.getNickname() || this.authService.isAdmin());
+    return this.authService.isAuthenticated()
+    && (comment.author.nickname === this.authService.getNickname()
+    || this.moderators.some(moderator => moderator.nickname === this.authService.getNickname())
+    || this.authService.isAdmin());
   }
 
   openEditCommentDialog(comment: ForumComment) {
@@ -190,7 +208,10 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   }
 
   canManagePost(post: ForumPost) {
-    return this.authService.isAuthenticated() && (post.author?.nickname === this.authService.getNickname() || this.authService.isAdmin());
+    return this.authService.isAuthenticated() &&
+    (post.author?.nickname === this.authService.getNickname()
+    || this.moderators.some(moderator => moderator.nickname === post.author?.nickname)
+    || this.authService.isAdmin());
   }
 
   openDeletePostDialog(post: ForumPost) {

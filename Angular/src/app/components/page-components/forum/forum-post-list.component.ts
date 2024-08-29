@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
+import { ForumService } from '../../../services/forum.service';
+import { WebsiteUser } from '../../../interfaces/websiteUser';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -20,10 +22,12 @@ export class ForumPostListComponent implements AfterViewInit {
   public totalPosts: number = 0;
   @ViewChild('paginator') paginator!: MatPaginator;
   public formatDateTimeArray = formatDateTimeArray;
+  public moderators: WebsiteUser[] = [];
 
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,
+    private forumService: ForumService,
     public dialog: MatDialog,
     public authService: AuthService,
     private router: Router
@@ -32,6 +36,7 @@ export class ForumPostListComponent implements AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentForumId'] && changes['currentForumId'].currentValue) {
       this.loadPosts(changes['currentForumId'].currentValue);
+      this.loadModerators(changes['currentForumId'].currentValue);
     }
   }
 
@@ -61,6 +66,18 @@ export class ForumPostListComponent implements AfterViewInit {
     });
   }
 
+  loadModerators(forumId: number) {
+    this.forumService.getModerators(forumId).subscribe({
+      next: (response: any) => {
+        if (response && response.length > 0) {
+          console.log(response);
+          this.moderators = response;
+        }
+      },
+      error: (error: any) => console.error(error)
+    });
+  }
+
   openNewPostDialog() {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
       width: '300px',
@@ -78,11 +95,17 @@ export class ForumPostListComponent implements AfterViewInit {
   }
 
   canManagePost(post: ForumPost) {
-    return this.authService.isAuthenticated() && (post.author?.nickname === this.authService.getNickname() || this.authService.isAdmin());
+    return this.authService.isAuthenticated() &&
+    (post.author?.nickname === this.authService.getNickname()
+    || this.moderators.some(moderator => moderator.nickname === post.author?.nickname)
+    || this.authService.isAdmin());
   }
 
   canManageAnyPost() {
-    return this.authService.isAuthenticated() && (this.postList.some(post => post.author?.nickname === this.authService.getNickname()) || this.authService.isAdmin());
+    return this.authService.isAuthenticated() &&
+    (this.postList.some(post => post.author?.nickname === this.authService.getNickname())
+    || this.moderators.some(moderator => moderator.nickname === this.authService.getNickname())
+    || this.authService.isAdmin());
   }
 
   openEditPostDialog(post: ForumPost) {

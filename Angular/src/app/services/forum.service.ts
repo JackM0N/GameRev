@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Forum } from '../interfaces/forum';
 import { forumFilters } from '../interfaces/forumFilters';
 import { AuthService } from './auth.service';
+import { WebsiteUser } from '../interfaces/websiteUser';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class ForumService {
   private addUrl = 'http://localhost:8080/forum/create';
   private editUrl = 'http://localhost:8080/forum/edit';
   private deleteUrl = 'http://localhost:8080/forum/delete';
+  private moderatorsUrl = 'http://localhost:8080/forum/moderators';
 
   constructor(
     public authService: AuthService,
@@ -27,6 +29,10 @@ export class ForumService {
 
   getForums(): Observable<Forum[]> {
     return this.http.get<Forum[]>(this.baseUrl);
+  }
+
+  getModerators(forumId: number): Observable<WebsiteUser[]> {
+    return this.http.get<WebsiteUser[]>(`${this.moderatorsUrl}/${forumId}`);
   }
 
   getForum(id?: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
