@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit {
             this.user = response;
 
             if (response.profilepic && response.nickname) {
-              const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
+              const didProfilePicChange = this.imageCacheService.didPictureNameChange("profilePicName" + response.nickname, response.profilepic);
 
               if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
                 const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);

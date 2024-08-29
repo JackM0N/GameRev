@@ -69,6 +69,7 @@ public class ForumPostService {
         forumPost.setCommentCount(0);
         forumPost.setIsDeleted(false);
 
+        forumPost = forumPostRepository.save(forumPost);
         Path filepath = null;
         try {
             if (picture != null && !picture.isEmpty()) {

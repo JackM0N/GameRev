@@ -15,6 +15,7 @@ export class ForumPostService {
   private deleteUrl = 'http://localhost:8080/forum-post/delete';
   private addUrl = 'http://localhost:8080/forum-post/create';
   private editUrl = 'http://localhost:8080/forum-post/edit';
+  private pictureUrl = 'http://localhost:8080/forum-post/picture';
 
   constructor(
     private http: HttpClient,
@@ -66,7 +67,6 @@ export class ForumPostService {
     return this.http.post(this.addUrl, formData, { headers });
   }
   
-
   editPost(post: ForumPost, picture?: File): Observable<any> {
     const token = this.authService.getToken();
   
@@ -94,5 +94,11 @@ export class ForumPostService {
     });
 
     return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
+  }
+
+  getPicture(id: number): Observable<Blob> {
+    return this.http.get<Blob>(`${this.pictureUrl}/picture/${id}`, {
+      responseType: 'blob' as 'json'
+    });
   }
 }

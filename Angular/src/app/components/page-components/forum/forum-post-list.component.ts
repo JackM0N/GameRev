@@ -11,6 +11,8 @@ import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
 import { ForumService } from '../../../services/forum.service';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { ImageCacheService } from '../../../services/imageCache.service';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -27,6 +29,7 @@ export class ForumPostListComponent implements AfterViewInit {
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,
+    private imageCacheService: ImageCacheService,
     private forumService: ForumService,
     public dialog: MatDialog,
     public authService: AuthService,
@@ -70,7 +73,6 @@ export class ForumPostListComponent implements AfterViewInit {
     this.forumService.getModerators(forumId).subscribe({
       next: (response: any) => {
         if (response && response.length > 0) {
-          console.log(response);
           this.moderators = response;
         }
       },
@@ -119,7 +121,8 @@ export class ForumPostListComponent implements AfterViewInit {
         editing: true,
         content: post.content,
         title: post.title,
-        id: post.id
+        id: post.id,
+        picture: post.picture
       }
     });
 
@@ -159,6 +162,39 @@ export class ForumPostListComponent implements AfterViewInit {
       },
       error: error => this.notificationService.popErrorToast('Post deletion failed', error)
     });
+  }
+
+  loadPostPictures(postId: number, pictureUrl: string) {
+    const didProfilePicChange = this.imageCacheService.didPictureNameChange("postPicName" + postId, pictureUrl);
+
+    if (!didProfilePicChange && this.imageCacheService.isCached("postPic" + postId)) {
+      const cachedImage = this.imageCacheService.getCachedImage("postPic" + postId);
+      if (cachedImage) {
+        const post = this.postList.find(post => post.id === postId);
+        if (post) {
+          post.picture = cachedImage;
+        }
+      }
+
+    } else {
+      const observerPicture: Observer<any> = {
+        next: response2 => {
+          if (response2) {
+            const post = this.postList.find(post => post.id === postId);
+            if (post) {
+              post.picture = URL.createObjectURL(response2);
+            }
+            this.imageCacheService.cacheBlob("postPic" + postId, response2);
+            this.imageCacheService.cacheProfilePicName("postPicName" + postId, pictureUrl);
+          }
+        },
+        error: error => {
+          console.error(error);
+        },
+        complete: () => {}
+      };
+      this.forumPostService.getPicture(postId).subscribe(observerPicture);
+    }
   }
 
   navigateToPost(id: number | undefined) {

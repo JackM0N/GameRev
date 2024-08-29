@@ -105,7 +105,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     this.forumService.getModerators(forumId).subscribe({
       next: (response: any) => {
         if (response && response.length > 0) {
-          console.log(response);
           this.moderators = response;
         }
       },

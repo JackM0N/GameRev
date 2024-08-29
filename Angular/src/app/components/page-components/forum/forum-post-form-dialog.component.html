@@ -3,6 +3,13 @@
 
 <form [formGroup]="forumPostForm" (ngSubmit)="onConfirm()">
   <div>
+    <div>
+      <p>Picture</p>
+      {{ imageUrl }}
+      <img class="max-w-32 max-h-32" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
+      <input class="h-24" type="file" id="picture" (change)="onFileSelected($event)">
+    </div>
+
     <mat-form-field>
       <mat-label>Title</mat-label>
       <input matInput formControlName="title">

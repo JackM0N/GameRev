@@ -1,10 +1,11 @@
-
 <!-- Forum Posts Table -->
 <div class="forum-posts">
   <h2 class="text-xl font-bold mb-4">Posts</h2>
   <table class="forum-posts-table w-full table-auto border-collapse">
     <thead>
       <tr class="bg-gray-200 text-left">
+        <!-- New Image Column -->
+        <th class="p-4 border border-gray-300">Image</th>
         <th class="p-4 border border-gray-300">Post</th>
         <th class="p-4 border border-gray-300">Author</th>
         <th class="p-4 border border-gray-300">Post date</th>
@@ -16,6 +17,11 @@
 
     <tbody>
       <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
+        <!-- New Image Column Content -->
+        <td class="p-4 border border-gray-300">
+          <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
+        </td>
+
         <td class="p-4 border border-gray-300">
           <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
             {{ post.title }}
@@ -37,7 +43,7 @@
         </td>
       </tr>
       <tr *ngIf="totalPosts == 0">
-        <td class="p-4 border border-gray-300 text-center" colspan="6">No posts yet</td>
+        <td class="p-4 border border-gray-300 text-center" colspan="7">No posts yet</td>
       </tr>
     </tbody>
   </table>
