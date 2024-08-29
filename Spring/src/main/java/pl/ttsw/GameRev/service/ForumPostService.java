@@ -61,6 +61,8 @@ public class ForumPostService {
 
         forumPost.setAuthor(websiteUserService.getCurrentUser());
 
+        forumPost = forumPostRepository.save(forumPost);
+
         Path filepath = null;
         try {
             if (picture != null && !picture.isEmpty()) {
@@ -68,6 +70,7 @@ public class ForumPostService {
                 filepath = Paths.get(postPicDirectory, fileName);
                 Files.copy(picture.getInputStream(), filepath);
                 forumPost.setPicture(filepath.toString());
+                forumPost = forumPostRepository.save(forumPost);
             }
         } catch (Exception e) {
             if (filepath != null && Files.exists(filepath)) {
@@ -79,7 +82,6 @@ public class ForumPostService {
             }
             throw e;
         }
-        forumPost = forumPostRepository.save(forumPost);
         return forumPostMapper.toDto(forumPost);
     }
 
