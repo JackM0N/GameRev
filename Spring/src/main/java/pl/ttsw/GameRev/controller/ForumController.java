@@ -8,8 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ForumDTO;
+import pl.ttsw.GameRev.dto.SimplifiedUserDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.service.ForumService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/forum")
@@ -30,6 +33,11 @@ public class ForumController {
             ForumFilter forumFilter,
             Pageable pageable) {
         return ResponseEntity.ok(forumService.getForum(id, forumFilter, pageable));
+    }
+
+    @GetMapping("/moderators/{id}")
+    public ResponseEntity<List<SimplifiedUserDTO>> getModerators(@PathVariable Long id){
+        return ResponseEntity.ok(forumService.getModeratorsForForum(id));
     }
 
     @PostMapping("/create")
