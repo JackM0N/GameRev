@@ -10,7 +10,7 @@
         <th class="p-4 border border-gray-300">Post date</th>
         <th class="p-4 border border-gray-300">Replies</th>
         <th class="p-4 border border-gray-300">Last reply</th>
-        <th class="p-4 border border-gray-300">Actions</th>
+        <th class="p-4 border border-gray-300" *ngIf="canManageAnyPost()">Actions</th>
       </tr>
     </thead>
 
@@ -27,11 +27,11 @@
         <td class="p-4 border border-gray-300">
           {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
         </td>
-        <td class="p-4 border border-gray-300">
-          <button mat-icon-button (click)="openEditPostDialog(post)" *ngIf="canEditPost(post)">
+        <td class="p-4 border border-gray-300" *ngIf="canManagePost(post)">
+          <button mat-icon-button (click)="openEditPostDialog(post)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button (click)="openDeletePostDialog(post)" *ngIf="authService.isAdmin()">
+          <button mat-icon-button (click)="openDeletePostDialog(post)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

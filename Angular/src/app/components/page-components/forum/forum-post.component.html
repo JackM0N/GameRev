@@ -17,8 +17,14 @@
           <span>By {{ post.author?.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
         </div>
       </div>
-      <div class="post-actions">
-        <button *ngIf="canDeletePost(post)" (click)="openDeletePostDialog(post)" class="text-red-500 hover:text-red-700">Delete</button>
+      <div class="post-actions" *ngIf="canManagePost(post)">
+        <button mat-icon-button (click)="openEditPostDialog(post)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="openDeletePostDialog(post)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </div>
     <div class="post-body mt-4">

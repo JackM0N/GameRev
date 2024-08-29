@@ -18,6 +18,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
 import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { NotificationAction } from '../../../enums/notificationActions';
+import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 
 @Component({
   selector: 'app-forum-post',
@@ -189,7 +190,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     });
   }
 
-  canDeletePost(post: ForumPost) {
+  canManagePost(post: ForumPost) {
     return this.authService.isAuthenticated() && (post.author?.nickname === this.authService.getNickname() || this.authService.isAdmin());
   }
 
@@ -205,6 +206,25 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     dialogRef.afterClosed().subscribe(result => {
       if (result == true && post.id) {
         this.deletePost(post.id);
+      }
+    });
+  }
+
+  openEditPostDialog(post: ForumPost) {
+    const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
+      width: '300px',
+      data: {
+        forumId: post.forum.id,
+        editing: true,
+        content: post.content,
+        title: post.title,
+        id: post.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((response) => {
+      if (response && post.id) {
+        this.loadPost(post.id);
       }
     });
   }

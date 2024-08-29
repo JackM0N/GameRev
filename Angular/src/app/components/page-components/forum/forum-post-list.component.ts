@@ -77,8 +77,12 @@ export class ForumPostListComponent implements AfterViewInit {
     });
   }
 
-  canEditPost(post: ForumPost) {
-    return this.authService.isAuthenticated() && (post.author?.nickname == this.authService.getNickname() || this.authService.isAdmin());
+  canManagePost(post: ForumPost) {
+    return this.authService.isAuthenticated() && (post.author?.nickname === this.authService.getNickname() || this.authService.isAdmin());
+  }
+
+  canManageAnyPost() {
+    return this.authService.isAuthenticated() && (this.postList.some(post => post.author?.nickname === this.authService.getNickname()) || this.authService.isAdmin());
   }
 
   openEditPostDialog(post: ForumPost) {
