@@ -49,7 +49,7 @@ public class ForumService {
             if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
                 forumFilter.setIsDeleted(false);
             }
-        }catch (BadCredentialsException e){
+        }catch (Exception e){
             forumFilter.setIsDeleted(false);
         }
 
