@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.ForumDTO;
-import pl.ttsw.GameRev.repository.ForumRepository;
+import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.service.ForumService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,17 +25,16 @@ public class ForumServiceIntegrationTest {
     @Autowired
     private ForumService forumService;
 
-    @Autowired
-    private ForumRepository forumRepository;
-
     Pageable pageable = PageRequest.of(0, 10);
 
     @Test
     @Transactional
-    public void testGetForum_Success() throws BadRequestException {
+    @WithAnonymousUser
+    public void testGetForum_Success() {
         Long forumId = 1L; // General
+        ForumFilter forumFilter = new ForumFilter();
 
-        Page<ForumDTO> result = forumService.getForum(forumId, null, null, pageable);
+        Page<ForumDTO> result = forumService.getForum(forumId, forumFilter, pageable);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -43,12 +45,11 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testGetForum_ForumNotFound() throws BadRequestException {
+    public void testGetForum_ForumNotFound() {
         Long forumId = 999L;
+        ForumFilter forumFilter = new ForumFilter();
 
-        Page<ForumDTO> result = forumService.getForum(forumId, null, null, pageable);
-
-        assertNull(result);
+        assertThrows(EntityNotFoundException.class, () -> forumService.getForum(forumId, forumFilter, pageable));
     }
 
     @Test
@@ -113,14 +114,18 @@ public class ForumServiceIntegrationTest {
 
     @Test
     @Transactional
+    @WithMockUser("testadmin")
     public void testDeleteForum_Success() throws BadRequestException {
         Long forumId = 2L;
-        boolean result = forumService.deleteForum(forumId);
+        ForumFilter forumFilter = new ForumFilter();
+        forumFilter.setIsDeleted(true);
+
+        boolean result = forumService.deleteForum(forumId, true);
 
         assertTrue(result);
-
-        Page<ForumDTO> forums = forumService.getForum(1L, null, null, PageRequest.of(0, 10));
-        assertFalse(forums.getContent().stream()
-                .anyMatch(forum -> forum.getId().equals(forumId) && !forum.getIsDeleted()));
+        Page<ForumDTO> forums = forumService.getForum(1L, forumFilter, PageRequest.of(0, 10));
+        System.out.println(Utils.getAllFieldsToString(forums.getContent(), false));
+        assertTrue(forums.getTotalElements() >= 2);
+        assertTrue(forums.getContent().get(1).getIsDeleted());
     }
 }

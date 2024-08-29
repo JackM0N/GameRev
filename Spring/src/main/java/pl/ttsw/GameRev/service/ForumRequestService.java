@@ -51,14 +51,14 @@ public class ForumRequestService {
         if(forumRepository.existsForumByForumName(forumRequestDTO.getForumName())){
             throw new BadRequestException("Forum name already exists");
         }
-        ForumRequest forumRequest = forumRequestMapper.toEntity(forumRequestDTO);
-
+        ForumRequest forumRequest = new ForumRequest();
+        forumRequest.setForumName(forumRequestDTO.getForumName());
+        forumRequest.setDescription(forumRequestDTO.getDescription());
         forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
                 .orElseThrow(() -> new RuntimeException("Game not found")));
         forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())
                 .orElseThrow(() -> new RuntimeException("Parent forum not found")));
         forumRequest.setAuthor(websiteUserService.getCurrentUser());
-
         forumRequest = forumRequestRepository.save(forumRequest);
         return forumRequestMapper.toDto(forumRequest);
     }
@@ -72,11 +72,15 @@ public class ForumRequestService {
         boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()));
         if(isAuthor || isAdmin) {
-            forumRequestMapper.partialUpdate(forumRequestDTO, forumRequest);
-
             if (forumRequestDTO.getGame().getId() != null) {
                 forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
                         .orElseThrow(() -> new RuntimeException("Game not found")));
+            }
+            if (forumRequestDTO.getForumName() != null) {
+                forumRequest.setForumName(forumRequestDTO.getForumName());
+            }
+            if (forumRequestDTO.getDescription() != null) {
+                forumRequest.setDescription(forumRequestDTO.getDescription());
             }
             if (forumRequestDTO.getParentForum() != null) {
                 forumRequest.setParentForum(forumRepository.findById(forumRequestDTO.getParentForum().getId())

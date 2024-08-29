@@ -13,12 +13,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.*;
+import pl.ttsw.GameRev.repository.ForumModeratorRepository;
+import pl.ttsw.GameRev.repository.ForumPostRepository;
+import pl.ttsw.GameRev.repository.ForumRepository;
+import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.service.ForumPostService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
@@ -29,7 +33,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ForumPostServiceTest {
 
@@ -43,9 +48,6 @@ public class ForumPostServiceTest {
     private ForumPostMapper forumPostMapper;
 
     @Mock
-    private WebsiteUserRepository websiteUserRepository;
-
-    @Mock
     private RoleRepository roleRepository;
 
     @Mock
@@ -57,7 +59,7 @@ public class ForumPostServiceTest {
     @InjectMocks
     private ForumPostService forumPostService;
 
-    private final Pageable pageable = PageRequest.of(0, 10);
+    private Pageable pageable = PageRequest.of(0, 10);
 
     @BeforeEach
     public void setUp() {
@@ -72,12 +74,13 @@ public class ForumPostServiceTest {
         ForumPost forumPost = new ForumPost();
         forumPost.setForum(forum);
         forumPost.setAuthor(new WebsiteUser());
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
 
         when(forumRepository.findById(forumId)).thenReturn(Optional.of(forum));
         when(forumPostRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(forumPost)));
         when(forumPostMapper.toDto(any())).thenReturn(new ForumPostDTO());
 
-        Page<ForumPostDTO> result = forumPostService.getForumPosts(forumId, null, null, null, pageable);
+        Page<ForumPostDTO> result = forumPostService.getForumPosts(forumId, forumPostFilter, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
@@ -88,10 +91,11 @@ public class ForumPostServiceTest {
     @Test
     public void testGetForumPosts_ForumNotFound() {
         Long forumId = 999L;
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
 
         when(forumRepository.findById(forumId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> forumPostService.getForumPosts(forumId, null, null, null, pageable));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> forumPostService.getForumPosts(forumId, forumPostFilter, pageable));
         assertEquals("Forum not found", exception.getMessage());
     }
 
@@ -195,7 +199,7 @@ public class ForumPostServiceTest {
 
         when(forumPostRepository.findById(postId)).thenReturn(Optional.of(forumPost));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
-        when(forumModeratorRepository.existsByForumAndModerator(any(),any())).thenReturn(false);
+        when(forumModeratorRepository.existsByForumAndModerator(any(), any())).thenReturn(false);
 
         boolean result = forumPostService.deleteForumPost(postId, true);
 
@@ -219,7 +223,7 @@ public class ForumPostServiceTest {
 
         when(forumPostRepository.findById(postId)).thenReturn(Optional.of(forumPost));
         when(websiteUserService.getCurrentUser()).thenReturn(otherUser);
-        when(forumModeratorRepository.existsByForumAndModerator(any(),any())).thenReturn(false);
+        when(forumModeratorRepository.existsByForumAndModerator(any(), any())).thenReturn(false);
 
         BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(postId, true));
         assertEquals("You dont have permission to perform this action", exception.getMessage());

@@ -1,5 +1,6 @@
 package pl.ttsw.GameRev;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,13 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.ForumDTO;
+import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.service.ForumService;
+import pl.ttsw.GameRev.service.WebsiteUserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,9 @@ class ForumServiceTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    private WebsiteUserService websiteUserService;
+
     @InjectMocks
     private ForumService forumService;
 
@@ -46,20 +53,21 @@ class ForumServiceTest {
     }
 
     @Test
-    public void testGetForum_Success() throws BadRequestException {
+    public void testGetForum_Success() {
         Long id = 1L;
-        Long gameId = null;
-        String searchText = null;
         Pageable pageable = mock(Pageable.class);
         Forum forum = new Forum();
         forum.setId(id);
+        ForumFilter forumFilter = new ForumFilter();
+
         when(forumRepository.findById(id)).thenReturn(Optional.of(forum));
         List<Forum> forumsList = new ArrayList<>();
         Page<Forum> forums = new PageImpl<>(forumsList);
         when(forumRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(forums);
         when(forumMapper.toDto(any(Forum.class))).thenReturn(new ForumDTO());
+        when(websiteUserService.getCurrentUser()).thenThrow(new BadCredentialsException("You are not logged in"));
 
-        Page<ForumDTO> result = forumService.getForum(id, gameId, searchText, pageable);
+        Page<ForumDTO> result = forumService.getForum(id, forumFilter, pageable);
 
         assertNotNull(result);
         verify(forumRepository).findById(id);
@@ -68,15 +76,13 @@ class ForumServiceTest {
     }
 
     @Test
-    public void testGetForum_ForumNotFound() throws BadRequestException {
+    public void testGetForum_ForumNotFound() {
         Long id = 1L;
         Pageable pageable = mock(Pageable.class);
+        ForumFilter forumFilter = new ForumFilter();
         when(forumRepository.findById(id)).thenReturn(Optional.empty());
 
-        Page<ForumDTO> result = forumService.getForum(id, null, null, pageable);
-
-        assertNull(result);
-        verify(forumRepository).findById(id);
+        assertThrows(EntityNotFoundException.class, () -> forumService.getForum(id, forumFilter, pageable));
     }
 
     @Test
@@ -178,7 +184,7 @@ class ForumServiceTest {
         forum.setIsDeleted(false);
         when(forumRepository.findById(id)).thenReturn(Optional.of(forum));
 
-        boolean result = forumService.deleteForum(id);
+        boolean result = forumService.deleteForum(id, true);
 
         assertTrue(result);
         assertTrue(forum.getIsDeleted());
@@ -190,8 +196,8 @@ class ForumServiceTest {
     public void testDeleteForum_ForumNotFound() {
         Long id = 1L;
         when(forumRepository.findById(id)).thenReturn(Optional.empty());
-        
-        assertThrows(BadRequestException.class, () -> forumService.deleteForum(id));
+
+        assertThrows(BadRequestException.class, () -> forumService.deleteForum(id, true));
         verify(forumRepository).findById(id);
     }
 }

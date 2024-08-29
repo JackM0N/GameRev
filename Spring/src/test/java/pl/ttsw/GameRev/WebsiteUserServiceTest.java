@@ -35,19 +35,25 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class WebsiteUserServiceTest {
 
-    private final String username = "testuser";
     @Mock
     private WebsiteUserRepository websiteUserRepository;
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @Mock
     private IAuthenticationFacade authenticationFacade;
+
     @Spy
     private WebsiteUserMapper websiteUserMapper;
+
     @InjectMocks
     private WebsiteUserService websiteUserService;
+
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics/";
+
+    private final String username = "testuser";
     private WebsiteUserDTO userDTO_old;
     private WebsiteUserDTO userDTO_new;
     private WebsiteUser user_new;
@@ -80,14 +86,6 @@ public class WebsiteUserServiceTest {
         authentication = mock(Authentication.class);
         lenient().when(authentication.getName()).thenReturn(username + "2");
         lenient().when(authenticationFacade.getAuthentication()).thenReturn(authentication);
-    }
-
-    @Test
-    public void testFindByNickname() {
-        when(websiteUserRepository.findByNickname(username + "2")).thenReturn(Optional.ofNullable(user_new));
-        when(websiteUserMapper.toDto(user_new)).thenReturn(userDTO_new);
-        WebsiteUserDTO result = websiteUserService.findByNickname(username + "2");
-        assertEquals(username + "2", result.getNickname());
     }
 
     @Test

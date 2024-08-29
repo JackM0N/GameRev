@@ -11,7 +11,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
+import pl.ttsw.GameRev.mapper.SimplifiedUserMapper;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
@@ -29,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
 @ActiveProfiles("test")
-@Transactional
 public class ForumPostServiceIntegrationTest {
 
     @Autowired
@@ -44,11 +45,16 @@ public class ForumPostServiceIntegrationTest {
     @Autowired
     private WebsiteUserRepository websiteUserRepository;
 
-    private Forum testForum;
     @Autowired
     private ForumMapper forumMapper;
+
     @Autowired
     private WebsiteUserMapper websiteUserMapper;
+
+    @Autowired
+    private SimplifiedUserMapper simplifiedUserMapper;
+
+    private Forum testForum;
 
     @BeforeEach
     public void setUp() {
@@ -56,8 +62,10 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testGetForumPosts_Success() {
-        Page<ForumPostDTO> forumPosts = forumPostService.getForumPosts(testForum.getId(), null, null, null, Pageable.unpaged());
+        ForumPostFilter forumPostFilter = new ForumPostFilter();
+        Page<ForumPostDTO> forumPosts = forumPostService.getForumPosts(testForum.getId(), forumPostFilter, Pageable.unpaged());
 
         assertNotNull(forumPosts);
         assertFalse(forumPosts.getContent().isEmpty());
@@ -65,6 +73,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testCreateForumPost_Success() throws Exception {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -84,6 +93,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testUpdateForumPost_Success() throws Exception {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -109,6 +119,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testDeleteForumPost_Success() throws IOException {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -127,6 +138,7 @@ public class ForumPostServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser("testuser")
     public void testDeleteForumPost_NoPermission() throws IOException {
         ForumPostDTO forumPost = new ForumPostDTO();
@@ -137,7 +149,7 @@ public class ForumPostServiceIntegrationTest {
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
         WebsiteUser otherUser = websiteUserRepository.findByUsername("testcritic").get();
-        createdPost.setAuthor(websiteUserMapper.toDto(otherUser));
+        createdPost.setAuthor(simplifiedUserMapper.toSimplifiedDto(websiteUserMapper.toDto(otherUser)));
         forumPostService.updateForumPost(createdPost.getId(), createdPost, null);
 
         ForumPostDTO finalForumPost = createdPost;

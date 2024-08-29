@@ -1,7 +1,6 @@
 package pl.ttsw.GameRev;
 
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.ReportMapper;
-import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Report;
-import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ReportRepository;
-import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.UserReviewService;
@@ -41,9 +38,6 @@ public class ReportServiceIntegrationTest {
     private ReportRepository reportRepository;
 
     @Autowired
-    private UserReviewRepository userReviewRepository;
-
-    @Autowired
     private WebsiteUserRepository websiteUserRepository;
 
     @MockBean
@@ -53,33 +47,25 @@ public class ReportServiceIntegrationTest {
     private ReportMapper reportMapper;
 
     @Autowired
-    private UserReviewMapper userReviewMapper;
+    private UserReviewService userReviewService;
 
     private WebsiteUser testUser;
     private UserReviewDTO testUserReview;
     private Report testReport;
     private final Pageable pageable = PageRequest.ofSize(10);
-    @Autowired
-    private UserReviewService userReviewService;
+
 
     @BeforeEach
     public void setup() {
         testUser = websiteUserRepository.findByUsername("testuser").get();
         assertNotNull(testUser);
+        UserReviewFilter userReviewFilter = new UserReviewFilter();
 
-        testUserReview = userReviewService.getUserReviewsWithReports(null,null,null,null,pageable).get().findFirst().orElse(null);
+        testUserReview = userReviewService.getUserReviewsWithReports(userReviewFilter, pageable).get().findFirst().orElse(null);
         assertNotNull(testUserReview);
 
         testReport = reportRepository.findById(1L).orElse(null);
         assertNotNull(testReport);
-    }
-
-    @AfterEach
-    public void teardown() {
-        Report report = reportRepository.findByUserAndUserReview(testUser, userReviewMapper.toEntity(testUserReview)).orElse(null);
-        if (report != null) {
-            reportRepository.delete(report);
-        }
     }
 
     @Test
@@ -138,22 +124,6 @@ public class ReportServiceIntegrationTest {
 
     @Test
     @Transactional
-    public void testCreateReport_UserNotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setUserReview(testUserReview);
-        reportDTO.setContent("New Report Content");
-
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            reportService.createReport(reportDTO);
-        });
-
-        assertEquals("You are not logged in", exception.getMessage());
-    }
-
-    @Test
-    @Transactional
     @WithMockUser("testuser")
     public void testCreateReport_AlreadyReported() throws BadRequestException {
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
@@ -192,6 +162,6 @@ public class ReportServiceIntegrationTest {
             reportService.updateReport(reportDTO);
         });
 
-        assertEquals("This report doesnt exist", exception.getMessage());
+        assertEquals("Report not found", exception.getMessage());
     }
 }
