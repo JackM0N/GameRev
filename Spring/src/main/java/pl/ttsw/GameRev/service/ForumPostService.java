@@ -28,7 +28,6 @@ public class ForumPostService {
     private final ForumPostRepository forumPostRepository;
     private final ForumRepository forumRepository;
     private final ForumPostMapper forumPostMapper;
-    private final WebsiteUserRepository websiteUserRepository;
     private final ForumModeratorRepository forumModeratorRepository;
 
     private final String postPicDirectory = "../Pictures/post_pics";
@@ -58,16 +57,9 @@ public class ForumPostService {
     }
 
     public ForumPostDTO createForumPost(ForumPostDTO forumPostDTO, MultipartFile picture) throws IOException {
-        ForumPost forumPost = new ForumPost();
+        ForumPost forumPost = forumPostMapper.toEntity(forumPostDTO);
 
-        forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
-                .orElseThrow(() -> new RuntimeException("Forum not found")));
         forumPost.setAuthor(websiteUserService.getCurrentUser());
-        forumPost.setContent(forumPostDTO.getContent());
-        forumPost.setPostDate(LocalDateTime.now());
-        forumPost.setTitle(forumPostDTO.getTitle());
-        forumPost.setCommentCount(0);
-        forumPost.setIsDeleted(false);
 
         Path filepath = null;
         try {
@@ -98,20 +90,9 @@ public class ForumPostService {
 
         if (currentUser == forumPost.getAuthor() || currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()))) {
-            if (forumPostDTO.getForum() != null) {
-                forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
-                        .orElseThrow(() -> new RuntimeException("Forum not found")));
-            }
-            if (forumPostDTO.getAuthor() != null) {
-                forumPost.setAuthor(websiteUserRepository.findById(forumPostDTO.getAuthor().getId())
-                        .orElseThrow(() -> new RuntimeException("User not found")));
-            }
-            if (forumPostDTO.getContent() != null) {
-                forumPost.setContent(forumPostDTO.getContent());
-            }
-            if (forumPostDTO.getTitle() != null) {
-                forumPost.setTitle(forumPostDTO.getTitle());
-            }
+
+            forumPostMapper.partialUpdate(forumPostDTO, forumPost);
+
             if (picture != null && !picture.isEmpty()) {
                 String oldPicturePath = forumPost.getPicture();
                 if (oldPicturePath != null && !oldPicturePath.isEmpty()) {

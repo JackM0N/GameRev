@@ -8,6 +8,8 @@ import pl.ttsw.GameRev.model.CriticReview;
 public interface CriticReviewMapper {
     @Mapping(source = "gameTitle", target = "game.title")
     @Mapping(source = "user", target = "user")
+    @Mapping(target = "postDate", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "reviewStatus", expression = "java(ReviewStatus.PENDING)")
     CriticReview toEntity(CriticReviewDTO criticReviewDTO);
 
     @Mapping(source = "game.title", target = "gameTitle")

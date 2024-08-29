@@ -46,12 +46,8 @@ public class ForumCommentService {
     }
 
     public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO) {
-        ForumComment forumComment = new ForumComment();
-        forumComment.setForumPost(forumPostRepository.findById(forumCommentDTO.getForumPostId())
-                .orElseThrow(() -> new RuntimeException("Forum post not found")));
+        ForumComment forumComment = forumCommentMapper.toEntity(forumCommentDTO);
         forumComment.setAuthor(websiteUserService.getCurrentUser());
-        forumComment.setContent(forumCommentDTO.getContent());
-        forumComment.setPostDate(LocalDateTime.now());
         forumCommentRepository.save(forumComment);
         return forumCommentMapper.toDto(forumComment);
     }
@@ -60,7 +56,9 @@ public class ForumCommentService {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
-        forumComment.setContent(forumCommentDTO.getContent());
+
+        forumCommentMapper.partialUpdateContent(forumCommentDTO, forumComment);
+
         if (currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))
                 || currentUser == forumComment.getAuthor()) {
             forumCommentRepository.save(forumComment);
