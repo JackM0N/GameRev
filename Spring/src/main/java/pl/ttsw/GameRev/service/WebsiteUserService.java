@@ -84,7 +84,12 @@ public class WebsiteUserService {
                     .equal(root.get("id"), Long.parseLong(websiteUserFilter.getSearchText())));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
-        return websiteUsers.map(websiteUserMapper::toDtoWithoutSensitiveData);
+        WebsiteUser currentUser = getCurrentUser();
+        if(currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))){
+            return websiteUsers.map(websiteUserMapper::toDto);
+        }else {
+            return websiteUsers.map(websiteUserMapper::toDtoWithoutSensitiveData);
+        }
     }
 
     public WebsiteUserDTO findByCurrentUser() {
