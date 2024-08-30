@@ -39,8 +39,10 @@ public class ReportService {
                 .orElseThrow(() -> new BadRequestException("User review not found"));
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        reportRepository.findByUserAndUserReview(currentUser, userReview)
-                .orElseThrow(() -> new BadRequestException("You've already reported this review"));
+        Report report = reportRepository.findByUserAndUserReview(currentUser, userReview).orElse(null);
+        if (report != null) {
+            throw new BadRequestException("You've already reported this review");
+        }
 
         Report newReport = reportMapper.toEntity(reportDTO);
         newReport.setUser(currentUser);

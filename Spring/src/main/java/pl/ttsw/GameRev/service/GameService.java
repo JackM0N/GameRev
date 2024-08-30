@@ -80,13 +80,6 @@ public class GameService {
     public GameDTO createGame(GameDTO game, MultipartFile picture) throws IOException {
         Game newGame = gameMapper.toEntity(game);
 
-        ReleaseStatus releaseStatus = game.getReleaseStatus();
-        if (releaseStatus == null || !EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
-                throw new BadRequestException("Release status not found");
-        }
-
-        newGame.setReleaseStatus(game.getReleaseStatus());
-
         Path filepath = null;
 
         try {

@@ -59,6 +59,8 @@ public class ForumPostService {
 
     public ForumPostDTO createForumPost(ForumPostDTO forumPostDTO, MultipartFile picture) throws IOException {
         ForumPost forumPost = forumPostMapper.toEntity(forumPostDTO);
+        forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
+                .orElseThrow(() -> new RuntimeException("Forum not found")));
 
         forumPost.setAuthor(websiteUserService.getCurrentUser());
 
@@ -147,7 +149,7 @@ public class ForumPostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
         if (forumPost.getPicture() == null) {
-            throw new IOException("Users profile picture not found");
+            throw new IOException("Post picture not found");
         }
 
         Path filepath = Paths.get(forumPost.getPicture());
