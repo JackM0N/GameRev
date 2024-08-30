@@ -457,3 +457,8 @@ UPDATE forum
 SET last_post_date = NULL
 where post_count = 0
 
+
+--changeset Stanislaw:33 labels:expansion,schema
+ALTER TABLE forum_comment
+    ADD COLUMN     picture       VARCHAR(255);
+
