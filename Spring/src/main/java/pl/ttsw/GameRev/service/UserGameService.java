@@ -67,9 +67,6 @@ public class UserGameService {
 
         WebsiteUser userFromDTO = websiteUserRepository.findByUsername(userGameDTO.getUser().getUsername())
                 .orElseThrow(() -> new BadRequestException("This user doesn't exist"));
-        if (userFromDTO == null) {
-            throw new BadRequestException("This user does not exist");
-        }
         if (!userFromDTO.equals(user)) {
             throw new BadCredentialsException("You can only add games to your own library");
         }
@@ -77,16 +74,9 @@ public class UserGameService {
         Game game = gameRepository.findGameById(userGameDTO.getGame().getId())
                 .orElseThrow(() -> new BadRequestException("This game doesn't exist"));
 
-        CompletionStatus completionStatus = userGameDTO.getCompletionStatus();
-        if (completionStatus == null || !EnumUtils.isValidEnumIgnoreCase(CompletionStatus.class, completionStatus.name())) {
-            throw new BadRequestException("Completion status not found");
-        }
-
-        UserGame userGame = new UserGame();
+        UserGame userGame = userGameMapper.toEntity(userGameDTO);
         userGame.setUser(user);
         userGame.setGame(game);
-        userGame.setCompletionStatus(completionStatus);
-        userGame.setIsFavourite(userGameDTO.getIsFavourite());
 
         user.getUserGames().add(userGame);
         game.getUserGames().add(userGame);

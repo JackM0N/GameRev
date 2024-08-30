@@ -42,11 +42,11 @@ public class WebsiteUserController {
     }
 
     @PutMapping("/edit-profile/{username}")
-    public ResponseEntity<?> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
+    public ResponseEntity<WebsiteUserDTO> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
         String currentUsername = principal.getName();
 
         if (!currentUsername.equals(username)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only edit your own profile");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         WebsiteUserDTO user = websiteUserService.updateUserProfile(username, request);
@@ -54,7 +54,7 @@ public class WebsiteUserController {
     }
 
     @PostMapping("/{username}/profile-picture")
-    public ResponseEntity<?> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<WebsiteUserDTO> uploadProfilePicture(@PathVariable String username, @RequestParam("file") MultipartFile file) {
         try {
             ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO();
             profilePictureDTO.setUsername(username);
@@ -62,7 +62,7 @@ public class WebsiteUserController {
             websiteUserService.uploadProfilePicture(profilePictureDTO);
             return ResponseEntity.ok().build();
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error uploading profile picture");
+            return ResponseEntity.status(500).build();
         }
     }
 

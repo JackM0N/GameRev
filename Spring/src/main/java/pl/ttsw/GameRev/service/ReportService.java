@@ -39,16 +39,12 @@ public class ReportService {
                 .orElseThrow(() -> new BadRequestException("User review not found"));
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-        Report report = reportRepository.findByUserAndUserReview(currentUser, userReview)
-                .orElse(null);
-        if (report != null) {
-            throw new BadRequestException("You've already reported this review");
-        }
+        reportRepository.findByUserAndUserReview(currentUser, userReview)
+                .orElseThrow(() -> new BadRequestException("You've already reported this review"));
 
-        Report newReport = new Report();
+        Report newReport = reportMapper.toEntity(reportDTO);
         newReport.setUser(currentUser);
         newReport.setUserReview(userReview);
-        newReport.setContent(reportDTO.getContent());
         reportRepository.save(newReport);
         return reportMapper.toDto(newReport);
     }
@@ -56,7 +52,7 @@ public class ReportService {
     public ReportDTO updateReport(ReportDTO reportDTO) throws BadRequestException {
         Report report = reportRepository.findById(reportDTO.getId())
                 .orElseThrow(() -> new BadRequestException("Report not found"));
-        report.setApproved(reportDTO.getApproved());
+        reportMapper.partialUpdate(reportDTO, report);
         return reportMapper.toDto(reportRepository.save(report));
     }
 }

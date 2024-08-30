@@ -19,7 +19,6 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,15 +109,10 @@ public class UserReviewService{
     }
 
     public UserReviewDTO createUserReview(UserReviewDTO userReviewDTO) throws BadRequestException {
-        UserReview userReview = new UserReview();
+        UserReview userReview = userReviewMapper.toEntity(userReviewDTO);
         userReview.setUser(websiteUserService.getCurrentUser());
         userReview.setGame(gameRepository.findGameByTitle(userReviewDTO.getGameTitle())
                 .orElseThrow(() -> new BadRequestException("Game not found")));
-        userReview.setContent(userReviewDTO.getContent());
-        userReview.setScore(userReviewDTO.getScore());
-        userReview.setPostDate(LocalDate.now());
-        userReview.setPositiveRating(0);
-        userReview.setNegativeRating(0);
 
         return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }
@@ -127,20 +121,11 @@ public class UserReviewService{
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
                 .orElseThrow(() -> new BadRequestException("User review not found"));
 
-        if (userReview == null) {
-            throw new BadRequestException("This review doesn't exist");
-        }
         if (userReview.getUser() != websiteUserService.getCurrentUser()) {
             throw new BadCredentialsException("You cant update this review");
         }
 
-        userReview.setPostDate(LocalDate.now());
-        if (userReviewDTO.getScore() != null){
-            userReview.setScore(userReviewDTO.getScore());
-        }
-        if (userReviewDTO.getContent() != null){
-            userReview.setContent(userReviewDTO.getContent());
-        }
+        userReviewMapper.partialUpdate(userReviewDTO, userReview);
 
         return userReviewMapper.toDto(userReviewRepository.save(userReview));
     }

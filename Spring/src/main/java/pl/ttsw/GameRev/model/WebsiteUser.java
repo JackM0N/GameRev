@@ -61,7 +61,7 @@ public class WebsiteUser {
     private List<UserGame> userGames = new ArrayList<>();
 
     @ManyToMany(mappedBy = "forumModerators")
-    private List<Forum> forums = new ArrayList<>();
+    private List<Forum> moderatedForums = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
