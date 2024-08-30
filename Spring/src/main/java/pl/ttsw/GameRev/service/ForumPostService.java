@@ -147,7 +147,7 @@ public class ForumPostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
         if (forumPost.getPicture() == null) {
-            throw new IOException("Users profile picture not found");
+            throw new IOException("Post picture not found");
         }
 
         Path filepath = Paths.get(forumPost.getPicture());
