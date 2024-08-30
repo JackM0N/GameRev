@@ -36,4 +36,7 @@ public class ForumComment {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "picture")
+    private String picture;
+
 }

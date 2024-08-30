@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class ForumPostController {
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(image);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 

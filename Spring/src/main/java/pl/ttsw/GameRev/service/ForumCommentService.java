@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ForumCommentDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.filter.ForumCommentFilter;
@@ -19,6 +20,10 @@ import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 @Service
@@ -30,6 +35,8 @@ public class ForumCommentService {
     private final ForumPostMapper forumPostMapper;
     private final WebsiteUserService websiteUserService;
     private final ForumModeratorRepository forumModeratorRepository;
+
+    private final String commentPicDirectory = "../Pictures/comment_pics";
 
     public Page<ForumCommentDTO> getForumCommentsByPost(Long id, ForumCommentFilter forumCommentFilter, Pageable pageable) {
         ForumPost post = forumPostRepository.findById(id)
@@ -45,22 +52,60 @@ public class ForumCommentService {
         return forumPostMapper.toDto(post);
     }
 
-    public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO) {
+    public ForumCommentDTO createForumComment(ForumCommentDTO forumCommentDTO, MultipartFile picture) throws IOException {
         ForumComment forumComment = forumCommentMapper.toEntity(forumCommentDTO);
+        forumComment.setForumPost(forumPostRepository.findById(forumCommentDTO.getForumPostId())
+                .orElseThrow(() -> new RuntimeException("Forum post not found")));
+
         forumComment.setAuthor(websiteUserService.getCurrentUser());
-        forumComment.setPostDate(LocalDateTime.now());
         forumComment.setIsDeleted(false);
-        forumCommentRepository.save(forumComment);
+        forumComment = forumCommentRepository.save(forumComment);
+
+        Path filepath = null;
+        try {
+            if(picture != null && !picture.isEmpty()) {
+                String fileName = "comment"+ forumComment.getId() + "_" + picture.getOriginalFilename();
+                filepath = Paths.get(commentPicDirectory, fileName);
+                Files.copy(picture.getInputStream(), filepath);
+                forumComment.setPicture(filepath.toString());
+                forumComment = forumCommentRepository.save(forumComment);
+            }
+        } catch (IOException e) {
+            if (Files.exists(filepath)) {
+                try {
+                    Files.delete(filepath);
+                } catch (IOException ioException) {
+                    System.err.println("Failed to delete file after an error: " + filepath);
+                }
+            }
+            throw e;
+        }
+
         return forumCommentMapper.toDto(forumComment);
     }
 
-    public ForumCommentDTO updateForumComment(Long id, ForumCommentDTO forumCommentDTO) {
+    public ForumCommentDTO updateForumComment(Long id, ForumCommentDTO forumCommentDTO, MultipartFile picture) throws IOException {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         ForumComment forumComment = forumCommentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum comment not found"));
+
         if (currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))
                 || currentUser == forumComment.getAuthor()) {
             forumCommentMapper.partialUpdateContent(forumCommentDTO, forumComment);
+
+            if(picture != null && !picture.isEmpty()) {
+                String oldPicturePath = forumComment.getPicture();
+                if(oldPicturePath != null && !oldPicturePath.isEmpty()) {
+                    Path oldFilePath = Paths.get(oldPicturePath);
+                    Files.deleteIfExists(oldFilePath);
+                }
+
+                String fileName = "post" + forumComment.getId() + "_" + picture.getOriginalFilename();
+                Path filepath = Paths.get(commentPicDirectory, fileName);
+                Files.copy(picture.getInputStream(), filepath);
+                forumComment.setPicture(filepath.toString());
+            }
+
             forumCommentRepository.save(forumComment);
             return forumCommentMapper.toDto(forumComment);
         }else {
@@ -110,5 +155,17 @@ public class ForumCommentService {
             spec = spec.and((root, query, builder) -> builder.like(builder.lower(root.get("content")), likePattern));
         }
         return spec;
+    }
+
+    public byte[] getCommentPicture(Long id) throws IOException {
+        ForumComment forumComment = forumCommentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forum comment not found"));
+
+        if (forumComment.getPicture() == null) {
+            throw new IOException("Comment picture not found");
+        }
+
+        Path filepath = Paths.get(forumComment.getPicture());
+        return Files.readAllBytes(filepath);
     }
 }
