@@ -59,6 +59,8 @@ public class ForumPostService {
 
     public ForumPostDTO createForumPost(ForumPostDTO forumPostDTO, MultipartFile picture) throws IOException {
         ForumPost forumPost = forumPostMapper.toEntity(forumPostDTO);
+        forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
+                .orElseThrow(() -> new RuntimeException("Forum not found")));
 
         forumPost.setAuthor(websiteUserService.getCurrentUser());
 
