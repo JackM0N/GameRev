@@ -42,7 +42,7 @@
           <td *ngIf="subforum.lastPost" class="p-4 border border-gray-300">
             <p class="text-gray-700">Last post by {{ subforum.lastPost.nickname }}</p>
             <p>
-              in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-blue-500 cursor-pointer">{{ subforum.lastPost.title }}</a>
+              in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-blue-500 cursor-pointer"><b>{{ subforum.lastPost.title }}</b></a>
             </p>
             <p class="text-gray-600">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
           </td>
