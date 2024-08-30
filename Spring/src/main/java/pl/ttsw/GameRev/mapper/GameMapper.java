@@ -8,6 +8,7 @@ import pl.ttsw.GameRev.model.Game;
 public interface GameMapper {
     @Mapping(source = "releaseStatus", target = "releaseStatus")
     @Mapping(source = "tags", target = "tags")
+    @Mapping(target = "usersScore", constant = "0.0f")
     Game toEntity(GameDTO gameDTO);
 
     @Mapping(source = "releaseStatus", target = "releaseStatus")
