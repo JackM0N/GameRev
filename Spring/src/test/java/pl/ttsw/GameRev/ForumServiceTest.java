@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.mapper.ForumMapper;
+import pl.ttsw.GameRev.mapper.ForumMapperImpl;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.repository.ForumRepository;
@@ -36,9 +38,6 @@ class ForumServiceTest {
     private ForumRepository forumRepository;
 
     @Mock
-    private ForumMapper forumMapper;
-
-    @Mock
     private GameRepository gameRepository;
 
     @Mock
@@ -46,6 +45,9 @@ class ForumServiceTest {
 
     @InjectMocks
     private ForumService forumService;
+
+    @Spy
+    private ForumMapper forumMapper = new ForumMapperImpl();
 
     @BeforeEach
     void setUp() {
@@ -64,7 +66,6 @@ class ForumServiceTest {
         List<Forum> forumsList = new ArrayList<>();
         Page<Forum> forums = new PageImpl<>(forumsList);
         when(forumRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(forums);
-        when(forumMapper.toDto(any(Forum.class))).thenReturn(new ForumDTO());
         when(websiteUserService.getCurrentUser()).thenThrow(new BadCredentialsException("You are not logged in"));
 
         Page<ForumDTO> result = forumService.getForum(id, forumFilter, pageable);
@@ -99,8 +100,6 @@ class ForumServiceTest {
         when(forumRepository.findById(forumDTO.getParentForumId())).thenReturn(Optional.of(parentForum));
         Forum forum = new Forum();
         when(forumRepository.save(any(Forum.class))).thenReturn(forum);
-        ForumDTO expectedForumDTO = new ForumDTO();
-        when(forumMapper.toDto(any(Forum.class))).thenReturn(expectedForumDTO);
 
         ForumDTO result = forumService.createForum(forumDTO);
 
@@ -108,7 +107,6 @@ class ForumServiceTest {
         verify(gameRepository).findGameByTitle(forumDTO.getGameTitle());
         verify(forumRepository).findById(forumDTO.getParentForumId());
         verify(forumRepository).save(any(Forum.class));
-        verify(forumMapper).toDto(forum);
     }
 
     @Test
@@ -155,7 +153,6 @@ class ForumServiceTest {
         Game game = new Game();
         when(forumRepository.findById(id)).thenReturn(Optional.of(forum));
         when(gameRepository.findGameByTitle(forumDTO.getGameTitle())).thenReturn(Optional.of(game));
-        when(forumMapper.toDto(any())).thenReturn(forumDTO);
         when(forumRepository.save(any(Forum.class))).thenReturn(forum);
 
         ForumDTO result = forumService.updateForum(id, forumDTO);

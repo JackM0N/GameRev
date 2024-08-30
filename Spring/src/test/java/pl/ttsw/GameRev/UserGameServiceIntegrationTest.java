@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,6 @@ public class UserGameServiceIntegrationTest {
         userGame.setGame(game);
         userGame.setCompletionStatus(CompletionStatus.IN_PROGRESS);
         userGame.setIsFavourite(false);
-        userGame.setId(1L);
         userGameDTO = userGameMapper.toDto(userGame);
 
         assertNotNull(testUser);
@@ -120,7 +120,7 @@ public class UserGameServiceIntegrationTest {
 
     @Test
     @Transactional
-    @WithMockUser()
+    @WithAnonymousUser
     public void testAddGameToUser_NotLoggedIn() {
         UserGameDTO userGameDTO = userGameMapper.toDto(userGame);
 
@@ -131,7 +131,7 @@ public class UserGameServiceIntegrationTest {
     @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateGame_NotOwner() {
-        WebsiteUser anotherUser = websiteUserRepository.findById(4L).orElseThrow();
+        WebsiteUser anotherUser = websiteUserRepository.findById(6L).orElseThrow();
         anotherUser = websiteUserRepository.save(anotherUser);
 
         userGame.setUser(anotherUser);
@@ -155,7 +155,7 @@ public class UserGameServiceIntegrationTest {
 
     @Test
     @Transactional
-    @WithMockUser()
+    @WithAnonymousUser
     public void testDeleteGame_NotLoggedIn() {
         assertThrows(BadCredentialsException.class, () -> userGameService.deleteGame(userGame.getId()));
     }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.UserReviewMapper;
+import pl.ttsw.GameRev.mapper.UserReviewMapperImpl;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -48,8 +50,8 @@ class UserReviewServiceTest {
     @Mock
     private WebsiteUserService websiteUserService;
 
-    @Mock
-    private UserReviewMapper userReviewMapper;
+    @Spy
+    private UserReviewMapper userReviewMapper = new UserReviewMapperImpl();
 
     @InjectMocks
     private UserReviewService userReviewService;
@@ -68,12 +70,10 @@ class UserReviewServiceTest {
         UserReview userReview = new UserReview();
         Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
         WebsiteUser currentUser = new WebsiteUser();
-        UserReviewDTO userReviewDTO = new UserReviewDTO();
         UserReviewFilter userReviewFilter = new UserReviewFilter();
 
         when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
-        when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
         when(ratingRepository.findByUserAndUserReview(currentUser, userReview)).thenReturn(Optional.empty());
 
         Page<UserReviewDTO> result = userReviewService.getUserReviewByGame(gameTitle, userReviewFilter, pageable);
@@ -97,8 +97,6 @@ class UserReviewServiceTest {
 
         when(websiteUserRepository.findById(userId)).thenReturn(Optional.of(currentUser));
         when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
-        when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
-
 
         Page<UserReviewDTO> result = userReviewService.getUserReviewByUser(userId, userReviewFilter, pageable);
 
@@ -115,10 +113,8 @@ class UserReviewServiceTest {
     void testGetUserReviewById() {
         Long reviewId = 1L;
         UserReview userReview = new UserReview();
-        UserReviewDTO userReviewDTO = new UserReviewDTO();
 
         when(userReviewRepository.findById(reviewId)).thenReturn(Optional.of(userReview));
-        when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
         UserReviewDTO result = userReviewService.getUserReviewById(reviewId);
 
@@ -132,12 +128,10 @@ class UserReviewServiceTest {
         Pageable pageable = mock(Pageable.class);
         UserReview userReview = new UserReview();
         userReview.setReports(Collections.emptyList());
-        UserReviewDTO userReviewDTO = new UserReviewDTO();
         Page<UserReview> userReviews = new PageImpl<>(Collections.singletonList(userReview));
         UserReviewFilter userReviewFilter = new UserReviewFilter();
 
         when(userReviewRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userReviews);
-        when(userReviewMapper.toDto(userReview)).thenReturn(userReviewDTO);
 
         Page<UserReviewDTO> result = userReviewService.getUserReviewsWithReports(userReviewFilter, pageable);
 
@@ -161,7 +155,6 @@ class UserReviewServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(websiteUser);
         when(gameRepository.findGameByTitle("Cimbus Lompany")).thenReturn(Optional.of(new Game()));
         when(userReviewRepository.save(any(UserReview.class))).thenReturn(userReview);
-        when(userReviewMapper.toDto(any(UserReview.class))).thenReturn(userReviewDTO);
 
         UserReviewDTO result = userReviewService.createUserReview(userReviewDTO);
 
@@ -185,7 +178,6 @@ class UserReviewServiceTest {
         when(userReviewRepository.findById(userReviewDTO.getId())).thenReturn(Optional.of(userReview));
         when(websiteUserService.getCurrentUser()).thenReturn(userReview.getUser());
         when(userReviewRepository.save(any(UserReview.class))).thenReturn(userReview);
-        when(userReviewMapper.toDto(any(UserReview.class))).thenReturn(userReviewDTO);
 
         UserReviewDTO result = userReviewService.updateUserReview(userReviewDTO);
 

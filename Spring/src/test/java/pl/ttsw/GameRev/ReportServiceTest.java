@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.mapper.ReportMapper;
+import pl.ttsw.GameRev.mapper.ReportMapperImpl;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -42,11 +44,11 @@ public class ReportServiceTest {
     @Mock
     private WebsiteUserService websiteUserService;
 
-    @Mock
-    private ReportMapper reportMapper;
-
     @InjectMocks
     private ReportService reportService;
+
+    @Spy
+    private ReportMapper reportMapper = new ReportMapperImpl();
 
     private WebsiteUser testUser;
     private UserReview testUserReview;
@@ -92,7 +94,6 @@ public class ReportServiceTest {
     @Test
     public void testGetReportById_Found() {
         when(reportRepository.findById(anyLong())).thenReturn(Optional.of(testReport));
-        when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
 
         ReportDTO result = reportService.getReportById(1L);
 
@@ -111,7 +112,6 @@ public class ReportServiceTest {
     public void testGetReportsByReview_Found() {
         Page<Report> reportPage = new PageImpl<>(Collections.singletonList(testReport), PageRequest.of(0, 10), 1);
         when(reportRepository.findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(anyLong(), any(Pageable.class))).thenReturn(reportPage);
-        when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
 
         Page<ReportDTO> result = reportService.getReportsByReview(testUserReviewDTO, PageRequest.of(0, 10));
 
@@ -135,7 +135,6 @@ public class ReportServiceTest {
         when(userReviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testUserReview));
         when(websiteUserService.getCurrentUser()).thenReturn(testUser);
         when(reportRepository.findByUserAndUserReview(any(WebsiteUser.class), any(UserReview.class))).thenReturn(Optional.empty());
-        when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
         when(reportRepository.save(any(Report.class))).thenReturn(testReport);
 
         ReportDTO result = reportService.createReport(testReportDTO);
@@ -173,7 +172,6 @@ public class ReportServiceTest {
     @Test
     public void testUpdateReport_Success() throws BadRequestException {
         when(reportRepository.findById(anyLong())).thenReturn(Optional.of(testReport));
-        when(reportMapper.toDto(any(Report.class))).thenReturn(testReportDTO);
         when(reportRepository.save(any(Report.class))).thenReturn(testReport);
 
         testReportDTO.setApproved(true);

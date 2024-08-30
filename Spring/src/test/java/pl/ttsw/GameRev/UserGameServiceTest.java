@@ -3,10 +3,10 @@ package pl.ttsw.GameRev;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +19,7 @@ import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.enums.CompletionStatus;
 import pl.ttsw.GameRev.filter.UserGameFilter;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
+import pl.ttsw.GameRev.mapper.UserGameMapperImpl;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -35,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class UserGameServiceTest {
 
     @Mock
@@ -48,13 +48,13 @@ public class UserGameServiceTest {
     private WebsiteUserService websiteUserService;
 
     @Mock
-    private UserGameMapper userGameMapper;
-
-    @Mock
     private WebsiteUserRepository websiteUserRepository;
 
     @InjectMocks
     private UserGameService userGameService;
+
+    @Spy
+    private UserGameMapper userGameMapper = new UserGameMapperImpl();
 
     private WebsiteUser user;
     private Game game;
@@ -63,6 +63,8 @@ public class UserGameServiceTest {
 
     @BeforeEach
     public void setUp() {
+        MockitoAnnotations.openMocks(this);
+
         user = new WebsiteUser();
         user.setUsername("testuser");
 
@@ -91,7 +93,6 @@ public class UserGameServiceTest {
 
         when(websiteUserRepository.findByNickname("testuser")).thenReturn(Optional.ofNullable(user));
         when(userGameRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userGamePage);
-        when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
         Page<UserGameDTO> result = userGameService.getUserGame("testuser", userGameFilter, pageable);
 
@@ -127,7 +128,6 @@ public class UserGameServiceTest {
         when(websiteUserRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
         when(gameRepository.findGameById(anyLong())).thenReturn(Optional.ofNullable(game));
         when(userGameRepository.save(any(UserGame.class))).thenReturn(userGame);
-        when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
         UserGameDTO result = userGameService.addGameToUser(userGameDTO);
 
@@ -157,7 +157,6 @@ public class UserGameServiceTest {
         when(userGameRepository.findById(anyLong())).thenReturn(Optional.of(userGame));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
         when(userGameRepository.save(any(UserGame.class))).thenReturn(userGame);
-        when(userGameMapper.toDto(any(UserGame.class))).thenReturn(userGameDTO);
 
         userGameDTO.setCompletionStatus(CompletionStatus.COMPLETED);
         UserGameDTO result = userGameService.updateGame(userGameDTO);
