@@ -25,6 +25,12 @@ export class ForumPostFormDialogComponent {
   private selectedImage?: File;
   public imageUrl: string = '';
   
+  public quillToolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
+
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,

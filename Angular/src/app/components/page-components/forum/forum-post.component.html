@@ -34,7 +34,7 @@
 
     <div class="post-body mt-4">
       <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-gray-300 object-cover mt-4 mb-4">
-      <p class="text-gray-800">{{ post.content }}</p>
+      <p class="text-gray-800" [innerHTML]="post.content"></p>
     </div>
   </div>
 
@@ -54,7 +54,7 @@
             </div>
           </div>
           <div class="comment-body text-gray-800">
-            <p>{{ comment.content }}</p>
+            <p [innerHTML]="comment.content"></p>
           </div>
         </div>
       </div>
@@ -79,12 +79,19 @@
     </div>
     <div class="post-body mt-4">
       <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
-        <mat-form-field class="w-full mb-4">
-          <textarea matInput [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'" formControlName="content" rows="4"></textarea>
-        </mat-form-field>
-
-        <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-          Content must be at least {{ minLength }} characters long.
+        <div id="content-container">
+          <quill-editor
+            class="quill-editor-custom"
+            formControlName="content"
+            [modules]="{ toolbar: quillToolbarOptions }"
+            [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
+            rows="4"
+            >
+          </quill-editor>
+        
+          <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
+            Content must be at least {{ minLength }} characters long.
+          </div>
         </div>
 
         <div class="submit-button">

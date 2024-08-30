@@ -42,6 +42,12 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
   public imageUrl?: string;
   public authorProfilePic?: string;
 
+  public quillToolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
+
   constructor(
     public authService: AuthService,
     private forumService: ForumService,

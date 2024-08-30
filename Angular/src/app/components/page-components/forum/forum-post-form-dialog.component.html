@@ -20,12 +20,10 @@
     </div>
   </div>
 
-  <div>
-    <mat-form-field>
-      <mat-label>Content</mat-label>
-      <textarea matInput formControlName="content"></textarea>
-    </mat-form-field>
-
+  <div id="description-container">
+    <label for="description">Content</label>
+    <quill-editor class="quill-editor-custom" formControlName="content" [modules]="{ toolbar: quillToolbarOptions }"></quill-editor>
+  
     <div *ngIf="forumPostForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
       Content must be at least {{ contentMinLength }} characters long.
     </div>
