@@ -111,23 +111,10 @@ public class WebsiteUserService {
             throw new BadCredentialsException("Passwords do not match");
         }
 
+        websiteUserMapper.partialUpdateProfile(request, user);
+
         if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        }
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            user.setEmail(request.getEmail());
-        }
-        if (request.getNickname() != null && !request.getNickname().isEmpty()) {
-            user.setNickname(request.getNickname());
-        }
-        if (request.getDescription() != null && !request.getDescription().isEmpty()) {
-            user.setDescription(request.getDescription());
-        }
-        if (request.getProfilepic() != null && !request.getProfilepic().isEmpty()) {
-            user.setProfilepic(request.getProfilepic());
-        }
-        if (request.getIsDeleted() != null) {
-            user.setIsDeleted(request.getIsDeleted());
         }
 
         user = websiteUserRepository.save(user);
@@ -144,26 +131,10 @@ public class WebsiteUserService {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
 
-        if (websiteUserDTO.getUsername() != null && !websiteUserDTO.getUsername().isEmpty()) {
-            user.setUsername(websiteUserDTO.getUsername());
-        }
+        websiteUserMapper.partialUpdate(websiteUserDTO,user);
+
         if (websiteUserDTO.getPassword() != null && !websiteUserDTO.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(websiteUserDTO.getPassword()));
-        }
-        if (websiteUserDTO.getProfilepic() != null && !websiteUserDTO.getProfilepic().isEmpty()) {
-            user.setProfilepic(null);
-        }
-        if (websiteUserDTO.getEmail() != null && !websiteUserDTO.getEmail().isEmpty()) {
-            user.setEmail(websiteUserDTO.getEmail());
-        }
-        if (websiteUserDTO.getNickname() != null && !websiteUserDTO.getNickname().isEmpty()) {
-            user.setNickname(websiteUserDTO.getNickname());
-        }
-        if (websiteUserDTO.getDescription() != null && !websiteUserDTO.getDescription().isEmpty()) {
-            user.setDescription(websiteUserDTO.getDescription());
-        }
-        if (websiteUserDTO.getIsDeleted() != null) {
-            user.setIsDeleted(websiteUserDTO.getIsDeleted());
         }
 
         return websiteUserMapper.toDto(websiteUserRepository.save(user));
