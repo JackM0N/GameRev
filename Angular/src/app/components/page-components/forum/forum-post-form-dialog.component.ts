@@ -5,8 +5,7 @@ import { Forum } from '../../../interfaces/forum';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../interfaces/forumPost';
-import { ImageCacheService } from '../../../services/imageCache.service';
-import { Observer } from 'rxjs';
+import { FileUploadOptions } from '../../../enums/fileUploadOptions';
 
 @Component({
   selector: 'app-forum-post-form-dialog',
@@ -78,12 +77,31 @@ export class ForumPostFormDialogComponent {
     }
   }
 
+  maxSizeError() {
+    this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
+  }
+
+  checkError(error: any) {
+    if (error.error == "Maximum upload size exceeded") {
+      this.maxSizeError();
+    } else if (this.data?.editing) {
+      this.notificationService.popErrorToast('Post editing failed', error);
+    } else {
+      this.notificationService.popErrorToast('Post adding failed', error);
+    }
+  }
+
   submitForm() {
     if (this.forumPostForm.valid) {
       const newForumPost: ForumPost = {
         title: this.forumPostForm.get('title')?.value,
         content: this.forumPostForm.get('content')?.value,
         forum: this.forumPostForm.get('parentForum')?.value,
+      }
+
+      if (this.selectedImage && this.selectedImage.size > FileUploadOptions.MAX_FILE_SIZE) {
+        this.maxSizeError();
+        return;
       }
 
       const newForum: Forum = {
@@ -95,14 +113,14 @@ export class ForumPostFormDialogComponent {
         newForumPost.id = this.postId;
         this.forumPostService.editPost(newForumPost, this.selectedImage).subscribe({
           next: () => { this.notificationService.popSuccessToast('Post edited'); },
-          error: error => this.notificationService.popErrorToast('Post editing failed', error)
+          error: error => { this.checkError(error); }
         });
         return;
       }
 
       this.forumPostService.addPost(newForumPost, this.selectedImage).subscribe({
         next: () => { this.notificationService.popSuccessToast('Post added'); },
-        error: error => this.notificationService.popErrorToast('Post adding failed', error)
+        error: error => { this.checkError(error); }
       });
 
     } else {
@@ -112,6 +130,12 @@ export class ForumPostFormDialogComponent {
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
+
+    if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
+      this.maxSizeError();
+      return;
+    }
+
     if (file) {
       this.selectedImage = file;
       this.imageUrl = URL.createObjectURL(this.selectedImage);

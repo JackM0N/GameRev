@@ -14,6 +14,7 @@ import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationAction } from '../../../../enums/notificationActions';
+import { FileUploadOptions } from '../../../../enums/fileUploadOptions';
 
 @Component({
   selector: 'app-own-profile',
@@ -186,6 +187,10 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     event.stopPropagation();
   }
 
+  maxSizeError() {
+    this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
+  }
+
   onSubmitProfilePictureChange() {
     if (this.changeProfilePictureForm.valid && this.selectedImage) {
       const nickName = this.authService.getNickname();
@@ -193,6 +198,11 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
       if (!userName) {
         this.notificationService.popErrorToast('Profile picture change failed', "Username not found");
+        return;
+      }
+
+      if (this.selectedImage && this.selectedImage.size > FileUploadOptions.MAX_FILE_SIZE) {
+        this.maxSizeError();
         return;
       }
 
@@ -206,15 +216,28 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
             this.imageUrl = URL.createObjectURL(this.selectedImage);
           }
         },
-        error: error => this.notificationService.popErrorToast('Profile picture change failed', error)
+        error: error => {
+          if (error.error == "Maximum upload size exceeded") {
+            this.maxSizeError();
+          } else {
+            this.notificationService.popErrorToast('Profile picture change failed', error);
+          }
+        }
       });
     }
   }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
+
+    if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
+      this.maxSizeError();
+      return;
+    }
+
     if (file) {
       this.selectedImage = file;
+      this.imageUrl = URL.createObjectURL(file);
     }
   }
 
