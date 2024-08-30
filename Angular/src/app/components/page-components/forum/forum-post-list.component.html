@@ -4,7 +4,6 @@
   <table class="forum-posts-table w-full table-auto border-collapse">
     <thead>
       <tr class="bg-gray-200 text-left">
-        <!-- New Image Column -->
         <th class="p-4 border border-gray-300">Image</th>
         <th class="p-4 border border-gray-300">Post</th>
         <th class="p-4 border border-gray-300">Author</th>
@@ -17,7 +16,6 @@
 
     <tbody>
       <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
-        <!-- New Image Column Content -->
         <td class="p-4 border border-gray-300">
           <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
         </td>

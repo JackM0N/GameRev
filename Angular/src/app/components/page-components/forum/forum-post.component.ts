@@ -205,7 +205,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
                 }
               });
             }
-            console.log("Loaded profile picture for " + nickName);
             this.imageCacheService.cacheBlob("profilePic" + nickName, response2);
             this.imageCacheService.cacheProfilePicName("profilePicName" + nickName, pictureUrl);
           }
