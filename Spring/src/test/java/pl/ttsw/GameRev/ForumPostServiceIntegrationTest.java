@@ -140,20 +140,11 @@ public class ForumPostServiceIntegrationTest {
     @Test
     @Transactional
     @WithMockUser("testuser")
-    public void testDeleteForumPost_NoPermission() throws IOException {
-        ForumPostDTO forumPost = new ForumPostDTO();
-        forumPost.setForum(forumMapper.toDto(testForum));
-        forumPost.setTitle("New Post Title");
-        forumPost.setContent("New Post Content");
-        forumPost.setPostDate(LocalDateTime.now());
+    public void testDeleteForumPost_NoPermission() {
+        ForumPost forumPost = forumPostRepository.findById(2L).get();
+        assertNotNull(forumPost);
 
-        ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
-        WebsiteUser otherUser = websiteUserRepository.findByUsername("testcritic").get();
-        createdPost.setAuthor(simplifiedUserMapper.toSimplifiedDto(websiteUserMapper.toDto(otherUser)));
-        forumPostService.updateForumPost(createdPost.getId(), createdPost, null);
-
-        ForumPostDTO finalForumPost = createdPost;
-        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(finalForumPost.getId(), true));
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> forumPostService.deleteForumPost(forumPost.getId(), true));
         assertEquals("You dont have permission to perform this action", exception.getMessage());
     }
 }

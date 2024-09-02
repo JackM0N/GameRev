@@ -1,11 +1,11 @@
 package pl.ttsw.GameRev;
 
-import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +17,7 @@ import pl.ttsw.GameRev.dto.TagDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
+import pl.ttsw.GameRev.mapper.GameMapperImpl;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
@@ -45,8 +46,8 @@ class GameServiceTest {
     @Mock
     private MultipartFile picture;
 
-    @Mock
-    private GameMapper gameMapper;
+    @Spy
+    private GameMapper gameMapper = new GameMapperImpl();
 
     @InjectMocks
     private GameService gameService;
@@ -82,7 +83,6 @@ class GameServiceTest {
         GameFilter gameFilter = new GameFilter();
 
         when(gameRepository.findAll(spec, pageable)).thenReturn(gamesPage);
-        when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
         Page<GameDTO> result = gameService.getAllGames(gameFilter, pageable);
 
@@ -109,7 +109,6 @@ class GameServiceTest {
 
         when(tagRepository.findById(1L)).thenReturn(Optional.of(game.getTags().get(0)));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
-        when(gameMapper.toDto(any(Game.class))).thenReturn(gameDTO);
         when(picture.isEmpty()).thenReturn(true);
 
         GameDTO result = gameService.createGame(gameDTO, picture);
@@ -120,12 +119,10 @@ class GameServiceTest {
     }
 
     @Test
-    public void testGetGameByTitle() throws BadRequestException {
+    public void testGetGameByTitle() {
         Game game = createGameForTesting();
-        GameDTO gameDTO = new GameDTO();
 
         when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(Optional.of(game));
-        when(gameMapper.toDto(game)).thenReturn(gameDTO);
 
         GameDTO result = gameService.getGameByTitle("Limbus Company");
 
@@ -142,7 +139,6 @@ class GameServiceTest {
 
         when(gameRepository.findGameByTitle("Limbus Company")).thenReturn(Optional.of(game));
         when(gameRepository.save(game)).thenReturn(game);
-        when(gameMapper.toDto(game)).thenReturn(gameDTO);
         when(picture.isEmpty()).thenReturn(true);
 
         GameDTO result = gameService.updateGame("Limbus Company", gameDTO, picture);
