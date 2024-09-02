@@ -1,7 +1,13 @@
 
 <!-- Forum Posts Table -->
 <div class="forum-posts">
-  <h2 class="text-xl font-bold mb-4">Posts</h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold">Posts</h2>
+    <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
+      You are a moderator of this forum
+    </p>
+  </div>
+  
   <table class="forum-posts-table w-full table-auto border-collapse">
     <thead>
       <tr class="bg-gray-200 text-left">
