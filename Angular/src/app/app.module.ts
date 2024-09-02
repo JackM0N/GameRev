@@ -68,7 +68,8 @@ import { ForumCommentEditDialogComponent } from './components/page-components/fo
 import { ForumFormDialogComponent } from './components/page-components/forum/forum-form-dialog.component';
 import { ForumPostFormDialogComponent } from './components/page-components/forum/forum-post-form-dialog.component';
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         LoginComponent,
         RegistrationComponent,
@@ -102,7 +103,9 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
         ForumFormDialogComponent,
         ForumPostFormDialogComponent
     ],
-    bootstrap: [AppComponent],
+    bootstrap: [
+        AppComponent
+    ],
     imports: [
         BrowserModule,
         AppRoutingModule,
@@ -133,8 +136,9 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
             }
         }),
         BrowserAnimationsModule,
-        ToasterModule.forRoot()], providers: [
-        provideClientHydration(),
+        ToasterModule.forRoot()
+    ],
+    providers: [
         provideAnimationsAsync(),
         AuthService,
         ToasterService,
@@ -152,5 +156,6 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         DatePipe,
         provideHttpClient(withInterceptorsFromDi())
-    ] })
+    ]
+})
 export class AppModule { }
