@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
+import pl.ttsw.GameRev.mapper.ForumPostMapperImpl;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.Role;
@@ -45,9 +47,6 @@ public class ForumPostServiceTest {
     private ForumRepository forumRepository;
 
     @Mock
-    private ForumPostMapper forumPostMapper;
-
-    @Mock
     private RoleRepository roleRepository;
 
     @Mock
@@ -58,6 +57,9 @@ public class ForumPostServiceTest {
 
     @InjectMocks
     private ForumPostService forumPostService;
+
+    @Spy
+    private ForumPostMapper forumPostMapper = new ForumPostMapperImpl();
 
     private Pageable pageable = PageRequest.of(0, 10);
 
@@ -78,7 +80,6 @@ public class ForumPostServiceTest {
 
         when(forumRepository.findById(forumId)).thenReturn(Optional.of(forum));
         when(forumPostRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(forumPost)));
-        when(forumPostMapper.toDto(any())).thenReturn(new ForumPostDTO());
 
         Page<ForumPostDTO> result = forumPostService.getForumPosts(forumId, forumPostFilter, pageable);
 
@@ -114,7 +115,6 @@ public class ForumPostServiceTest {
         when(forumRepository.findById(forumId)).thenReturn(Optional.of(forum));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
         when(forumPostRepository.save(any(ForumPost.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(forumPostMapper.toDto(any())).thenReturn(forumPostDTO);
 
         ForumPostDTO result = forumPostService.createForumPost(forumPostDTO, null);
 
@@ -158,7 +158,6 @@ public class ForumPostServiceTest {
         when(forumRepository.findById(forumId)).thenReturn(Optional.of(forum));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
         when(forumPostRepository.save(any(ForumPost.class))).thenReturn(forumPost);
-        when(forumPostMapper.toDto(any())).thenReturn(forumPostDTO);
 
         ForumPostDTO result = forumPostService.updateForumPost(postId, forumPostDTO, null);
 

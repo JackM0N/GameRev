@@ -23,6 +23,8 @@ import pl.ttsw.GameRev.service.ForumCommentService;
 import pl.ttsw.GameRev.service.ForumPostService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
@@ -64,12 +66,12 @@ public class ForumCommentServiceIntegrationTest {
     @Test
     @Transactional
     @WithMockUser("testuser")
-    public void testCreateForumComment_Success() {
+    public void testCreateForumComment_Success() throws IOException {
         ForumCommentDTO commentDTO = new ForumCommentDTO();
         commentDTO.setForumPostId(post.getId());
         commentDTO.setContent("Finally");
 
-        ForumCommentDTO savedCommentDTO = forumCommentService.createForumComment(commentDTO);
+        ForumCommentDTO savedCommentDTO = forumCommentService.createForumComment(commentDTO, null);
 
         assertNotNull(savedCommentDTO.getId());
         assertEquals("Finally", savedCommentDTO.getContent());
@@ -87,19 +89,19 @@ public class ForumCommentServiceIntegrationTest {
         commentDTO.setForumPostId(post.getId());
         commentDTO.setContent("Finally");
 
-        assertThrows(BadCredentialsException.class, () -> forumCommentService.createForumComment(commentDTO));
+        assertThrows(BadCredentialsException.class, () -> forumCommentService.createForumComment(commentDTO, null));
     }
 
     @Test
     @Transactional
     @WithMockUser("gamer_guy")
-    public void testUpdateForumComment_Success() {
+    public void testUpdateForumComment_Success() throws IOException {
         ForumComment comment = forumCommentRepository.findById(1L).orElse(null);
         assertNotNull(comment);
         comment.setContent("Edited");
         ForumCommentDTO forumCommentDTO = forumCommentMapper.toDto(comment);
 
-        ForumCommentDTO resultDTO = forumCommentService.updateForumComment(comment.getId(), forumCommentDTO);
+        ForumCommentDTO resultDTO = forumCommentService.updateForumComment(comment.getId(), forumCommentDTO, null);
         assertEquals("Edited", resultDTO.getContent());
 
         ForumComment updatedComment = forumCommentRepository.findById(comment.getId()).orElse(null);
@@ -116,7 +118,7 @@ public class ForumCommentServiceIntegrationTest {
         comment.setContent("Edited");
         ForumCommentDTO forumCommentDTO = forumCommentMapper.toDto(comment);
 
-        assertThrows(BadCredentialsException.class, () -> forumCommentService.updateForumComment(comment.getId(), forumCommentDTO));
+        assertThrows(BadCredentialsException.class, () -> forumCommentService.updateForumComment(comment.getId(), forumCommentDTO, null));
     }
 
     @Test
