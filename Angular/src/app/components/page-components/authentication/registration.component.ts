@@ -5,9 +5,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
-import { Router } from '@angular/router';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-registration',
@@ -26,7 +26,6 @@ export class RegistrationComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private router: Router,
     private backgroundService: BackgroundService
   ) {
     this.registrationForm = this.formBuilder.group({
@@ -68,8 +67,7 @@ export class RegistrationComponent {
 
       this.authService.registerUser(userData).subscribe({
         next: () => {
-          this.router.navigate(['/']);
-          this.notificationService.popSuccessToast('Registration successful', false);
+          this.notificationService.popSuccessToast('Registration successful', NotificationAction.GO_TO_HOME);
         },
         error: error => this.notificationService.popErrorToast('Registration failed', error)
       });

@@ -1,0 +1,86 @@
+<div>
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
+    <ng-container *ngFor="let segment of path; let i = index">
+      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-blue-500 cursor-pointer font-bold">
+        {{ segment.forumName }}
+      </a>
+      <span *ngIf="i < path.length - 1"> &gt; </span>
+      <span *ngIf="i === path.length - 1" class="font-bold">{{ segment.forumName }}</span>
+    </ng-container>
+  </nav>
+
+  <!-- Forum Header -->
+  <header class="forum-header text-center mb-8" *ngIf="currentForum">
+    <h1 class="text-2xl font-bold">{{ currentForum.forumName }}</h1>
+    <p class="text-base text-gray-700">{{ currentForum.description }}</p>
+  </header>
+
+  <!-- Forum Table -->
+  <div *ngIf="currentForum" [hidden]="noSubForums" class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-xl font-bold mb-4">Subforums</h2>
+    <table class="forum-table w-full border-collapse table-auto">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="p-4 border border-gray-300 text-left font-bold">Subforum</th>
+          <th class="p-4 border border-gray-300 text-left font-bold">Posts</th>
+          <th class="p-4 border border-gray-300 text-left font-bold">Last Post</th>
+          <th class="p-4 border border-gray-300 text-left font-bold" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Subforum Rows -->
+        <tr *ngFor="let subforum of subForumList" class="hover:bg-gray-100">
+          <td class="p-4 border border-gray-300">
+            <a (click)="navigateToSubforum(subforum.id)" class="text-blue-500 cursor-pointer font-semibold">
+              {{ subforum.forumName }}
+            </a>
+            <p class="text-gray-700">{{ subforum.description }}</p>
+          </td>
+          <td class="p-4 border border-gray-300">{{ subforum.postCount }} Post(s)</td>
+          <td *ngIf="subforum.lastPost" class="p-4 border border-gray-300">
+            <p class="text-gray-700">Last post by {{ subforum.lastPost.nickname }}</p>
+            <p>
+              in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-blue-500 cursor-pointer"><b>{{ subforum.lastPost.title }}</b></a>
+            </p>
+            <p class="text-gray-600">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
+          </td>
+          <td *ngIf="!subforum.lastPost" class="p-4 border border-gray-300">
+            <p class="text-gray-500">No interactions yet</p>
+          </td>
+
+          <!-- Actions column with edit button -->
+          <td class="p-4 border border-gray-300" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+            <button mat-icon-button (click)="openEditSubforumDialog(subforum)">
+              <mat-icon>edit</mat-icon>
+            </button>
+    
+            <button mat-icon-button (click)="openDeleteSubforumDialog(subforum)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Add new subforum -->
+  <div class="mt-4" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+    <button mat-raised-button color="primary" (click)="openAddSubforumDialog()">Add Subforum</button>
+  </div>
+
+  <!-- Paginator for Forums -->
+  <div [hidden]="totalSubforums < 5">
+    <mat-paginator
+      #paginator
+      [length]="totalSubforums"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
+  <!-- Forum Posts Table -->
+  <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
+</div>

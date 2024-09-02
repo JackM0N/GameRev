@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserReview } from '../interfaces/userReview';
 import { reviewFilters } from '../interfaces/reviewFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class UserReviewService {
   private adminReviews = 'http://localhost:8080/users-reviews/admin/';
 
   constructor(
+    private authService: AuthService,
     private http: HttpClient,
     public jwtHelper: JwtHelperService
   ) {}
@@ -25,25 +27,33 @@ export class UserReviewService {
     return this.http.get<UserReview[]>(this.baseUrl);
   }
 
-  getOwnUserReviews(token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
     return this.http.get<UserReview[]>(this.ownReviews, { headers, params });
   }
 
-  getUserReviewsAdmin(userId: number, token: string, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     const params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
-      .set('sort', sortBy + ',' + sortDir);
+      .set('sort', sortBy + ',' + sortDir
+    );
     return this.http.get<UserReview[]>(`${this.adminReviews}/${userId}`, { headers, params });
   }
 
@@ -51,7 +61,9 @@ export class UserReviewService {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string, token: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+  getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -72,24 +84,33 @@ export class UserReviewService {
     return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers, params });
   }
 
-  addUserReview(userReview: UserReview, token: string): Observable<UserReview> {
+  addUserReview(userReview: UserReview): Observable<UserReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.post<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
-  editUserReview(userReview: UserReview, token: string): Observable<UserReview> {
+  editUserReview(userReview: UserReview): Observable<UserReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.put<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
-  deleteUserReview(userReview: UserReview, token: string): Observable<UserReview> {
+  deleteUserReview(userReview: UserReview): Observable<UserReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     const options = {
       headers: headers,
       body: userReview
@@ -97,10 +118,13 @@ export class UserReviewService {
     return this.http.delete<UserReview>(this.baseUrl, options);
   }
 
-  updateUserReviewRating(userReview: UserReview, token: string): Observable<UserReview> {
+  updateUserReviewRating(userReview: UserReview): Observable<UserReview> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
   }
 }

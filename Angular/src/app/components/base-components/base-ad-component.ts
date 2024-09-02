@@ -1,4 +1,4 @@
-﻿import { OnInit, AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+﻿import { AfterViewInit, ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
 import { BackgroundService } from '../../services/background.service';
 import { AdService } from '../../services/ad.service';
 
@@ -12,21 +12,29 @@ export abstract class BaseAdComponent implements AfterViewInit {
     protected _cdRef: ChangeDetectorRef
   ) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this._adService.setAdVisible(true);
 
     this._adService.adBoxActive$.subscribe(isActive => {
-      if (isActive) {
-        this._backgroundService.setMainContentStyle({ 'padding-left': '220px' });
-      } else {
-        this._backgroundService.setMainContentStyle({ 'padding-left': '0px' });
-      }
+      this.adjustMargin(isActive);
     });
 
     this._cdRef.detectChanges();
   }
 
+  public adjustMargin(isActive: boolean): void {
+    if (isActive) {
+      this._backgroundService.setMainContentStyle({ 'margin-left': '220px' });
+    } else {
+      this._backgroundService.setMainContentStyle({ 'margin-left': '0px' });
+    }
+
+    this._cdRef.detectChanges();
+  }
+
+  ngAfterViewInit(): void {
+  }
+
   ngOnDestroy(): void {
-    this._adService.setAdVisible(false);
   }
 }

@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rx
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { AuthService } from '../../../services/auth.service';
-import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { BackgroundService } from '../../../services/background.service';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
@@ -32,7 +32,6 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   public releaseStatuses = releaseStatuses;
   public tagList: Tag[] = [];
-
   private filters: gameFilters = {};
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -53,7 +52,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
     this.loadTags();
   }

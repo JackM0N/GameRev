@@ -4,7 +4,7 @@ import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { ImageCacheService } from '../../../services/imageCache.service';
 
 @Component({
@@ -18,7 +18,7 @@ import { ImageCacheService } from '../../../services/imageCache.service';
 export class ProfileComponent implements OnInit {
   selectedImage: File | null = null;
   imageUrl: string = '';
-  formatDate = formatDate;
+  formatDate = formatDateArray;
 
   user: WebsiteUser = {
     nickname: '',
@@ -41,10 +41,9 @@ export class ProfileComponent implements OnInit {
         const observer: Observer<WebsiteUser> = {
           next: response => {
             this.user = response;
-            const token = this.authService.getToken();
 
-            if (response.profilepic && response.nickname && token) {
-              const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
+            if (response.profilepic && response.nickname) {
+              const didProfilePicChange = this.imageCacheService.didPictureNameChange("profilePicName" + response.nickname, response.profilepic);
 
               if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
                 const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);
@@ -65,7 +64,7 @@ export class ProfileComponent implements OnInit {
                   },
                   complete: () => {}
                 };
-                this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+                this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
               }
             }
           },

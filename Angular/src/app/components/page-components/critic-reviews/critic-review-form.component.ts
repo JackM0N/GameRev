@@ -6,8 +6,8 @@ import { AuthService } from '../../../services/auth.service';
 import { Location } from '@angular/common';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
-import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-critic-review-form',
@@ -40,7 +40,6 @@ export class CriticReviewFormComponent implements OnInit {
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private _location: Location,
-    private backgroundService: BackgroundService,
   ) {
     this.criticReviewForm = this.formBuilder.group({
       content: [this.criticReview.content, [Validators.required, Validators.minLength(10)]],
@@ -57,34 +56,27 @@ export class CriticReviewFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.backgroundService.setMainContentStyle({'padding-left': '200px'});
-
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.criticReview.gameTitle = params['name'];
       }
 
       if (params["id"] && this.isEditRoute) {
-        const token = this.authService.getToken();
+        const observer: Observer<any> = {
+          next: response => {
+            if (response) {
+              this.criticReview = response;
 
-        if (token) {
-          const observer: Observer<any> = {
-            next: response => {
-              if (response) {
-                this.criticReview = response;
-
-                this.criticReviewForm.setValue({
-                  content: response.content,
-                  score: response.score
-                });
-              }
-            },
-            error: error => {
-            },
-            complete: () => {}
-          };
-          this.criticReviewService.getCriticReviewById(params['id'], token).subscribe(observer);
-        }
+              this.criticReviewForm.setValue({
+                content: response.content,
+                score: response.score
+              });
+            }
+          },
+          error: () => {},
+          complete: () => {}
+        };
+        this.criticReviewService.getCriticReviewById(params['id']).subscribe(observer);
       }
     });
   }
@@ -96,23 +88,16 @@ export class CriticReviewFormComponent implements OnInit {
         ...this.criticReviewForm.value
       };
 
-      const token = this.authService.getToken();
-
-      if (token === null) {
-        console.log("Token is null");
-        return;
-      }
-
       if (this.isEditRoute) {
-        this.criticReviewService.editCriticReview(reviewData, token).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited review successfuly', true); },
+        this.criticReviewService.editCriticReview(reviewData).subscribe({
+          next: () => { this.notificationService.popSuccessToast('Edited review successfuly', NotificationAction.GO_BACK); },
           error: error => this.notificationService.popErrorToast('Editing review failed', error)
         });
         return;
       }
 
-      this.criticReviewService.addCriticReview(reviewData, token).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Added review successfuly', true); },
+      this.criticReviewService.addCriticReview(reviewData).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Added review successfuly', NotificationAction.GO_BACK); },
         error: error => this.notificationService.popErrorToast('Adding review failed', error)
       });
     }

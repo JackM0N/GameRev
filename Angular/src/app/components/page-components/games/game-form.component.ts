@@ -7,8 +7,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../services/game.service';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
-import { releaseStatuses } from '../../../interfaces/releaseStatuses';
+import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { NotificationService } from '../../../services/notification.service';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-game-form',
@@ -118,14 +119,14 @@ export class GameFormComponent implements OnInit {
 
       if (this.isEditRoute) {
         this.gameService.editGame(this.gameTitle, gameData).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited game successfuly', true); },
+          next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
           error: error => this.notificationService.popErrorToast('Editing game failed', error)
         });
         return;
       }
 
       this.gameService.addGame(gameData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Added game successfuly', true); },
+        next: () => { this.notificationService.popSuccessToast('Added game successfuly', NotificationAction.GO_BACK); },
         error: error => this.notificationService.popErrorToast('Adding game failed', error)
       });
     }

@@ -58,7 +58,7 @@ public class ForumCommentService {
                 .orElseThrow(() -> new RuntimeException("Forum post not found")));
 
         forumComment.setAuthor(websiteUserService.getCurrentUser());
-
+        forumComment.setIsDeleted(false);
         forumComment = forumCommentRepository.save(forumComment);
 
         Path filepath = null;

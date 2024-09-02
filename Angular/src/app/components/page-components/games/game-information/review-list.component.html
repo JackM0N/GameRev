@@ -21,7 +21,7 @@
 <h3>Reviews</h3>
 <div class="review-container">
   <div class="review-item" *ngFor="let review of reviewList">
-    <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDate(review.postDate) }}</p>
+    <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDateArray(review.postDate) }}</p>
     <p>{{ review.content }}</p>
     <p>Likes: {{ review.positiveRating }}</p>
     <p>Dislikes: {{ review.negativeRating }}</p>
@@ -39,12 +39,14 @@
   </div>
 </div>
 
-<mat-paginator
-  [length]="totalReviews"
-  [pageSize]="5"
-  [pageSizeOptions]="[2, 5, 10, 20]"
-  showFirstLastButtons>
-</mat-paginator>
+<div [hidden]="totalReviews < 5">
+  <mat-paginator
+    [length]="totalReviews"
+    [pageSize]="5"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>
 
 <button
   id="gotoreview-button"

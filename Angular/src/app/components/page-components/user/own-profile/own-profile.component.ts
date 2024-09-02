@@ -13,6 +13,8 @@ import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-
 import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { NotificationService } from '../../../../services/notification.service';
+import { NotificationAction } from '../../../../enums/notificationActions';
+import { FileUploadOptions } from '../../../../enums/fileUploadOptions';
 
 @Component({
   selector: 'app-own-profile',
@@ -57,15 +59,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.backgroundService.setClasses(['matrixNumbers']);
-
-    const token = this.authService.getToken();
-  
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
 
     const observer: Observer<any> = {
       next: response => {
@@ -74,7 +69,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
           this.changeProfileInformationForm.get('description')?.setValue(response.description);
           this.email = response.email;
 
-          const didProfilePicChange = this.imageCacheService.didProfilePicNameChange("profilePicName" + response.nickname, response.profilepic);
+          const didProfilePicChange = this.imageCacheService.didPictureNameChange("profilePicName" + response.nickname, response.profilepic);
 
           if (!didProfilePicChange && this.imageCacheService.isCached("profilePic" + response.nickname)) {
             const cachedImage = this.imageCacheService.getCachedImage("profilePic" + response.nickname);
@@ -96,7 +91,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
               },
               complete: () => {}
             };
-            this.userService.getProfilePicture(response.nickname, token).subscribe(observerProfilePicture);
+            this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
           }
         }
       },
@@ -105,7 +100,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       },
       complete: () => {}
     };
-    this.authService.getUserProfileInformation(token).subscribe(observer);
+    this.authService.getUserProfileInformation().subscribe(observer);
   }
 
   openLogoutDialog() {
@@ -128,8 +123,7 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/']);
-    this.notificationService.popSuccessToast('Successfully logged out', false);
+    this.notificationService.popSuccessToast('Successfully logged out', NotificationAction.GO_TO_HOME);
   }
 
   openAccountDeletionDialog() {
@@ -144,9 +138,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   deleteAccount(dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>) {
     const userName = this.authService.getUsername();
-    const token = this.authService.getToken();
   
-    if (!userName || !token || !dialogRef || !dialogRef.componentRef) {
+    if (!userName || !dialogRef || !dialogRef.componentRef) {
       this.notificationService.popErrorToast('Account deletion failed');
       return;
     }
@@ -157,11 +150,10 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
       currentPassword: dialogRef.componentRef.instance.deleteAccountForm.get('currentPassword')?.value,
     };
 
-    this.authService.deleteOwnAccount(userData, token).subscribe({
+    this.authService.deleteOwnAccount(userData).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Account deleted successfuly!', false);
+        this.notificationService.popSuccessToast('Account deleted successfuly!', NotificationAction.GO_TO_HOME);
         this.authService.logout();
-        this.router.navigate(['/']);
       },
       error: error => this.notificationService.popErrorToast('Account deletion failed', error)
     });
@@ -170,10 +162,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
   onSubmitProfileInformationChange() {
     if (this.changeProfileInformationForm.valid) {
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Profile picture change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Profile picture change failed', "Username not found");
         return;
       }
 
@@ -184,8 +175,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
         description: this.changeProfileInformationForm.get('description')?.value,
       };
 
-      this.authService.changeProfile(newData, token).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Profile information change successful!', false); },
+      this.authService.changeProfile(newData).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Profile information change successful!'); },
         error: error => this.notificationService.popErrorToast('Profile information change failed', error)
       });
     }
@@ -196,33 +187,57 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     event.stopPropagation();
   }
 
+  maxSizeError() {
+    this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
+  }
+
   onSubmitProfilePictureChange() {
     if (this.changeProfilePictureForm.valid && this.selectedImage) {
       const nickName = this.authService.getNickname();
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Profile picture change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Profile picture change failed', "Username not found");
         return;
       }
 
-      this.authService.changeProfilePicture(userName, this.selectedImage, token).subscribe({
+      if (this.selectedImage && this.selectedImage.size > FileUploadOptions.MAX_FILE_SIZE) {
+        this.maxSizeError();
+        return;
+      }
+
+      this.authService.changeProfilePicture(userName, this.selectedImage).subscribe({
         next: () => {
-          this.notificationService.popSuccessToast('Profile picture change successful!', false);
+          this.notificationService.popSuccessToast('Profile picture change successful!');
           if (nickName) {
             this.imageCacheService.deleteCachedImage("profilePic" + nickName);
           }
+          if (this.selectedImage) {
+            this.imageUrl = URL.createObjectURL(this.selectedImage);
+          }
         },
-        error: error => this.notificationService.popErrorToast('Profile picture change failed', error)
+        error: error => {
+          if (error.error == "Maximum upload size exceeded") {
+            this.maxSizeError();
+          } else {
+            this.notificationService.popErrorToast('Profile picture change failed', error);
+          }
+        }
       });
     }
   }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
+
+    if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
+      this.maxSizeError();
+      return;
+    }
+
     if (file) {
       this.selectedImage = file;
+      this.imageUrl = URL.createObjectURL(file);
     }
   }
 

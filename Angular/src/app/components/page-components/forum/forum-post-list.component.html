@@ -1,0 +1,64 @@
+<!-- Forum Posts Table -->
+<div class="forum-posts">
+  <h2 class="text-xl font-bold mb-4">Posts</h2>
+  <table class="forum-posts-table w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-gray-200 text-left">
+        <th class="p-4 border border-gray-300">Image</th>
+        <th class="p-4 border border-gray-300">Post</th>
+        <th class="p-4 border border-gray-300">Author</th>
+        <th class="p-4 border border-gray-300">Post date</th>
+        <th class="p-4 border border-gray-300">Replies</th>
+        <th class="p-4 border border-gray-300">Last reply</th>
+        <th class="p-4 border border-gray-300" *ngIf="canManageAnyPost()">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
+        <td class="p-4 border border-gray-300">
+          <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
+        </td>
+
+        <td class="p-4 border border-gray-300">
+          <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
+            {{ post.title }}
+          </a>
+        </td>
+        <td class="p-4 border border-gray-300">{{ post.author?.nickname }}</td>
+        <td class="p-4 border border-gray-300">{{ formatDateTimeArray(post.postDate) }}</td>
+        <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
+        <td class="p-4 border border-gray-300">
+          {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
+        </td>
+        <td class="p-4 border border-gray-300" *ngIf="canManagePost(post) || isModerator()">
+          <button mat-icon-button (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openDeletePostDialog(post)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="totalPosts == 0">
+        <td class="p-4 border border-gray-300 text-center" colspan="7">No posts yet</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add new post -->
+<div class="mt-4">
+  <button mat-raised-button color="primary" (click)="openNewPostDialog()">Add new post</button>
+</div>
+
+<!-- Paginator -->
+<div [hidden]="totalPosts < 5">
+  <mat-paginator
+    #paginator
+    [length]="totalPosts"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

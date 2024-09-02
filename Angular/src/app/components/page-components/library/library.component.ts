@@ -14,7 +14,7 @@ import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
-import { completionStatuses } from '../../../interfaces/completionStatuses';
+import { completionStatuses } from '../../../enums/completionStatuses';
 import { MatSelectChange } from '@angular/material/select';
 import { libraryFilters } from '../../../interfaces/libraryFilters';
 import { Tag } from '../../../interfaces/tag';
@@ -133,15 +133,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   editUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.updateUserGame(userGame, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Game updated successfully', false); },
+    this.libraryService.updateUserGame(userGame).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Game updated successfully'); },
       error: error => this.notificationService.popErrorToast('Game updating failed', error)
     });
   }
@@ -178,14 +171,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   addUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.addUserGame(userGame, token).subscribe({
+    this.libraryService.addUserGame(userGame).subscribe({
       next: () => {
         this.gamesList.push(userGame);
 
@@ -193,7 +179,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
         this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
 
-        this.notificationService.popSuccessToast('Game added successfully', false);
+        this.notificationService.popSuccessToast('Game added successfully');
 
         this.loadGames();
       },
@@ -220,13 +206,6 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   deleteGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     if (!userGame || !userGame.id) {
       console.log('Game ID is not valid.');
       return;
@@ -243,7 +222,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.libraryService.deleteUserGame(userGame.id, token).subscribe(observer);
+    this.libraryService.deleteUserGame(userGame.id).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

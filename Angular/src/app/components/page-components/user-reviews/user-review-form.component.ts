@@ -6,6 +6,7 @@ import { UserReviewService } from '../../../services/user-review.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Location } from '@angular/common';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-user-review-form',
@@ -73,23 +74,16 @@ export class UserReviewFormComponent implements OnInit {
         ...this.userReviewForm.value
       };
 
-      const token = this.authService.getToken();
-
-      if (token === null) {
-        console.log("Token is null");
-        return;
-      }
-
       if (this.isEditRoute) {
-        this.userReviewService.editUserReview(reviewData, token).subscribe({
-          next: () => this.notificationService.popSuccessToast('Edited review successfully', true),
+        this.userReviewService.editUserReview(reviewData).subscribe({
+          next: () => this.notificationService.popSuccessToast('Edited review successfully', NotificationAction.GO_BACK),
           error: error => this.notificationService.popErrorToast('Editing review failed', error)
         });
         return;
       }
 
-      this.userReviewService.addUserReview(reviewData, token).subscribe({
-        next: () => this.notificationService.popSuccessToast('Added review successfully', true),
+      this.userReviewService.addUserReview(reviewData).subscribe({
+        next: () => this.notificationService.popSuccessToast('Added review successfully', NotificationAction.GO_BACK),
         error: error => this.notificationService.popErrorToast('Adding review failed', error)
       });
     }
