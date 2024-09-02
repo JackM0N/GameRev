@@ -72,12 +72,9 @@ export class UserService {
   }
 
   getProfilePicture(nickname: string): Observable<Blob> {
-    const token = this.authService.getToken();
-
     const url = `${this.profileUrl}/${nickname}/profile-picture`;
 
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
 
