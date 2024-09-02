@@ -1,3 +1,4 @@
+
 <!-- Forum Posts Table -->
 <div class="forum-posts">
   <h2 class="text-xl font-bold mb-4">Posts</h2>
@@ -10,7 +11,7 @@
         <th class="p-4 border border-gray-300">Post date</th>
         <th class="p-4 border border-gray-300">Replies</th>
         <th class="p-4 border border-gray-300">Last reply</th>
-        <th class="p-4 border border-gray-300" *ngIf="canManageAnyPost()">Actions</th>
+        <th class="p-4 border border-gray-300" *ngIf="canManageAnyPost() || isModerator()">Actions</th>
       </tr>
     </thead>
 
