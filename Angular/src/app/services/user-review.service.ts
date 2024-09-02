@@ -62,12 +62,6 @@ export class UserReviewService {
   }
 
   getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
-    const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
     var params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
@@ -81,7 +75,7 @@ export class UserReviewService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { headers, params });
+    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { params });
   }
 
   addUserReview(userReview: UserReview): Observable<UserReview> {
