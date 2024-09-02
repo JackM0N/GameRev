@@ -23,6 +23,7 @@ public class ForumPostDTO implements Serializable {
     String picture;
     LocalDateTime lastResponseDate;
     Integer commentCount;
+    Long views;
     Boolean isDeleted;
     LocalDateTime deletedAt;
 
