@@ -95,7 +95,10 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
         if (response) {
           this.path = response;
           this.path = this.path.reverse();
-          this.path.push({ id: this.post?.id, forumName: this.post?.title });
+          
+          if (this.post) {
+            this.path.push({ id: this.post.id, forumName: this.post.title });
+          }
         }
       },
       error: (error: any) => console.error(error)
@@ -111,6 +114,11 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
           this.post = response;
           this.loadPostPicture(response.id, response.picture);
           this.loadUserProfilePicture(response.author.nickname, response.author.profilepic);
+
+          // Potential fix for the issue where the path is not properly loaded when the component is initialized
+          if (this.route.snapshot.params['forumid']) {
+            this.loadPath(this.route.snapshot.params['forumid']);
+          }
         }
       },
       error: (error: any) => console.error(error)

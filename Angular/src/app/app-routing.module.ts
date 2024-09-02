@@ -36,7 +36,7 @@ const routes: Routes = [
   { path: 'user-reviews/:name', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
   { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
-  { path: 'library', component: LibraryComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'library', component: LibraryComponent, canActivate: [AuthGuard]},
   { path: 'critic-reviews/add/:name', component: CriticReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'critic-reviews/edit/:id', component: CriticReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'critic-reviews', component: CriticReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
