@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CompletionStatus } from '../../../interfaces/completionStatus';
 import { UserGame } from '../../../interfaces/userGame';
-import { completionStatuses } from '../../../interfaces/completionStatuses';
+import { completionStatuses } from '../../../enums/completionStatuses';
 
 @Component({
   selector: 'app-library-edit-dialog',

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
 import { gameFilters } from '../interfaces/gameFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,16 @@ import { gameFilters } from '../interfaces/gameFilters';
 // Service for handling games
 export class GameService {
   private baseUrl = 'http://localhost:8080/games';
+  private addUrl = 'http://localhost:8080/games/create';
+  private editUrl = 'http://localhost:8080/games/edit';
+  private deleteUrl = 'http://localhost:8080/games/delete';
 
   constructor(
+    private authService: AuthService,
     private http: HttpClient,
   ) {}
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game> {
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game[]> {
     var params = new HttpParams();
 
     if (page) {
@@ -45,7 +50,7 @@ export class GameService {
       }
     }
 
-    return this.http.get<Game>(this.baseUrl, { params });
+    return this.http.get<Game[]>(this.baseUrl, { params });
   }
 
   getGameByName(name: string): Observable<Game> {
@@ -53,14 +58,32 @@ export class GameService {
   }
 
   addGame(game: Game): Observable<Game> {
-    return this.http.post<Game>(this.baseUrl, game);
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<Game>(this.addUrl, game, { headers });
   }
 
   editGame(title: string, game: Game): Observable<Game> {
-    return this.http.put<Game>(`${this.baseUrl}/${title}`, game);
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.put<Game>(`${this.editUrl}/${title}`, game, { headers });
   }
 
   deleteGame(id: number): Observable<Game> {
-    return this.http.delete<Game>(`${this.baseUrl}/${id}`);
+    const token = this.authService.getToken();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
   }
 }

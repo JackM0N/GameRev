@@ -5,10 +5,10 @@ import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rx
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
-import { reviewStatuses } from '../../../interfaces/reviewStatuses';
+import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
@@ -27,7 +27,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
   public totalReviews: number = 0;
   public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
   public reviewStatuses = reviewStatuses;
   public noCriticReviews = false;
 
@@ -64,13 +64,6 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -92,7 +85,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.criticReviewService.getAllReviews(token, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -104,17 +97,10 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   approveReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null) {
-      console.log("Token is null");
-      return;
-    }
-
     review.reviewStatus = 'APPROVED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review approved', false); },
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review approved'); },
       error: error => this.notificationService.popErrorToast('Approving failed', error)
     });
   }
@@ -141,31 +127,22 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   softDeleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
-      return;
-    }
-
     review.reviewStatus = 'DELETED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
 
   deleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
+    if (review.id == null) {
+      console.log("Review is null");
       return;
     }
 
-    this.criticReviewService.deleteReview(review.id, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+    this.criticReviewService.deleteReview(review.id).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
@@ -175,7 +152,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       return true;
     }
 
-    return review.user && this.authService.hasRole('Critic') && review.user.username === this.authService.getUsername();
+    return review.user && this.authService.hasRole('Critic') && review.user.nickname === this.authService.getNickname();
   }
 
   findReviewStatusName(review: CriticReview) {

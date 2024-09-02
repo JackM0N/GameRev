@@ -3,7 +3,7 @@
   <h3 *ngIf="this.criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
 
   <div class="review-item">
-    <p>Date: {{ formatDate(this.criticReview.postDate) }}</p>
+    <p>Date: {{ formatDateArray(this.criticReview.postDate) }}</p>
     <p>Score: {{ this.criticReview.score }}</p>
     <p [innerHTML]="this.criticReview.content"></p>
   </div>
@@ -16,4 +16,3 @@
   
   <button id="gotoreview-button" type="button" mat-stroked-button (click)="routeToAddNewCriticReview()">Add critic review</button>
 </div>
-

@@ -59,8 +59,17 @@ import { NotificationService } from './services/notification.service';
 import { EmailChangeComponent } from './components/page-components/user/own-profile/email-change.component';
 import { PasswordChangeComponent } from './components/page-components/user/own-profile/password-change-component';
 import { MatSliderModule } from '@angular/material/slider';
+import { ForumComponent } from './components/page-components/forum/forum.component';
+import { ForumService } from './services/forum.service';
+import { ForumPostService } from './services/forumPost.service';
+import { ForumPostListComponent } from './components/page-components/forum/forum-post-list.component';
+import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
+import { ForumCommentEditDialogComponent } from './components/page-components/forum/forum-comment-edit-dialog.component';
+import { ForumFormDialogComponent } from './components/page-components/forum/forum-form-dialog.component';
+import { ForumPostFormDialogComponent } from './components/page-components/forum/forum-post-form-dialog.component';
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         LoginComponent,
         RegistrationComponent,
@@ -86,9 +95,17 @@ import { MatSliderModule } from '@angular/material/slider';
         GameInfoCriticReviewComponent,
         GameInfoReviewListComponent,
         EmailChangeComponent,
-        PasswordChangeComponent
+        PasswordChangeComponent,
+        ForumComponent,
+        ForumPostListComponent,
+        ForumPostComponent,
+        ForumCommentEditDialogComponent,
+        ForumFormDialogComponent,
+        ForumPostFormDialogComponent
     ],
-    bootstrap: [AppComponent],
+    bootstrap: [
+        AppComponent
+    ],
     imports: [
         BrowserModule,
         AppRoutingModule,
@@ -119,8 +136,9 @@ import { MatSliderModule } from '@angular/material/slider';
             }
         }),
         BrowserAnimationsModule,
-        ToasterModule.forRoot()], providers: [
-        provideClientHydration(),
+        ToasterModule.forRoot()
+    ],
+    providers: [
         provideAnimationsAsync(),
         AuthService,
         ToasterService,
@@ -133,8 +151,11 @@ import { MatSliderModule } from '@angular/material/slider';
         BackgroundService,
         AdService,
         NotificationService,
+        ForumService,
+        ForumPostService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         DatePipe,
         provideHttpClient(withInterceptorsFromDi())
-    ] })
+    ]
+})
 export class AppModule { }

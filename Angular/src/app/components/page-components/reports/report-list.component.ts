@@ -7,7 +7,7 @@ import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
 import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { reviewFilters } from '../../../interfaces/reviewFilters';
@@ -32,7 +32,7 @@ export class ReportListComponent implements AfterViewInit {
 
   public reportsList: ReportInformation[] = [];
   public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
   private filters: reviewFilters = {};
 
   @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
@@ -53,13 +53,6 @@ export class ReportListComponent implements AfterViewInit {
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const page = this.reviewsPaginator.pageIndex + 1;
     const size = this.reviewsPaginator.pageSize;
 
@@ -79,7 +72,7 @@ export class ReportListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.reportService.getReviewsWithReports(token, page, size, "id", "asc", this.filters).subscribe(observer);
+    this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe(observer);
   }
 
   loadReportsForReview(review: UserReview, refreshing: boolean = false) {
@@ -87,10 +80,8 @@ export class ReportListComponent implements AfterViewInit {
       return;
     }
 
-    const token = this.authService.getToken();
-
-    if (!review.id || token === null) {
-      console.log("Token or review id is null");
+    if (!review.id) {
+      console.log("Review id is null");
       return;
     }
 
@@ -147,7 +138,7 @@ export class ReportListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.reportService.getReportsForReview(review.id, token, sortBy, sortDir, page, size).subscribe(observer);
+    this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -159,29 +150,15 @@ export class ReportListComponent implements AfterViewInit {
   }
 
   approveReport(report: Report) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.reportService.approveReport(report, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report approved', false); },
+    this.reportService.approveReport(report).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Report approved'); },
       error: error => this.notificationService.popErrorToast('Report approving failed', error)
     });
   }
 
   disapproveReport(report: Report) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.reportService.disapproveReport(report, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report disapproved', false); },
+    this.reportService.disapproveReport(report).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Report disapproved'); },
       error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
     });
   }
@@ -205,16 +182,9 @@ export class ReportListComponent implements AfterViewInit {
   }
 
   deleteReview(review: UserReview) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.reportService.deleteReview(review, token).subscribe({
+    this.reportService.deleteReview(review).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Report disapproved', false);
+        this.notificationService.popSuccessToast('Report disapproved');
         this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
       error: error => this.notificationService.popErrorToast('Report disapproving failed', error)

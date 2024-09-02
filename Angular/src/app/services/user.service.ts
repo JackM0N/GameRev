@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteUser';
 import { userFilters } from '../interfaces/userFilters';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class UserService {
   private profileUrl = 'http://localhost:8080/user';
 
   constructor(
+    private authService: AuthService,
     private http: HttpClient,
   ) {}
 
@@ -47,28 +49,35 @@ export class UserService {
     return this.http.get<WebsiteUser>(`${this.profileUrl}/${nickname}`);
   }
 
-  banUser(user: WebsiteUser, token: string): Observable<WebsiteUser> {
+  banUser(user: WebsiteUser): Observable<WebsiteUser> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     user.isBanned = true;
     return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
   }
 
-  unbanUser(user: WebsiteUser, token: string): Observable<WebsiteUser> {
+  unbanUser(user: WebsiteUser): Observable<WebsiteUser> {
+    const token = this.authService.getToken();
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     user.isBanned = false;
     return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
   }
 
-  getProfilePicture(nickname: string, token: string): Observable<Blob> {
+  getProfilePicture(nickname: string): Observable<Blob> {
     const url = `${this.profileUrl}/${nickname}/profile-picture`;
+
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
+
     return this.http.get<Blob>(url, {
       headers: headers,
       responseType: 'blob' as 'json'

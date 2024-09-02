@@ -66,6 +66,7 @@ public class ForumPostService {
 
         forumPost = forumPostRepository.save(forumPost);
 
+        forumPost = forumPostRepository.save(forumPost);
         Path filepath = null;
         try {
             if (picture != null && !picture.isEmpty()) {

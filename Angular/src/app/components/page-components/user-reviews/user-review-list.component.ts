@@ -7,7 +7,7 @@ import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 import { MatSort } from '@angular/material/sort';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,7 +22,7 @@ export class UserReviewListComponent implements AfterViewInit {
   totalReviews: number = 0;
   displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score'];
   userId?: number;
-  formatDate = formatDate;
+  formatDate = formatDateArray;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -47,13 +47,6 @@ export class UserReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -73,9 +66,9 @@ export class UserReviewListComponent implements AfterViewInit {
       complete: () => {}
     };
     if (this.userId) {
-      this.userReviewService.getUserReviewsAdmin(this.userId, token, page, size, sortBy, sortDir).subscribe(observer);
+      this.userReviewService.getUserReviewsAdmin(this.userId, page, size, sortBy, sortDir).subscribe(observer);
     } else {
-      this.userReviewService.getOwnUserReviews(token, page, size, sortBy, sortDir).subscribe(observer);
+      this.userReviewService.getOwnUserReviews(page, size, sortBy, sortDir).subscribe(observer);
     }
   }
 

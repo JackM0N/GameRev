@@ -43,6 +43,8 @@ public class ForumCommentService {
                 .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
         Specification<ForumComment> spec = getForumCommentSpecification(forumCommentFilter, post);
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
+        post.setViews(post.getViews() + 1);
+        forumPostRepository.save(post);
         return forumComments.map(forumCommentMapper::toDto);
     }
 
@@ -58,7 +60,7 @@ public class ForumCommentService {
                 .orElseThrow(() -> new RuntimeException("Forum post not found")));
 
         forumComment.setAuthor(websiteUserService.getCurrentUser());
-
+        forumComment.setIsDeleted(false);
         forumComment = forumCommentRepository.save(forumComment);
 
         Path filepath = null;
