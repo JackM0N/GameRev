@@ -27,6 +27,8 @@ import org.junit.platform.suite.api.Suite;
         ForumPostServiceIntegrationTest.class,
         ForumCommentServiceTest.class,
         ForumCommentServiceIntegrationTest.class,
+        ForumRequestServiceTest.class,
+        ForumRequestServiceIntegrationTest.class,
 })
 public class AllTestsSuite {
     // yes, this should be empty
