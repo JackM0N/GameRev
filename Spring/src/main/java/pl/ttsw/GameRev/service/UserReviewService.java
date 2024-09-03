@@ -44,12 +44,17 @@ public class UserReviewService{
         spec = getUserReviewSpecification(userReviewFilter, spec);
 
         Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
-        WebsiteUser currentUser = websiteUserService.getCurrentUser();
-
+        WebsiteUser currentUser;
+        try {
+            currentUser = websiteUserService.getCurrentUser();
+        }catch (Exception e){
+            currentUser = null;
+        }
+        WebsiteUser finalCurrentUser = currentUser;
         List<UserReviewDTO> userReviewDTOList = userReviews.stream().map(userReview -> {
             UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
 
-            Optional<Rating> ratingOptional = ratingRepository.findByUserAndUserReview(currentUser, userReview);
+            Optional<Rating> ratingOptional = ratingRepository.findByUserAndUserReview(finalCurrentUser, userReview);
             ratingOptional.ifPresentOrElse(rating -> {
                 userReviewDTO.setOwnRatingIsPositive(rating.getIsPositive());
             }, () -> userReviewDTO.setOwnRatingIsPositive(null));

@@ -44,6 +44,9 @@ public class ForumPost {
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount;
 
+    @Column(name = "views", nullable = false)
+    private Long views;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
