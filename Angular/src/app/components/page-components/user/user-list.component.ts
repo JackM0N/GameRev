@@ -15,6 +15,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { Role } from '../../../interfaces/role';
 import { userFilters } from '../../../interfaces/userFilters';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-user-list',
@@ -22,10 +23,10 @@ import { userFilters } from '../../../interfaces/userFilters';
   styleUrl: '/src/app/styles/shared-list-styles.css'
 })
 export class UserListComponent implements OnInit, AfterViewInit {
-  public totalUsers: number = 0;
-  public dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
-  public displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
-  public isAdmin = false;
+  protected totalUsers: number = 0;
+  protected dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
+  protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+  protected isAdmin = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -37,12 +38,15 @@ export class UserListComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private notificationService: NotificationService,
     private authService: AuthService,
+    private backgroundService: BackgroundService,
     private router: Router,
     private datePipe: DatePipe,
-    public dialog: MatDialog
+    protected dialog: MatDialog
   ) {}
 
   ngOnInit() {
+    this.backgroundService.setClasses(['fallingCds']);
+
     this.isAdmin = this.authService.isAdmin();
     if (this.isAdmin) {
       this.displayedColumns = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];

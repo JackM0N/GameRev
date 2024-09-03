@@ -1,115 +1,187 @@
+<div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-8 flex-row justify-center items-center tracking-wider">
+  <!-- Filters Section -->
+  <div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+    <div class="synthwaveBg bg-repeat text-white p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Is Banned Filter -->
+        <mat-form-field class="w-full text-white">
+          <mat-label>Is banned</mat-label>
+          <mat-select (selectionChange)="onBannedFilterChange($event)">
+            <mat-option>-</mat-option>
+            <mat-option value="1">True</mat-option>
+            <mat-option value="0">False</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Is banned</mat-label>
-  <mat-select (selectionChange)="onBannedFilterChange($event)">
-    <mat-option>-</mat-option>
-    <mat-option value="1">True</mat-option>
-    <mat-option value="0">False</mat-option>
-  </mat-select>
-</mat-form-field>
+        <!-- Is Deleted Filter -->
+        <mat-form-field class="w-full text-white">
+          <mat-label>Is deleted</mat-label>
+          <mat-select (selectionChange)="onDeletedFilterChange($event)">
+            <mat-option>-</mat-option>
+            <mat-option value="1">True</mat-option>
+            <mat-option value="0">False</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Is deleted</mat-label>
-  <mat-select (selectionChange)="onDeletedFilterChange($event)">
-    <mat-option>-</mat-option>
-    <mat-option value="1">True</mat-option>
-    <mat-option value="0">False</mat-option>
-  </mat-select>
-</mat-form-field>
+        <!-- Roles Filter -->
+        <mat-form-field class="w-full text-white">
+          <mat-label>Roles</mat-label>
+          <mat-select (selectionChange)="onRolesFilterChange($event)" multiple>
+            <mat-option value="1">Admin</mat-option>
+            <mat-option value="2">Critic</mat-option>
+            <mat-option value="3">User</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Roles</mat-label>
-  <mat-select (selectionChange)="onRolesFilterChange($event)" multiple>
-    <mat-option value="1">Admin</mat-option>
-    <mat-option value="2">Critic</mat-option>
-    <mat-option value="3">User</mat-option>
-  </mat-select>
-</mat-form-field>
+        <!-- Search Filter -->
+        <mat-form-field class="w-full text-white">
+          <mat-label>Search</mat-label>
+          <input matInput #searchInput>
+        </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Search</mat-label>
-  <input matInput #searchInput>
-</mat-form-field>
+        <!-- Join Date Range Filter -->
+        <mat-form-field class="w-full text-white">
+          <mat-label>Join date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+            <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
 
-<mat-form-field>
-  <mat-label>Join date range</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
-    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
-  </mat-date-range-input>
-  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
+  <!-- Users Table Section -->
+  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit m-auto">
+    <div class="px-1">
+      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="loadUsers()" class="appearance-none bg-black">
+        <!-- Id Column -->
+        <ng-container matColumnDef="id">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="id" *matHeaderCellDef>
+            Id
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.id}}
+          </td>
+        </ng-container>
 
-<table mat-table [dataSource]="dataSource" matSort (matSortChange)="loadUsers()" class="mat-elevation-z8">
-  <ng-container matColumnDef="id">
-    <th mat-sort-header="id" mat-header-cell *matHeaderCellDef> Id </th>
-    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-  </ng-container>
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="username" *matHeaderCellDef>
+            Username
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.username}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="username">
-    <th mat-sort-header="username" mat-header-cell *matHeaderCellDef> Username </th>
-    <td mat-cell *matCellDef="let element"> {{element.username}} </td>
-  </ng-container>
+        <!-- Nickname Column -->
+        <ng-container matColumnDef="nickname">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="nickname" *matHeaderCellDef>
+            Nickname
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.nickname}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="nickname">
-    <th mat-sort-header="nickname" mat-header-cell *matHeaderCellDef> Nickname </th>
-    <td mat-cell *matCellDef="let element"> {{element.nickname}} </td>
-  </ng-container>
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="email" *matHeaderCellDef>
+            Email
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.email}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="email">
-    <th mat-sort-header="email" mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-  </ng-container>
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-2 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="description" *matHeaderCellDef>
+            Description
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.description ? element.description : "-"}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="description">
-    <th mat-sort-header="description" mat-header-cell *matHeaderCellDef> Description </th>
-    <td mat-cell *matCellDef="let element"> {{element.description ? element.description: "-"}} </td>
-  </ng-container>
+        <!-- Last Action Date Column -->
+        <ng-container matColumnDef="lastActionDate">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="lastActionDate" *matHeaderCellDef>
+            Last action
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.lastActionDate | date: 'dd MMMM yyyy'}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="lastActionDate">
-    <th mat-sort-header="lastActionDate" mat-header-cell *matHeaderCellDef> Last action </th>
-    <td mat-cell *matCellDef="let element"> {{element.lastActionDate | date: 'dd MMMM yyyy'}} </td>
-  </ng-container>
+        <!-- Join Date Column -->
+        <ng-container matColumnDef="joinDate">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="joinDate" *matHeaderCellDef>
+            Join date
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.joinDate | date: 'dd MMMM yyyy'}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="joinDate">
-    <th mat-sort-header="joinDate" mat-header-cell *matHeaderCellDef> Join date </th>
-    <td mat-cell *matCellDef="let element"> {{element.joinDate | date: 'dd MMMM yyyy'}} </td>
-  </ng-container>
+        <!-- Is Banned Column -->
+        <ng-container matColumnDef="isBanned">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="isBanned" *matHeaderCellDef>
+            Is banned
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.isBanned}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="isBanned">
-    <th mat-sort-header="isBanned" mat-header-cell *matHeaderCellDef> Is banned </th>
-    <td mat-cell *matCellDef="let element"> {{element.isBanned}} </td>
-  </ng-container>
+        <!-- Is Deleted Column -->
+        <ng-container matColumnDef="isDeleted">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="isDeleted" *matHeaderCellDef>
+            Is deleted
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{element.isDeleted}}
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="isDeleted">
-    <th mat-sort-header="isDeleted" mat-header-cell *matHeaderCellDef> Is deleted </th>
-    <td mat-cell *matCellDef="let element"> {{element.isDeleted}} </td>
-  </ng-container>
+        <!-- Roles Column -->
+        <ng-container matColumnDef="roles">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="roles" *matHeaderCellDef>
+            Roles
+          </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
+            {{ parseRoles(element.roles) }} </td>
+        </ng-container>
 
-  <ng-container matColumnDef="roles">
-    <th mat-sort-header="roles" mat-header-cell *matHeaderCellDef> Roles </th>
-    <td mat-cell *matCellDef="let element"> {{ parseRoles(element.roles) }} </td>
-  </ng-container>
+        <!-- Options Column -->
+        <ng-container matColumnDef="options">
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-base pinkTextShadowWide px-1 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
+            Options
+          </th>
+          <td class="synthwaveBg bg-repeat border-2 border-white" *matCellDef="let element">
+            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" (click)="openProfile(element)">Profile</button>
+            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin" (click)="openUserReviews(element)">Reviews</button>
+            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && !element.isBanned" (click)="openBanDialog(element)">Ban</button>
+            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && element.isBanned" (click)="openUnbanDialog(element)">Unban</button>
+          </td>
+        </ng-container>
 
-  <ng-container matColumnDef="options">
-    <th mat-header-cell *matHeaderCellDef> Options </th>
-    <td mat-cell *matCellDef="let element">
-      <button type="button" mat-stroked-button (click)="openProfile(element)">Profile</button>
-      <button type="button" mat-stroked-button *ngIf="isAdmin" (click)="openUserReviews(element)">Reviews</button>
-      <button type="button" mat-stroked-button *ngIf="isAdmin && !element.isBanned" (click)="openBanDialog(element)">Ban</button>
-      <button type="button" mat-stroked-button *ngIf="isAdmin && element.isBanned" (click)="openUnbanDialog(element)">Unban</button>
-    </td>
-  </ng-container>
+        <!-- Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-paginator
-  [length]="totalUsers"
-  [pageSize]="5"
-  [pageSizeOptions]="[2, 5, 10, 20]"
-  showFirstLastButtons>
-</mat-paginator>
+    <!-- Paginator -->
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalUsers"
+      [pageSize]="5"
+      [pageSizeOptions]="[2, 5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
