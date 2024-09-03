@@ -7,7 +7,7 @@ import pl.ttsw.GameRev.model.ForumPost;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = SimplifiedUserMapper.class)
 public interface ForumPostMapper {
     @Mapping(target = "commentCount", constant = "0")
-    @Mapping(target = "views", constant = "0")
+    @Mapping(target = "views", constant = "0L")
     @Mapping(target = "isDeleted", constant = "false")
     @Mapping(target = "postDate", expression = "java(LocalDateTime.now())")
     ForumPost toEntity(ForumPostDTO forumPostDTO);

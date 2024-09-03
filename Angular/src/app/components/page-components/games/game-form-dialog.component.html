@@ -1,0 +1,72 @@
+
+<form class="font-arcade pixel-border h-fit p-[6px] max-w-[400px] text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="addingGameForm" (ngSubmit)="onSubmit()">
+
+  <div class="w-full py-4 px-6 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col justify-center bg-black">
+    <p class="text-2xl text-center mb-2">{{this.listTitle}}</p>
+
+    <div class="mt-2 mb-1">
+      <label class="w-full">Title</label><br>
+      <input class="w-full p-1 px-3 text-black" placeholder="Game's title" formControlName="title" required/>
+    </div>
+
+    <div class="mt-2 mb-1">
+      <label>Developer</label><br>
+      <input class="w-full p-1 px-3 text-black" placeholder="Game's developer" formControlName="developer" required/>
+    </div>
+
+    <div class="mt-2 mb-1">
+      <label>Publisher</label><br>
+      <input class="w-full p-1 px-3 text-black" placeholder="Game's publisher" formControlName="publisher" required/>
+    </div>
+
+    <div class="mt-2 mb-1">
+      <label>Release date</label><br>
+      <div class="bg-white h-7 flex flex-row">
+        <input class="w-full h-7 -mt-[0px] p-1 px-3 text-black" placeholder="MM/DD/YYYY" [matDatepicker]="picker" formControlName="releaseDate">
+        <mat-datepicker-toggle class="h-10 -mr-2" [for]="picker"></mat-datepicker-toggle>
+      </div>
+      <mat-datepicker #picker></mat-datepicker>
+    </div>
+
+    <div class="mt-2 mb-1">
+      <label>Release status</label><br>
+      <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="releaseStatus">
+        <mat-option>-</mat-option>
+        @for (status of releaseStatuses; track status) {
+          <mat-option [value]="status.className">{{status.name}}</mat-option>
+        }
+      </mat-select>
+      @if (isReleaseStatusInvalid()) {
+        <mat-error>Please choose a release status</mat-error>
+      }
+    </div>
+
+    <div class="mt-2 mb-1">
+      <label>Tags</label><br>
+      <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="tags" multiple required>
+        @for (tag of tagsList; track tag) {
+          <mat-option [value]="tag">{{tag.tagName}}</mat-option>
+        }
+      </mat-select>
+    </div>
+
+    <div class="mt-2">
+      <label>Description</label><br>
+      <textarea class="w-full text-black px-2 min-h-24" formControlName="description"></textarea>
+    </div>
+
+    <div class="font-arcade text-xl flex justify-center gap-3 mt-4">
+      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
+        <div class="bg-red-700 text-center">
+          <button class="px-[10px]" type="button" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
+        <div class="bg-green-600 text-center">
+          <button class="px-[10px] disabled:opacity-30" type="submit" [disabled]="!addingGameForm.valid">Submit</button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</form>

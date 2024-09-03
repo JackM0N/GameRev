@@ -39,7 +39,6 @@ import { RegistrationComponent } from './components/page-components/authenticati
 import { ResetPasswordConfirmationDialogComponent } from './components/page-components/authentication/reset-password-confirmation-dialog.component';
 import { CriticReviewFormComponent } from './components/page-components/critic-reviews/critic-review-form.component';
 import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
-import { GameFormComponent } from './components/page-components/games/game-form.component';
 import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
 import { ReviewReportDialogComponent } from './components/page-components/games/review-report-dialog.component';
 import { LibraryComponent } from './components/page-components/library/library.component';
@@ -49,8 +48,6 @@ import { AccountDeletionConfirmationDialogComponent } from './components/page-co
 import { OwnProfileComponent } from './components/page-components/user/own-profile/own-profile.component';
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
-import { LibraryAddDialogComponent } from './components/page-components/library/library-add-dialog.component';
-import { LibraryEditDialogComponent } from './components/page-components/library/library-edit-dialog.component';
 import { GameListComponent } from './components/page-components/games/game-list.component';
 import { ReportListComponent } from './components/page-components/reports/report-list.component';
 import { GameInfoCriticReviewComponent } from './components/page-components/games/game-information/critic-review.component';
@@ -67,6 +64,8 @@ import { ForumPostComponent } from './components/page-components/forum/forum-pos
 import { ForumCommentEditDialogComponent } from './components/page-components/forum/forum-comment-edit-dialog.component';
 import { ForumFormDialogComponent } from './components/page-components/forum/forum-form-dialog.component';
 import { ForumPostFormDialogComponent } from './components/page-components/forum/forum-post-form-dialog.component';
+import { GameFormDialogComponent } from './components/page-components/games/game-form-dialog.component';
+import { LibraryFormDialogComponent } from './components/page-components/library/library-form-dialog.component';
 
 @NgModule({
     declarations: [
@@ -75,7 +74,6 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
         RegistrationComponent,
         OwnProfileComponent,
         AccountDeletionConfirmationDialogComponent,
-        GameFormComponent,
         GameListComponent,
         GameInformationComponent,
         UserReviewFormComponent,
@@ -85,8 +83,7 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
         ReviewReportDialogComponent,
         ReportListComponent,
         LibraryComponent,
-        LibraryEditDialogComponent,
-        LibraryAddDialogComponent,
+        LibraryFormDialogComponent,
         UserReviewListComponent,
         ResetPasswordConfirmationDialogComponent,
         AdBoxComponent,
@@ -101,7 +98,8 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
         ForumPostComponent,
         ForumCommentEditDialogComponent,
         ForumFormDialogComponent,
-        ForumPostFormDialogComponent
+        ForumPostFormDialogComponent,
+        GameFormDialogComponent
     ],
     bootstrap: [
         AppComponent

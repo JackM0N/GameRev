@@ -1,30 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Game } from '../../../interfaces/game';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
+import { Game } from '../../../interfaces/game';
 import { Observer } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '../../../services/game.service';
-import { Tag } from '../../../interfaces/tag';
-import { TagService } from '../../../services/tag.service';
-import { releaseStatuses } from '../../../enums/releaseStatuses';
-import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';
+import { releaseStatuses } from '../../../enums/releaseStatuses';
+import { Tag } from '../../../interfaces/tag';
+import { GameService } from '../../../services/game.service';
+import { NotificationService } from '../../../services/notification.service';
+import { TagService } from '../../../services/tag.service';
 
 @Component({
-  selector: 'app-game-form',
-  templateUrl: './game-form.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css'
+  selector: 'app-game-form-dialog',
+  templateUrl: './game-form-dialog.component.html',
 })
-export class GameFormComponent implements OnInit {
+export class GameFormDialogComponent {
   public addingGameForm: FormGroup;
   public releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  private isEditRoute: boolean;
-  public listTitle: string = 'Add new game';
+  public listTitle: string = 'Add a new game';
   public tagsList: Tag[] = [];
-  private gameTitle: string = '';
   private gameDate: Date = new Date();
-
+  
   private game: Game = {
     title: '',
     developer: '',
@@ -38,11 +35,14 @@ export class GameFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
     private notificationService: NotificationService,
     private gameService: GameService,
-    private tagService: TagService
+    private tagService: TagService,
+    public dialogRef: MatDialogRef<GameFormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      editing: boolean;
+      game: Game;
+    }
   ) {
     this.addingGameForm = this.formBuilder.group({
       title: [this.game.title, [Validators.required, Validators.minLength(1)]],
@@ -54,58 +54,40 @@ export class GameFormComponent implements OnInit {
       description: [this.game.description, [Validators.required, Validators.minLength(1)]],
       usersScore: [this.game.usersScore]
     });
+  }
 
-    this.isEditRoute = this.route.snapshot.routeConfig?.path?.includes('/edit') == true;
+  onConfirm(): void {
+    this.dialogRef.close(true);
+  }
 
-    if (this.isEditRoute) {
+  onCancel(): void {
+    this.dialogRef.close(false);
+  }
+  
+  ngOnInit() {
+    this.loadTags();
+
+    if (this.data.editing) {
       this.listTitle = 'Editing game';
     }
 
-    const observerTag: Observer<any> = {
-      next: response => {
-        this.tagsList = response;
-        this.tagsList.sort((a, b) => b.priority - a.priority);
-      },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.tagService.getTags().subscribe(observerTag);
-  }
+    if (this.data.game) {
+      this.game = this.data.game;
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      if (params['name']) {
-        this.gameTitle = params['name'];
-        this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
-          if (game.releaseDate) {
-            this.gameDate = new Date(game.releaseDate[0], game.releaseDate[1] -1, game.releaseDate[2], 15);
-          }
-          this.game = game;
-
-          var tags = [];
-          for (let i = 0; i < this.tagsList.length; i++) {
-            for (let j = 0; j < game.tags.length; j++) {
-              if(this.tagsList[i].id === game.tags[j].id) {
-                tags.push(this.tagsList[i]);
-              }
-            }
-          }
-
-          this.addingGameForm.patchValue({
-            title: game.title,
-            developer: game.developer,
-            publisher: game.publisher,
-            releaseDate: this.gameDate,
-            releaseStatus: game.releaseStatus,
-            tags: tags,
-            description: game.description,
-            usersScore: game.usersScore
-          });
-        });
+      if (this.game.releaseDate) {
+        this.gameDate = new Date(this.game.releaseDate[0], this.game.releaseDate[1] -1, this.game.releaseDate[2], 15);
       }
-    });
+
+      this.addingGameForm.patchValue({
+        title: this.game.title,
+        developer: this.game.developer,
+        publisher: this.game.publisher,
+        releaseDate: this.gameDate,
+        releaseStatus: this.game.releaseStatus,
+        description: this.game.description,
+        usersScore: this.game.usersScore
+      });
+    }
   }
 
   onSubmit() {
@@ -117,8 +99,8 @@ export class GameFormComponent implements OnInit {
 
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
 
-      if (this.isEditRoute) {
-        this.gameService.editGame(this.gameTitle, gameData).subscribe({
+      if (this.data.editing) {
+        this.gameService.editGame(this.game.title, gameData).subscribe({
           next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
           error: error => this.notificationService.popErrorToast('Editing game failed', error)
         });
@@ -132,8 +114,33 @@ export class GameFormComponent implements OnInit {
     }
   }
 
-  cancel() {
-    this.router.navigate(['/games']);
+  loadTags() {
+    const observerTag: Observer<any> = {
+      next: response => {
+        if (response) {
+          this.tagsList = response;
+          this.tagsList.sort((a, b) => b.priority - a.priority);
+  
+          var tags = [];
+          for (let i = 0; i < this.tagsList.length; i++) {
+            for (let j = 0; j < this.game.tags.length; j++) {
+              if (this.tagsList[i].id == this.game.tags[j].id) {
+                tags.push(this.tagsList[i]);
+              }
+            }
+          }
+
+          this.addingGameForm.patchValue({
+            tags: tags,
+          });
+        }
+      },
+      error: error => {
+        console.error(error);
+      },
+      complete: () => {}
+    };
+    this.tagService.getTags().subscribe(observerTag);
   }
 
   isReleaseStatusInvalid() {
