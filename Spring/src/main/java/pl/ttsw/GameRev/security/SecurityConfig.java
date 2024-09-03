@@ -36,6 +36,12 @@ public class SecurityConfig {
                                 "/critics-reviews/id/**")
                         .hasAnyRole("Critic", "Admin")
 
+                        .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
+                                "/post/delete/", "/forum-post/create", "/forum-post/delete/**",
+                                "/forum-post/edit/**", "/forum-request/own-requests", "/forum-request/edit/**",
+                                "/forum-request/delete/**")
+                        .authenticated()
+
                         .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**", "/games/create",
                                 "/games/edit/**", "/games/delete/**", "/user/edit/**", "/user/delete/**",
                                 "/user/roles/**", "/forum/create", "/forum/delete/**", "/forum/edit/**",
@@ -49,12 +55,6 @@ public class SecurityConfig {
                                 "/forum-post/**","/forum/**", "/post/**", "/path/**", "/forum/moderators/**",
                                 "/forum-post/picture/**")
                         .permitAll()
-
-                        .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
-                                "/post/delete/", "/forum-post/create", "/forum-post/delete/**",
-                                "/forum-post/edit/**", "/forum-request/own-requests", "/forum-request/edit/**",
-                                "/forum-request/delete/**")
-                        .authenticated()
 
                         .anyRequest()
                         .authenticated())

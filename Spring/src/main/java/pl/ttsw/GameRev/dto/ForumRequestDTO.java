@@ -18,6 +18,6 @@ public class ForumRequestDTO implements Serializable {
     String description;
     GameDTO game;
     ForumDTO parentForum;
-    WebsiteUserDTO author;
+    SimplifiedUserDTO author;
     Boolean approved;
 }
