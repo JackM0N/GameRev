@@ -19,6 +19,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 import { gameFilters } from '../../../interfaces/gameFilters';
+import { GameFormDialogComponent } from './game-form-dialog.component';
 
 @Component({
   selector: 'app-game-list',
@@ -117,12 +118,33 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     this.gameService.getGames(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
-  routeToAddNewGame() {
-    this.router.navigate(['/games/add']);
+  openAddNewGameDialog() {
+    const dialogRef = this.dialog.open(GameFormDialogComponent, {
+      data: {
+        editing: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.loadGames();
+      }
+    });
   }
 
-  routeToEditGame(title: string) {
-    this.router.navigate(['/games/edit/' + title]);
+  openEditGameDialog(game: Game) {
+    const dialogRef = this.dialog.open(GameFormDialogComponent, {
+      data: {
+        editing: true,
+        game: game
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.loadGames();
+      }
+    });
   }
 
   routeToViewGame(title: string) {

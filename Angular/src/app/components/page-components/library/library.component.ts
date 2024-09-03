@@ -7,8 +7,6 @@ import { MatSort } from '@angular/material/sort';
 import { LibraryService } from '../../../services/library.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserGame } from '../../../interfaces/userGame';
-import { LibraryEditDialogComponent } from './library-edit-dialog.component';
-import { LibraryAddDialogComponent } from './library-add-dialog.component';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -19,6 +17,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { libraryFilters } from '../../../interfaces/libraryFilters';
 import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
+import { LibraryFormDialogComponent } from './library-form-dialog.component';
 
 @Component({
   selector: 'app-library',
@@ -96,6 +95,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
           this.dataSource.data = this.gamesList;
           this.libraryEmpty = (this.dataSource.data.length == 0);
         } else {
+          this.gamesList = [];
+          this.totalGames = 0;
           this.libraryEmpty = true;
         }
       },
@@ -108,26 +109,17 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   openEditUserGameDialog(userGame: UserGame) {
-    const dialogTitle = 'Updating game ' + userGame.game.title;
-
-    const dialogRef = this.dialog.open(LibraryEditDialogComponent, {
+    const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '300px',
-      data: { dialogTitle, userGame }
+      data: {
+        editing: true,
+        userGame: userGame
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true && dialogRef.componentRef) {
-        const form = dialogRef.componentRef.instance.updateForm
-
-        if (form) {
-          userGame.completionStatus = form.get('completionStatus')?.value;
-          userGame.isFavourite = form.get('isFavourite')?.value;
-          this.editUserGame(userGame);
-
-        } else {
-          console.log("Form is null");
-          return;
-        }
+      if (result == true) {
+        this.loadGames();
       }
     });
   }
@@ -140,56 +132,32 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   openAddUserGameDialog() {
-    const dialogTitle = 'Adding game';
-
-    const dialogRef = this.dialog.open(LibraryAddDialogComponent, {
+    const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '300px',
-      data: { dialogTitle, existingGames: this.gamesList }
+      data: {
+        editing: false,
+        existingGames: this.gamesList
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true && dialogRef.componentRef) {
-        const form = dialogRef.componentRef.instance.addForm
-
-        if (form) {
-          var userGame: UserGame = {
-            id: 0,
-            user : { username: this.authService.getUsername() },
-            game: form.get('game')?.value,
-            completionStatus: form.get('completionStatus')?.value,
-            isFavourite: form.get('isFavourite')?.value
-          };
-
-          this.addUserGame(userGame);
-
-        } else {
-          console.log("Form is null");
-          return;
-        }
-      }
-    });
-  }
-
-  addUserGame(userGame: UserGame) {
-    this.libraryService.addUserGame(userGame).subscribe({
-      next: () => {
+      if (result == true) {
+        /*
         this.gamesList.push(userGame);
 
         this.totalGames = this.totalGames + 1;
         this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
-
-        this.notificationService.popSuccessToast('Game added successfully');
+        */
 
         this.loadGames();
-      },
-      error: error => this.notificationService.popErrorToast('Game adding failed', error)
+      }
     });
   }
 
   openGameDeletionConfirmationDialog(userGame: UserGame) {
     const dialogTitle = 'Game deletion';
-    const dialogContent = 'Are you sure you want to delete the game ' + userGame.game.title + '?';
+    const dialogContent = 'Are you sure you want to delete the game ' + userGame?.game?.title + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 

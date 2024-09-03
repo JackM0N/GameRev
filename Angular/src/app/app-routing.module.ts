@@ -4,7 +4,6 @@ import { LoginComponent } from './components/page-components/authentication/logi
 import { RegistrationComponent } from './components/page-components/authentication/registration.component';
 import { CriticReviewFormComponent } from './components/page-components/critic-reviews/critic-review-form.component';
 import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
-import { GameFormComponent } from './components/page-components/games/game-form.component';
 import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
 import { GameListComponent } from './components/page-components/games/game-list.component';
 import { ReportListComponent } from './components/page-components/reports/report-list.component';
@@ -28,8 +27,6 @@ const routes: Routes = [
   { path: 'profile/:name', component: ProfileComponent},
   { path: 'game/:name', component: GameInformationComponent},
   { path: 'games', component: GameListComponent},
-  { path: 'games/add', component: GameFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
-  { path: 'games/edit/:name', component: GameFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'user-reviews/add/:name', component: UserReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'user-reviews/edit/:id', component: UserReviewFormComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'user-reviews', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
