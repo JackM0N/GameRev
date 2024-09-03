@@ -25,6 +25,7 @@ import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumCommentRepository;
+import pl.ttsw.GameRev.repository.ForumModeratorRepository;
 import pl.ttsw.GameRev.repository.ForumPostRepository;
 import pl.ttsw.GameRev.service.ForumCommentService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
@@ -49,6 +50,9 @@ class ForumCommentServiceTest {
 
     @InjectMocks
     private ForumCommentService forumCommentService;
+
+    @Mock
+    private ForumModeratorRepository forumModeratorRepository;
 
     @Spy
     private ForumCommentMapper forumCommentMapper = new ForumCommentMapperImpl();
@@ -75,6 +79,7 @@ class ForumCommentServiceTest {
 
         forumPost = new ForumPost();
         forumPost.setId(1L);
+        forumPost.setViews(1L);
 
         forumComment = new ForumComment();
         forumComment.setId(1L);
@@ -179,6 +184,7 @@ class ForumCommentServiceTest {
     void testDeleteForumComment_Success() {
         when(forumCommentRepository.findById(anyLong())).thenReturn(Optional.of(forumComment));
         when(websiteUserService.getCurrentUser()).thenReturn(user);
+        when(forumModeratorRepository.existsByForumAndModerator(any(), any())).thenReturn(false);
 
         boolean result = forumCommentService.deleteForumComment(1L, true);
 
@@ -189,6 +195,7 @@ class ForumCommentServiceTest {
     @Test
     void testDeleteForumComment_AsAdmin() {
         when(forumCommentRepository.findById(anyLong())).thenReturn(Optional.of(forumComment));
+        when(forumModeratorRepository.existsByForumAndModerator(any(), any())).thenReturn(true);
         WebsiteUser admin = new WebsiteUser();
         admin.setId(2L);
         Role role = new Role();
@@ -205,6 +212,7 @@ class ForumCommentServiceTest {
     @Test
     void testDeleteForumComment_Unauthorized() {
         when(forumCommentRepository.findById(anyLong())).thenReturn(Optional.of(forumComment));
+        when(forumModeratorRepository.existsByForumAndModerator(any(), any())).thenReturn(false);
         WebsiteUser otherUser = new WebsiteUser();
         otherUser.setId(2L);
         when(websiteUserService.getCurrentUser()).thenReturn(otherUser);

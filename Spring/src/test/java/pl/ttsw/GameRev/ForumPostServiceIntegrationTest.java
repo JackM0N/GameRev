@@ -81,6 +81,7 @@ public class ForumPostServiceIntegrationTest {
         forumPost.setTitle("New Post Title");
         forumPost.setContent("New Post Content");
         forumPost.setPostDate(LocalDateTime.now());
+        forumPost.setViews(1L);
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
 
@@ -101,6 +102,7 @@ public class ForumPostServiceIntegrationTest {
         forumPost.setTitle("New Post Title");
         forumPost.setContent("New Post Content");
         forumPost.setPostDate(LocalDateTime.now());
+        forumPost.setViews(1L);
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
 
@@ -127,6 +129,7 @@ public class ForumPostServiceIntegrationTest {
         forumPost.setTitle("New Post Title");
         forumPost.setContent("New Post Content");
         forumPost.setPostDate(LocalDateTime.now());
+        forumPost.setViews(1L);
 
         ForumPostDTO createdPost = forumPostService.createForumPost(forumPost, null);
 
