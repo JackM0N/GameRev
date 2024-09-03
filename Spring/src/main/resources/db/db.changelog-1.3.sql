@@ -467,3 +467,9 @@ ALTER TABLE forum_comment
 ALTER TABLE forum_post
     ADD COLUMN views BIGINT NOT NULL DEFAULT 0;
 
+
+--changeset Stanislaw:35 labels:expansion,schema
+CREATE UNIQUE INDEX unique_game_parent_forum
+    ON forum (game_id, parent_forum_id)
+    WHERE parent_forum_id = 1;
+
