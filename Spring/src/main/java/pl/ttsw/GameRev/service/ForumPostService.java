@@ -65,8 +65,6 @@ public class ForumPostService {
         forumPost.setAuthor(websiteUserService.getCurrentUser());
 
         forumPost = forumPostRepository.save(forumPost);
-
-        forumPost = forumPostRepository.save(forumPost);
         Path filepath = null;
         try {
             if (picture != null && !picture.isEmpty()) {
