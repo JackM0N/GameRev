@@ -467,3 +467,12 @@ ALTER TABLE forum_comment
 ALTER TABLE forum_post
     ADD COLUMN views BIGINT NOT NULL DEFAULT 0;
 
+
+--changeset Przemyslaw:1 labels:expansion,data
+-- Forum Requests
+INSERT INTO forum_request (forum_name, description, game_id, parent_forum_id, author_id, approved)
+VALUES
+    ('Approved Forum Test', 'Test request', 1, 1, 3, true),
+    ('Disapproved Forum Test', 'Test request the second', 2, 1, 4, false)
+
+
