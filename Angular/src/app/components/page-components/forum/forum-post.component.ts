@@ -331,7 +331,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         forumId: post.forum.id,
         editing: true,

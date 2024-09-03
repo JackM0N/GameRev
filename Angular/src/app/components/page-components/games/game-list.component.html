@@ -57,7 +57,7 @@
         </ng-container>
       
         <ng-container matColumnDef="title">
-          <th class="  synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef> Title </th>
+          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef> Title </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
             <button class="text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">{{element.title}}</button>
           </td>
