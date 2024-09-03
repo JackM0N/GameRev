@@ -72,7 +72,9 @@ public class ForumRequestService {
         boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()));
         if(isAuthor || isAdmin) {
-            if (forumRequestDTO.getGame().getId() != null) {
+            forumRequest = forumRequestMapper.partialUpdate(forumRequestDTO, forumRequest);
+
+            if (forumRequestDTO.getGame() != null) {
                 forumRequest.setGame(gameRepository.findById(forumRequestDTO.getGame().getId())
                         .orElseThrow(() -> new RuntimeException("Game not found")));
             }
