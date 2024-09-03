@@ -20,7 +20,6 @@ public class ForumPostDTO implements Serializable {
     String title;
     String content;
     LocalDateTime postDate;
-    String picture;
     LocalDateTime lastResponseDate;
     Integer commentCount;
     Long views;
