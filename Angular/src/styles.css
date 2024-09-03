@@ -52,16 +52,16 @@ body {
     background-image: url(./app/images/neonStarsSymbols.jpg);
 }
 
-.fallingCds{
+.fallingCds {
     background-image: url(./app/images/fallingCds.png);
 }
 
-.synthwaveBg{
+.synthwaveBg {
     background-image: url(./app/images/synthwaveBg.png);
     background-size: 22px 22px;
 }
 
-.screenHead{
+.screenHead {
     background-image: url(./app/images/screenHead.png);
     background-size: 320px 320px;
     background-repeat: no-repeat;
@@ -420,6 +420,10 @@ mat-datepicker-toggle > button > span{
     box-sizing: border-box; /* Ensure padding and border are included in the width */
     margin-bottom: 18px; /* Consistent margin bottom */
     font-size: 14px;
+    
+    font-family: Arial, sans-serif !important; /* Ensure normal font */
+    color: #000 !important; /* Set text color to black */
+    text-shadow: none !important; /* Remove any text shadow */
 }
 
 .quill-editor-custom .ql-container {
@@ -438,4 +442,6 @@ mat-datepicker-toggle > button > span{
 
 .quill-editor-custom .ql-editor {
     font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #000;
 }

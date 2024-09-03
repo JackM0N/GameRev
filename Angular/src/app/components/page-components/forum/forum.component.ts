@@ -42,7 +42,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    public backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -51,6 +51,8 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.backgroundService.setClasses(['fallingCds']);
 
     this.routeParamsSubscription = this.route.params.subscribe(params => {
       this.forumId = params['id'];

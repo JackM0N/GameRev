@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: '', component: ForumComponent},
   { path: 'forum/:id', component: ForumComponent},
   { path: 'forum/:forumid/post/:postid', component: ForumPostComponent},
-  { path: 'forum-requests', component: ForumRequestsComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'forum-requests', component: ForumRequestsComponent},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: OwnProfileComponent, canActivate: [AuthGuard]},

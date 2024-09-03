@@ -1,36 +1,41 @@
+<form class="font-arcade pixel-border h-fit p-[6px] max-w-[400px] text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="forumPostForm" (ngSubmit)="onConfirm()">
+  <div class="w-full py-4 px-6 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col justify-center bg-black">
+    <h1 class="text-2xl text-center mb-2">{{data?.editing ? "Editing a post" : "Adding a new post"}}</h1>
 
-<h1 mat-dialog-title>{{data?.editing ? "Editing a post": "Adding a new post"}}</h1>
-
-<form [formGroup]="forumPostForm" (ngSubmit)="onConfirm()">
-  <div>
-    <div>
-      <p>Picture</p>
-      {{ imageUrl }}
-      <img class="max-w-32 max-h-32" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
-      <input class="h-24" type="file" id="picture" (change)="onFileSelected($event)">
+    <div class="mt-2 mb-1">
+      <label class="w-full">Picture</label><br>
+      <img class="max-w-52 max-h-52 mb-2" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
+      <input class="w-full h-8 text-black bg-white p-1 px-3" type="file" id="picture" (change)="onFileSelected($event)">
     </div>
 
-    <mat-form-field>
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title">
-    </mat-form-field>
-
-    <div *ngIf="forumPostForm.get('title')?.hasError('minLength')" class="p-2 text-red-600">
-      Title must be at least {{ titleMinLength }} characters long.
+    <div class="mt-2 mb-1">
+      <label class="w-full">Title</label><br>
+      <input class="w-full p-1 px-3 text-black" placeholder="Post title" matInput formControlName="title">
+      <div *ngIf="forumPostForm.get('title')?.hasError('minLength')" class="p-2 text-red-600">
+        Title must be at least {{ titleMinLength }} characters long.
+      </div>
     </div>
-  </div>
 
-  <div id="description-container">
-    <label for="description">Content</label>
-    <quill-editor class="quill-editor-custom" formControlName="content" [modules]="{ toolbar: quillToolbarOptions }"></quill-editor>
-  
-    <div *ngIf="forumPostForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-      Content must be at least {{ contentMinLength }} characters long.
+    <div class="mt-2 mb-1">
+      <label for="description" class="w-full">Content</label><br>
+      <quill-editor class="quill-editor-custom w-full text-black bg-white" formControlName="content" [modules]="{ toolbar: quillToolbarOptions }"></quill-editor>
+      <div *ngIf="forumPostForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
+        Content must be at least {{ contentMinLength }} characters long.
+      </div>
     </div>
-  </div>
 
-  <div mat-dialog-actions>
-    <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    <button mat-button type="submit" [disabled]="!forumPostForm.valid">Submit</button>
+    <div class="font-arcade text-xl flex justify-center gap-3 mt-4">
+      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
+        <div class="bg-red-700 text-center">
+          <button class="px-[10px]" type="button" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
+        <div class="bg-green-600 text-center">
+          <button class="px-[10px] disabled:opacity-30" type="submit" [disabled]="!forumPostForm.valid">Submit</button>
+        </div>
+      </div>
+    </div>
   </div>
 </form>

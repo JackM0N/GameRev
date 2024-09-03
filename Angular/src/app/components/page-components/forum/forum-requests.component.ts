@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { BackgroundService } from '../../../services/background.service';
 import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 
 @Component({
   selector: 'app-forum-requests',
@@ -53,7 +54,22 @@ export class ForumRequestsComponent implements AfterViewInit {
           console.log(response);
           this.requestList = response.content;
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
+
+          // DEBUG
+          this.requestList = [
+            {
+              id: 1,
+              forumName: 'Test Forum',
+              description: 'Test Description',
+              game: { id: 1, title: 'Test Game' },
+              parentForum: { id: 1, forumName: 'Test Parent Forum' },
+              author: { nickname: this.authService.getNickname() },
+            },
+          ];
+          console.log(this.requestList);
+          this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
+
       },
       error: error => console.error(error)
     });
@@ -86,7 +102,34 @@ export class ForumRequestsComponent implements AfterViewInit {
     return this.authService.hasAnyRole(['Admin']) || forumRequest.author.nickname;
   }
 
-  openApproveRequestDialog(request: ForumRequest, approve: boolean) {
+  approveRequest(forumRequest: ForumRequest, approve: boolean, action1: string, action2: string) {
+    this.forumRequestService.approveRequest(forumRequest, approve).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Request ' + action2 + 'd successfully');
+        this.loadForumRequests();
+      },
+      error: error => this.notificationService.popErrorToast('Request ' + action1 + ' failed', error)
+    });
+  }
 
+  openApproveRequestDialog(request: ForumRequest, approve: boolean) {
+    const action1 = approve ? 'approval' : 'disapproval';
+    const action2 = approve ? 'approve' : 'disapprove';
+
+    const dialogTitle = 'Forum request ' + action1;
+    const dialogContent = 'Are you sure you want to ' + action2 + ' the request for forum ' + request.forumName + '?';
+    const submitText = action2.charAt(0).toUpperCase() + action2.slice(1);;
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '400px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.approveRequest(request, approve, action1, action2);
+      }
+    });
   }
 }

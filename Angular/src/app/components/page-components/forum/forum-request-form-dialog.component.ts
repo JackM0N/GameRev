@@ -22,10 +22,10 @@ export class ForumRequestFormDialogComponent {
   protected forumList: Forum[] = [];
 
   private description: string = '';
+  private requestId?: number;
   private name: string = '';
   private game?: Game;
-  private parentForumId?: number;
-  private forumId?: number;
+  private parentForum?: Forum;
   
   constructor(
     private authService: AuthService,
@@ -39,13 +39,13 @@ export class ForumRequestFormDialogComponent {
       id?: number,
       name?: string,
       description?: string,
-      gameTitle?: string,
-      parentForumId?: number,
+      game?: Game,
+      parentForum?: Forum,
       editing?: boolean
     }
   ) {
     this.forumForm = this.formBuilder.group({
-      parentForum: [this.parentForumId],
+      parentForum: [this.parentForum, [Validators.required]],
       name: [this.name, [Validators.required, Validators.minLength(this.nameMinLength)]],
       description: [this.description, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
       game: [this.game, [Validators.required]]
@@ -53,11 +53,9 @@ export class ForumRequestFormDialogComponent {
   }
 
   ngOnInit(): void {
-    this.loadGames();
-
     if (this.data) {
       if (this.data.id) {
-        this.forumId = this.data.id;
+        this.requestId = this.data.id;
       }
 
       if (this.data.name) {
@@ -74,13 +72,12 @@ export class ForumRequestFormDialogComponent {
         });
       }
 
-      if (this.data.parentForumId) {
-        this.parentForumId = this.data.parentForumId;
-      } else {
-        this.parentForumId = 1;
+      if (this.data.parentForum) {
+        this.parentForum = this.data.parentForum;
       }
     }
 
+    this.loadGames();
     this.loadForums();
   }
 
@@ -89,8 +86,8 @@ export class ForumRequestFormDialogComponent {
       next: (response: any) => {
         this.gameList = response.content;
 
-        if (this.data && this.data.gameTitle) {
-          const findGame = this.gameList.find(game => game.title === this.data?.gameTitle);
+        if (this.data && this.data.game) {
+          const findGame = this.gameList.find(game => game.id === this.data?.game?.id);
   
           if (findGame) {
             this.game = findGame;
@@ -109,13 +106,15 @@ export class ForumRequestFormDialogComponent {
   loadForums() {
     this.forumList = [];
 
-    this.forumService.getForum(this.parentForumId).subscribe({
+    const id = this.parentForum ? this.parentForum.id : 0;
+    
+    this.forumService.getForum(id).subscribe({
       next: (response: any) => {
         if (response) {
           this.forumList = response.content;
-
-          if (this.parentForumId) {
-            const findForum = this.forumList.find(forum => forum.id == this.parentForumId);
+          
+          if (this.parentForum && this.parentForum.id) {
+            const findForum = this.forumList.find(forum => forum.id == this.parentForum?.id);
     
             if (findForum) {
               this.forumForm.patchValue({
@@ -152,6 +151,7 @@ export class ForumRequestFormDialogComponent {
       }
 
       if (this.data && this.data.editing) {
+        forumRequest.id = this.requestId;
         this.forumRequestService.editRequest(forumRequest).subscribe({
           next: () => { this.notificationService.popSuccessToast('Forum edited'); },
           error: error => this.notificationService.popErrorToast('Forum editing failed', error)
@@ -159,7 +159,7 @@ export class ForumRequestFormDialogComponent {
         return;
       }
 
-      if (!this.parentForumId) {
+      if (!this.parentForum) {
         console.error('Parent forum is not set');
         return;
       }

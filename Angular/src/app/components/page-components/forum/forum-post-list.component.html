@@ -1,52 +1,59 @@
 
 <!-- Forum Posts Table -->
-<div class="forum-posts">
+<div class="forum-posts mt-8 bg-[#2A2A2A] shadow-lg rounded-lg overflow-hidden border border-[#00CFFF] px-6 py-4">
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xl font-bold">Posts</h2>
+    <h2 class="text-2xl font-bold">Posts</h2>
     <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
       You are a moderator of this forum
     </p>
   </div>
   
   <table class="forum-posts-table w-full table-auto border-collapse">
-    <thead>
-      <tr class="bg-gray-200 text-left">
-        <th class="p-4 border border-gray-300">Image</th>
-        <th class="p-4 border border-gray-300">Post</th>
-        <th class="p-4 border border-gray-300">Author</th>
-        <th class="p-4 border border-gray-300">Post date</th>
-        <th class="p-4 border border-gray-300">Replies</th>
-        <th class="p-4 border border-gray-300">Last reply</th>
-        <th class="p-4 border border-gray-300" *ngIf="canManageAnyPost() || isModerator()">Actions</th>
+    <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
+      <tr>
+        <th class="p-4 border-b border-[#00CFFF]">Image</th>
+        <th class="p-4 border-b border-[#00CFFF]">Post</th>
+        <th class="p-4 border-b border-[#00CFFF]">Author</th>
+        <th class="p-4 border-b border-[#00CFFF]">Post date</th>
+        <th class="p-4 border-b border-[#00CFFF]">Replies</th>
+        <th class="p-4 border-b border-[#00CFFF]">Last reply</th>
+        <th class="p-4 border-b border-[#00CFFF]" *ngIf="canManageAnyPost() || isModerator()">Actions</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let post of postList; let i = index" class="hover:bg-gray-100">
+      <tr *ngFor="let post of postList; let i = index" class="hover:bg-[#333333]">
         <td class="p-4 border border-gray-300">
           <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
         </td>
 
         <td class="p-4 border border-gray-300">
-          <a (click)="navigateToPost(post.id)" class="text-blue-500 cursor-pointer font-semibold">
+          <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
             {{ post.title }}
           </a>
         </td>
+
         <td class="p-4 border border-gray-300">{{ post.author?.nickname }}</td>
+
         <td class="p-4 border border-gray-300">{{ formatDateTimeArray(post.postDate) }}</td>
+
         <td class="p-4 border border-gray-300">{{ post.commentCount }}</td>
+
         <td class="p-4 border border-gray-300">
           {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
         </td>
-        <td class="p-4 border border-gray-300" *ngIf="canManagePost(post) || isModerator()">
-          <button mat-icon-button (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
-            <mat-icon>edit</mat-icon>
+
+        <td class="pl-2 border border-gray-300" *ngIf="canManagePost(post) || isModerator()">
+          <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-yellow-600" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
+            <i class="material-icons">edit</i>
           </button>
-          <button mat-icon-button (click)="openDeletePostDialog(post)">
-            <mat-icon>delete</mat-icon>
+
+          <button class="bg-red-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-red-600 ml-2" (click)="openDeletePostDialog(post)">
+            <i class="material-icons">delete</i>
           </button>
         </td>
       </tr>
+      
       <tr *ngIf="totalPosts == 0">
         <td class="p-4 border border-gray-300 text-center" colspan="7">No posts yet</td>
       </tr>
