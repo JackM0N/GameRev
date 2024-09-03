@@ -184,6 +184,10 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     });
   }
 
+  routeToRequests() {
+    this.router.navigate(['forum-requests']);
+  }
+
   navigateToSubforum(id?: number) {
     this.router.navigate(['forum', id]);
   }

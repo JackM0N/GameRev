@@ -10,10 +10,20 @@
     </ng-container>
   </nav>
 
-  <!-- Forum Header -->
-  <header class="forum-header text-center mt-4" *ngIf="currentForum">
-    <h1 class="text-2xl font-bold">{{ currentForum.forumName }}</h1>
-    <p class="text-base text-gray-700">{{ currentForum.description }}</p>
+  <!-- Forum Header with Button Aligned and Title Centered -->
+  <header class="forum-header mt-4 relative" *ngIf="currentForum">
+    <!-- Button to View All Requests (Positioned on the right) -->
+    <div class="absolute right-0 top-0 mr-8" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+      <button mat-raised-button color="accent" (click)="routeToRequests()">
+        View All Requests
+      </button>
+    </div>
+
+    <!-- Forum title and description (Centered) -->
+    <div class="text-center">
+      <h1 class="text-2xl font-bold">{{ currentForum.forumName }}</h1>
+      <p class="text-base text-gray-700">{{ currentForum.description }}</p>
+    </div>
   </header>
 
   <!-- Forum Table -->

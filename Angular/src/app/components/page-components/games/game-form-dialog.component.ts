@@ -100,10 +100,12 @@ export class GameFormDialogComponent {
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
 
       if (this.data.editing) {
-        this.gameService.editGame(this.game.title, gameData).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
-          error: error => this.notificationService.popErrorToast('Editing game failed', error)
-        });
+        if (this.game.title) {
+          this.gameService.editGame(this.game.title, gameData).subscribe({
+            next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
+            error: error => this.notificationService.popErrorToast('Editing game failed', error)
+          });
+        }
         return;
       }
 
@@ -122,10 +124,12 @@ export class GameFormDialogComponent {
           this.tagsList.sort((a, b) => b.priority - a.priority);
   
           var tags = [];
-          for (let i = 0; i < this.tagsList.length; i++) {
-            for (let j = 0; j < this.game.tags.length; j++) {
-              if (this.tagsList[i].id == this.game.tags[j].id) {
-                tags.push(this.tagsList[i]);
+          if (this.game.tags) {
+            for (let i = 0; i < this.tagsList.length; i++) {
+              for (let j = 0; j < this.game.tags.length; j++) {
+                if (this.tagsList[i].id == this.game.tags[j].id) {
+                  tags.push(this.tagsList[i]);
+                }
               }
             }
           }

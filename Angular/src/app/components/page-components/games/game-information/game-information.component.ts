@@ -68,7 +68,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
 
           this.updateUsersScoreText();
 
-          if (this.game.usersScore > 0) {
+          if (this.game.usersScore && this.game.usersScore > 0) {
             this.usersScoreText = "Users score: " + this.game.usersScore;
           } else {
             this.usersScoreText = "No reviews yet";
@@ -87,16 +87,18 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   }
 
   updateUsersScoreText(score?: number) {
-    var calculatedScore = this.game.usersScore;
+    if (this.game.usersScore) {
+      var calculatedScore = this.game.usersScore;
 
-    if (score) {
-      calculatedScore = calculatedScore - score;
-    }
-
-    if (calculatedScore > 0) {
-      this.usersScoreText = "Users score: " + calculatedScore;
-    } else {
-      this.usersScoreText = "No reviews yet";
+      if (score) {
+        calculatedScore = calculatedScore - score;
+      }
+  
+      if (calculatedScore > 0) {
+        this.usersScoreText = "Users score: " + calculatedScore;
+      } else {
+        this.usersScoreText = "No reviews yet";
+      }
     }
   }
 

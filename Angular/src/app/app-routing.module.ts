@@ -16,11 +16,13 @@ import { UserListComponent } from './components/page-components/user/user-list.c
 import { AuthGuard } from './auth.guard';
 import { ForumComponent } from './components/page-components/forum/forum.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
+import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
 
 const routes: Routes = [
   { path: '', component: ForumComponent},
   { path: 'forum/:id', component: ForumComponent},
   { path: 'forum/:forumid/post/:postid', component: ForumPostComponent},
+  { path: 'forum-requests', component: ForumRequestsComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: OwnProfileComponent, canActivate: [AuthGuard]},

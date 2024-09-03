@@ -192,7 +192,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   }
 
   getTags(game: Game) {
-    return game.tags.map(tag => tag.tagName).join(', ');
+    return game.tags?.map(tag => tag.tagName).join(', ');
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

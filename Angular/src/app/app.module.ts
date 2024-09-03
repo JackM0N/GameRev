@@ -66,6 +66,8 @@ import { ForumFormDialogComponent } from './components/page-components/forum/for
 import { ForumPostFormDialogComponent } from './components/page-components/forum/forum-post-form-dialog.component';
 import { GameFormDialogComponent } from './components/page-components/games/game-form-dialog.component';
 import { LibraryFormDialogComponent } from './components/page-components/library/library-form-dialog.component';
+import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
+import { ForumRequestFormDialogComponent } from './components/page-components/forum/forum-request-form-dialog.component';
 
 @NgModule({
     declarations: [
@@ -99,7 +101,9 @@ import { LibraryFormDialogComponent } from './components/page-components/library
         ForumCommentEditDialogComponent,
         ForumFormDialogComponent,
         ForumPostFormDialogComponent,
-        GameFormDialogComponent
+        GameFormDialogComponent,
+        ForumRequestsComponent,
+        ForumRequestFormDialogComponent
     ],
     bootstrap: [
         AppComponent
