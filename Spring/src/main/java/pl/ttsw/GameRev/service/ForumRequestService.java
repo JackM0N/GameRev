@@ -26,15 +26,22 @@ public class ForumRequestService {
     private final ForumRequestMapper forumRequestMapper;
 
     public Page<ForumRequestDTO> getAllForumRequests(Boolean approved, Pageable pageable) {
-        Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
+        Page<ForumRequest> forumRequests = null;
+        if (approved != null) {
+            Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
 
-        Page<ForumRequest> forumRequests = forumRequestRepository.findAll(spec, pageable);
+            forumRequests = forumRequestRepository.findAll(spec, pageable);
+        }else {
+            forumRequests = forumRequestRepository.findAll(pageable);
+        }
         return forumRequests.map(forumRequestMapper::toDto);
     }
 
     public Page<ForumRequestDTO> getAllForumRequestsByOwner(Boolean approved, Pageable pageable) {
-        Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("author"), websiteUserService.getCurrentUser()));
+        Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("author"), websiteUserService.getCurrentUser());
+        if (approved != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("approved"), approved));
+        }
 
         Page<ForumRequest> forumRequests = forumRequestRepository.findAll(spec, pageable);
         return forumRequests.map(forumRequestMapper::toDto);
