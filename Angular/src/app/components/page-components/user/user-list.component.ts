@@ -19,8 +19,7 @@ import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrl: '/src/app/styles/shared-list-styles.css'
+  templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit, AfterViewInit {
   protected totalUsers: number = 0;

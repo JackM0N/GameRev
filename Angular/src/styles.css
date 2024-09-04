@@ -445,3 +445,20 @@ mat-datepicker-toggle > button > span{
     font-family: Arial, sans-serif;
     color: #000;
 }
+
+.pixel-border {
+    position: relative;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+table {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure it fills its container */
+    box-sizing: border-box; /* Ensure padding does not affect the table size */
+}
