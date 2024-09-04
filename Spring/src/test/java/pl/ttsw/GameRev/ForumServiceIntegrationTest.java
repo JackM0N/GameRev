@@ -59,7 +59,7 @@ public class ForumServiceIntegrationTest {
         forumDTO.setGameTitle("Limbus Company");
         forumDTO.setForumName("New Forum");
         forumDTO.setDescription("Description of the new forum");
-        forumDTO.setParentForumId(1L);
+        forumDTO.setParentForumId(2L);
 
         ForumDTO createdForum = forumService.createForum(forumDTO);
 
@@ -67,7 +67,7 @@ public class ForumServiceIntegrationTest {
         assertEquals("New Forum", createdForum.getForumName());
         assertEquals("Limbus Company", createdForum.getGameTitle());
         assertEquals("Description of the new forum", createdForum.getDescription());
-        assertEquals(1L, createdForum.getParentForumId());
+        assertEquals(2L, createdForum.getParentForumId());
         assertEquals(0, createdForum.getPostCount());
         assertFalse(createdForum.getIsDeleted());
     }
@@ -79,7 +79,7 @@ public class ForumServiceIntegrationTest {
         forumDTO.setGameTitle("Gimbus Company");
         forumDTO.setForumName("New Forum");
         forumDTO.setDescription("Description of the new forum");
-        forumDTO.setParentForumId(1L);
+        forumDTO.setParentForumId(2L);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> forumService.createForum(forumDTO));
         assertEquals("Game not found", exception.getMessage());
@@ -124,7 +124,6 @@ public class ForumServiceIntegrationTest {
 
         assertTrue(result);
         Page<ForumDTO> forums = forumService.getForum(1L, forumFilter, PageRequest.of(0, 10));
-        System.out.println(Utils.getAllFieldsToString(forums.getContent(), false));
         assertTrue(forums.getTotalElements() >= 2);
         assertTrue(forums.getContent().get(1).getIsDeleted());
     }
