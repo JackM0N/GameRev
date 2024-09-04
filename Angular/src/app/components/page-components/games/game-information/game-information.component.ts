@@ -115,8 +115,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
           game: this.game,
           completionStatus: undefined,
           isFavourite: false
-        },
-        existingGames: []
+        }
       }
     });
 
