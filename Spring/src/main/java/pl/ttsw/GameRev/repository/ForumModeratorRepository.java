@@ -8,6 +8,5 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 
 @Repository
 public interface ForumModeratorRepository extends JpaRepository<ForumModerator, Long> {
-
     boolean existsByForumAndModerator(Forum forum, WebsiteUser moderator);
 }
