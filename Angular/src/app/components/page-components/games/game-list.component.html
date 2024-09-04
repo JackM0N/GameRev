@@ -1,45 +1,52 @@
 
-<mat-form-field>
-  <mat-label>Release status</mat-label>
-  <mat-select (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
-    <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
-      {{ status.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+  <!-- Filters Section -->
+  <div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+    <div class="synthwaveBg bg-repeat text-white p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <mat-form-field>
+        <mat-label>Release status</mat-label>
+        <mat-select (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
+          <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
+            {{ status.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Tags</mat-label>
-  <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
-    <mat-option *ngFor="let tag of tagList" [value]="tag.id">
-      {{ tag.tagName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+      <mat-form-field>
+        <mat-label>Tags</mat-label>
+        <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
+          <mat-option *ngFor="let tag of tagList" [value]="tag.id">
+            {{ tag.tagName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Release date range</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
-    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
-  </mat-date-range-input>
-  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
+      <mat-form-field>
+        <mat-label>Release date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+          <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
 
-<div class="bg-[#F5F5F5] w-min">
-  <label class="text-sm font-medium text-gray-700">User score</label>
-  <mat-slider min="1" max="10" showTickMarks discrete>
-    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
-    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
-  </mat-slider>
+      <div class="bg-[#F5F5F5] w-min">
+        <label class="text-sm font-medium text-gray-700">User score</label>
+        <mat-slider min="1" max="10" showTickMarks discrete>
+          <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+          <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+        </mat-slider>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Search</mat-label>
+        <input matInput #searchInput>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
-
-<mat-form-field>
-  <mat-label>Search</mat-label>
-  <input matInput #searchInput>
-</mat-form-field>
 
 <div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
   <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
