@@ -476,3 +476,79 @@ VALUES
     ('Disapproved Forum Test', 'Test request the second', 2, 1, 4, false)
 
 
+--changeset Stanislaw:35 labels:expansion,schema
+CREATE UNIQUE INDEX unique_game_parent_forum
+    ON forum (game_id, parent_forum_id)
+    WHERE parent_forum_id = 1;
+
+
+--changeset Stanislaw:36 labels:expansion,fix
+CREATE OR REPLACE FUNCTION update_forum_post_details()
+    RETURNS TRIGGER AS
+'
+    DECLARE
+        forum_post_id_local BIGINT;
+    BEGIN
+        IF TG_OP = ''INSERT'' OR TG_OP = ''UPDATE'' THEN
+            forum_post_id_local := NEW.forum_post_id;
+        ELSIF TG_OP = ''DELETE'' THEN
+            forum_post_id_local := OLD.forum_post_id;
+        END IF;
+        UPDATE forum_post
+        SET last_response_date = (SELECT MAX(post_date)
+                                  FROM forum_comment
+                                  WHERE forum_post_id = forum_post_id_local
+                                    AND forum_comment.is_deleted = false),
+            comment_count      = (SELECT COUNT(*)
+                                  FROM forum_comment
+                                  WHERE forum_post_id = forum_post_id_local
+                                    AND forum_comment.is_deleted = false)
+        WHERE forum_post_id = forum_post_id_local;
+
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION recalculate_forum_post_counts()
+    RETURNS TRIGGER AS
+'
+    DECLARE
+        forum_id_local BIGINT;
+    BEGIN
+        IF TG_OP = ''INSERT'' OR TG_OP = ''UPDATE'' THEN
+            forum_id_local := NEW.forum_id;
+        ELSIF TG_OP = ''DELETE'' THEN
+            forum_id_local := OLD.forum_id;
+        END IF;
+
+        UPDATE forum
+        SET post_count     = (SELECT COUNT(*)
+                              FROM forum_post
+                              WHERE forum_id = forum_id_local
+                                AND forum_post.is_deleted = false),
+            last_post_date = (SELECT MAX(post_date)
+                              FROM forum_post
+                              WHERE forum_id = forum_id_local
+                                AND forum_post.is_deleted = false)
+        WHERE forum_id = forum_id_local;
+
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+
+DROP TRIGGER trigger_post_count ON forum_post;
+CREATE TRIGGER trigger_post_count
+    AFTER INSERT OR UPDATE OR DELETE
+    ON forum_post
+    FOR EACH ROW
+EXECUTE FUNCTION recalculate_forum_post_counts();
+
+DROP TRIGGER trigger_update_forum_post_details ON forum_comment;
+CREATE TRIGGER trigger_update_forum_post_details
+    AFTER INSERT OR UPDATE OR DELETE
+    ON forum_comment
+    FOR EACH ROW
+EXECUTE FUNCTION update_forum_post_details();
+
