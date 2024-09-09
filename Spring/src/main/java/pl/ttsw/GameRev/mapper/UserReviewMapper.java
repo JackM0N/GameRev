@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.mapper;
 import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.model.UserReview;
-
 import java.time.LocalDate;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,

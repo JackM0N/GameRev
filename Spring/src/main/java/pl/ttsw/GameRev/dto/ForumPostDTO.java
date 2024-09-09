@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,5 +24,4 @@ public class ForumPostDTO implements Serializable {
     Long views;
     Boolean isDeleted;
     LocalDateTime deletedAt;
-
 }

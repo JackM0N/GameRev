@@ -29,11 +29,9 @@ import pl.ttsw.GameRev.repository.ForumModeratorRepository;
 import pl.ttsw.GameRev.repository.ForumPostRepository;
 import pl.ttsw.GameRev.service.ForumCommentService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -219,5 +217,4 @@ class ForumCommentServiceTest {
 
         assertThrows(BadCredentialsException.class, () -> forumCommentService.deleteForumComment(1L, true));
     }
-
 }

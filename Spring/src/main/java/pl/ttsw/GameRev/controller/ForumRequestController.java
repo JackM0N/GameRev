@@ -54,8 +54,7 @@ public class ForumRequestController {
     }
 
     @PutMapping("/approve/{id}")
-    public ResponseEntity<ForumRequestDTO> approveForumRequest(@PathVariable Long id,
-                                                 @RequestParam(value = "approved") Boolean approved) {
+    public ResponseEntity<ForumRequestDTO> approveForumRequest(@PathVariable Long id, @RequestParam(value = "approved") Boolean approved) {
         if (id == null || approved == null) {
             return ResponseEntity.badRequest().build();
         }

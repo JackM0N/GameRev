@@ -42,7 +42,11 @@ public class WebsiteUserController {
     }
 
     @PutMapping("/edit-profile/{username}")
-    public ResponseEntity<WebsiteUserDTO> editUserProfile(@PathVariable String username, @RequestBody UpdateWebsiteUserDTO request, Principal principal) throws BadRequestException {
+    public ResponseEntity<WebsiteUserDTO> editUserProfile(
+            @PathVariable String username,
+            @RequestBody UpdateWebsiteUserDTO request,
+            Principal principal) throws BadRequestException
+    {
         String currentUsername = principal.getName();
 
         if (!currentUsername.equals(username)) {
@@ -108,7 +112,8 @@ public class WebsiteUserController {
     public ResponseEntity<?> editUserRole(
             @PathVariable Long id,
             @RequestBody RoleDTO roleDTO,
-            @RequestParam boolean isAdded) throws BadRequestException {
+            @RequestParam boolean isAdded) throws BadRequestException
+    {
         boolean changedRoles = websiteUserService.updateRoles(roleDTO, id, isAdded);
         if (!changedRoles) {
             return ResponseEntity.badRequest().build();

@@ -4,7 +4,6 @@ import org.mapstruct.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.model.CriticReview;
-
 import java.time.LocalDate;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,

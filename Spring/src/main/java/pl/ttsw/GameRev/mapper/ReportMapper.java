@@ -15,7 +15,6 @@ public interface ReportMapper {
     @Mapping(source = "user", target = "user")
     ReportDTO toDto(Report report);
 
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "approved", source = "approved")
     Report partialUpdate(ReportDTO reportDTO, @MappingTarget Report report);

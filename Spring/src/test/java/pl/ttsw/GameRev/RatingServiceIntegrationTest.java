@@ -21,9 +21,7 @@ import pl.ttsw.GameRev.repository.RatingRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.RatingService;
-
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -46,12 +44,13 @@ public class RatingServiceIntegrationTest {
     private GameRepository gameRepository;
 
     private WebsiteUser testUser;
-    private WebsiteUser testUser2;
     private UserReview testUserReview;
-    private Game game;
 
     @BeforeEach
     public void setup() {
+        Game game;
+        WebsiteUser testUser2;
+
         try {
             testUser = websiteUserRepository.findByUsername("testuser").get();
             testUser2 = websiteUserRepository.findByUsername("testadmin").get();
@@ -59,6 +58,7 @@ public class RatingServiceIntegrationTest {
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Test data not found");
         }
+
         testUserReview = new UserReview();
         testUserReview.setUser(testUser2);
         testUserReview.setGame(game);
@@ -93,7 +93,7 @@ public class RatingServiceIntegrationTest {
         initialRating.setUser(testUser);
         initialRating.setUserReview(testUserReview);
         initialRating.setIsPositive(true);
-        initialRating = ratingRepository.save(initialRating);
+        ratingRepository.save(initialRating);
 
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         userReviewDTO.setId(testUserReview.getId());

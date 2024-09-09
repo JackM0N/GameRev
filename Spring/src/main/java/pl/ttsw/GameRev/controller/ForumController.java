@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.dto.SimplifiedUserDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.service.ForumService;
-
 import java.util.List;
 
 @RestController
@@ -23,7 +21,8 @@ public class ForumController {
     @GetMapping("")
     public ResponseEntity<Page<ForumDTO>> getForums(
             ForumFilter forumFilter,
-            Pageable pageable){
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(forumService.getForum(1L, forumFilter, pageable));
     }
 
@@ -31,12 +30,13 @@ public class ForumController {
     public ResponseEntity<Page<ForumDTO>> getForum(
             @PathVariable Long id,
             ForumFilter forumFilter,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(forumService.getForum(id, forumFilter, pageable));
     }
 
     @GetMapping("/moderators/{id}")
-    public ResponseEntity<List<SimplifiedUserDTO>> getModerators(@PathVariable Long id){
+    public ResponseEntity<List<SimplifiedUserDTO>> getModerators(@PathVariable Long id) {
         return ResponseEntity.ok(forumService.getModeratorsForForum(id));
     }
 
@@ -59,7 +59,7 @@ public class ForumController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteForum(@PathVariable Long id, @RequestParam(name = "isDeleted") Boolean isDeleted) throws BadRequestException {
         boolean gotDeleted = forumService.deleteForum(id, isDeleted);
-        if(!gotDeleted){
+        if (!gotDeleted) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();

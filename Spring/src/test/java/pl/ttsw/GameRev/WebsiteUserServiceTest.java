@@ -21,13 +21,11 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.security.IAuthenticationFacade;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -54,14 +52,12 @@ public class WebsiteUserServiceTest {
     private String profilePicsDirectory = "../Pictures/profile_pics/";
 
     private final String username = "testuser";
-    private WebsiteUserDTO userDTO_old;
     private WebsiteUserDTO userDTO_new;
     private WebsiteUser user_new;
-    private Authentication authentication;
 
     @BeforeEach
     public void setUp() {
-        userDTO_old = new WebsiteUserDTO();
+        WebsiteUserDTO userDTO_old = new WebsiteUserDTO();
         userDTO_old.setUsername(username);
         userDTO_old.setPassword("encodedPassword");
         userDTO_old.setNickname(username);
@@ -83,7 +79,7 @@ public class WebsiteUserServiceTest {
 
         // lenient() - so mockito stops throwing UnnecessaryStubbingException for tests where it is not needed
         // it IS needed for some other tests here
-        authentication = mock(Authentication.class);
+        Authentication authentication = mock(Authentication.class);
         lenient().when(authentication.getName()).thenReturn(username + "2");
         lenient().when(authenticationFacade.getAuthentication()).thenReturn(authentication);
     }

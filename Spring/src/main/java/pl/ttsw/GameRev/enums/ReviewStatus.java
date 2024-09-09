@@ -6,7 +6,7 @@ public enum ReviewStatus {
     DELETED("Deleted"),
     EDITED("Edited");
 
-    private String status;
+    final String status;
 
     ReviewStatus(String status) {
         this.status = status;

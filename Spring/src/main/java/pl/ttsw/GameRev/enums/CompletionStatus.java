@@ -7,7 +7,7 @@ public enum CompletionStatus {
     PLANNING("Planning"),
     DROPPED("Dropped");
 
-    String status;
+    final String status;
 
     CompletionStatus(String completionStatus) {
         this.status = completionStatus;

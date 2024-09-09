@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.filter.ForumFilter;
 import pl.ttsw.GameRev.service.ForumService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.dto.SimplifiedUserDTO;
@@ -23,7 +22,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,10 +44,10 @@ public class ForumService {
         try {
             WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-            if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+            if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
                 forumFilter.setIsDeleted(false);
             }
-        }catch (Exception e){
+        } catch (Exception e){
             forumFilter.setIsDeleted(false);
         }
 

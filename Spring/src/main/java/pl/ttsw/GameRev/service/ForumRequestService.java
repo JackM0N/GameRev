@@ -26,14 +26,16 @@ public class ForumRequestService {
     private final ForumRequestMapper forumRequestMapper;
 
     public Page<ForumRequestDTO> getAllForumRequests(Boolean approved, Pageable pageable) {
-        Page<ForumRequest> forumRequests = null;
+        Page<ForumRequest> forumRequests;
+
         if (approved != null) {
             Specification<ForumRequest> spec = (root, query, builder) -> builder.equal(root.get("approved"), approved);
 
             forumRequests = forumRequestRepository.findAll(spec, pageable);
-        }else {
+        } else {
             forumRequests = forumRequestRepository.findAll(pageable);
         }
+
         return forumRequests.map(forumRequestMapper::toDto);
     }
 
@@ -110,10 +112,11 @@ public class ForumRequestService {
         boolean isAuthor = forumRequest.getAuthor().equals(currentUser);
         boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()));
-        if(isAuthor || isAdmin) {
+
+        if (isAuthor || isAdmin) {
             forumRequestRepository.delete(forumRequest);
             return true;
-        }else {
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }

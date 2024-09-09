@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -12,14 +11,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
-import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,7 +89,6 @@ public class GameService {
                 newGame.setPicture(filepath.toString());
             }
 
-
             List<Tag> tags = game.getTags().stream()
                     .map(tagDTO -> tagRepository.findById(tagDTO.getId())
                             .orElseThrow(() -> new RuntimeException("Invalid tag ID")))
@@ -149,5 +145,4 @@ public class GameService {
         }
         return false;
     }
-
 }

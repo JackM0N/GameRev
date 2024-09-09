@@ -7,7 +7,7 @@ public enum ReleaseStatus {
     CANCELED("Canceled"),
     END_OF_SERVICE("End Of Service");
 
-    String status;
+    final String status;
 
     ReleaseStatus(String status) {
         this.status = status;

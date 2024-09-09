@@ -19,7 +19,6 @@ import pl.ttsw.GameRev.model.ForumComment;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +40,7 @@ public class ForumCommentService {
     public Page<ForumCommentDTO> getForumCommentsByPost(Long id, ForumCommentFilter forumCommentFilter, Pageable pageable) {
         ForumPost post = forumPostRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Forum post not found"));
+
         Specification<ForumComment> spec = getForumCommentSpecification(forumCommentFilter, post);
         Page<ForumComment> forumComments = forumCommentRepository.findAll(spec, pageable);
         post.setViews(post.getViews() + 1);

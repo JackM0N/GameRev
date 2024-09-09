@@ -13,7 +13,6 @@ import pl.ttsw.GameRev.mapper.CriticReviewMapper;
 import pl.ttsw.GameRev.model.CriticReview;
 import pl.ttsw.GameRev.repository.CriticReviewRepository;
 import pl.ttsw.GameRev.service.CriticReviewService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

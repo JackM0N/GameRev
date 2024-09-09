@@ -24,7 +24,6 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserGameService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

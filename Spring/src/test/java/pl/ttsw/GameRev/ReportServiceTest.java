@@ -24,10 +24,8 @@ import pl.ttsw.GameRev.repository.ReportRepository;
 import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.service.ReportService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;

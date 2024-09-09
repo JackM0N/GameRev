@@ -30,10 +30,13 @@ public class CriticReviewController {
     @GetMapping("/{title}")
     public ResponseEntity<CriticReviewDTO> getByTitle(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-", " ");
+
         CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewByTitle(title);
+
         if (criticReviewDTO == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(criticReviewDTO);
     }
 
@@ -47,7 +50,8 @@ public class CriticReviewController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<CriticReviewDTO> update(@RequestBody CriticReviewDTO criticReviewDTO,
-                                    @PathVariable long id) throws BadRequestException {
+                                    @PathVariable long id) throws BadRequestException
+    {
         if (criticReviewDTO == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -56,7 +60,8 @@ public class CriticReviewController {
 
     @PutMapping("/review/{id}")
     public ResponseEntity<CriticReviewDTO> review(@RequestParam ReviewStatus reviewStatus,
-                                    @PathVariable long id) throws BadRequestException {
+                                    @PathVariable long id) throws BadRequestException
+    {
         if (reviewStatus == null) {
             return ResponseEntity.badRequest().build();
         }
