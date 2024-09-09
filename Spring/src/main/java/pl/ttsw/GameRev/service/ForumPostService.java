@@ -1,6 +1,5 @@
 package pl.ttsw.GameRev.service;
 
-import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
