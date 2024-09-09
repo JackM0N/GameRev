@@ -20,4 +20,5 @@ public class GameFilter {
     private Float maxUserScore;
     List<Long> tagIds;
     List<ReleaseStatus> releaseStatuses;
+    private String searchText;
 }

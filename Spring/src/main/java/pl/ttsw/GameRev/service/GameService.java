@@ -2,6 +2,7 @@ package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,18 @@ public class GameService {
             spec = spec.and((root, query, builder) -> {
                 Join<Game, Tag> tagJoin = root.join("tags");
                 return tagJoin.get("id").in(gameFilter.getTagIds());
+            });
+        }
+        if (gameFilter.getSearchText() != null) {
+            String likePattern = "%" + gameFilter.getSearchText().toLowerCase() + "%";
+
+            spec = spec.and((root, query, builder) -> {
+                Predicate titlePredicate = builder.like(builder.lower(root.get("title")), likePattern);
+                Predicate developerPredicate = builder.like(builder.lower(root.get("developer")), likePattern);
+                Predicate descriptionPredicate = builder.like(builder.lower(root.get("description")), likePattern);
+                Predicate publisherPredicate = builder.like(builder.lower(root.get("publisher")), likePattern);
+
+                return builder.or(titlePredicate, developerPredicate, descriptionPredicate, publisherPredicate);
             });
         }
 
