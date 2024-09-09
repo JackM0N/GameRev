@@ -51,10 +51,6 @@ export class LibraryFormDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userGame.user = { username: this.authService.getUsername() };
-
-    this.loadGames();
-
     if (this.data.userGame) {
       this.userGame = this.data.userGame;
 
@@ -76,28 +72,33 @@ export class LibraryFormDialogComponent implements OnInit {
         }
       });
     }
+    
+    this.userGame.user = { username: this.authService.getUsername() };
+    this.loadGames();
   }
 
   loadGames() {
     const observer: Observer<any> = {
       next: response => {
-        this.gameList = response.content;
+        if (response) {
+          this.gameList = response.content;
 
-        if (this.data.existingGames) {
-          const existingGameTitles = new Set(this.data.existingGames.map(game => game.game?.title));
-          this.gameList = this.gameList.filter(game => !existingGameTitles.has(game.title));
-
-        } else {
-          this.userGame.game = this.data.userGame.game;
-
-          this.gameList.forEach((game) => {
-            if (game.id == this.userGame.game?.id) {
-              this.userGame.game = game;
-              this.libraryForm.patchValue({
-                game: game
-              });
-            }
-          });
+          if (this.data.existingGames) {
+            const existingGameTitles = new Set(this.data.existingGames.map(game => game.game?.title));
+            this.gameList = this.gameList.filter(game => !existingGameTitles.has(game.title));
+  
+          } else {
+            this.userGame.game = this.data.userGame.game;
+  
+            this.gameList.forEach((game) => {
+              if (game.id == this.userGame.game?.id) {
+                this.userGame.game = game;
+                this.libraryForm.patchValue({
+                  game: game
+                });
+              }
+            });
+          }
         }
       },
       error: error => {
