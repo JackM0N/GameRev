@@ -20,6 +20,12 @@ export class UserService {
   ) {}
 
   getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<WebsiteUser> {
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
     let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
@@ -42,7 +48,7 @@ export class UserService {
       params = params.set('searchText', filters.search);
     }
     
-    return this.http.get<WebsiteUser>(this.baseUrl, { params });
+    return this.http.get<WebsiteUser>(this.baseUrl, { params, headers });
   }
 
   getUser(nickname: string): Observable<WebsiteUser> {
