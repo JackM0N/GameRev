@@ -20,20 +20,22 @@ import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 import { gameFilters } from '../../../interfaces/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-game-list',
   templateUrl: './game-list.component.html'
 })
 export class GameListComponent extends BaseAdComponent implements AfterViewInit {
-  public gamesList: Game[] = [];
-  public totalGames: number = 0;
-  public dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  public displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+  protected gamesList: Game[] = [];
+  protected totalGames: number = 0;
+  protected dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
+  protected displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
-  public releaseStatuses = releaseStatuses;
-  public tagList: Tag[] = [];
+  protected releaseStatuses = releaseStatuses;
+  protected tagList: Tag[] = [];
   private filters: gameFilters = {};
+  protected filterForm: FormGroup;
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,6 +43,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   constructor(
     private gameService: GameService,
+    private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
     public authService: AuthService,
@@ -51,6 +54,20 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
+
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      releaseStatuses: [null],
+      tags: [null],
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      }),
+      search: [null]
+    });
   }
 
   override ngOnInit(): void {
@@ -266,6 +283,14 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadGames();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadGames();
   }
 }

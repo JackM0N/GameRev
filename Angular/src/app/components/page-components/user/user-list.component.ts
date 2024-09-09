@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import { Role } from '../../../interfaces/role';
 import { userFilters } from '../../../interfaces/userFilters';
 import { BackgroundService } from '../../../services/background.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-user-list',
@@ -32,16 +33,29 @@ export class UserListComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
   private filters: userFilters = {};
+  protected filterForm: FormGroup;
 
   constructor(
     private userService: UserService,
     private notificationService: NotificationService,
     private authService: AuthService,
     private backgroundService: BackgroundService,
+    private fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
     protected dialog: MatDialog
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      isBanned: [null],
+      isDeleted: [null],
+      roles: [null],
+      search: [null]
+    });
+  }
 
   ngOnInit() {
     this.backgroundService.setClasses(['fallingCds']);
@@ -216,5 +230,11 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   parseRoles(roles: Role[]): string {
     return roles.map(role => role.roleName).join(', ');
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.loadUsers();
   }
 }

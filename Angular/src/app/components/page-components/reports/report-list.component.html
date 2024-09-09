@@ -1,26 +1,36 @@
 
+
 <!-- Filters Section -->
 <div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
   <div class="synthwaveBg bg-repeat text-white p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <mat-form-field>
-        <mat-label>Post date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
-          <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
-        </mat-date-range-input>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
+      <form [formGroup]="filterForm" class="contents">
+        <!-- Post date -->
+        <mat-form-field>
+          <mat-label>Post date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+            <input matStartDate formControlName="start" placeholder="From" (dateChange)="onStartDateChange($event)">
+            <input matEndDate formControlName="end" placeholder="To" (dateChange)="onEndDateChange($event)">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+  
+      <!-- Score -->
+        <div class="bg-[#F5F5F5] grow p-4 rounded-md">
+          <label class="text-base text-[rgb(98,98,126)] pr-4">Score</label>
+          <mat-slider min="1" max="10" showTickMarks discrete formGroupName="userScore">
+            <input formControlName="min" value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+            <input formControlName="max" value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+          </mat-slider>
+        </div>
+      </form>
+    </div>
 
-      <div class="bg-[#F5F5F5] grow p-4 rounded-md">
-        <label class="text-base text-[rgb(98,98,126)] pr-4">Score</label>
-        <mat-slider min="1" max="10" showTickMarks discrete>
-          <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
-          <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
-        </mat-slider>
-      </div>
+    <!-- Clear Filters Button -->
+    <div class="absolute bottom-4 right-4">
+      <button class="bg-[#FF00FF] text-white px-6 py-2 rounded-lg" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
 </div>

@@ -12,6 +12,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { reviewFilters } from '../../../interfaces/reviewFilters';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -32,7 +33,9 @@ export class ReportListComponent implements AfterViewInit {
   public reportsList: ReportInformation[] = [];
   public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
   public formatDate = formatDateArray;
+  
   private filters: reviewFilters = {};
+  protected filterForm: FormGroup;
 
   @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
   @ViewChildren(MatPaginator) paginators!: QueryList<MatPaginator>;
@@ -41,9 +44,21 @@ export class ReportListComponent implements AfterViewInit {
   constructor(
     private reportService: ReportService,
     private notificationService: NotificationService,
+    private fb: FormBuilder,
     public dialog: MatDialog,
     private datePipe: DatePipe,
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      })
+    });
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -236,6 +251,14 @@ export class ReportListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }
