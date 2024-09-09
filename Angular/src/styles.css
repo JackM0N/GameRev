@@ -446,11 +446,6 @@ mat-datepicker-toggle > button > span{
     color: #000;
 }
 
-.pixel-border {
-    position: relative;
-    overflow: hidden;
-}
-
 table {
     width: 100%;
     box-sizing: border-box;

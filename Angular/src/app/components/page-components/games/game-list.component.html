@@ -48,14 +48,14 @@
   </div>
 </div>
 
-<div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
+<div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
   <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
     <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
       <button class="pinkTextShadowWide" (click)="openAddNewGameDialog()">Add a new game</button>
     </div>
   </div>
   
-  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
+  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto overflow-x-auto">
     <div class="px-1">
       <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadGames()" >
         <ng-container matColumnDef="id">
@@ -117,13 +117,13 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-    </div>
 
-    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-      [length]="totalGames"
-      [pageSize]="5"
-      [pageSizeOptions]="[2, 5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
+      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+        [length]="totalGames"
+        [pageSize]="5"
+        [pageSizeOptions]="[2, 5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
   </div>
 </div>
