@@ -55,8 +55,8 @@
     </div>
   </div>
   
-  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto overflow-x-auto">
-    <div class="px-1">
+  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
+    <div class="px-1 overflow-x-auto">
       <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadGames()" >
         <ng-container matColumnDef="id">
           <th class="hidden" mat-sort-header="id" *matHeaderCellDef> Id </th>
@@ -117,13 +117,13 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-
-      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        [length]="totalGames"
-        [pageSize]="5"
-        [pageSizeOptions]="[2, 5, 10, 20]"
-        showFirstLastButtons>
-      </mat-paginator>
     </div>
+
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalGames"
+      [pageSize]="5"
+      [pageSizeOptions]="[2, 5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
   </div>
 </div>

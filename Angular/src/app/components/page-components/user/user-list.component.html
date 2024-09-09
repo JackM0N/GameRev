@@ -57,8 +57,8 @@
   </div>
 
   <!-- Users Table Section -->
-  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit m-auto">
-    <div class="px-1">
+  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
+    <div class="px-1 overflow-x-auto">
       <table mat-table [dataSource]="dataSource" matSort (matSortChange)="loadUsers()" class="appearance-none bg-black">
         <!-- Id Column -->
         <ng-container matColumnDef="id">
