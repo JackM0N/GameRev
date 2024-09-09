@@ -31,25 +31,25 @@ import { UserService } from '../../../services/user.service';
 export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
   @Input() post?: ForumPost;
   @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTimeArray = formatDateTimeArray;
+  protected formatDateTimeArray = formatDateTimeArray;
 
-  public commentsList: any[] = [];
-  public totalComments: number = 0;
-  public path?: any;
-  public commentForm: FormGroup;
-  public minLength: number = 4;
-  public moderators: WebsiteUser[] = [];
-  public imageUrl?: string;
-  public authorProfilePic?: string;
+  protected commentsList: any[] = [];
+  protected totalComments: number = 0;
+  protected path?: any;
+  protected commentForm: FormGroup;
+  protected minLength: number = 4;
+  protected moderators: WebsiteUser[] = [];
+  protected imageUrl?: string;
+  protected authorProfilePic?: string;
 
-  public quillToolbarOptions = [
+  protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
     [{ 'color': [] }, { 'background': [] }],
     ['clean']
   ];
 
   constructor(
-    public authService: AuthService,
+    protected authService: AuthService,
     private forumService: ForumService,
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
@@ -58,8 +58,8 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     private userService: UserService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -71,6 +71,9 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.backgroundService.setClasses(['fallingCds']);
+    
     this.route.params.subscribe(params => {
       if (params['postid']) {
         this.loadPost(params['postid']);

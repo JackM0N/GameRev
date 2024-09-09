@@ -422,7 +422,6 @@ mat-datepicker-toggle > button > span{
     font-size: 14px;
     
     font-family: Arial, sans-serif !important; /* Ensure normal font */
-    color: #000 !important; /* Set text color to black */
     text-shadow: none !important; /* Remove any text shadow */
 }
 
@@ -443,7 +442,11 @@ mat-datepicker-toggle > button > span{
 .quill-editor-custom .ql-editor {
     font-size: 14px;
     font-family: Arial, sans-serif;
-    color: #000;
+}
+
+.ql-editor::before {
+    color: inherit !important;
+    font-style: italic;
 }
 
 table {

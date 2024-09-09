@@ -5,7 +5,6 @@ import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
-import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { formatDateArray } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
@@ -41,7 +40,6 @@ export class ReportListComponent implements AfterViewInit {
 
   constructor(
     private reportService: ReportService,
-    private authService: AuthService,
     private notificationService: NotificationService,
     public dialog: MatDialog,
     private datePipe: DatePipe,
