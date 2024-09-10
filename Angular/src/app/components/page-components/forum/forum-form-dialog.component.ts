@@ -40,7 +40,7 @@ export class ForumFormDialogComponent {
     }
   ) {
     this.forumForm = this.formBuilder.group({
-      parentForum: [this.parentForumId],
+      parentForum: [this.parentForumId, [Validators.required]],
       name: [this.name, [Validators.required, Validators.minLength(this.nameMinLength)]],
       description: [this.description, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
       game: [this.game, [Validators.required]]
@@ -151,6 +151,7 @@ export class ForumFormDialogComponent {
           next: () => { this.notificationService.popSuccessToast('Forum edited'); },
           error: error => this.notificationService.popErrorToast('Forum editing failed', error)
         });
+        this.dialogRef.close(true);
         return;
       }
 
@@ -163,14 +164,11 @@ export class ForumFormDialogComponent {
         next: () => { this.notificationService.popSuccessToast('Forum added'); },
         error: error => this.notificationService.popErrorToast('Forum adding failed', error)
       });
-
-    } else {
-      console.error('Form is invalid');
+      this.dialogRef.close(true);
     }
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);
     this.submitForm();
   }
 

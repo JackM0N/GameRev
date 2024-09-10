@@ -129,15 +129,24 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   toggleLike(review: UserReview) {
-    if (review.ownRatingIsPositive === true) {
-      review.ownRatingIsPositive = undefined;
-      if (review.positiveRating != undefined) {
+    // If the user has already liked the review, remove the like
+    if (review.ownRatingIsPositive == true) {
+      review.ownRatingIsPositive = null;
+      if (review.positiveRating != null) {
         review.positiveRating--;
       }
 
     } else {
+      // If the user has already disliked the review, remove the dislike
+      if (review.ownRatingIsPositive == false) {
+        if (review.negativeRating != null) {
+          review.negativeRating--;
+        }
+      }
+
+      // Add a like to the review
       review.ownRatingIsPositive = true;
-      if (review.positiveRating != undefined) {
+      if (review.positiveRating != null) {
         review.positiveRating++;
       }
     }
@@ -146,13 +155,22 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   toggleDislike(review: UserReview) {
-    if (review.ownRatingIsPositive === false) {
-      review.ownRatingIsPositive = undefined;
-      if (review.negativeRating != undefined) {
+    // If the user has already disliked the review, remove the dislike
+    if (review.ownRatingIsPositive == false) {
+      review.ownRatingIsPositive = null;
+      if (review.negativeRating != null) {
         review.negativeRating--;
       }
 
     } else {
+      // If the user has already liked the review, remove the like
+      if (review.ownRatingIsPositive == true) {
+        if (review.positiveRating != null) {
+          review.positiveRating--;
+        }
+      }
+
+      // Add a dislike to the review
       review.ownRatingIsPositive = false;
       if (review.negativeRating != undefined) {
         review.negativeRating++;

@@ -1,5 +1,5 @@
 
-<div class="p-8 bg-[#1E1E1E] min-h-screen text-white font-arcade">
+<div class="p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
@@ -12,7 +12,7 @@
   </nav>
 
   <!-- Forum Header with Button Aligned and Title Centered -->
-  <header class="forum-header mt-6 relative bg-[#2A2A2A] shadow-lg rounded-lg p-6 border border-[#00CFFF]">
+  <header class="forum-header mt-6 relative bg-[#222222] shadow-lg rounded-lg p-6 border border-[#00CFFF]">
     <!-- Button to View All Requests (Positioned on the right) -->
     <div class="absolute right-6 top-6" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
       <button class="bg-[#FF00FF] text-white px-4 py-2 rounded-lg" (click)="routeToRequests()">
@@ -28,7 +28,7 @@
   </header>
 
   <!-- Forum Table -->
-  <div *ngIf="currentForum" [hidden]="noSubForums" class="mt-8 bg-[#2A2A2A] shadow-lg rounded-lg overflow-hidden border border-[#00CFFF]">
+  <div *ngIf="currentForum" [hidden]="noSubForums" class="mt-8 bg-[#222222] shadow-lg rounded-lg overflow-hidden border border-[#00CFFF]">
     <div class="px-6 py-4">
       <h2 class="text-3xl font-bold text-[#E5E5E5] mb-4">Subforums</h2>
       <table class="w-full border-collapse">
@@ -66,11 +66,11 @@
 
             <!-- Actions column with edit button -->
             <td class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-yellow-600" (click)="openEditSubforumDialog(subforum)">
+              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-yellow-600 mr-2" (click)="openEditSubforumDialog(subforum)">
                 <i class="material-icons">edit</i>
               </button>
-    
-              <button class="bg-red-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-red-600 ml-2" (click)="openDeleteSubforumDialog(subforum)">
+
+              <button class="bg-red-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-red-600" (click)="openDeleteSubforumDialog(subforum)">
                 <i class="material-icons">delete</i>
               </button>
             </td>
