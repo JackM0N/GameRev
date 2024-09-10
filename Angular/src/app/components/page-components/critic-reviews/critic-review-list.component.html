@@ -27,7 +27,7 @@
         </mat-form-field>
 
         <!-- Score Slider -->
-        <div class="bg-[#F5F5F5] synthwaveSlider p-4 rounded-md">
+        <div class="bg-[#F5F5F5] synthwaveSlider p-4">
           <label class="text-base text-[rgb(98,98,126)] pr-4">Score</label>
           <mat-slider min="1" max="10" showTickMarks discrete formGroupName="userScore">
             <input formControlName="min" value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
@@ -45,7 +45,7 @@
 
     <!-- Clear Filters Button -->
     <div class="absolute bottom-4 right-4">
-      <button class="bg-[#FF00FF] text-white px-6 py-2 rounded-lg synthwaveButton font-arcade" (click)="clearFilters()">Clear Filters</button>
+      <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
 </div>

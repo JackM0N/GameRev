@@ -1,32 +1,42 @@
 
-<div class="container">
+<div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full pinkTextShadow">
     <!-- GAME INFO -->
-    <h3>{{this.game.title}}</h3>
-    <p>Developer: {{this.game.developer}}</p>
-    <p>Publisher: {{this.game.publisher}}</p>
-    <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
-    <p>Release status: {{this.game.releaseStatus}}</p>
-    <p>Description: {{this.game.description}}</p>
-    <p>{{this.usersScoreText}}</p>
+    <div class="text-3xl my-3">{{this.game.title}}</div>
+
+    <div class="absolute right-6 top-6" *ngIf="this.authService.isAuthenticated()">
+        <button class="bg-[#FF00FF] text-white px-4 py-2 rounded-lg text-sm" (click)="openLibraryFormDialog()">
+            Add to Library
+        </button>
+    </div>
+
+    <div class="p-2 m-2 bg-[#222222] border-[2px] border-white">
+        <div>Developer: {{this.game.developer}}</div>
+        <div>Publisher: {{this.game.publisher}}</div>
+        <div>Release date: {{formatDate(this.game.releaseDate)}}</div>
+        <div>Release status: {{this.game.releaseStatus}}</div>
+        <p class="text-lg">{{this.usersScoreText}}</p>
+    </div>
+
+    <p class="py-4">{{this.game.description}}</p>
 
     <!-- TAGS -->
     <div class="grid-container">
-        <div class="grid-item" *ngFor="let tag of game.tags">
+        <div class="grid-item px-3 py-1 border-[2px] border-white bg-[#212121]" *ngFor="let tag of game.tags">
         {{ tag.tagName }}
         </div>
     </div>
 
-    <button id="add-to-library-button" type="button" mat-stroked-button (click)="openLibraryFormDialog()">Add to Library</button>
-
     <!-- CRITIC REVIEWS -->
-    <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+    <div *ngIf="gameTitle">
+        <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
 
-    <!-- REVIEWS -->
-    <app-gameinfo-review-list
-        [gameTitle]="gameTitle"
-        [game]="game"
-        (usersScoreUpdated)="updateUsersScoreText($event)">>
-    </app-gameinfo-review-list>
+        <!-- REVIEWS -->
+        <app-gameinfo-review-list
+            [gameTitle]="gameTitle"
+            [game]="game"
+            (usersScoreUpdated)="updateUsersScoreText($event)">>
+        </app-gameinfo-review-list>
+    </div>
     
     <button id="goback-button" type="button" mat-stroked-button (click)="goBack()">Go back</button>
 </div>

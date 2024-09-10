@@ -18,7 +18,7 @@
   </mat-slider>
 </div>
 
-<h3>Reviews</h3>
+<div class="p-2 text-2xl">User reviews</div>
 <div class="review-container">
   <div class="review-item" *ngFor="let review of reviewList">
     <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDateArray(review.postDate) }}</p>

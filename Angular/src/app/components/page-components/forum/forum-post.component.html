@@ -14,11 +14,11 @@
 
 <div class="post-page container mx-auto max-w-[800px] p-[20px] py-8 bg-[#1E1E1E] text-white font-arcade">
   <!-- Original Post -->
-  <div class="original-post bg-[#2A2A2A] border border-[#00CFFF] p-6 rounded-lg mb-8" *ngIf="post">
+  <div class="original-post bg-[#2A2A2A] border border-[#00CFFF] p-6 mb-8" *ngIf="post">
     <div class="post-header flex justify-between items-center mb-4">
       <div class="flex items-center space-x-4">
         <!-- Author Image -->
-        <img [src]="authorProfilePic || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Author Image" class="w-12 h-12 rounded-full border border-[#00CFFF] object-cover">
+        <img [src]="authorProfilePic || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Author Image" class="w-12 h-12 rounded-full object-cover">
         
         <div>
           <h2 class="text-2xl font-bold text-[#E5E5E5] mb-1">{{ post.title }}</h2>
@@ -39,17 +39,17 @@
     </div>
 
     <div class="post-body mt-4">
-      <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-[#00CFFF] object-cover mt-4 mb-4 rounded-lg">
+      <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-[#00CFFF] object-cover mt-4 mb-4">
       <p class="text-[#E5E5E5]" [innerHTML]="post.content"></p>
     </div>
   </div>
 
   <!-- Replies Section -->
   <div class="comments-section">
-    <div *ngFor="let comment of commentsList; let i = index" class="comment bg-[#2A2A2A] p-6 border border-[#00CFFF] rounded-lg mb-4">
+    <div *ngFor="let comment of commentsList; let i = index" class="comment bg-[#2A2A2A] p-6 border border-[#00CFFF] mb-4">
       <div class="flex items-start space-x-4">
         <!-- Commenter Image -->
-        <img [src]="comment.author.nickname == post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')" alt="Commenter profile picture" class="w-10 h-10 rounded-full border border-[#00CFFF] object-cover">
+        <img [src]="comment.author.nickname == post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')" alt="Commenter profile picture" class="w-12 h-12 rounded-full object-cover">
 
         <div class="flex-1">
           <div class="comment-header flex justify-between items-center text-sm text-[#B0B0B0] mb-2">
@@ -79,7 +79,7 @@
   </div>
 
   <!-- Add Comment -->
-  <div class="add-comment-section bg-[#2A2A2A] border border-[#00CFFF] p-6 rounded-lg mb-8">
+  <div class="add-comment-section bg-[#2A2A2A] border border-[#00CFFF] p-6 mb-8">
     <div class="post-header">
       <h2 class="text-2xl font-bold text-[#E5E5E5] mb-2">Add a Comment</h2>
     </div>
@@ -87,7 +87,7 @@
       <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
         <div id="content-container">
           <quill-editor
-            class="quill-editor-custom bg-[#1E1E1E] text-white border border-[#00CFFF] rounded-lg"
+            class="quill-editor-custom bg-[#1E1E1E] text-white border border-[#00CFFF]"
             formControlName="content"
             [modules]="{ toolbar: quillToolbarOptions }"
             [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
@@ -101,7 +101,7 @@
         </div>
 
         <div class="mt-6">
-          <button class="bg-[#FF00FF] text-white px-4 py-2 rounded-lg" color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">
+          <button class="synthwaveButton" color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">
             Submit
           </button>
         </div>

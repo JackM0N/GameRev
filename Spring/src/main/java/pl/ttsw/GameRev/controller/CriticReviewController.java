@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.filter.CriticReviewFilter;
 import pl.ttsw.GameRev.service.CriticReviewService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/critics-reviews")
@@ -31,13 +35,12 @@ public class CriticReviewController {
     public ResponseEntity<CriticReviewDTO> getByTitle(@PathVariable String title) throws BadRequestException {
         title = title.replaceAll("-", " ");
 
-        CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewByTitle(title);
-
-        if (criticReviewDTO == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            CriticReviewDTO criticReviewDTO = criticReviewService.getCriticReviewByTitle(title);
+            return ResponseEntity.ok(criticReviewDTO);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        return ResponseEntity.ok(criticReviewDTO);
     }
 
     @PostMapping("/create")

@@ -48,7 +48,7 @@ export class LibraryFormDialogComponent implements OnInit {
       game: [{value: this.userGame.game, disabled: this.data.editing}, [Validators.required]]
     });
 
-    this.title = this.data.editing ? 'Edit Game' : 'Add a new Game';
+    this.title = this.data.editing ? 'Edit library' : 'Add to library';
   }
 
   ngOnInit(): void {

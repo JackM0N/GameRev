@@ -12,6 +12,7 @@ import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { GameInfoReviewListComponent } from './review-list.component';
 import { LibraryFormDialogComponent } from '../../library/library-form-dialog.component';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-game-information',
@@ -19,17 +20,17 @@ import { LibraryFormDialogComponent } from '../../library/library-form-dialog.co
   styleUrl: './game-information.component.css'
 })
 export class GameInformationComponent extends BaseAdComponent implements OnInit {
-  @ViewChild(GameInfoReviewListComponent) reviewListComponent!: GameInfoReviewListComponent;
+  @ViewChild(GameInfoReviewListComponent) protected reviewListComponent!: GameInfoReviewListComponent;
   
-  formatDate = formatDateArray;
-  releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  likeColor: 'primary' | '' = '';
-  dislikeColor: 'warn' | '' = '';
-  usersScoreText: string = '';
+  protected formatDate = formatDateArray;
+  protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
+  protected likeColor: 'primary' | '' = '';
+  protected dislikeColor: 'warn' | '' = '';
+  protected usersScoreText: string = '';
 
-  gameTitle: string = '';
+  protected gameTitle: string = '';
 
-  game: Game = {
+  protected game: Game = {
     title: '',
     developer: '',
     publisher: '',
@@ -44,8 +45,9 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     private route: ActivatedRoute,
     private gameService: GameService,
     private _location: Location,
-    public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected authService: AuthService,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -53,6 +55,8 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   }
 
   override ngOnInit() {
+    this.backgroundService.setClasses(['fallingCds']);
+
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');
@@ -82,9 +86,13 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
 
-    this.reviewListComponent.usersScoreUpdated.subscribe(newScore => {
-      this.updateUsersScoreText(newScore);
-    });
+    setTimeout(() => {
+      if (this.reviewListComponent) {
+        this.reviewListComponent.usersScoreUpdated.subscribe(newScore => {
+          this.updateUsersScoreText(newScore);
+        });
+      }
+    }, 0);
   }
 
   updateUsersScoreText(score?: number) {

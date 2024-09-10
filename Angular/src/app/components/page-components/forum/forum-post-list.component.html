@@ -1,6 +1,6 @@
 
 <!-- Forum Posts Table -->
-<div class="forum-posts mt-4 bg-[#222222] shadow-lg rounded-lg overflow-hidden border border-[#00CFFF] px-6 py-4">
+<div class="forum-posts mt-4 bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] px-6 py-4">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold">Posts</h2>
     <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
@@ -44,11 +44,11 @@
         </td>
 
         <td class="pl-2 border border-gray-300" *ngIf="canManagePost(post) || isModerator()">
-          <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-yellow-600" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
+          <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
             <i class="material-icons">edit</i>
           </button>
 
-          <button class="bg-red-500 text-white px-3 pb-1 pt-2 rounded-lg hover:bg-red-600 ml-2" (click)="openDeletePostDialog(post)">
+          <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600 ml-2" (click)="openDeletePostDialog(post)">
             <i class="material-icons">delete</i>
           </button>
         </td>
@@ -63,7 +63,7 @@
 
 <!-- Add new post -->
 <div class="mt-6">
-  <button class="bg-[#FF00FF] text-white px-4 py-2 rounded-lg" (click)="openNewPostDialog()">Add new post</button>
+  <button class="synthwaveButton" (click)="openNewPostDialog()">Add new post</button>
 </div>
 
 <!-- Paginator -->

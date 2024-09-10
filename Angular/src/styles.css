@@ -211,6 +211,11 @@ body {
     border: none;
 }
 
+.mdc-text-field {
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+
 .mat-mdc-paginator-container{
     display: flex;
     flex-direction: column;
@@ -459,4 +464,35 @@ table {
 
 .mdc-data-table__row:last-child .mat-mdc-cell {
     border-bottom: 2px solid white !important; /* Or any style you prefer */
+}
+
+
+.synthwaveButton {
+    background-color: #FF00FF;
+    color: white;
+    padding: 8px 14px;
+    font-family: 'arcade';
+
+    border-bottom: 3px solid #36fcff;
+    border-right: 3px solid #36fcff;
+}
+
+.synthwaveButton:hover {
+    border: none;
+    background-color: #db00db;
+
+    margin-top: 3px;
+    margin-left: 3px;
+    border: none;
+}
+
+.synthwaveButton:disabled {
+    background-color: #a100a1;
+    color: rgb(203, 203, 203);
+    border: none;
+}
+
+button:disabled:hover {
+    cursor: not-allowed;
+    margin: 0;
 }

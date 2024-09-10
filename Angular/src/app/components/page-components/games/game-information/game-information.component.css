@@ -7,9 +7,6 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
 }
 
 .grid-container {
@@ -22,12 +19,7 @@ p {
 }
 
 .grid-item {
-    background-color: #fff;
-    padding: 4px;
-    text-align: center;
-    border: 1px solid #ddd;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -31,7 +31,9 @@ export class GameInfoCriticReviewComponent {
     // Load critic review
     this.criticReviewService.getCriticReviewsByGameTitle(this.gameTitle).subscribe({
       next: response => {
-        this.criticReview = response;
+        if (response) {
+          this.criticReview = response;
+        }
       },
       error: err => {
         console.error('Error fetching critic review:', err);
