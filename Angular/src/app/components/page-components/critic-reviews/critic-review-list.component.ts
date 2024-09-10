@@ -11,17 +11,18 @@ import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-critic-review-list',
-  templateUrl: './critic-review-list.component.html',
-  styleUrl: './critic-review-list.component.css'
+  templateUrl: './critic-review-list.component.html'
 })
 export class CriticReviewListComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
@@ -32,6 +33,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   public noCriticReviews = false;
 
   private filters: criticReviewFilters = {};
+  protected filterForm: FormGroup;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,11 +43,29 @@ export class CriticReviewListComponent implements AfterViewInit {
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private _location: Location,
     private notificationService: NotificationService,
+    private backgroundService: BackgroundService,
+    private fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      reviewStatuses: [null],
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      }),
+      search: [null]
+    });
+  }
+
+  ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -90,10 +110,6 @@ export class CriticReviewListComponent implements AfterViewInit {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
-  goBack() {
-    this._location.back();
   }
 
   approveReview(review: CriticReview) {
@@ -226,6 +242,14 @@ export class CriticReviewListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }

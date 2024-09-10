@@ -22,7 +22,6 @@ p {
 }
 
 .grid-item {
-    background-color: #fff;
     padding: 4px;
     text-align: center;
     border: 1px solid #ddd;
@@ -40,4 +39,20 @@ p {
 .review-item {
     border: 1px solid black;
     margin-bottom: 8px;
+}
+
+.reportsPanel {
+    background-color: #282828;
+    border: 2px solid #282828;
+    background-size: 22px 22px !important;
+    color: white !important;
+}
+
+.reportPanelTitle {
+    color: white;
+}
+
+.reportsTable {
+    color: white !important;
+    border: 2px solid white !important;
 }

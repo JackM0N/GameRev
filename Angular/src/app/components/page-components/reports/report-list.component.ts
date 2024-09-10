@@ -13,6 +13,7 @@ import { reviewFilters } from '../../../interfaces/reviewFilters';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { BackgroundService } from '../../../services/background.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -44,6 +45,7 @@ export class ReportListComponent implements AfterViewInit {
   constructor(
     private reportService: ReportService,
     private notificationService: NotificationService,
+    private backgroundService: BackgroundService,
     private fb: FormBuilder,
     public dialog: MatDialog,
     private datePipe: DatePipe,
@@ -58,6 +60,10 @@ export class ReportListComponent implements AfterViewInit {
         max: [null]
       })
     });
+  }
+
+  ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
   }
 
   ngAfterViewInit() {
