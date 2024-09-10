@@ -25,13 +25,13 @@ import { LibraryFormDialogComponent } from './library-form-dialog.component';
 })
 export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   private gamesList: UserGame[] = [];
-  public totalGames: number = 0;
-  public dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
-  public libraryEmpty = false;
-  public displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
+  protected totalGames: number = 0;
+  protected dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
+  protected libraryEmpty = false;
+  protected displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
   private filters: libraryFilters = {};
-  public completionStatuses = completionStatuses;
-  public tagList: Tag[] = [];
+  protected completionStatuses = completionStatuses;
+  protected tagList: Tag[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,12 +41,17 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     private authService: AuthService,
     private notificationService: NotificationService,
     private tagService: TagService,
-    public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
+  }
+
+
+  override ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
   }
 
   override ngAfterViewInit() {

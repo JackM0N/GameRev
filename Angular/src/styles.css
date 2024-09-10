@@ -456,3 +456,7 @@ table {
     padding: 0;
     box-sizing: border-box; /* Ensure padding does not affect the table size */
 }
+
+.mdc-data-table__row:last-child .mat-mdc-cell {
+    border-bottom: 2px solid white !important; /* Or any style you prefer */
+}

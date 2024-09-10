@@ -111,7 +111,6 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '400px',
       data: {
-        dialogTitle: 'Add Game to Library',
         editing: false,
         userGame: {
           game: this.game,
