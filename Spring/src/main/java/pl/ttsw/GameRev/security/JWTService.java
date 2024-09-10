@@ -61,4 +61,19 @@ public class JWTService {
     private Date extractExpiration(String token) {
         return extractClaims(token, Claims::getExpiration);
     }
+
+    public String refreshToken(String token) {
+        if (isTokenExpired(token)) {
+            throw new RuntimeException("Token is expired, cannot be refreshed");
+        }
+
+        Claims claims = extractClaims(token);
+
+        return Jwts.builder()
+                .claims(claims)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_TOKEN_EXPIRATION_TIME))
+                .signWith(getSigninKey())
+                .compact();
+    }
 }

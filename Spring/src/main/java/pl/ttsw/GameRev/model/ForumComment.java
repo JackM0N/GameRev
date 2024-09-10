@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,6 +28,15 @@ public class ForumComment {
     private String content;
 
     @Column(name = "post_date", nullable = false)
-    private LocalDate postDate;
+    private LocalDateTime postDate;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "picture")
+    private String picture;
 
 }

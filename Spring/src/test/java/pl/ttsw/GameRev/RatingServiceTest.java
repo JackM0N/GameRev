@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import pl.ttsw.GameRev.dto.RatingDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
 import pl.ttsw.GameRev.mapper.RatingMapper;
+import pl.ttsw.GameRev.mapper.RatingMapperImpl;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -35,11 +37,11 @@ public class RatingServiceTest {
     @Mock
     private RatingRepository ratingRepository;
 
-    @Mock
-    private RatingMapper ratingMapper;
-
     @InjectMocks
     private RatingService ratingService;
+
+    @Spy
+    private RatingMapper ratingMapper = new RatingMapperImpl();
 
     @BeforeEach
     public void setup() {
@@ -60,7 +62,6 @@ public class RatingServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(ratingRepository.findByUserAndUserReview(any(), any())).thenReturn(Optional.empty());
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
-        when(ratingMapper.toDto(any(Rating.class))).thenReturn(new RatingDTO());
 
         RatingDTO result = ratingService.updateRating(userReviewDTO);
 
@@ -82,7 +83,6 @@ public class RatingServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(currentUser);
         when(ratingRepository.findByUserAndUserReview(any(), any())).thenReturn(Optional.of(rating));
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
-        when(ratingMapper.toDto(any(Rating.class))).thenReturn(new RatingDTO());
 
         RatingDTO result = ratingService.updateRating(userReviewDTO);
 

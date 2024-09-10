@@ -1,6 +1,7 @@
 package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import pl.ttsw.GameRev.dto.ProfilePictureDTO;
 import pl.ttsw.GameRev.dto.RoleDTO;
 import pl.ttsw.GameRev.dto.UpdateWebsiteUserDTO;
 import pl.ttsw.GameRev.dto.WebsiteUserDTO;
+import pl.ttsw.GameRev.filter.WebsiteUserFilter;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
@@ -25,10 +27,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WebsiteUserService {
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,77 +41,64 @@ public class WebsiteUserService {
     @Value("${profile.pics.directory}")
     private String profilePicsDirectory = "../Pictures/profile_pics";
 
-    public WebsiteUserService(WebsiteUserRepository websiteUserRepository, PasswordEncoder passwordEncoder, IAuthenticationFacade authenticationFacade, RoleRepository roleRepository, WebsiteUserMapper websiteUserMapper) {
-        this.websiteUserRepository = websiteUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationFacade = authenticationFacade;
-        this.roleRepository = roleRepository;
-        this.websiteUserMapper = websiteUserMapper;
-    }
-
-    public Page<WebsiteUserDTO> getAllWebsiteUsers(
-            LocalDate joinDateFrom,
-            LocalDate joinDateTo,
-            Boolean isDeleted,
-            Boolean isBanned,
-            List<Long> roleIds,
-            String searchText,
-            Pageable pageable) {
+    public Page<WebsiteUserDTO> getAllWebsiteUsers(WebsiteUserFilter websiteUserFilter, Pageable pageable) {
         Specification<WebsiteUser> spec = Specification.where((root, query, builder) -> builder.conjunction());
 
 
-        if (joinDateFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("joinDate"), joinDateFrom));
+        if (websiteUserFilter.getJoinDateFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .greaterThanOrEqualTo(root.get("joinDate"), websiteUserFilter.getJoinDateFrom()));
         }
-        if (joinDateTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("joinDate"), joinDateTo));
+        if (websiteUserFilter.getJoinDateTo() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .lessThanOrEqualTo(root.get("joinDate"), websiteUserFilter.getJoinDateTo()));
         }
-        if (isDeleted != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), isDeleted));
+        if (websiteUserFilter.getIsDeleted() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .equal(root.get("isDeleted"), websiteUserFilter.getIsDeleted()));
         }
-        if (isBanned != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("isBanned"), isBanned));
+        if (websiteUserFilter.getIsBanned() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .equal(root.get("isBanned"), websiteUserFilter.getIsBanned()));
         }
-        if (roleIds != null && !roleIds.isEmpty()) {
+        if (websiteUserFilter.getRoleIds() != null && !websiteUserFilter.getRoleIds().isEmpty()) {
             spec = spec.and((root, query, builder) -> {
                 Join<WebsiteUser, Role> rolesJoin = root.join("roles");
-                return rolesJoin.get("id").in(roleIds);
+                return rolesJoin.get("id").in(websiteUserFilter.getRoleIds());
             });
         }
-        if (searchText != null && !searchText.isEmpty() && !isNumeric(searchText)) {
-            String likePattern = "%" + searchText + "%";
+        if (websiteUserFilter.getSearchText() != null
+                && !websiteUserFilter.getSearchText().isEmpty()
+                && !isNumeric(websiteUserFilter.getSearchText() )) {
+            String likePattern = "%" + websiteUserFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) -> builder.or(
                     builder.like(builder.lower(root.get("nickname")), likePattern),
                     builder.like(builder.lower(root.get("description")), likePattern),
                     builder.like(builder.lower(root.get("email")), likePattern)
             ));
         }
-        if (searchText != null && !searchText.isEmpty() && isNumeric(searchText)) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("id"), Long.parseLong(searchText)));
+        if (websiteUserFilter.getSearchText() != null
+                && !websiteUserFilter.getSearchText().isEmpty()
+                && isNumeric(websiteUserFilter.getSearchText())) {
+            spec = spec.and((root, query, builder) -> builder
+                    .equal(root.get("id"), Long.parseLong(websiteUserFilter.getSearchText())));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
-        for (WebsiteUser websiteUser : websiteUsers) {
-            websiteUser.setPassword(null);
+        if (getCurrentUser().getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))){
+            return websiteUsers.map(websiteUserMapper::toDto);
         }
-        return websiteUsers.map(websiteUserMapper::toDto);
+        return websiteUsers.map(websiteUserMapper::toDtoWithoutSensitiveData);
     }
 
     public WebsiteUserDTO findByCurrentUser() {
         WebsiteUser websiteUser = getCurrentUser();
-        if (websiteUser == null) {
-            throw new BadCredentialsException("You are not logged in");
-        }
         return websiteUserMapper.toDto(websiteUser);
     }
 
     public WebsiteUserDTO findByNickname(String nickname) {
         WebsiteUser user = websiteUserRepository.findByNickname(nickname)
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
-        user.setId(null);
-        user.setUsername(null);
-        user.setPassword(null);
-        user.setIsDeleted(null);
-        return websiteUserMapper.toDto(user);
+        return websiteUserMapper.toDtoWithoutSensitiveData(user);
     }
 
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
@@ -125,23 +114,10 @@ public class WebsiteUserService {
             throw new BadCredentialsException("Passwords do not match");
         }
 
+        websiteUserMapper.partialUpdateProfile(request, user);
+
         if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        }
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            user.setEmail(request.getEmail());
-        }
-        if (request.getNickname() != null && !request.getNickname().isEmpty()) {
-            user.setNickname(request.getNickname());
-        }
-        if (request.getDescription() != null && !request.getDescription().isEmpty()) {
-            user.setDescription(request.getDescription());
-        }
-        if (request.getProfilepic() != null && !request.getProfilepic().isEmpty()) {
-            user.setProfilepic(request.getProfilepic());
-        }
-        if (request.getIsDeleted() != null) {
-            user.setIsDeleted(request.getIsDeleted());
         }
 
         user = websiteUserRepository.save(user);
@@ -154,30 +130,14 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         WebsiteUser currentUser = getCurrentUser();
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
+        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
 
-        if (websiteUserDTO.getUsername() != null && !websiteUserDTO.getUsername().isEmpty()) {
-            user.setUsername(websiteUserDTO.getUsername());
-        }
+        websiteUserMapper.partialUpdate(websiteUserDTO,user);
+
         if (websiteUserDTO.getPassword() != null && !websiteUserDTO.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(websiteUserDTO.getPassword()));
-        }
-        if (websiteUserDTO.getProfilepic() != null && !websiteUserDTO.getProfilepic().isEmpty()) {
-            user.setProfilepic(null);
-        }
-        if (websiteUserDTO.getEmail() != null && !websiteUserDTO.getEmail().isEmpty()) {
-            user.setEmail(websiteUserDTO.getEmail());
-        }
-        if (websiteUserDTO.getNickname() != null && !websiteUserDTO.getNickname().isEmpty()) {
-            user.setNickname(websiteUserDTO.getNickname());
-        }
-        if (websiteUserDTO.getDescription() != null && !websiteUserDTO.getDescription().isEmpty()) {
-            user.setDescription(websiteUserDTO.getDescription());
-        }
-        if (websiteUserDTO.getIsDeleted() != null) {
-            user.setIsDeleted(websiteUserDTO.getIsDeleted());
         }
 
         return websiteUserMapper.toDto(websiteUserRepository.save(user));
@@ -209,7 +169,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
         WebsiteUser currentUser = getCurrentUser();
 
-        if (!currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get())){
+        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
         if (user.getIsDeleted() != null && user.getIsDeleted()) {

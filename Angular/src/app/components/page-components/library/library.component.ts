@@ -7,13 +7,17 @@ import { MatSort } from '@angular/material/sort';
 import { LibraryService } from '../../../services/library.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserGame } from '../../../interfaces/userGame';
-import { LibraryEditDialogComponent } from './library-edit-dialog.component';
-import { LibraryAddDialogComponent } from './library-add-dialog.component';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
+import { completionStatuses } from '../../../enums/completionStatuses';
+import { MatSelectChange } from '@angular/material/select';
+import { libraryFilters } from '../../../interfaces/libraryFilters';
+import { Tag } from '../../../interfaces/tag';
+import { TagService } from '../../../services/tag.service';
+import { LibraryFormDialogComponent } from './library-form-dialog.component';
 
 @Component({
   selector: 'app-library',
@@ -25,6 +29,9 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
   public libraryEmpty = false;
   public displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
+  private filters: libraryFilters = {};
+  public completionStatuses = completionStatuses;
+  public tagList: Tag[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -33,6 +40,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     private libraryService: LibraryService,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private tagService: TagService,
     public dialog: MatDialog,
     backgroundService: BackgroundService,
     adService: AdService,
@@ -46,11 +54,22 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
 
     this.dataSource.paginator = this.paginator;
     this.loadGames();
+    this.loadTags();
 
     this.paginator.page.subscribe(() => this.loadGames());
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
       this.loadGames();
+    });
+  }
+
+  loadTags() {
+    this.tagService.getTags().subscribe({
+      next: (response) => {
+        if (response) {
+          this.tagList = response;
+        }
+      }
     });
   }
 
@@ -74,120 +93,71 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
           this.totalGames = response.totalElements;
           this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
           this.dataSource.data = this.gamesList;
-          if (this.dataSource.data.length == 0) {
-            this.libraryEmpty = true;
-          }
+          this.libraryEmpty = (this.dataSource.data.length == 0);
+        } else {
+          this.gamesList = [];
+          this.totalGames = 0;
+          this.libraryEmpty = true;
         }
       },
       error: error => {
-        if (error.error == "This user has no games in his library") {
-          this.libraryEmpty = true;
-        } else {
-          console.error(error);
-        }
+        console.error(error);
       },
       complete: () => {}
     };
-    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir).subscribe(observer);
+    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   openEditUserGameDialog(userGame: UserGame) {
-    const dialogTitle = 'Updating game ' + userGame.game.title;
-
-    const dialogRef = this.dialog.open(LibraryEditDialogComponent, {
+    const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '300px',
-      data: { dialogTitle, userGame }
+      data: {
+        editing: true,
+        userGame: userGame
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true && dialogRef.componentRef) {
-        const form = dialogRef.componentRef.instance.updateForm
-
-        if (form) {
-          userGame.completionStatus = form.get('completionStatus')?.value;
-          userGame.isFavourite = form.get('isFavourite')?.value;
-          this.editUserGame(userGame);
-
-        } else {
-          console.log("Form is null");
-          return;
-        }
+      if (result == true) {
+        this.loadGames();
       }
     });
   }
 
   editUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.updateUserGame(userGame, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Game updated successfully', false); },
+    this.libraryService.updateUserGame(userGame).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Game updated successfully'); },
       error: error => this.notificationService.popErrorToast('Game updating failed', error)
     });
   }
 
   openAddUserGameDialog() {
-    const dialogTitle = 'Adding game';
-
-    const dialogRef = this.dialog.open(LibraryAddDialogComponent, {
+    const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '300px',
-      data: { dialogTitle, existingGames: this.gamesList }
+      data: {
+        editing: false,
+        existingGames: this.gamesList
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true && dialogRef.componentRef) {
-        const form = dialogRef.componentRef.instance.addForm
-
-        if (form) {
-          var userGame: UserGame = {
-            id: 0,
-            user : { username: this.authService.getUsername() },
-            game: form.get('game')?.value,
-            completionStatus: form.get('completionStatus')?.value,
-            isFavourite: form.get('isFavourite')?.value
-          };
-
-          userGame.completionStatus = form.get('completionStatus')?.value;
-          userGame.isFavourite = form.get('isFavourite')?.value;
-          this.addUserGame(userGame);
-
-        } else {
-          console.log("Form is null");
-          return;
-        }
-      }
-    });
-  }
-
-  addUserGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
-    this.libraryService.addUserGame(userGame, token).subscribe({
-      next: () => {
+      if (result == true) {
+        /*
         this.gamesList.push(userGame);
 
         this.totalGames = this.totalGames + 1;
         this.dataSource = new MatTableDataSource<UserGame>(this.gamesList);
         this.dataSource.data = this.gamesList;
+        */
 
-        this.notificationService.popSuccessToast('Game added successfully', false);
-      },
-      error: error => this.notificationService.popErrorToast('Game adding failed', error)
+        this.loadGames();
+      }
     });
   }
 
   openGameDeletionConfirmationDialog(userGame: UserGame) {
     const dialogTitle = 'Game deletion';
-    const dialogContent = 'Are you sure you want to delete the game ' + userGame.game.title + '?';
+    const dialogContent = 'Are you sure you want to delete the game ' + userGame?.game?.title + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -204,13 +174,6 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   deleteGame(userGame: UserGame) {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     if (!userGame || !userGame.id) {
       console.log('Game ID is not valid.');
       return;
@@ -227,14 +190,32 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.libraryService.deleteUserGame(userGame.id, token).subscribe(observer);
-  }
-
-  sortData() {
-    this.loadGames();
+    this.libraryService.deleteUserGame(userGame.id).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  findCompletionStatusName(status: string) {
+    const completionStatus = completionStatuses.find(completionStatus => completionStatus.className === status);
+    return completionStatus ? completionStatus.name : undefined;
+  }
+
+  // Filters
+
+  onCompletionStatusFilterChange(event: MatSelectChange) {
+    this.filters.completionStatus = event.value;
+    this.loadGames();
+  }
+
+  onFavoriteFilterChange(event: MatSelectChange) {
+    this.filters.isFavorite = event.value;
+    this.loadGames();
+  }
+
+  onTagFilterChange(event: MatSelectChange) {
+    this.filters.tags = event.value;
+    this.loadGames();
   }
 }

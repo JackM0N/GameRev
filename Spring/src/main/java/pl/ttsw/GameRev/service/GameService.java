@@ -1,6 +1,8 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
+import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
@@ -21,11 +24,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
     private final GameRepository gameRepository;
     private final TagRepository tagRepository;
@@ -34,40 +37,33 @@ public class GameService {
     @Value("${game.pics.directory}")
     private final String gamePicsDirectory = "../Pictures/game_pics";
 
-    public GameService(GameRepository gameRepository, TagRepository tagRepository, GameMapper gameMapper) {
-        this.gameRepository = gameRepository;
-        this.tagRepository = tagRepository;
-        this.gameMapper = gameMapper;
-    }
 
-    public Page<GameDTO> getAllGames(
-            LocalDate fromDate, LocalDate toDate,
-            Float minUserScore, Float maxUserScore,
-            List<Long> tagIds,
-            List<ReleaseStatus> releaseStatuses,
-            Pageable pageable
-    ) {
+    public Page<GameDTO> getAllGames(GameFilter gameFilter, Pageable pageable) {
         Specification<Game> spec = Specification.where(null);
 
-        if (fromDate != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("releaseDate"), fromDate));
+        if (gameFilter.getFromDate() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .greaterThanOrEqualTo(root.get("releaseDate"), gameFilter.getFromDate()));
         }
-        if (toDate != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("releaseDate"), toDate));
+        if (gameFilter.getToDate() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .lessThanOrEqualTo(root.get("releaseDate"), gameFilter.getToDate()));
         }
-        if (minUserScore != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("usersScore"), minUserScore));
+        if (gameFilter.getMinUserScore() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .greaterThanOrEqualTo(root.get("usersScore"), gameFilter.getMinUserScore()));
         }
-        if (maxUserScore != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("usersScore"), maxUserScore));
+        if (gameFilter.getMaxUserScore() != null) {
+            spec = spec.and((root, query, builder) -> builder
+                    .lessThanOrEqualTo(root.get("usersScore"), gameFilter.getMaxUserScore()));
         }
-        if (releaseStatuses != null && !releaseStatuses.isEmpty()) {
-            spec = spec.and((root, query, builder) -> root.get("releaseStatus").in(releaseStatuses));
+        if (gameFilter.getReleaseStatuses() != null && !gameFilter.getReleaseStatuses().isEmpty()) {
+            spec = spec.and((root, query, builder) -> root.get("releaseStatus").in(gameFilter.getReleaseStatuses()));
         }
-        if (tagIds != null && !tagIds.isEmpty()) {
+        if (gameFilter.getTagIds() != null && !gameFilter.getTagIds().isEmpty()) {
             spec = spec.and((root, query, builder) -> {
                 Join<Game, Tag> tagJoin = root.join("tags");
-                return tagJoin.get("id").in(tagIds);
+                return tagJoin.get("id").in(gameFilter.getTagIds());
             });
         }
 
@@ -75,33 +71,21 @@ public class GameService {
         return games.map(gameMapper::toDto);
     }
 
-    public GameDTO getGameByTitle(String title) throws BadRequestException {
+    public GameDTO getGameByTitle(String title) {
         Game game = gameRepository.findGameByTitle(title)
-                .orElseThrow(() -> new BadRequestException("Game not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Game not found"));
         return gameMapper.toDto(game);
     }
 
     public GameDTO createGame(GameDTO game, MultipartFile picture) throws IOException {
-        Game newGame = new Game();
-        newGame.setTitle(game.getTitle());
-        newGame.setDeveloper(game.getDeveloper());
-        newGame.setPublisher(game.getPublisher());
-        newGame.setReleaseDate(game.getReleaseDate());
-        newGame.setDescription(game.getDescription());
-        newGame.setUsersScore(0.0f);
-
-        ReleaseStatus releaseStatus = game.getReleaseStatus();
-        if (releaseStatus == null || !EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
-                throw new BadRequestException("Release status not found");
-        }
-
-        newGame.setReleaseStatus(game.getReleaseStatus());
+        Game newGame = gameMapper.toEntity(game);
 
         Path filepath = null;
 
         try {
             if (picture != null && !picture.isEmpty()) {
-                String filename = newGame.getTitle().replaceAll("\\s+", "_").toLowerCase() + "_" + picture.getOriginalFilename();
+                String filename = newGame.getTitle().replaceAll("\\s+", "_")
+                        .toLowerCase() + "_" + picture.getOriginalFilename();
                 filepath = Paths.get(gamePicsDirectory, filename);
                 Files.copy(picture.getInputStream(), filepath);
 
@@ -121,7 +105,7 @@ public class GameService {
                 try {
                     Files.delete(filepath);
                 } catch (IOException ioException) {
-                    System.err.println("Failed to delete file after an error: " + filepath.toString());
+                    System.err.println("Failed to delete file after an error: " + filepath);
                 }
             }
             throw e;
@@ -131,28 +115,9 @@ public class GameService {
     public GameDTO updateGame(String title, GameDTO game, MultipartFile picture) throws IOException {
         Game updatedGame = gameRepository.findGameByTitle(title)
                 .orElseThrow(() -> new BadRequestException("Game not found"));
-        if (game.getTitle() != null) {
-            updatedGame.setTitle(game.getTitle());
-        }
-        if (game.getDeveloper() != null) {
-            updatedGame.setDeveloper(game.getDeveloper());
-        }
-        if (game.getPublisher() != null) {
-            updatedGame.setPublisher(game.getPublisher());
-        }
-        if (game.getReleaseDate() != null) {
-            updatedGame.setReleaseDate(game.getReleaseDate());
-        }
-        if (game.getDescription() != null) {
-            updatedGame.setDescription(game.getDescription());
-        }
-        if (game.getReleaseStatus() != null) {
-            ReleaseStatus releaseStatus = game.getReleaseStatus();
-            if (!EnumUtils.isValidEnumIgnoreCase(ReleaseStatus.class, releaseStatus.name())) {
-                throw new BadRequestException("Release status not found");
-            }
-            updatedGame.setReleaseStatus(releaseStatus);
-        }
+
+        gameMapper.partialUpdate(game, updatedGame);
+
         if (game.getTags() != null) {
             List<Tag> tags = game.getTags().stream()
                     .map(tagDTO -> tagRepository.findById(tagDTO.getId())

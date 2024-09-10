@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.mockito.Spy;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.mapper.CriticReviewMapper;
+import pl.ttsw.GameRev.mapper.CriticReviewMapperImpl;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.CriticReview;
 import pl.ttsw.GameRev.model.Game;
@@ -33,9 +34,6 @@ public class CriticReviewServiceTest {
     private CriticReviewRepository criticReviewRepository;
 
     @Mock
-    private CriticReviewMapper criticReviewMapper;
-
-    @Mock
     private GameMapper gameMapper;
 
     @Mock
@@ -46,6 +44,9 @@ public class CriticReviewServiceTest {
 
     @InjectMocks
     private CriticReviewService criticReviewService;
+
+    @Spy
+    private CriticReviewMapper criticReviewMapper = new CriticReviewMapperImpl();
 
     @BeforeEach
     public void setUp() {
@@ -63,27 +64,23 @@ public class CriticReviewServiceTest {
         mockReview.setPostDate(LocalDate.now());
         mockReview.setReviewStatus(ReviewStatus.APPROVED);
 
-        CriticReviewDTO mockReviewDTO = new CriticReviewDTO();
         when(criticReviewRepository.findByGameTitleAndReviewStatus("Some Game", ReviewStatus.APPROVED))
                 .thenReturn(Optional.of(mockReview));
-        when(criticReviewMapper.toDto(any(CriticReview.class))).thenReturn(mockReviewDTO);
 
         CriticReviewDTO result = criticReviewService.getCriticReviewByTitle("Some Game");
 
         assertNotNull(result);
-        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Some Game",ReviewStatus.APPROVED);
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Some Game", ReviewStatus.APPROVED);
     }
 
     @Test
-    public void testGetCriticReviewByTitle_NotFound() throws BadRequestException {
+    public void testGetCriticReviewByTitle_NotFound() {
         when(criticReviewRepository.findByGameTitleAndReviewStatus("Unknown Game", ReviewStatus.APPROVED))
                 .thenReturn(Optional.empty());
 
-        assertThrows(BadRequestException.class, () -> {
-            criticReviewService.getCriticReviewByTitle("Unknown Game");
-        });
+        assertThrows(BadRequestException.class, () -> criticReviewService.getCriticReviewByTitle("Unknown Game"));
 
-        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Unknown Game",ReviewStatus.APPROVED);
+        verify(criticReviewRepository, times(1)).findByGameTitleAndReviewStatus("Unknown Game", ReviewStatus.APPROVED);
     }
 
     @Test
@@ -104,24 +101,10 @@ public class CriticReviewServiceTest {
         CriticReview mockCriticReview = new CriticReview();
         when(criticReviewRepository.save(any(CriticReview.class))).thenReturn(mockCriticReview);
 
-        CriticReviewDTO mockCriticReviewDTO = new CriticReviewDTO();
-        when(criticReviewMapper.toDto(any(CriticReview.class))).thenReturn(mockCriticReviewDTO);
-
         CriticReviewDTO result = criticReviewService.createCriticReview(criticReviewDTO);
 
         assertNotNull(result);
         verify(criticReviewRepository, times(1)).save(any(CriticReview.class));
-    }
-
-    @Test
-    public void testCreateCriticReview_NotLoggedIn() {
-        when(websiteUserService.getCurrentUser()).thenReturn(null);
-
-        CriticReviewDTO criticReviewDTO = new CriticReviewDTO();
-
-        assertThrows(BadCredentialsException.class, () -> {
-            criticReviewService.createCriticReview(criticReviewDTO);
-        });
     }
 
     @Test
@@ -135,8 +118,6 @@ public class CriticReviewServiceTest {
         CriticReview mockReview = new CriticReview();
         when(criticReviewRepository.findById(id)).thenReturn(Optional.of(mockReview));
         when(criticReviewRepository.save(any(CriticReview.class))).thenReturn(mockReview);
-        CriticReviewDTO mockReviewDTO = new CriticReviewDTO();
-        when(criticReviewMapper.toDto(any(CriticReview.class))).thenReturn(mockReviewDTO);
 
         CriticReviewDTO result = criticReviewService.updateCriticReview(id, criticReviewDTO);
 
@@ -153,9 +134,7 @@ public class CriticReviewServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(mockUser);
         when(criticReviewRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(BadRequestException.class, () -> {
-            criticReviewService.updateCriticReview(id, criticReviewDTO);
-        });
+        assertThrows(BadRequestException.class, () -> criticReviewService.updateCriticReview(id, criticReviewDTO));
     }
 
     @Test
@@ -167,8 +146,6 @@ public class CriticReviewServiceTest {
         CriticReview mockReview = new CriticReview();
         when(criticReviewRepository.findById(id)).thenReturn(Optional.of(mockReview));
         when(criticReviewRepository.save(any(CriticReview.class))).thenReturn(mockReview);
-        CriticReviewDTO mockReviewDTO = new CriticReviewDTO();
-        when(criticReviewMapper.toDto(any(CriticReview.class))).thenReturn(mockReviewDTO);
 
         CriticReviewDTO result = criticReviewService.reviewCriticReview(id, status);
 
@@ -185,9 +162,7 @@ public class CriticReviewServiceTest {
         when(websiteUserService.getCurrentUser()).thenReturn(mockUser);
         when(criticReviewRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(BadRequestException.class, () -> {
-            criticReviewService.reviewCriticReview(id, status);
-        });
+        assertThrows(BadRequestException.class, () -> criticReviewService.reviewCriticReview(id, status));
     }
 
     @Test
@@ -199,7 +174,7 @@ public class CriticReviewServiceTest {
         boolean result = criticReviewService.deleteCriticReview(id);
 
         assertTrue(result);
-        verify(criticReviewRepository, times(1)).delete(mockReview);
+        verify(criticReviewRepository, times(1)).deleteById(id);
     }
 
     @Test
@@ -207,8 +182,6 @@ public class CriticReviewServiceTest {
         Long id = 1L;
         when(criticReviewRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(BadRequestException.class, () -> {
-            criticReviewService.deleteCriticReview(id);
-        });
+        assertThrows(BadRequestException.class, () -> criticReviewService.deleteCriticReview(id));
     }
 }

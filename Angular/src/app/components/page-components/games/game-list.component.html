@@ -1,8 +1,50 @@
 
+<mat-form-field>
+  <mat-label>Release status</mat-label>
+  <mat-select (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
+    <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
+      {{ status.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Tags</mat-label>
+  <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
+    <mat-option *ngFor="let tag of tagList" [value]="tag.id">
+      {{ tag.tagName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Release date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<div class="bg-[#F5F5F5] w-min">
+  <label class="text-sm font-medium text-gray-700">User score</label>
+  <mat-slider min="1" max="10" showTickMarks discrete>
+    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+  </mat-slider>
+</div>
+
+<mat-form-field>
+  <mat-label>Search</mat-label>
+  <input matInput #searchInput>
+</mat-form-field>
+
 <div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
   <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
     <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
-      <button class="pinkTextShadowWide" (click)="routeToAddNewGame()">Add a new game</button>
+      <button class="pinkTextShadowWide" (click)="openAddNewGameDialog()">Add a new game</button>
     </div>
   </div>
   
@@ -60,7 +102,7 @@
           <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Options </th>
           <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white" *matCellDef="let element">
             <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">View</button>
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToEditGame(element.title)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditGameDialog(element)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
             <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Delete</button>
           </td>
         </ng-container>

@@ -49,10 +49,9 @@ export class EmailChangeComponent {
   onSubmitEmailChange() {
     if (this.changeEmailForm.valid) {
       const userName = this.authService.getUsername();
-      const token = this.authService.getToken();
 
-      if (!userName || !token) {
-        this.notificationService.popErrorToast('Email change failed', "Username or token not found");
+      if (!userName) {
+        this.notificationService.popErrorToast('Email change failed', "Username not found");
         return;
       }
 
@@ -62,8 +61,8 @@ export class EmailChangeComponent {
         email: this.changeEmailForm.get('email')?.value,
       };
 
-      this.authService.changeProfile(newData, token).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Email change successful', false); },
+      this.authService.changeProfile(newData).subscribe({
+        next: () => { this.notificationService.popSuccessToast('Email change successful'); },
         error: error => this.notificationService.popErrorToast('Email change failed', error)
       });
     }

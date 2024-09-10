@@ -3,10 +3,9 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import pl.ttsw.GameRev.model.ForumModerator;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,10 +16,14 @@ import java.util.List;
 @Setter
 public class ForumDTO implements Serializable {
     Long id;
-    GameDTO game;
+    String gameTitle;
     String forumName;
     Boolean isDeleted;
     Long parentForumId;
-    List<WebsiteUserDTO> forumModeratorsDTO;
-    List<ForumPostDTO> forumPostsDTO;
+    String description;
+    Integer postCount;
+    LocalDateTime lastPostDate;
+    String topPost;
+    List<WebsiteUserDTO> forumModerators;
+    List<Long> forumModeratorsIds;
 }

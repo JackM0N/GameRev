@@ -7,6 +7,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BackgroundService } from '../../../services/background.service';
 import { ResetPasswordConfirmationDialogComponent } from './reset-password-confirmation-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { NotificationAction } from '../../../enums/notificationActions';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,6 @@ export class LoginComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private router: Router,
     public dialog: MatDialog,
     private backgroundService: BackgroundService
   ) {
@@ -60,8 +60,7 @@ export class LoginComponent {
 
       this.authService.login(credentials).subscribe({
         next: () => {
-          this.router.navigate(['/']);
-          this.notificationService.popSuccessToast('Login successful', false);
+          this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME);
         },
         error: error => this.notificationService.popErrorToast('Login failed', error)
       });
@@ -93,6 +92,6 @@ export class LoginComponent {
     const email = dialogRef.componentRef.instance.resetPasswordForm.get('email')?.value;
     this.authService.requestPasswordReset(email).subscribe();
 
-    this.notificationService.popSuccessToast('Password reset sent', false);
+    this.notificationService.popSuccessToast('Password reset sent');
   }
 }

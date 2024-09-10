@@ -5,10 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -31,14 +30,29 @@ public class Forum {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
+    @ColumnDefault("MISSING DESCRIPTION")
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @ColumnDefault("0")
+    @Column(name = "post_count", nullable = false)
+    private Integer postCount;
+
+    @Column(name = "last_post_date")
+    private LocalDateTime lastPostDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_forum_id")
     private Forum parentForum;
 
     @OneToMany(mappedBy = "forum")
-    private List<ForumModerator> forumModerators = new ArrayList<>();
-
-    @OneToMany(mappedBy = "forum")
     private List<ForumPost> forumPosts = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(
+            name = "forum_moderator",
+            joinColumns = @JoinColumn(name = "forum_id"),
+            inverseJoinColumns = @JoinColumn(name = "moderator_id")
+    )
+    private List<WebsiteUser> forumModerators = new ArrayList<>();
 }

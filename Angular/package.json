@@ -26,7 +26,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "angular-toaster": "^1.6.1",
     "express": "^4.18.2",
-    "ngx-quill": "^26.0.5",
+    "ngx-quill": "^26.0.8",
     "quill": "^2.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -47,7 +47,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.6",
+    "tailwindcss": "^3.4.10",
     "typescript": "~5.4.2"
   }
 }

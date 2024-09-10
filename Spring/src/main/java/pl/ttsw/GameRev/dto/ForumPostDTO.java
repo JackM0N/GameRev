@@ -3,12 +3,9 @@ package pl.ttsw.GameRev.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link pl.ttsw.GameRev.model.ForumPost}
@@ -19,10 +16,14 @@ import java.util.List;
 public class ForumPostDTO implements Serializable {
     Long id;
     ForumDTO forum;
-    WebsiteUserDTO author;
+    SimplifiedUserDTO author;
     String title;
     String content;
-    LocalDate postDate;
-    String picture;
-    List<ForumCommentDTO> forumComments;
+    LocalDateTime postDate;
+    LocalDateTime lastResponseDate;
+    Integer commentCount;
+    Long views;
+    Boolean isDeleted;
+    LocalDateTime deletedAt;
+
 }

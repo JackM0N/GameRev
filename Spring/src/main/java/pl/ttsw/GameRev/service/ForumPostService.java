@@ -1,5 +1,7 @@
 package pl.ttsw.GameRev.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -7,57 +9,44 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
+import pl.ttsw.GameRev.filter.ForumPostFilter;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.ForumPostRepository;
-import pl.ttsw.GameRev.repository.ForumRepository;
+import pl.ttsw.GameRev.repository.*;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
-import pl.ttsw.GameRev.repository.RoleRepository;
-import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ForumPostService {
     private final ForumPostRepository forumPostRepository;
     private final ForumRepository forumRepository;
     private final ForumPostMapper forumPostMapper;
-    private final WebsiteUserRepository websiteUserRepository;
-    private final RoleRepository roleRepository;
+    private final ForumModeratorRepository forumModeratorRepository;
 
     private final String postPicDirectory = "../Pictures/post_pics";
     private final WebsiteUserService websiteUserService;
 
-    public ForumPostService(ForumPostRepository forumPostRepository, ForumRepository forumRepository, ForumPostMapper forumPostMapper, WebsiteUserRepository websiteUserRepository, RoleRepository roleRepository, WebsiteUserService websiteUserService) {
-        this.forumPostRepository = forumPostRepository;
-        this.forumRepository = forumRepository;
-        this.forumPostMapper = forumPostMapper;
-        this.websiteUserRepository = websiteUserRepository;
-        this.roleRepository = roleRepository;
-        this.websiteUserService = websiteUserService;
-    }
-
-    public Page<ForumPostDTO> getForumPosts(Long id,  LocalDate postDateFrom,
-                                            LocalDate postDateTo, String searchText, Pageable pageable) {
+    public Page<ForumPostDTO> getForumPosts(Long id, ForumPostFilter forumPostFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Forum not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
         Specification<ForumPost> spec = (root, query, builder) -> builder.equal(root.get("forum"), forum);
+        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
 
-        if (postDateFrom != null) {
-            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), postDateFrom));
+        if (forumPostFilter.getPostDateFrom() != null) {
+            spec = spec.and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("postDate"), forumPostFilter.getPostDateFrom()));
         }
-        if (postDateTo != null) {
-            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), postDateTo));
+        if (forumPostFilter.getPostDateTo() != null) {
+            spec = spec.and((root, query, builder) -> builder.lessThanOrEqualTo(root.get("postDate"), forumPostFilter.getPostDateTo()));
         }
-
-        if (searchText != null) {
-            searchText = searchText.toLowerCase();
-            String likePattern = "%" + searchText + "%";
+        if (forumPostFilter.getSearchText() != null) {
+            String likePattern = "%" + forumPostFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) -> builder.or(
                     builder.like(builder.lower(root.get("title")), likePattern),
                     builder.like(builder.lower(root.get("content")), likePattern)
@@ -68,15 +57,13 @@ public class ForumPostService {
     }
 
     public ForumPostDTO createForumPost(ForumPostDTO forumPostDTO, MultipartFile picture) throws IOException {
-        ForumPost forumPost = new ForumPost();
-
+        ForumPost forumPost = forumPostMapper.toEntity(forumPostDTO);
         forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
                 .orElseThrow(() -> new RuntimeException("Forum not found")));
-        forumPost.setAuthor(websiteUserService.getCurrentUser());
-        forumPost.setContent(forumPostDTO.getContent());
-        forumPost.setPostDate(LocalDate.now());
-        forumPost.setTitle(forumPostDTO.getTitle());
 
+        forumPost.setAuthor(websiteUserService.getCurrentUser());
+
+        forumPost = forumPostRepository.save(forumPost);
         Path filepath = null;
         try {
             if (picture != null && !picture.isEmpty()) {
@@ -84,18 +71,18 @@ public class ForumPostService {
                 filepath = Paths.get(postPicDirectory, fileName);
                 Files.copy(picture.getInputStream(), filepath);
                 forumPost.setPicture(filepath.toString());
+                forumPost = forumPostRepository.save(forumPost);
             }
         } catch (Exception e) {
             if (filepath != null && Files.exists(filepath)) {
                 try {
                     Files.delete(filepath);
                 } catch (IOException ioException) {
-                    System.err.println("Failed to delete file after an error: " + filepath.toString());
+                    System.err.println("Failed to delete file after an error: " + filepath);
                 }
             }
             throw e;
         }
-        forumPost = forumPostRepository.save(forumPost);
         return forumPostMapper.toDto(forumPost);
     }
 
@@ -104,21 +91,11 @@ public class ForumPostService {
         ForumPost forumPost = forumPostRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Forum post not found"));
 
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumPost.getAuthor()) {
-            if (forumPostDTO.getForum() != null) {
-                forumPost.setForum(forumRepository.findById(forumPostDTO.getForum().getId())
-                        .orElseThrow(() -> new RuntimeException("Forum not found")));
-            }
-            if (forumPostDTO.getAuthor() != null) {
-                forumPost.setAuthor(websiteUserRepository.findById(forumPostDTO.getAuthor().getId())
-                        .orElseThrow(() -> new RuntimeException("User not found")));
-            }
-            if (forumPostDTO.getContent() != null) {
-                forumPost.setContent(forumPostDTO.getContent());
-            }
-            if (forumPostDTO.getTitle() != null) {
-                forumPost.setTitle(forumPostDTO.getTitle());
-            }
+        if (currentUser == forumPost.getAuthor() || currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()))) {
+
+            forumPostMapper.partialUpdate(forumPostDTO, forumPost);
+
             if (picture != null && !picture.isEmpty()) {
                 String oldPicturePath = forumPost.getPicture();
                 if (oldPicturePath != null && !oldPicturePath.isEmpty()) {
@@ -134,20 +111,46 @@ public class ForumPostService {
 
             forumPost = forumPostRepository.save(forumPost);
             return forumPostMapper.toDto(forumPost);
+        } else {
+            throw new BadCredentialsException("You dont have permission to perform this action");
+        }
+    }
+
+    public boolean deleteForumPost(Long id, Boolean isDeleted) {
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+        ForumPost forumPost = forumPostRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forum post not found"));
+        Forum forum = forumPost.getForum();
+
+        boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(role -> "Admin".equals(role.getRoleName()));
+        boolean isAuthor = currentUser.equals(forumPost.getAuthor());
+
+        boolean isModerator = forumModeratorRepository.existsByForumAndModerator(forum, currentUser);
+
+        if (isAdmin || isAuthor || isModerator) {
+            forumPost.setIsDeleted(isDeleted);
+            if (isDeleted) {
+                forumPost.setDeletedAt(LocalDateTime.now());
+            }else{
+                forumPost.setDeletedAt(null);
+            }
+            forumPostRepository.save(forumPost);
+            return true;
         }else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }
 
-    public boolean deleteForumPost(Long id) {
-        WebsiteUser currentUser = websiteUserService.getCurrentUser();
-        ForumPost forumPost = forumPostRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Forum post not found"));
-        if (currentUser.getRoles().contains(roleRepository.findByRoleName("Admin").get()) || currentUser == forumPost.getAuthor()){
-            forumPostRepository.delete(forumPost);
-            return true;
-        }else {
-            throw new BadCredentialsException("You dont have permission to perform this action");
+    public byte[] getPostPicture(Long postId) throws IOException {
+        ForumPost forumPost = forumPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (forumPost.getPicture() == null) {
+            throw new IOException("Post picture not found");
         }
+
+        Path filepath = Paths.get(forumPost.getPicture());
+        return Files.readAllBytes(filepath);
     }
 }

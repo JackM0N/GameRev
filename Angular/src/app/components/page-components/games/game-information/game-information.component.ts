@@ -4,13 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../../../../services/game.service';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import { formatDate } from '../../../../util/formatDate';
-import { releaseStatuses } from '../../../../interfaces/releaseStatuses';
+import { formatDateArray } from '../../../../util/formatDate';
+import { releaseStatuses } from '../../../../enums/releaseStatuses';
 import { ReleaseStatus } from '../../../../interfaces/releaseStatus';
 import { BackgroundService } from '../../../../services/background.service';
 import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { GameInfoReviewListComponent } from './review-list.component';
+import { LibraryFormDialogComponent } from '../../library/library-form-dialog.component';
 
 @Component({
   selector: 'app-game-information',
@@ -20,7 +21,7 @@ import { GameInfoReviewListComponent } from './review-list.component';
 export class GameInformationComponent extends BaseAdComponent implements OnInit {
   @ViewChild(GameInfoReviewListComponent) reviewListComponent!: GameInfoReviewListComponent;
   
-  formatDate = formatDate;
+  formatDate = formatDateArray;
   releaseStatuses: ReleaseStatus[] = releaseStatuses;
   likeColor: 'primary' | '' = '';
   dislikeColor: 'warn' | '' = '';
@@ -51,7 +52,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     super(adService, backgroundService, cdRef);
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');
@@ -102,5 +103,26 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
 
   goBack() {
     this._location.back();
+  }
+
+  openLibraryFormDialog(): void {
+    const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
+      width: '400px',
+      data: {
+        dialogTitle: 'Add Game to Library',
+        editing: false,
+        userGame: {
+          game: this.game,
+          completionStatus: undefined,
+          isFavourite: false
+        }
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('The dialog was closed with result: ', result);
+      }
+    });
   }
 }

@@ -1,22 +1,21 @@
 package pl.ttsw.GameRev;
 
 import org.apache.coyote.BadRequestException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ttsw.GameRev.dto.UserGameDTO;
 import pl.ttsw.GameRev.enums.CompletionStatus;
+import pl.ttsw.GameRev.filter.UserGameFilter;
 import pl.ttsw.GameRev.mapper.UserGameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.UserGame;
@@ -26,16 +25,11 @@ import pl.ttsw.GameRev.repository.UserGameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserGameService;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
 public class UserGameServiceIntegrationTest {
-    private final Pageable pageable = PageRequest.ofSize(10);
 
     @Autowired
     private UserGameService userGameService;
@@ -56,6 +50,7 @@ public class UserGameServiceIntegrationTest {
     private Game game;
     private UserGame userGame;
     private UserGameDTO userGameDTO;
+    private final Pageable pageable = PageRequest.ofSize(10);
 
     @BeforeEach
     public void setUp() {
@@ -67,7 +62,6 @@ public class UserGameServiceIntegrationTest {
         userGame.setGame(game);
         userGame.setCompletionStatus(CompletionStatus.IN_PROGRESS);
         userGame.setIsFavourite(false);
-        userGame.setId(1L);
         userGameDTO = userGameMapper.toDto(userGame);
 
         assertNotNull(testUser);
@@ -75,39 +69,40 @@ public class UserGameServiceIntegrationTest {
         assertNotNull(userGameDTO);
     }
 
-    @AfterEach
-    public void tearDown() {
-        Page<UserGame> gamesToDelete = userGameRepository.findByUserNickname("testuser", pageable);
-        userGameRepository.deleteAll(gamesToDelete.getContent());
-    }
-
     @Test
+    @Transactional
     public void testGetUserGame_Success() throws BadRequestException {
-        Pageable pageable = PageRequest.of(0, 10);
         WebsiteUser existingUser = websiteUserRepository.findById(4L).orElse(null);
         assertNotNull(existingUser);
+        UserGameFilter userGameFilter = new UserGameFilter();
 
-        Page<UserGameDTO> result = userGameService.getUserGame(null,null,null,existingUser.getNickname(), pageable);
+        Page<UserGameDTO> result = userGameService.getUserGame(existingUser.getNickname(), userGameFilter, pageable);
 
         assertNotNull(result);
         assertTrue(result.getTotalElements() > 0);
     }
 
     @Test
+    @Transactional
     public void testGetUserGameDTO_UserNotFound() {
-        Pageable pageable = PageRequest.of(0, 10);
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null,null,null,"nosuchuser", pageable));
+        UserGameFilter userGameFilter = new UserGameFilter();
+        assertThrows(BadRequestException.class, () -> userGameService.getUserGame("nosuchuser", userGameFilter, pageable));
     }
 
     @Test
-    public void testGetUserGame_EmptyLibrary() {
-        Pageable pageable = PageRequest.of(0, 10);
+    @Transactional
+    public void testGetUserGame_EmptyLibrary() throws BadRequestException {
         userGameRepository.findByUserNickname("testcritic", pageable);
+        UserGameFilter userGameFilter = new UserGameFilter();
 
-        assertThrows(BadRequestException.class, () -> userGameService.getUserGame(null,null,null,"testcritic", pageable));
+        Page<UserGameDTO> result = userGameService.getUserGame("testcritic", userGameFilter, pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testAddGameToUser_Success() throws BadRequestException {
         UserGame userGame = new UserGame();
@@ -124,7 +119,8 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
-    @WithMockUser()
+    @Transactional
+    @WithAnonymousUser
     public void testAddGameToUser_NotLoggedIn() {
         UserGameDTO userGameDTO = userGameMapper.toDto(userGame);
 
@@ -132,9 +128,10 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testUpdateGame_NotOwner() {
-        WebsiteUser anotherUser = websiteUserRepository.findById(4L).orElseThrow();
+        WebsiteUser anotherUser = websiteUserRepository.findById(6L).orElseThrow();
         anotherUser = websiteUserRepository.save(anotherUser);
 
         userGame.setUser(anotherUser);
@@ -146,6 +143,7 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "testuser")
     public void testDeleteGame_Success() throws BadRequestException {
         UserGameDTO savedGame = userGameService.addGameToUser(userGameDTO);
@@ -156,7 +154,8 @@ public class UserGameServiceIntegrationTest {
     }
 
     @Test
-    @WithMockUser()
+    @Transactional
+    @WithAnonymousUser
     public void testDeleteGame_NotLoggedIn() {
         assertThrows(BadCredentialsException.class, () -> userGameService.deleteGame(userGame.getId()));
     }

@@ -33,16 +33,29 @@ public class SecurityConfig {
                         .requestMatchers("/critics-reviews/id/**", "/critics-reviews/edit/**",
                                 "/critics-reviews/review/**", "/critics-reviews/create",
                                 "/critics-reviews/delete/**", "/critics-reviews/list",
-                                "/critics-reviews/id/**").hasAnyRole("Critic", "Admin")
-                        .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**",
-                                "/user/edit/**", "/user/delete/**", "/user/roles/**", "/forum/create",
-                                "/forum/delete/**", "/forum/edit/**").hasRole("Admin")
+                                "/critics-reviews/id/**")
+                        .hasAnyRole("Critic", "Admin")
+
+                        .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
+                                "/post/delete/", "/forum-post/create", "/forum-post/delete/**",
+                                "/forum-post/edit/**", "/forum-request/own-requests", "/forum-request/edit/**",
+                                "/forum-request/delete/**")
+                        .authenticated()
+
+                        .requestMatchers("/user/ban", "/reports/**", "/users-reviews/admin/**", "/games/create",
+                                "/games/edit/**", "/games/delete/**", "/user/edit/**", "/user/delete/**",
+                                "/user/roles/**", "/forum/create", "/forum/delete/**", "/forum/edit/**",
+                                "/forum-request/list", "/forum-request/**", "/forum-request/create",
+                                "/forum-request/approve/**")
+                        .hasRole("Admin")
+
                         .requestMatchers("/login/**", "/register/**", "/games/**","/tags/**",
                                 "/release-statuses/**","/users-reviews/**", "/user/list", "/user/account/**",
                                 "/user/**", "/library/**", "/password-reset/**", "/critics-reviews/**",
-                                "/forum/**", "/post/**").permitAll()
-                        .requestMatchers("/user/edit-profile/**", "/library", "/post/create", "/post/edit/",
-                                "/post/delete/").authenticated()
+                                "/forum-post/**","/forum/**", "/post/**", "/path/**", "/forum/moderators/**",
+                                "/forum-post/picture/**")
+                        .permitAll()
+
                         .anyRequest()
                         .authenticated())
                 .userDetailsService(userDetails)

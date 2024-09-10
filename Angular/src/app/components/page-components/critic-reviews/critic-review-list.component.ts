@@ -1,19 +1,22 @@
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
-import { formatDate } from '../../../util/formatDate';
+import { formatDateArray } from '../../../util/formatDate';
 import { CriticReview } from '../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
-import { reviewStatuses } from '../../../interfaces/reviewStatuses';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { reviewStatuses } from '../../../enums/reviewStatuses';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { MatSelectChange } from '@angular/material/select';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
 
 @Component({
   selector: 'app-critic-review-list',
@@ -24,11 +27,15 @@ export class CriticReviewListComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
   public totalReviews: number = 0;
   public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
-  public formatDate = formatDate;
+  public formatDate = formatDateArray;
+  public reviewStatuses = reviewStatuses;
   public noCriticReviews = false;
+
+  private filters: criticReviewFilters = {};
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
 
   constructor(
     private criticReviewService: CriticReviewService,
@@ -37,21 +44,26 @@ export class CriticReviewListComponent implements AfterViewInit {
     private _location: Location,
     private notificationService: NotificationService,
     private router: Router,
+    private datePipe: DatePipe,
   ) {}
 
   ngAfterViewInit() {
     this.loadReviews();
     this.paginator.page.subscribe(() => this.loadReviews());
+
+    if (this.searchInput) {
+      fromEvent(this.searchInput.nativeElement, 'input').pipe(
+        map((event: any) => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+
+      ).subscribe(value => {
+        this.onSearchChange(value);
+      });
+    }
   }
 
   loadReviews() {
-    const token = this.authService.getToken();
-
-    if (token === null) {
-      console.log("Token is null");
-      return;
-    }
-
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -62,10 +74,10 @@ export class CriticReviewListComponent implements AfterViewInit {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);
+          this.noCriticReviews = (this.dataSource.data.length == 0);
 
-          if (this.dataSource.data.length == 0) {
-            this.noCriticReviews = true;
-          }
+        } else {
+          this.noCriticReviews = true
         }
       },
       error: error => {
@@ -73,7 +85,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       },
       complete: () => {}
     };
-    this.criticReviewService.getAllReviews(token, page, size, sortBy, sortDir).subscribe(observer);
+    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -85,17 +97,10 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   approveReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null) {
-      console.log("Token is null");
-      return;
-    }
-
     review.reviewStatus = 'APPROVED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review approved', false); },
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review approved'); },
       error: error => this.notificationService.popErrorToast('Approving failed', error)
     });
   }
@@ -122,31 +127,22 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   softDeleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
-      return;
-    }
-
     review.reviewStatus = 'DELETED'
 
-    this.criticReviewService.reviewReview(review, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
 
   deleteReview(review: CriticReview) {
-    const token = this.authService.getToken();
-
-    if (token == null || review.id == null) {
-      console.log("Token or review is null");
+    if (review.id == null) {
+      console.log("Review is null");
       return;
     }
 
-    this.criticReviewService.deleteReview(review.id, token).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully', false); },
+    this.criticReviewService.deleteReview(review.id).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
@@ -156,7 +152,7 @@ export class CriticReviewListComponent implements AfterViewInit {
       return true;
     }
 
-    return review.user && this.authService.hasRole('Critic') && review.user.username === this.authService.getUsername();
+    return review.user && this.authService.hasRole('Critic') && review.user.nickname === this.authService.getNickname();
   }
 
   findReviewStatusName(review: CriticReview) {
@@ -171,5 +167,65 @@ export class CriticReviewListComponent implements AfterViewInit {
 
   editReview(review: CriticReview) {
     this.router.navigate(['/critic-reviews/edit/' + review.id]);
+  }
+
+  // Filters
+
+  onReviewStatusesFilterChange(event: MatSelectChange) {
+    this.filters.reviewStatus = event.value;
+    this.loadReviews();
+  }
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadReviews();
+      }
+    }
+  }
+
+  onSearchChange(value: string) {
+    this.filters.search = value;
+    this.loadReviews();
+  }
+
+  onScoreMinFilterChange(value: number) {
+    this.filters.scoreMin = value;
+    if (!this.filters.scoreMax) {
+      this.filters.scoreMax = 10;
+    }
+    this.loadReviews();
+  }
+
+  onScoreMaxFilterChange(value: number) {
+    this.filters.scoreMax = value;
+    if (!this.filters.scoreMin) {
+      this.filters.scoreMin = 1;
+    }
+    this.loadReviews();
   }
 }

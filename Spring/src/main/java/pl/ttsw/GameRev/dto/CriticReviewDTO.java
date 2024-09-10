@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class CriticReviewDTO implements Serializable {
     Long id;
     String gameTitle;
-    WebsiteUserDTO user;
+    SimplifiedUserDTO user;
     String content;
     LocalDate postDate;
     Integer score;

@@ -1,0 +1,18 @@
+
+<h1 mat-dialog-title>Comment editing</h1>
+
+<form [formGroup]="commentForm" (ngSubmit)="onConfirm()">
+  <mat-form-field>
+    <mat-label>Content</mat-label>
+    <textarea matInput formControlName="content"></textarea>
+  </mat-form-field>
+
+  <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
+    Content must be at least {{ minLength }} characters long.
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-button type="submit" [disabled]="!commentForm.valid">Submit</button>
+  </div>
+</form>
