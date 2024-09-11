@@ -82,6 +82,8 @@ public class GameService {
     }
 
     public GameDTO getGameByTitle(String title) {
+        title = title.replaceAll("-", " ");
+
         Game game = gameRepository.findGameByTitle(title)
                 .orElseThrow(() -> new EntityNotFoundException("Game not found"));
         return gameMapper.toDto(game);

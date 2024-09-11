@@ -5,14 +5,12 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ttsw.GameRev.dto.CriticReviewDTO;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.filter.CriticReviewFilter;
 import pl.ttsw.GameRev.service.CriticReviewService;
-
 import java.io.IOException;
 
 @RestController
@@ -32,7 +30,7 @@ public class CriticReviewController {
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<CriticReviewDTO> getByTitle(@PathVariable String title) throws BadRequestException {
+    public ResponseEntity<CriticReviewDTO> getByTitle(@PathVariable String title) {
         title = title.replaceAll("-", " ");
 
         try {
