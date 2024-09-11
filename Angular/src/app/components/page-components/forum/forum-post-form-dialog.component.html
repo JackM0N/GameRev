@@ -10,7 +10,7 @@
 
     <div class="mt-2 mb-1">
       <label class="w-full">Title</label><br>
-      <input class="w-full p-1 px-3 text-black" placeholder="Post title" matInput formControlName="title">
+      <input class="w-full p-1 px-3 text-black text-sm" placeholder="Post title" matInput formControlName="title">
       <div *ngIf="forumPostForm.get('title')?.hasError('minLength')" class="p-2 text-red-600">
         Title must be at least {{ titleMinLength }} characters long.
       </div>

@@ -14,8 +14,8 @@
   <!-- Forum Header with Button Aligned and Title Centered -->
   <header class="forum-header mt-6 relative bg-[#222222] shadow-lg p-6 border border-[#00CFFF]">
     <!-- Button to View All Requests (Positioned on the right) -->
-    <div class="absolute right-6 top-6" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-      <button class="synthwaveButton" (click)="routeToRequests()">
+    <div class="absolute right-3 top-3" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+      <button class="synthwaveButton max-w-sm" (click)="routeToRequests()">
         View All Requests
       </button>
     </div>

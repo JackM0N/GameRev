@@ -4,7 +4,7 @@
 
     <div class="mt-2 mb-1">
       <label class="w-full">Parent forum</label><br>
-      <mat-select class="border-2 bg-white text-black noTextShadow w-full" formControlName="parentForum">
+      <mat-select class="border-2 bg-white text-black noTextShadow w-full p-1" formControlName="parentForum">
         @for (forum of forumList; track forum) {
           <mat-option [value]="forum">{{forum.forumName}}</mat-option>
         }
@@ -13,7 +13,7 @@
 
     <div class="mt-2 mb-1">
       <label class="w-full">Name</label><br>
-      <input class="w-full p-1 px-3 text-black" placeholder="Forum name" matInput formControlName="name">
+      <input class="w-full py-2 px-3 text-black text-sm" placeholder="Forum name" matInput formControlName="name">
       <div *ngIf="forumForm.get('name')?.hasError('minLength')" class="p-2 text-red-600">
         Name must be at least {{ nameMinLength }} characters long.
       </div>
@@ -21,7 +21,7 @@
 
     <div class="mt-2 mb-1">
       <label class="w-full">Description</label><br>
-      <textarea class="w-full text-black px-2 min-h-24" placeholder="Forum description" matInput formControlName="description"></textarea>
+      <textarea class="w-full text-black py-1 px-2 min-h-24 text-sm" placeholder="Forum description" matInput formControlName="description"></textarea>
       <div *ngIf="forumForm.get('description')?.hasError('minLength')" class="p-2 text-red-600">
         Description must be at least {{ descriptionMinLength }} characters long.
       </div>
@@ -29,7 +29,7 @@
 
     <div class="mt-2 mb-1">
       <label class="w-full">Game</label><br>
-      <mat-select class="border-2 bg-white text-black noTextShadow w-full" formControlName="game">
+      <mat-select class="border-2 bg-white text-black noTextShadow w-full text-sm p-1" formControlName="game">
         <mat-option>-</mat-option>
         @for (game of gameList; track game) {
           <mat-option [value]="game">{{game.title}}</mat-option>
