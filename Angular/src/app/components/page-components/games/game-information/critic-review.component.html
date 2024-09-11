@@ -1,18 +1,27 @@
 ﻿
-<div *ngIf="this.criticReview != undefined">
-  <h3 *ngIf="this.criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
+<!-- Critic Review Section -->
+<div class="p-4 mt-4 bg-[#222] border-[2px] border-pink-500 rounded-lg shadow-lg max-w-5xl mx-auto">
+  <div *ngIf="criticReview != undefined">
+    <h3 class="text-lg font-bold text-center mb-4" *ngIf="criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
 
-  <div class="review-item">
-    <p>Date: {{ formatDateArray(this.criticReview.postDate) }}</p>
-    <p>Score: {{ this.criticReview.score }}</p>
-    <p [innerHTML]="this.criticReview.content"></p>
+    <!-- Critic Review Content -->
+    <div class="review-item p-4 bg-[#333] border-[1px] border-pink-500 rounded-lg shadow">
+      <p>Date: {{ formatDateArray(this.criticReview.postDate) }}</p>
+      <p>Score: {{ this.criticReview.score }}</p>
+      <p class="pt-4" [innerHTML]="this.criticReview.content"></p>
+    </div>
+  </div>
+
+  <!-- No Critic Review -->
+  <div *ngIf="criticReview == undefined">
+    <!-- Request Critic Review Button -->
+    <div *ngIf="this.canAddCriticReview()" class="flex justify-center">
+      <div *ngIf="!this.criticReview">
+        <p class="text-white">No critic review found</p>
+      </div>
+    </div>
+
+    <button class="mt-4 mb-2 synthwaveButton" (click)="openAddCriticReviewDialog()">Request critic review</button>
   </div>
 </div>
 
-<div *ngIf="this.canAddCriticReview()">
-  <div *ngIf="!this.criticReview">
-    <p>No critic review found</p>
-  </div>
-  
-  <button id="gotoreview-button" type="button" mat-stroked-button (click)="routeToAddNewCriticReview()">Add critic review</button>
-</div>

@@ -158,7 +158,13 @@ export class CriticReviewListComponent implements AfterViewInit {
     }
 
     this.criticReviewService.deleteReview(review.id).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
+      next: () => {
+        this.notificationService.popSuccessToast('Review deleted successfully');
+        if (this.dataSource.data.length === 1 && this.paginator.pageIndex > 0) {
+          this.paginator.previousPage();
+        }
+        this.loadReviews();
+      },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }

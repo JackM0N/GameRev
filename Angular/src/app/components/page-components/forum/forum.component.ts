@@ -14,6 +14,7 @@ import { ForumFormDialogComponent } from './forum-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
+import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 
 @Component({
   selector: 'app-forum',
@@ -183,6 +184,17 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
         this.loadForum(this.forumId);
       },
       error: error => this.notificationService.popErrorToast('Forum deletion failed', error)
+    });
+  }
+
+  openAddNewRequestDialog() {
+    this.dialog.open(ForumRequestFormDialogComponent, {
+      width: '300px',
+      data: {
+        editing: false,
+        parentForum: this.currentForum,
+        lockParentForum: true
+      }
     });
   }
 

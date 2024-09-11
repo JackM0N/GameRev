@@ -56,10 +56,6 @@ export class GameFormDialogComponent {
     });
   }
 
-  onConfirm(): void {
-    this.dialogRef.close(true);
-  }
-
   onCancel(): void {
     this.dialogRef.close(false);
   }
@@ -102,17 +98,19 @@ export class GameFormDialogComponent {
       if (this.data.editing) {
         if (this.game.title) {
           this.gameService.editGame(this.game.title, gameData).subscribe({
-            next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
+            next: () => { this.notificationService.popSuccessToast('Edited game successfuly'); },
             error: error => this.notificationService.popErrorToast('Editing game failed', error)
           });
+          this.dialogRef.close(true);
         }
         return;
       }
 
       this.gameService.addGame(gameData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Added game successfuly', NotificationAction.GO_BACK); },
+        next: () => { this.notificationService.popSuccessToast('Added game successfuly'); },
         error: error => this.notificationService.popErrorToast('Adding game failed', error)
       });
+      this.dialogRef.close(true);
     }
   }
 

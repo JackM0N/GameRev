@@ -41,11 +41,12 @@ export class ForumRequestFormDialogComponent {
       description?: string,
       game?: Game,
       parentForum?: Forum,
+      lockParentForum?: boolean,
       editing?: boolean
     }
   ) {
     this.forumForm = this.formBuilder.group({
-      parentForum: [this.parentForum, [Validators.required]],
+      parentForum: [{value: this.parentForum, disabled: this.data?.lockParentForum && !this.authService.isAdmin}, [Validators.required]],
       name: [this.name, [Validators.required, Validators.minLength(this.nameMinLength)]],
       description: [this.description, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
       game: [this.game, [Validators.required]]
@@ -156,11 +157,6 @@ export class ForumRequestFormDialogComponent {
           next: () => { this.notificationService.popSuccessToast('Forum edited'); },
           error: error => this.notificationService.popErrorToast('Forum editing failed', error)
         });
-        return;
-      }
-
-      if (!this.parentForum) {
-        console.error('Parent forum is not set');
         return;
       }
 

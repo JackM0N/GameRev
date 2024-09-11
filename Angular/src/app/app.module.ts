@@ -37,12 +37,10 @@ import { PopupDialogComponent } from './components/general-components/popup-dial
 import { LoginComponent } from './components/page-components/authentication/login.component';
 import { RegistrationComponent } from './components/page-components/authentication/registration.component';
 import { ResetPasswordConfirmationDialogComponent } from './components/page-components/authentication/reset-password-confirmation-dialog.component';
-import { CriticReviewFormComponent } from './components/page-components/critic-reviews/critic-review-form.component';
 import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
 import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
 import { ReviewReportDialogComponent } from './components/page-components/games/review-report-dialog.component';
 import { LibraryComponent } from './components/page-components/library/library.component';
-import { UserReviewFormComponent } from './components/page-components/user-reviews/user-review-form.component';
 import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
 import { AccountDeletionConfirmationDialogComponent } from './components/page-components/user/account-deletion-confirmation-dialog.component';
 import { OwnProfileComponent } from './components/page-components/user/own-profile/own-profile.component';
@@ -68,6 +66,8 @@ import { GameFormDialogComponent } from './components/page-components/games/game
 import { LibraryFormDialogComponent } from './components/page-components/library/library-form-dialog.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
 import { ForumRequestFormDialogComponent } from './components/page-components/forum/forum-request-form-dialog.component';
+import { UserReviewFormDialogComponent } from './components/page-components/user-reviews/user-review-form-dialog.component';
+import { CriticReviewFormDialogComponent } from './components/page-components/critic-reviews/critic-review-form-dialog.component';
 
 @NgModule({
     declarations: [
@@ -78,7 +78,6 @@ import { ForumRequestFormDialogComponent } from './components/page-components/fo
         AccountDeletionConfirmationDialogComponent,
         GameListComponent,
         GameInformationComponent,
-        UserReviewFormComponent,
         UserListComponent,
         PopupDialogComponent,
         ProfileComponent,
@@ -89,7 +88,6 @@ import { ForumRequestFormDialogComponent } from './components/page-components/fo
         UserReviewListComponent,
         ResetPasswordConfirmationDialogComponent,
         AdBoxComponent,
-        CriticReviewFormComponent,
         CriticReviewListComponent,
         GameInfoCriticReviewComponent,
         GameInfoReviewListComponent,
@@ -103,7 +101,9 @@ import { ForumRequestFormDialogComponent } from './components/page-components/fo
         ForumPostFormDialogComponent,
         GameFormDialogComponent,
         ForumRequestsComponent,
-        ForumRequestFormDialogComponent
+        ForumRequestFormDialogComponent,
+        UserReviewFormDialogComponent,
+        CriticReviewFormDialogComponent
     ],
     bootstrap: [
         AppComponent

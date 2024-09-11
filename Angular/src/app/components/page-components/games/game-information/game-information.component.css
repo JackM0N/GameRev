@@ -25,10 +25,6 @@ p {
     justify-content: center;
 }
 
-#goback-button {
-    margin-bottom: 16px;
-}
-
 .review-item {
     border: 1px solid black;
     margin-bottom: 8px;

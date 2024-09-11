@@ -71,6 +71,6 @@ export class ForumRequestService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.put<any>(this.approveUrl, request, { headers, params });
+    return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
   }
 }

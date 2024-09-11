@@ -82,7 +82,8 @@
 
   <!-- Add new subforum -->
   <div class="mt-6" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-    <button class="synthwaveButton" (click)="openAddSubforumDialog()">Add Subforum</button>
+    <button class="synthwaveButton" (click)="openAddSubforumDialog()">Add Subforum</button><br>
+    <button class="mt-3 synthwaveButton" (click)="openAddNewRequestDialog()">Request new subforum</button>
   </div>
 
   <!-- Paginator for Forums -->

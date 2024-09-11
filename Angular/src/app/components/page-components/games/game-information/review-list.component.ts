@@ -2,7 +2,6 @@
 import { UserReviewService } from '../../../../services/user-review.service';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
-import { Router } from '@angular/router';
 import { UserReview } from '../../../../interfaces/userReview';
 import { Observer } from 'rxjs';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
@@ -17,6 +16,8 @@ import { NotificationService } from '../../../../services/notification.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { reviewFilters } from '../../../../interfaces/reviewFilters';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserReviewFormDialogComponent } from '../../user-reviews/user-review-form-dialog.component';
 
 @Component({
   selector: 'app-gameinfo-review-list',
@@ -24,18 +25,20 @@ import { reviewFilters } from '../../../../interfaces/reviewFilters';
   styleUrl: './game-information.component.css'
 })
 export class GameInfoReviewListComponent implements AfterViewInit {
-  @Output() usersScoreUpdated = new EventEmitter<number>();
+  @Output() public usersScoreUpdated = new EventEmitter<number>();
 
-  @Input() gameTitle?: string;
-  @Input() game?: Game;
+  @Input() public gameTitle?: string;
+  @Input() public game?: Game;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
 
-  public reviewList: UserReview[] = [];
-  public totalReviews: number = 0;
-  public formatDateArray = formatDateArray;
+  protected reviewList: UserReview[] = [];
+  protected totalReviews: number = 0;
+  protected formatDateArray = formatDateArray;
+  
   private filters: reviewFilters = {};
+  protected filterForm: FormGroup;
 
   private report: Report = {
     content: '',
@@ -49,10 +52,21 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     private notificationService: NotificationService,
     private authService: AuthService,
     private reportService: ReportService,
-    private router: Router,
-    public dialog: MatDialog,
+    private fb: FormBuilder,
+    protected dialog: MatDialog,
     private datePipe: DatePipe,
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      })
+    });
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -243,14 +257,41 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     return !this.reviewList.some(review => review.userUsername === userName);
   }
 
-  routeToAddNewReview() {
+  openAddReviewDialog() {
     if (this.game) {
-      this.router.navigate(['/user-reviews/add/' + this.game.title]);
+      const dialogRef = this.dialog.open(UserReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: false,
+          game: this.game
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadReviews();
+        }
+      });
     }
   }
 
-  editReview(review: UserReview) {
-    this.router.navigate(['/user-reviews/edit/' + review.id]);
+  openEditReviewDialog(review: UserReview) {
+    if (this.game) {
+      const dialogRef = this.dialog.open(UserReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: true,
+          game: this.game,
+          review: review
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadReviews();
+        }
+      });
+    }
   }
 
   // Filters
@@ -300,6 +341,14 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }

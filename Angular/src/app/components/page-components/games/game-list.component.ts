@@ -46,7 +46,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
-    public authService: AuthService,
+    protected authService: AuthService,
     private tagService: TagService,
     private datePipe: DatePipe,
     private backgroundService: BackgroundService,

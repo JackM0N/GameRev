@@ -28,8 +28,7 @@ export class ForumRequestsComponent implements AfterViewInit {
     private backgroundService: BackgroundService,
     protected authService: AuthService,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
@@ -45,7 +44,7 @@ export class ForumRequestsComponent implements AfterViewInit {
   loadForumRequests() {
     this.requestList = [];
 
-    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? this.paginator.pageSize : 10;
 
     this.forumRequestService.getRequests(page, size, this.showOnlyApproved).subscribe({
@@ -53,20 +52,6 @@ export class ForumRequestsComponent implements AfterViewInit {
         if (response) {
           console.log(response);
           this.requestList = response.content;
-          this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
-
-          // DEBUG
-          this.requestList = [
-            {
-              id: 1,
-              forumName: 'Test Forum',
-              description: 'Test Description',
-              game: { id: 1, title: 'Test Game' },
-              parentForum: { id: 1, forumName: 'Test Parent Forum' },
-              author: { nickname: this.authService.getNickname() },
-            },
-          ];
-          console.log(this.requestList);
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
 
@@ -76,16 +61,22 @@ export class ForumRequestsComponent implements AfterViewInit {
   }
 
   openAddNewRequestDialog() {
-    this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
       width: '300px',
       data: {
         editing: false
       }
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadForumRequests();
+      }
+    });
   }
 
   openEditRequestDialog(forumRequest: ForumRequest) {
-    this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
       width: '300px',
       data: {
         editing: true,
@@ -94,6 +85,12 @@ export class ForumRequestsComponent implements AfterViewInit {
         name: forumRequest.forumName,
         description: forumRequest.description,
         game: forumRequest.game
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadForumRequests();
       }
     });
   }

@@ -9,7 +9,7 @@
 
   <!-- Forum Requests Table -->
   <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
-    <div class="px-1">
+    <div class="px-1 overflow-x-auto">
       <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadForumRequests()">
         <!-- Forum Name Column -->
         <ng-container matColumnDef="forumName">
@@ -77,15 +77,23 @@
             Options
           </th>
           <td class="synthwaveBg bg-repeat border-2 border-white" *matCellDef="let element">
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditRequestDialog(element)" *ngIf="canEditRequest(element)">
+            <button
+              class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+              (click)="openEditRequestDialog(element)"
+              *ngIf="canEditRequest(element)">
               Edit
             </button>
 
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openApproveRequestDialog(element, true)" *ngIf="authService.hasAnyRole(['Admin'])">
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+              (click)="openApproveRequestDialog(element, true)"
+              *ngIf="element.approved != true && authService.hasAnyRole(['Admin'])">
               Approve
             </button>
 
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openApproveRequestDialog(element, false)" *ngIf="authService.hasAnyRole(['Admin'])">
+            <button
+              class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+              (click)="openApproveRequestDialog(element, false)"
+              *ngIf="element.approved != false && authService.hasAnyRole(['Admin'])">
               Disaprove
             </button>
           </td>
@@ -98,12 +106,15 @@
     </div>
 
     <!-- Paginator for Forum Requests -->
-    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-      [length]="requestList.length"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
+     <div [hidden]="requestList.length < 5">
+      <mat-paginator
+        class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+        [length]="requestList.length"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
   </div>
 </div>
 
