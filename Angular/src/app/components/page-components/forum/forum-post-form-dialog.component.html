@@ -5,7 +5,7 @@
     <div class="mt-2 mb-1">
       <label class="w-full">Picture</label><br>
       <img class="max-w-52 max-h-52 mb-2" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
-      <input class="w-full h-8 text-black bg-white p-1 px-3" type="file" id="picture" (change)="onFileSelected($event)">
+      <input class="w-full text-black bg-white p-1 px-3 my-6 text-sm" type="file" id="picture" (change)="onFileSelected($event)">
     </div>
 
     <div class="mt-2 mb-1">
