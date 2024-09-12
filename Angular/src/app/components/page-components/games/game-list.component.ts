@@ -21,6 +21,9 @@ import { TagService } from '../../../services/tag.service';
 import { gameFilters } from '../../../interfaces/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { NotificationService } from '../../../services/notification.service';
+import { ForumRequestService } from '../../../services/forumRequest.service';
+import { ForumService } from '../../../services/forum.service';
 
 @Component({
   selector: 'app-game-list',
@@ -43,12 +46,15 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   constructor(
     private gameService: GameService,
+    private forumRequestService: ForumRequestService,
+    private forumService: ForumService,
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
     protected authService: AuthService,
     private tagService: TagService,
     private datePipe: DatePipe,
+    private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -186,6 +192,41 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     });
   }
 
+  openErrorDialog() {
+    const dialogTitle = 'Deleting game failed';
+
+    this.forumRequestService.getRequests().subscribe({
+      next: (response) => {
+        if (response && response.content && response.totalElements > 0) {
+
+          // There are forum requests that are related to this game
+          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
+          });
+
+        } else {
+
+          // There are no forum requests that are related to this game, check forums
+          this.forumService.getForums().subscribe({
+            next: (response2) => {
+              if (response2 && response2.length > 0) {
+                // There are forums that are related to this game
+                const dialogContent = 'There are forums that are related to this game. Please delete them first.';
+                this.dialog.open(PopupDialogComponent, {
+                  width: '400px',
+                  data: { dialogTitle, dialogContent, noSubmitButton: true }
+                });
+              }
+            }
+          });
+
+        }
+      }
+    });
+  }
+
   deleteGame(game: Game) {
     if (!game || !game.id) {
       console.log('Game ID is not valid.');
@@ -197,10 +238,12 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
         if (response) {
           this.dataSource.data = response;
           this.loadGames();
+          this.notificationService.popSuccessToast('Deleted game successfuly');
         }
       },
       error: error => {
-        console.error(error);
+        this.notificationService.popErrorToast('Deleting game failed', error);
+        this.openErrorDialog();
       },
       complete: () => {}
     };
