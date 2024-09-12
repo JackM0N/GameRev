@@ -51,7 +51,6 @@ public class ForumService {
             forumFilter.setIsDeleted(false);
         }
 
-
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());
 

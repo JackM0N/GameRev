@@ -9,6 +9,8 @@ import { BackgroundService } from '../../../services/background.service';
 import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { MatSelectChange } from '@angular/material/select';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-forum-requests',
@@ -16,19 +18,26 @@ import { PopupDialogComponent } from '../../general-components/popup-dialog.comp
 })
 export class ForumRequestsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  protected showOnlyApproved?: boolean = undefined;
+
   protected requestList: ForumRequest[] = [];
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
   protected displayedColumns: string[] = ['forumName', 'description', 'game', 'parentForum', 'author', 'approved', 'options'];
 
+  private approvedFilter?: boolean = undefined;
+  protected filterForm: FormGroup;
+
   constructor(
+    private fb: FormBuilder,
     private forumRequestService: ForumRequestService,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     protected authService: AuthService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      approved: [undefined],
+    });
+  }
 
   ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
@@ -47,10 +56,9 @@ export class ForumRequestsComponent implements AfterViewInit {
     const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? this.paginator.pageSize : 10;
 
-    this.forumRequestService.getRequests(page, size, this.showOnlyApproved).subscribe({
+    this.forumRequestService.getRequests(page, size, this.approvedFilter).subscribe({
       next: (response) => {
         if (response) {
-          console.log(response);
           this.requestList = response.content;
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
@@ -128,5 +136,14 @@ export class ForumRequestsComponent implements AfterViewInit {
         this.approveRequest(request, approve, action1, action2);
       }
     });
+  }
+
+  clearFilters() {
+
+  }
+
+  onApprovedFilterChange(event: MatSelectChange) {
+    this.approvedFilter = event.value;
+    this.loadForumRequests();
   }
 }

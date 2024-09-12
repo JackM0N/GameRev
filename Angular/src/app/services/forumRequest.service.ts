@@ -20,7 +20,7 @@ export class ForumRequestService {
     private authService: AuthService,
   ) {}
 
-  getRequests(page: number, size: number, approved?: boolean): Observable<any> {
+  getRequests(page?: number, size?: number, approved?: boolean): Observable<any> {
     var params = new HttpParams();
 
     if (page) {
@@ -29,7 +29,7 @@ export class ForumRequestService {
     if (size) {
       params = params.set('size', size.toString());
     }
-    if (approved) {
+    if (approved != undefined) {
       params = params.set('approved', approved.toString());
     }
 
