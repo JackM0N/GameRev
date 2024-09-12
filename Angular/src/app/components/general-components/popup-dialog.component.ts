@@ -13,6 +13,7 @@ export class PopupDialogComponent implements OnInit {
       dialogContent: string;
       submitText: string;
       cancelText: string;
+      noSubmitButton?: boolean;
     }
   ) {}
 

@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div class="pixel-border p-[6px]">
+      <div *ngIf="data.noSubmitButton != true" class="pixel-border p-[6px]">
         <div class="w-full">
           <button class="pinkTextShadow text-base w-full bg-red-700 px-2" type="submit" (click)="onConfirm()">{{ data.submitText }}</button>
         </div>
