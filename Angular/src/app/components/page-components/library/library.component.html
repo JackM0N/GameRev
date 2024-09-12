@@ -1,6 +1,14 @@
 
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Game library
+    </div>
+  </div>
+</div>
+
 <!-- Filters Section -->
-<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+<div [hidden]="libraryEmpty" class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
   <div class="synthwaveBg bg-repeat text-white p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <mat-form-field>
@@ -30,6 +38,12 @@
         </mat-select>
       </mat-form-field>
     </div>
+  </div>
+</div>
+
+<div *ngIf="libraryEmpty" class="max-w-[400px] m-auto pixel-border p-1 mb-6">
+  <div>
+    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">Library is empty</p>
   </div>
 </div>
 
@@ -76,10 +90,4 @@
     [pageSizeOptions]="[2, 5, 10, 20]"
     showFirstLastButtons>
   </mat-paginator>
-</div>
-
-<div *ngIf="libraryEmpty" class="max-w-[400px] m-auto pixel-border p-1">
-  <div>
-    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">Library is empty</p>
-  </div>
 </div>

@@ -1,26 +1,27 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observer } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { BaseAdComponent } from '../../base-components/base-ad-component';
+import { AdService } from '../../../services/ad.service';
+import { BackgroundService } from '../../../services/background.service';
 
 @Component({
   selector: 'app-user-review-list',
   templateUrl: './user-review-list.component.html',
   styleUrl: './user-review-list.component.css'
 })
-export class UserReviewListComponent implements AfterViewInit {
+export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit {
   reviewsList: UserReview[] = [];
   dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
   totalReviews: number = 0;
-  displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score'];
+  displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
   userId?: number;
   formatDate = formatDateArray;
 
@@ -30,12 +31,21 @@ export class UserReviewListComponent implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private userReviewService: UserReviewService,
-    private authService: AuthService,
-    public dialog: MatDialog,
-    private _location: Location
-  ) {}
+    private _location: Location,
+    private backgroundService: BackgroundService,
+    adService: AdService,
+    cdRef: ChangeDetectorRef
+  ) {
+    super(adService, backgroundService, cdRef);
+  }
 
-  ngAfterViewInit() {
+  override ngOnInit(): void {
+    this.backgroundService.setClasses(['fallingCds']);
+  }
+
+  override ngAfterViewInit() {
+    super.ngAfterViewInit();
+
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.userId = params['id'];
@@ -83,4 +93,8 @@ export class UserReviewListComponent implements AfterViewInit {
   goBack() {
     this._location.back();
   }
+
+  openEditReviewDialog(review: UserReview) {}
+
+  openDeleteReviewDialog(review: UserReview) {}
 }

@@ -43,10 +43,10 @@
     <div class="review-item p-4 bg-[#333] border-[1px] border-pink-500 rounded-lg shadow mb-4" *ngFor="let review of reviewList">
       <p class="pb-2"><strong>{{ review.userUsername }}</strong>, Score: {{ review.score }}, Date: {{ formatDateArray(review.postDate) }}</p>
       <p class="text-base">{{ review.content }}</p>
-      <p class="text-xs pt-2">Likes: {{ review.positiveRating }} | Dislikes: {{ review.negativeRating }}</p>
+      <p class="text-sm pt-2">Likes: {{ review.positiveRating }} | Dislikes: {{ review.negativeRating }}</p>
 
       <!-- Review Actions -->
-      <div class="flex justify-between mt-2">
+      <div class="flex justify-between mt-4">
         <div>
           <button
             class="synthwaveButton synthwaveButtonSmall"
@@ -61,7 +61,7 @@
             Edit review
           </button>
         </div>
-        <div>
+        <div *ngIf="review.userUsername != authService.getUsername()">
           <button
             class="synthwaveButton synthwaveButtonSmall"
             [ngClass]="{

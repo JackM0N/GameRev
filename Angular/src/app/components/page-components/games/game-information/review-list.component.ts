@@ -50,7 +50,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   constructor(
     private userReviewService: UserReviewService,
     private notificationService: NotificationService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private reportService: ReportService,
     private fb: FormBuilder,
     protected dialog: MatDialog,

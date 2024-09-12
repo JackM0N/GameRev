@@ -47,7 +47,7 @@ export class GameInfoCriticReviewComponent {
   }
 
   canAddCriticReview() {
-    return this.authService.isAuthenticated() && this.authService.hasRole('Critic') && this.criticReview == undefined;
+    return this.authService.isAuthenticated() && this.authService.hasRole('Critic');
   }
 
   openAddCriticReviewDialog() {
