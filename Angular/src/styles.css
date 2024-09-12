@@ -541,3 +541,11 @@ button:disabled:hover {
   color: rgb(210, 210, 210);
   transform: translate(3px, 3px);
 }
+
+.mat-mdc-select-min-line {
+  color: black !important;
+}
+
+mat-paginator .mat-mdc-select-min-line {
+  color: white !important;
+}

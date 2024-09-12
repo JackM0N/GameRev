@@ -1,12 +1,44 @@
 
-<div class="grow z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
-  <!-- Add new request button -->
-  <div class="pixel-border w-[400px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin'])">
-    <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
-      <button class="pinkTextShadowWide" (click)="openAddNewRequestDialog()">Add a new request</button>
+<div class="w-fit m-auto pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Forum request list
     </div>
   </div>
+</div>
 
+<!-- Add new request button -->
+<div class="pixel-border w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin'])">
+  <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
+    <button class="pinkTextShadowWide" (click)="openAddNewRequestDialog()">Add a new request</button>
+  </div>
+</div>
+
+<!-- Filters Section -->
+<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mt-10 px-[6px]">
+  <div class="synthwaveBg bg-repeat text-black p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="filterForm" class="contents">
+        <!-- Approved -->
+        <mat-form-field>
+          <mat-label>Approved</mat-label>
+          <mat-select formControlName="approved" (selectionChange)="onApprovedFilterChange($event)">
+            <mat-option [value]="undefined"> - </mat-option>
+            <mat-option [value]="true"> Yes </mat-option>
+            <mat-option [value]="false"> No </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <!-- Clear Filters Button -->
+    <div class="absolute bottom-4 right-4">
+      <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+</div>
+
+<div class="grow z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
   <!-- Forum Requests Table -->
   <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
     <div class="px-1 overflow-x-auto">

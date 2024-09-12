@@ -1,5 +1,5 @@
 
-<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[16px]">
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
   <div class="synthwaveBg py-2 px-6">
     <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
       User list
@@ -25,7 +25,7 @@
         <!-- Is Deleted Filter -->
         <mat-form-field class="w-full text-white">
           <mat-label>Is deleted</mat-label>
-          <mat-select (selectionChange)="onDeletedFilterChange($event)"  formControlName="isDeleted">
+          <mat-select (selectionChange)="onDeletedFilterChange($event)" formControlName="isDeleted">
             <mat-option>-</mat-option>
             <mat-option value="1">True</mat-option>
             <mat-option value="0">False</mat-option>

@@ -154,15 +154,15 @@ export class ForumRequestFormDialogComponent {
       if (this.data && this.data.editing) {
         forumRequest.id = this.requestId;
         this.forumRequestService.editRequest(forumRequest).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Forum edited'); },
-          error: error => this.notificationService.popErrorToast('Forum editing failed', error)
+          next: () => { this.notificationService.popSuccessToast('Forum request edited'); },
+          error: error => this.notificationService.popErrorToast('Forum request editing failed', error)
         });
         return;
       }
 
       this.forumRequestService.addRequest(forumRequest).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Forum added'); },
-        error: error => this.notificationService.popErrorToast('Forum adding failed', error)
+        next: () => { this.notificationService.popSuccessToast('Forum request added'); },
+        error: error => this.notificationService.popErrorToast('Forum request adding failed', error)
       });
 
     } else {
