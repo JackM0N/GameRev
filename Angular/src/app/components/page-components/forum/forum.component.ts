@@ -15,43 +15,63 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
+import { GameService } from '../../../services/game.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { forumFilters } from '../../../interfaces/forumFilters';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-forum',
   templateUrl: './forum.component.html'
 })
 export class ForumComponent extends BaseAdComponent implements AfterViewInit {
-  public subForumList: Forum[] = [];
-  public totalSubforums = 0;
-  public noSubForums = false;
-  public currentForum?: Forum;
-  public path?: any;
+  protected subForumList: Forum[] = [];
+  protected totalSubforums = 0;
+  protected noSubForums = false;
+  protected currentForum?: Forum;
+  protected path?: any;
+
+  protected filtered = false;
 
   public forumId?: number;
   private routeParamsSubscription?: Subscription;
 
+  protected gameList: any[] = [];
+  private filters: forumFilters = {};
+  protected filterForm: FormGroup;
+
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild('paginatorPosts') paginatorPosts!: MatPaginator;
 
-  public formatDateTime = formatDateTime;
-  public formatDateTimeArray = formatDateTimeArray;
+  protected formatDateTime = formatDateTime;
+  protected formatDateTimeArray = formatDateTimeArray;
 
   constructor(
-    public authService: AuthService,
+    protected authService: AuthService,
     private forumService: ForumService,
     private notificationService: NotificationService,
+    private gameService: GameService,
+    private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    public dialog: MatDialog,
-    public backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
+
+    this.filterForm = this.fb.group({
+      isDeleted: [null],
+      game: [null],
+      search: [null]
+    });
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.loadGames();
 
     this.backgroundService.setClasses(['fallingCds']);
 
@@ -87,6 +107,14 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     });
   }
 
+  loadGames() {
+    this.gameService.getGames().subscribe({
+      next: (response: any) => {
+        this.gameList = response.content;
+      }
+    });
+  }
+
   loadPath(id: number) {
     this.path = undefined;
     this.forumService.getForumPath(id).subscribe({
@@ -102,14 +130,16 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   loadForum(id?: number) {
     this.currentForum = undefined;
     this.subForumList = [];
-    this.noSubForums = false;
+    this.noSubForums = true;
     this.totalSubforums = 0;
+    /*
     this.path = undefined;
+    */
 
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const size = this.paginator ? this.paginator.pageSize : 10;
 
-    this.forumService.getForum(id, page, size).subscribe({
+    this.forumService.getForum(id, page, size, this.filters).subscribe({
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.currentForum = response.content[0];
@@ -138,6 +168,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
         editing: false
       }
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.loadForum(this.forumId);
+      }
+    });
   }
 
   openEditSubforumDialog(subForum: Forum) {
@@ -150,6 +186,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
         name: subForum.forumName,
         description: subForum.description,
         gameTitle: subForum.gameTitle
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.loadForum(this.forumId);
       }
     });
   }
@@ -212,5 +254,35 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   navigateToPost(postId: number) {
     this.router.navigate(['forum', this.forumId, 'post', postId]);
+  }
+
+  onDeletedFilterChange(event: MatSelectChange) {
+    this.filters.isDeleted = event.value;
+    this.filtered = true;
+    this.loadForum(this.forumId);
+  }
+
+  onGameFilterChange(event: MatSelectChange) {
+    if (event.value) {
+      this.filters.gameId = event.value.id;
+      this.filtered = true;
+    } else {
+      this.filters.gameId = undefined;
+    }
+    this.loadForum(this.forumId);
+  }
+
+  onSearchFilterChange(value: string) {
+    this.filters.search = value;
+    this.filtered = true;
+    this.loadForum(this.forumId);
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
+    this.loadGames();
   }
 }

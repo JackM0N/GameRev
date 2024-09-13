@@ -28,9 +28,52 @@
   </header>
 
   <!-- Forum Table -->
-  <div *ngIf="currentForum" [hidden]="noSubForums" class="mt-8 bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF]">
-    <div class="px-6 py-4">
-      <h2 class="text-3xl font-bold text-[#E5E5E5] mb-4">Subforums</h2>
+  <div *ngIf="currentForum" [hidden]="noSubForums && !filtered" class="mt-8 bg-[#222222] shadow-lg border border-[#00CFFF]">
+    <div class="px-6 py-4 px-1 overflow-x-auto">
+
+      <div class="flex justify-between items-center mb-4">
+        <!-- Subforums Heading -->
+        <h2 class="text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
+        
+        <!-- Filters Section -->
+        <form [formGroup]="filterForm" class="flex space-x-4 items-start">
+          <!-- Game Filter -->
+          <div class="flex flex-col space-y-1 w-64">
+            <label class="text-sm text-white">Game</label>
+            <mat-select (selectionChange)="onGameFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="game">
+              <mat-option>-</mat-option>
+              @for (game of gameList; track game) {
+                <mat-option [value]="game">{{game.title}}</mat-option>
+              }
+            </mat-select>
+          </div>
+
+          <!-- Is Deleted Filter -->
+          <div class="flex flex-col space-y-1 w-32">
+            <label class="text-sm text-white">Is deleted</label>
+            <mat-select (selectionChange)="onDeletedFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="isDeleted">
+              <mat-option>-</mat-option>
+              <mat-option [value]="true">True</mat-option>
+              <mat-option [value]="false">False</mat-option>
+            </mat-select>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="flex flex-col space-y-1 w-48">
+            <label class="text-sm text-white">Search</label>
+            <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search">
+          </div>
+
+          <!-- Clear Button -->
+          <div class="flex flex-col space-y-1">
+            <label class="text-sm text-white">Clear</label>
+            <button class="bg-blue-500 text-white flex items-center justify-center py-2 px-3 hover:bg-blue-600" (click)="clearFilters()">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
+        </form>
+      </div>
+
       <table class="w-full border-collapse">
         <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
           <tr>

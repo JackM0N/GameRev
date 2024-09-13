@@ -35,7 +35,7 @@ export class ForumService {
     return this.http.get<WebsiteUser[]>(`${this.moderatorsUrl}/${forumId}`);
   }
 
-  getForum(id?: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumFilters): Observable<Forum> {
+  getForum(id?: number, page?: number, size?: number, filters?: forumFilters): Observable<Forum> {
     var params = new HttpParams();
 
     if (page) {
@@ -44,15 +44,15 @@ export class ForumService {
     if (size) {
       params = params.set('size', size.toString());
     }
-    if (sortBy && sortDir) {
-      params = params.set('sort', sortBy + ',' + sortDir);
-    }
     if (filters) {
-      if (filters.gameId) {
+      if (filters.gameId != undefined) {
         params = params.set('gameId', filters.gameId);
       }
       if (filters.search) {
         params = params.set('searchText', filters.search);
+      }
+      if (filters.isDeleted != undefined) {
+        params = params.set('isDeleted', filters.isDeleted);
       }
     }
 
