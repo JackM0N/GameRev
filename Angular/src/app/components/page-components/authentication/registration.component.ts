@@ -21,6 +21,7 @@ export class RegistrationComponent {
   emailErrorMessage = signal('');
   passwordMismatchErrorMessage = signal('');
   hidePassword = signal(true);
+  hideConfirmPassword = signal(true);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -83,7 +84,7 @@ export class RegistrationComponent {
 
     if(email != null) {
       if (email.hasError('required')) {
-        this.emailErrorMessage.set('You must enter a value');
+        this.emailErrorMessage.set('Please provide an email address');
   
       } else if (email.hasError('email')) {
         this.emailErrorMessage.set('Not a valid email');
@@ -108,6 +109,11 @@ export class RegistrationComponent {
 
   hidePasswordClickEvent(event: MouseEvent) {
     this.hidePassword.set(!this.hidePassword());
+    event.stopPropagation();
+  }
+
+  hideConfirmPasswordClickEvent(event: MouseEvent) {
+    this.hideConfirmPassword.set(!this.hideConfirmPassword());
     event.stopPropagation();
   }
 }

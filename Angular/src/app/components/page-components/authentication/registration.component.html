@@ -1,135 +1,139 @@
 <div class="grow z-10 w-full py-12 bg-repeat">
-    <form class="w-full flex justify-center items-center" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+  <form class="w-full flex justify-center items-center" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <div class="z-20 w-11/12 sm:w-2/3 max-w-[800px] h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
+        border-2 border-arcadeBigLines">
 
-        <div class="z-20 w-11/12 sm:w-2/3 max-w-[800px] h-fit grid place-items-center bg-arcadeBackGround shadow-arcadeBorderShadow 
-            border-2 border-arcadeBigLines">
+        <div class="w-11/12 h-24 flex justify-center items-center bg-titleTextBackground my-4 border-2 
+        border-fuchsia-900 border-opacity-50 text-7xl md:text-8xl text-white font-arcade titleShadow">GAMEREV</div>
 
-            <div class="w-11/12 h-24 flex justify-center items-center bg-titleTextBackground my-4 border-2 
-            border-fuchsia-900 border-opacity-50 text-7xl md:text-8xl text-white font-arcade titleShadow">GAMEREV</div>
-
-            <!--radial gradient-->
-            <div class="bg-arcade-radial-bg-orange w-11/12 h-fit mb-4">
-
-                <!--monitor edges-->
-                <div class="bg-arcade-internal-edge w-full h-fit py-6 border-2 
-                border-arcadeLines items-center justify-center flex">
-
-                    <!--orange light outside-->
-                    <div class="mx-5 sm:mx-6 md:mx-8 lg:mx-10 xl:mx-12 w-full h-5/6 border-2 border-arcadeOrangeLight shadow-arcadeScreenShadowOrange">
-
-                        <!--screen-->
-                        <div class="h-full shadow-arcadeScreenInnerShadowOrange py-2 px-3 bg-repeat screenBg">
-                            <div class="my-2">
-                                <label class="text-white font-arcade">Login</label>
-                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="username" required/>
-                            </div>
-                
-                            <div>
-                                <label class="text-white font-arcade">Email</label>
-                                <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
-                                <mat-error class="text-red-600 font-arcade" *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
-                            </div>
-                
-                            <div class="my-2">
-                                <label class="text-white font-arcade">Password</label>
-                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
-                                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
-                                    <button class="px-1 flex items-center"
-                                    matSuffix
-                                    type="button"
-                                    (mousedown)="hidePasswordClickEvent($event)"
-                                    [attr.aria-label]="'Hide password'"
-                                    [attr.aria-pressed]="hidePassword()"
-                                    >
-                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                
-                            <div class="my-2">
-                                <label class="text-white font-arcade">Confirm your password</label>
-                                <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
-                                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
-                                    <button class="px-1 flex items-center"
-                                    matSuffix
-                                    type="button"
-                                    (mousedown)="hidePasswordClickEvent($event)"
-                                    [attr.aria-label]="'Hide password'"
-                                    [attr.aria-pressed]="hidePassword()"
-                                    >
-                                        <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-
-
-                            <div class="h-8 flex justify-between items-center my-2">
-                                <div class="h-full w-full flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade">
-                                    <button class="w-full h-full" [disabled]="!registrationForm.valid">Register</button>
-                                </div>
-                            </div>
-
-                            <div class="font-arcade underline mb-2 text-white">
-                                <a routerLink="/login" routerLinkActive="active">Already have an account</a>
-                            </div>
-                        </div>
-                    </div>
+        <!--radial gradient-->
+        <div class="bg-arcade-radial-bg-orange w-11/12 h-fit mb-4">
+          <!--monitor edges-->
+          <div class="bg-arcade-internal-edge w-full h-fit py-6 border-2 border-arcadeLines items-center justify-center flex">
+            <!--orange light outside-->
+            <div class="mx-5 sm:mx-6 md:mx-8 lg:mx-10 xl:mx-12 w-full h-5/6 border-2 border-arcadeOrangeLight shadow-arcadeScreenShadowOrange">
+              <!--screen-->
+              <div class="h-full shadow-arcadeScreenInnerShadowOrange py-2 px-3 bg-repeat screenBg">
+                <div class="my-2">
+                  <label class="text-white font-arcade">Login</label>
+                  <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="username" required/>
                 </div>
+                <div *ngIf="registrationForm.get('username')?.touched && registrationForm.get('username')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                  Please provide a login.
+                </div>
+    
+                <div>
+                  <label class="text-white font-arcade">Email</label>
+                  <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                  <mat-error class="text-red-600 font-arcade" *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+                </div>
+    
+                <div class="my-2">
+                  <label class="text-white font-arcade">Password</label>
+                  <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
+                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required />
+                    <button class="px-1 flex items-center"
+                    matSuffix
+                    type="button"
+                    (mousedown)="hidePasswordClickEvent($event)"
+                    [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hidePassword()"
+                    >
+                      <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="(registrationForm.get('password')?.touched || registrationForm.get('confirmPassword')?.touched) && registrationForm.get('password')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                  Please provide a password.
+                </div>
+    
+                <div class="my-2">
+                  <label class="text-white font-arcade">Confirm your password</label>
+                  <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange">
+                    <input class="px-2 h-full w-11/12 bg-inputBackGround" [type]="hideConfirmPassword() ? 'password' : 'text'" formControlName="confirmPassword" (blur)="updatePasswordMismatchErrorMessage()" required />
+                    <button class="px-1 flex items-center"
+                    matSuffix
+                    type="button"
+                    (mousedown)="hideConfirmPasswordClickEvent($event)"
+                    [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hideConfirmPassword()"
+                    >
+                      <mat-icon>{{hideConfirmPassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="registrationForm.get('confirmPassword')?.touched && registrationForm.get('confirmPassword')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                  Please confirm your password.
+                </div>
+                <div *ngIf="isPasswordMismatch()"class="font-arcade text-red-600 font-bold">
+                  {{passwordMismatchErrorMessage()}}
+                </div>
+
+                <div class="h-8 flex justify-between items-center my-4">
+                  <div class="h-full w-full flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade" [ngClass]="{'opacity-80': !registrationForm.valid}">
+                    <button class="w-full h-full" [disabled]="!registrationForm.valid">Register</button>
+                  </div>
+                </div>
+
+                <div class="font-arcade underline mb-2 text-white">
+                  <a routerLink="/login" routerLinkActive="active">I already have an account</a>
+                </div>
+              </div>
             </div>
+          </div>
+      </div>
 
-            <div class="h-20 w-full flex justify-between items-center px-10 border-2 border-arcadeBigLines bg-gradient-to-t from-arcadeGradient1 to-arcadeOrangeGradient2">
-                <div class="w-20 h-14 arcadeButtonsOrange"></div>
-                <div class="w-14 h-14 arcadeJoystickOrange mr-2 mb-2"></div>
-            </div>
+      <div class="h-20 w-full flex justify-between items-center px-10 border-2 border-arcadeBigLines bg-gradient-to-t from-arcadeGradient1 to-arcadeOrangeGradient2">
+        <div class="w-20 h-14 arcadeButtonsOrange"></div>
+        <div class="w-14 h-14 arcadeJoystickOrange mr-2 mb-2"></div>
+      </div>
 
-            <div class="h-40 w-full p-1 pt-0">
-                <div class="w-full h-full bg-arcade-rainbow"></div>
-            </div>
-
-        </div>
-
-    </form>
-
-    <!--small images on the sides-->
-    <div class="z-10">
-        <!--left side-->
-        <div class="smallBgImageSize smallBgImage1 h-20 w-20 absolute top-80 left-[650px] animate-wiggle-slow"></div>
-        <div class="smallBgImageSize smallBgImage2 h-20 w-20 absolute top-36 left-[600px] animate-wiggle-reverse"></div>
-        <div class="smallBgImageSize smallBgImage3 h-20 w-20 absolute top-64 left-52 animate-wiggle"></div>
-        <div class="smallBgImageSize smallBgImage4 h-20 w-20 absolute top-40 left-80 animate-wiggle-slow"></div>
-        <div class="smallBgImageSize smallBgImage5 h-20 w-20 absolute top-28 left-24 animate-wiggle-reverse-slow"></div>
-        <div class="smallBgImageSize smallBgImage6 h-20 w-20 absolute top-72 left-[460px] animate-wiggle-reverse-slow"></div>
-        <div class="smallBgImageSize smallBgImage7 h-20 w-20 absolute top-[440px] left-36 animate-wiggle-slow"></div>
-        <div class="smallBgImageSize smallBgImage8 h-20 w-20 absolute top-[390px] left-80 animate-wiggle-reverse"></div>
-        <div class="smallBgImageSize smallBgImage9 h-20 w-20 absolute top-[500px] left-[500px] animate-wiggle"></div>
-        <div class="smallBgImageSize smallBgImage10 h-20 w-20 absolute top-80 left-10 animate-wiggle-reverse-slow"></div>
-        <div class="smallBgImageSize smallBgImage11 h-20 w-20 absolute top-[630px] left-14 animate-wiggle-reverse"></div>
-        <div class="smallBgImageSize smallBgImage12 h-20 w-20 absolute top-[560px] left-72 animate-wiggle-slow"></div>
-        <div class="smallBgImageSize smallBgImage13 h-20 w-20 absolute top-[680px] left-[420px] animate-wiggle-reverse-slow"></div>
-        <div class="smallBgImageSize smallBgImage14 h-20 w-20 absolute top-[750px] left-[180px] animate-wiggle-reverse"></div>
-        <div class="smallBgImageSize smallBgImage15 h-20 w-20 absolute top-[600px] left-[680px] animate-wiggle-reverse"></div>
-        <div class="smallBgImageSize smallBgImage17 h-20 w-20 absolute top-[800px] left-[580px] animate-wiggle-slow"></div>
-        <div class="smallBgImageSize smallBgImage18 h-20 w-20 absolute top-[840px] left-[350px] animate-wiggle"></div>
-
-        <!--right side-->
-        <div class="invisible md:visible">
-            <div class="smallBgImageSize smallBgImage19 h-20 w-20 absolute top-80 right-[650px] animate-wiggle-slow"></div>
-            <div class="smallBgImageSize smallBgImage1 h-20 w-20 absolute top-36 right-[600px] animate-wiggle-reverse"></div>
-            <div class="smallBgImageSize smallBgImage2 h-20 w-20 absolute top-64 right-52 animate-wiggle"></div>
-            <div class="smallBgImageSize smallBgImage3 h-20 w-20 absolute top-40 right-80 animate-wiggle-slow"></div>
-            <div class="smallBgImageSize smallBgImage4 h-20 w-20 absolute top-28 right-24 animate-wiggle-reverse-slow"></div>
-            <div class="smallBgImageSize smallBgImage5 h-20 w-20 absolute top-72 right-[460px] animate-wiggle-reverse-slow"></div>
-            <div class="smallBgImageSize smallBgImage6 h-20 w-20 absolute top-[440px] right-36 animate-wiggle-slow"></div>
-            <div class="smallBgImageSize smallBgImage7 h-20 w-20 absolute top-[390px] right-80 animate-wiggle-reverse"></div>
-            <div class="smallBgImageSize smallBgImage8 h-20 w-20 absolute top-[500px] right-[500px] animate-wiggle"></div>
-            <div class="smallBgImageSize smallBgImage9 h-20 w-20 absolute top-80 right-10 animate-wiggle-reverse-slow"></div>
-            <div class="smallBgImageSize smallBgImage10 h-20 w-20 absolute top-[630px] right-14 animate-wiggle-reverse"></div>
-            <div class="smallBgImageSize smallBgImage11 h-20 w-20 absolute top-[560px] right-72 animate-wiggle-slow"></div>
-            <div class="smallBgImageSize smallBgImage12 h-20 w-20 absolute top-[680px] right-[420px] animate-wiggle-reverse-slow"></div>
-            <div class="smallBgImageSize smallBgImage13 h-20 w-20 absolute top-[750px] right-[180px] animate-wiggle-reverse"></div>
-            <div class="smallBgImageSize smallBgImage14 h-20 w-20 absolute top-[600px] right-[680px] animate-wiggle-reverse"></div>
-            <div class="smallBgImageSize smallBgImage15 h-20 w-20 absolute top-[800px] right-[580px] animate-wiggle-slow"></div>
-            <div class="smallBgImageSize smallBgImage16 h-20 w-20 absolute top-[840px] right-[350px] animate-wiggle"></div>
-        </div>
+      <div class="h-40 w-full p-1 pt-0">
+        <div class="w-full h-full bg-arcade-rainbow"></div>
+      </div>
     </div>
+  </form>
+
+  <!--small images on the sides-->
+  <div class="z-10">
+      <!--left side-->
+      <div class="smallBgImageSize smallBgImage1 h-20 w-20 absolute top-80 left-[650px] animate-wiggle-slow"></div>
+      <div class="smallBgImageSize smallBgImage2 h-20 w-20 absolute top-36 left-[600px] animate-wiggle-reverse"></div>
+      <div class="smallBgImageSize smallBgImage3 h-20 w-20 absolute top-64 left-52 animate-wiggle"></div>
+      <div class="smallBgImageSize smallBgImage4 h-20 w-20 absolute top-40 left-80 animate-wiggle-slow"></div>
+      <div class="smallBgImageSize smallBgImage5 h-20 w-20 absolute top-28 left-24 animate-wiggle-reverse-slow"></div>
+      <div class="smallBgImageSize smallBgImage6 h-20 w-20 absolute top-72 left-[460px] animate-wiggle-reverse-slow"></div>
+      <div class="smallBgImageSize smallBgImage7 h-20 w-20 absolute top-[440px] left-36 animate-wiggle-slow"></div>
+      <div class="smallBgImageSize smallBgImage8 h-20 w-20 absolute top-[390px] left-80 animate-wiggle-reverse"></div>
+      <div class="smallBgImageSize smallBgImage9 h-20 w-20 absolute top-[500px] left-[500px] animate-wiggle"></div>
+      <div class="smallBgImageSize smallBgImage10 h-20 w-20 absolute top-80 left-10 animate-wiggle-reverse-slow"></div>
+      <div class="smallBgImageSize smallBgImage11 h-20 w-20 absolute top-[630px] left-14 animate-wiggle-reverse"></div>
+      <div class="smallBgImageSize smallBgImage12 h-20 w-20 absolute top-[560px] left-72 animate-wiggle-slow"></div>
+      <div class="smallBgImageSize smallBgImage13 h-20 w-20 absolute top-[680px] left-[420px] animate-wiggle-reverse-slow"></div>
+      <div class="smallBgImageSize smallBgImage14 h-20 w-20 absolute top-[750px] left-[180px] animate-wiggle-reverse"></div>
+      <div class="smallBgImageSize smallBgImage15 h-20 w-20 absolute top-[600px] left-[680px] animate-wiggle-reverse"></div>
+      <div class="smallBgImageSize smallBgImage17 h-20 w-20 absolute top-[800px] left-[580px] animate-wiggle-slow"></div>
+      <div class="smallBgImageSize smallBgImage18 h-20 w-20 absolute top-[840px] left-[350px] animate-wiggle"></div>
+
+      <!--right side-->
+      <div class="invisible md:visible">
+        <div class="smallBgImageSize smallBgImage19 h-20 w-20 absolute top-80 right-[650px] animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage1 h-20 w-20 absolute top-36 right-[600px] animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage2 h-20 w-20 absolute top-64 right-52 animate-wiggle"></div>
+        <div class="smallBgImageSize smallBgImage3 h-20 w-20 absolute top-40 right-80 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage4 h-20 w-20 absolute top-28 right-24 animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage5 h-20 w-20 absolute top-72 right-[460px] animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage6 h-20 w-20 absolute top-[440px] right-36 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage7 h-20 w-20 absolute top-[390px] right-80 animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage8 h-20 w-20 absolute top-[500px] right-[500px] animate-wiggle"></div>
+        <div class="smallBgImageSize smallBgImage9 h-20 w-20 absolute top-80 right-10 animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage10 h-20 w-20 absolute top-[630px] right-14 animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage11 h-20 w-20 absolute top-[560px] right-72 animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage12 h-20 w-20 absolute top-[680px] right-[420px] animate-wiggle-reverse-slow"></div>
+        <div class="smallBgImageSize smallBgImage13 h-20 w-20 absolute top-[750px] right-[180px] animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage14 h-20 w-20 absolute top-[600px] right-[680px] animate-wiggle-reverse"></div>
+        <div class="smallBgImageSize smallBgImage15 h-20 w-20 absolute top-[800px] right-[580px] animate-wiggle-slow"></div>
+        <div class="smallBgImageSize smallBgImage16 h-20 w-20 absolute top-[840px] right-[350px] animate-wiggle"></div>
+      </div>
+  </div>
 </div>

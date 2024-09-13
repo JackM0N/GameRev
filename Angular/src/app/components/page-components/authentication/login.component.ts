@@ -2,7 +2,6 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
-import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BackgroundService } from '../../../services/background.service';
 import { ResetPasswordConfirmationDialogComponent } from './reset-password-confirmation-dialog.component';
