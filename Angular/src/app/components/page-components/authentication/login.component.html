@@ -20,6 +20,10 @@
               <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('required')" class="font-arcade text-red-600 font-bold">
                 Please provide a login.
               </div>
+              <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
+                Please provide a longer login.
+                <div class="m-0 p-0 text-sm">(min {{ loginForm.get('usernameOrEmail')?.getError('minlength')["requiredLength"] }} characters)</div>
+              </div>
   
               <div class="my-2">
                 <label class="text-white font-arcade">Password</label>
@@ -39,9 +43,13 @@
               <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')" class="font-arcade text-red-600 font-bold">
                 Please provide a password.
               </div>
+              <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
+                Please provide a longer password.
+                <div class="m-0 p-0 text-sm">(min {{ loginForm.get('password')?.getError('minlength')["requiredLength"] }} characters)</div>
+              </div>
 
               <div class="h-8 flex justify-between items-center mb-2 mt-4">
-                <div class="h-full w-1/2 mr-1 flex justify-center text-white bg-arcadeBlueLight shadow-arcadeScreenShadow font-arcade" [ngClass]="{'opacity-80': !loginForm.valid}">
+                <div class="h-full w-1/2 mr-1 flex justify-center text-white bg-arcadeBlueLight shadow-arcadeScreenShadow font-arcade" [ngClass]="{'opacity-70': !loginForm.valid}">
                   <button class="w-full h-full" [disabled]="!loginForm.valid">Login</button>
                 </div>
                 <div class="h-full w-1/2 ml-1 flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade">

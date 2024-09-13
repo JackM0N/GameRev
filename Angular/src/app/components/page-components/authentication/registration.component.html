@@ -17,15 +17,31 @@
                 <div class="my-2">
                   <label class="text-white font-arcade">Login</label>
                   <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="username" required/>
-                </div>
-                <div *ngIf="registrationForm.get('username')?.touched && registrationForm.get('username')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-                  Please provide a login.
+                  
+                  <!-- No login typed error -->
+                  <mat-error *ngIf="registrationForm.get('username')?.touched && registrationForm.get('username')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                    Please provide a login.
+                  </mat-error>
+                  
+                  <!-- Min length login error -->
+                  <mat-error *ngIf="registrationForm.get('username')?.touched && registrationForm.get('username')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
+                    Please provide a longer login.
+                    <div class="m-0 p-0 text-sm">(min {{ registrationForm.get('username')?.getError('minlength')["requiredLength"] }} characters)</div>
+                  </mat-error>
                 </div>
     
                 <div>
                   <label class="text-white font-arcade">Email</label>
                   <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeOrangeLight border-2 shadow-arcadeScreenShadowOrange" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+                  
+                  <!-- Invalid email error -->
                   <mat-error class="text-red-600 font-arcade" *ngIf="isEmailInvalid()">{{ emailErrorMessage() }}</mat-error>
+                  
+                  <!-- Min length email error -->
+                  <mat-error *ngIf="!registrationForm.get('email')?.touched && !isEmailInvalid() && registrationForm.get('email')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
+                    Please provide a longer email.
+                    <div class="m-0 p-0 text-sm">(min {{ registrationForm.get('email')?.getError('minlength')["requiredLength"] }} characters)</div>
+                  </mat-error>
                 </div>
     
                 <div class="my-2">
@@ -42,9 +58,17 @@
                       <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </button>
                   </div>
-                </div>
-                <div *ngIf="(registrationForm.get('password')?.touched || registrationForm.get('confirmPassword')?.touched) && registrationForm.get('password')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-                  Please provide a password.
+
+                  <!-- No password typed error -->
+                  <mat-error *ngIf="(registrationForm.get('password')?.touched || registrationForm.get('confirmPassword')?.touched) && registrationForm.get('password')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                    Please provide a password.
+                  </mat-error>
+
+                  <!-- Min length password error -->
+                  <mat-error *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
+                    Please provide a longer password.
+                    <div class="m-0 p-0 text-sm">(min {{ registrationForm.get('password')?.getError('minlength')["requiredLength"] }} characters)</div>
+                  </mat-error>
                 </div>
     
                 <div class="my-2">
@@ -61,16 +85,20 @@
                       <mat-icon>{{hideConfirmPassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </button>
                   </div>
-                </div>
-                <div *ngIf="registrationForm.get('confirmPassword')?.touched && registrationForm.get('confirmPassword')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-                  Please confirm your password.
-                </div>
-                <div *ngIf="isPasswordMismatch()"class="font-arcade text-red-600 font-bold">
-                  {{passwordMismatchErrorMessage()}}
+
+                  <!-- No confirm password typed error -->
+                  <mat-error *ngIf="registrationForm.get('confirmPassword')?.touched && registrationForm.get('confirmPassword')?.hasError('required')" class="font-arcade text-red-600 font-bold">
+                    Please confirm your password.
+                  </mat-error>
+                  
+                  <!-- Password mismatch error -->
+                  <mat-error *ngIf="isPasswordMismatch()"class="font-arcade text-red-600 font-bold">
+                    {{passwordMismatchErrorMessage()}}
+                  </mat-error>
                 </div>
 
                 <div class="h-8 flex justify-between items-center my-4">
-                  <div class="h-full w-full flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade" [ngClass]="{'opacity-80': !registrationForm.valid}">
+                  <div class="h-full w-full flex justify-center text-white bg-arcadeOrangeLight shadow-arcadeScreenShadowOrange font-arcade" [ngClass]="{'opacity-70': !registrationForm.valid}">
                     <button class="w-full h-full" [disabled]="!registrationForm.valid">Register</button>
                   </div>
                 </div>

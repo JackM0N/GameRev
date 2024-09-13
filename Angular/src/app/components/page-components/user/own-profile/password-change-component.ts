@@ -15,7 +15,11 @@ import { passwordMatchValidator } from '../../../../util/passwordMatchValidator'
 })
 export class PasswordChangeComponent {
   public changePasswordForm: FormGroup;
-  public hidePassword = signal(true);
+
+  public hideCurrentPassword = signal(true);
+  public hideNewPassword = signal(true);
+  public hideConfirmNewPassword = signal(true);
+
   public passwordMismatchErrorMessage = signal('');
 
   constructor(
@@ -64,8 +68,20 @@ export class PasswordChangeComponent {
     }
   }
 
-  hidePasswordClickEvent(event: MouseEvent) {
-    this.hidePassword.set(!this.hidePassword());
+  hideCurrentPasswordClickEvent(event: MouseEvent) {
+    console.log(this.changePasswordForm);
+
+    this.hideCurrentPassword.set(!this.hideCurrentPassword());
+    event.stopPropagation();
+  }
+
+  hideNewPasswordClickEvent(event: MouseEvent) {
+    this.hideNewPassword.set(!this.hideNewPassword());
+    event.stopPropagation();
+  }
+
+  hideConfirmNewPasswordClickEvent(event: MouseEvent) {
+    this.hideConfirmNewPassword.set(!this.hideConfirmNewPassword());
     event.stopPropagation();
   }
 }
