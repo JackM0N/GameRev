@@ -36,7 +36,7 @@ export class ResetPasswordConfirmationDialogComponent {
 
     if(email != null) {
       if (email.hasError('required')) {
-        this.emailErrorMessage.set('You must enter a value');
+        this.emailErrorMessage.set('Please provide an email address');
   
       } else if (email.hasError('email')) {
         this.emailErrorMessage.set('Not a valid email');

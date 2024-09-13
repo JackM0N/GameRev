@@ -73,7 +73,7 @@ export class LoginComponent {
 
   openResetPasswordConfirmationDialog() {
     const dialogRef = this.dialog.open(ResetPasswordConfirmationDialogComponent, {
-      width: '300px'
+      width: '400px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
