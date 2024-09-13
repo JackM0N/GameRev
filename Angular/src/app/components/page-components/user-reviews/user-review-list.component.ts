@@ -11,6 +11,11 @@ import { ActivatedRoute } from '@angular/router';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
+import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { UserReviewFormDialogComponent } from './user-review-form-dialog.component';
+import { AuthService } from '../../../services/auth.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-user-review-list',
@@ -18,7 +23,7 @@ import { BackgroundService } from '../../../services/background.service';
   styleUrl: './user-review-list.component.css'
 })
 export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit {
-  reviewsList: UserReview[] = [];
+  reviewList: UserReview[] = [];
   dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
   totalReviews: number = 0;
   displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
@@ -33,6 +38,9 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
     private userReviewService: UserReviewService,
     private _location: Location,
     private backgroundService: BackgroundService,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+    protected dialog: MatDialog,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -66,8 +74,8 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
       next: response => {
         if (response) {
           this.totalReviews = response.totalElements;
-          this.reviewsList = response.content;
-          this.dataSource = new MatTableDataSource<UserReview>(response.content)
+          this.reviewList = response.content;
+          this.dataSource = new MatTableDataSource<UserReview>(response.content);
         }
       },
       error: error => {
@@ -94,7 +102,59 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
     this._location.back();
   }
 
-  openEditReviewDialog(review: UserReview) {}
+  openEditReviewDialog(review: UserReview) {
+    const dialogRef = this.dialog.open(UserReviewFormDialogComponent, {
+      width: '400px',
+      data: {
+        editing: true,
+        review: review
+      }
+    });
 
-  openDeleteReviewDialog(review: UserReview) {}
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadReviews();
+      }
+    });
+  }
+
+  openReviewDeletionConfirmationDialog(review: UserReview) {
+    const dialogTitle = 'Confirm review deletion';
+    const dialogContent = 'Are you sure you want to delete this review?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.deleteReview(review);
+      }
+    });
+  }
+  
+  deleteReview(review: UserReview) {
+    if (review.id) {
+      const username = this.authService.getUsername();
+
+      if (username === null) {
+        console.log("Username is null");
+        return;
+      }
+
+      review.userUsername = username;
+
+      this.userReviewService.deleteUserReview(review).subscribe({
+        next: () => {
+          this.reviewList = this.reviewList.filter(r => r.id !== review.id);
+          this.dataSource = new MatTableDataSource<UserReview>(this.reviewList);
+          this.notificationService.popSuccessToast('Deleted review successfuly');
+        },
+        error: error => this.notificationService.popErrorToast('Deleting review failed', error)
+      });
+    }
+  }
 }
