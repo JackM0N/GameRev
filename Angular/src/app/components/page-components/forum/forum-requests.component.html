@@ -8,7 +8,7 @@
 </div>
 
 <!-- Add new request button -->
-<div class="pixel-border w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin'])">
+<div class="pixel-border w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin'])">
   <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
     <button class="pinkTextShadowWide" (click)="openAddNewRequestDialog()">Add a new request</button>
   </div>

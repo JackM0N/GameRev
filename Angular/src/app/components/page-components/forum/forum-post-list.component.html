@@ -65,7 +65,7 @@
 
 <!-- Add new post -->
 <div class="mt-6">
-  <button class="synthwaveButton" (click)="openNewPostDialog()">Add new post</button>
+  <button class="synthwaveButton" *ngIf="authService.isAuthenticated()" (click)="openNewPostDialog()">Add new post</button>
 </div>
 
 <!-- Paginator -->
