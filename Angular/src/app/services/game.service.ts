@@ -59,6 +59,7 @@ export class GameService {
 
   addGame(game: Game, picture?: string): Observable<Game> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const formData = new FormData();
     formData.append('game', JSON.stringify(game));
@@ -66,16 +67,13 @@ export class GameService {
     if (picture) {
       formData.append('picture', picture);
     }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     return this.http.post<Game>(this.addUrl, formData, { headers });
   }
 
   editGame(title: string, game: Game, picture?: string): Observable<Game> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const formData = new FormData();
     formData.append('game', JSON.stringify(game));
@@ -84,19 +82,12 @@ export class GameService {
       formData.append('picture', picture);
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
     return this.http.put<Game>(`${this.editUrl}/${title}`, formData, { headers });
   }
 
   deleteGame(id: number): Observable<Game> {
     const token = this.authService.getToken();
-    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
   }

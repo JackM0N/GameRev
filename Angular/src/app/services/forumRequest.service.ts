@@ -21,6 +21,9 @@ export class ForumRequestService {
   ) {}
 
   getRequests(page?: number, size?: number, approved?: boolean): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+
     var params = new HttpParams();
 
     if (page) {
@@ -33,43 +36,28 @@ export class ForumRequestService {
       params = params.set('approved', approved.toString());
     }
 
-    const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
     return this.http.get<any>(this.listUrl, { params, headers });
   }
 
   addRequest(request: ForumRequest): Observable<any> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.post<any>(this.addUrl, request, { headers });
   }
 
   editRequest(request: ForumRequest): Observable<any> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.put<any>(this.editUrl, request, { headers });
   }
 
   approveRequest(request: ForumRequest, approved: boolean): Observable<any> {
-    var params = new HttpParams().set('approved', approved.toString());
-
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    var params = new HttpParams().set('approved', approved.toString());
 
     return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
   }

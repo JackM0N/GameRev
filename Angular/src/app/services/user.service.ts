@@ -21,10 +21,7 @@ export class UserService {
 
   getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<WebsiteUser> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     let params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -57,10 +54,7 @@ export class UserService {
 
   banUser(user: WebsiteUser): Observable<WebsiteUser> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     user.isBanned = true;
     return this.http.put<WebsiteUser>(this.banUrl, user, { headers });
@@ -68,10 +62,7 @@ export class UserService {
 
   unbanUser(user: WebsiteUser): Observable<WebsiteUser> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     user.isBanned = false;
     return this.http.put<WebsiteUser>(this.banUrl, user, { headers });

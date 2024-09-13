@@ -29,10 +29,7 @@ export class UserReviewService {
 
   getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -44,10 +41,7 @@ export class UserReviewService {
 
   getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -63,10 +57,7 @@ export class UserReviewService {
 
   getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
     var params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -86,30 +77,21 @@ export class UserReviewService {
 
   addUserReview(userReview: UserReview): Observable<UserReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.post<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
   editUserReview(userReview: UserReview): Observable<UserReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.put<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
   deleteUserReview(userReview: UserReview): Observable<UserReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const options = {
       headers: headers,
@@ -120,10 +102,7 @@ export class UserReviewService {
 
   updateUserReviewRating(userReview: UserReview): Observable<UserReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.put<UserReview>(this.ratingUrl, userReview, { headers: headers });
   }

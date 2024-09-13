@@ -48,20 +48,19 @@ export class ForumCommentService {
 
   editComment(comment: any): Observable<ForumComment> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const sanitizedComment = {
       ...comment,
       content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
     };
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, sanitizedComment, { headers });
   }
 
   addComment(comment: any, picture?: File): Observable<ForumComment> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const sanitizedComment = {
       ...comment,
@@ -75,20 +74,14 @@ export class ForumCommentService {
       formData.append('picture', picture);
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.post<ForumComment>(this.addUrl, formData, { headers });
   }
 
   deleteComment(id: number): Observable<any> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const params = new HttpParams().set('isDeleted', true);
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }

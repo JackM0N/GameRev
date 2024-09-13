@@ -66,20 +66,14 @@ export class ForumService {
 
   addForum(forum: Forum): Observable<Forum> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.post<Forum>(this.addUrl, forum, { headers });
   }
 
   editForum(forum: Forum): Observable<Forum> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
     return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
   }
@@ -87,10 +81,7 @@ export class ForumService {
   deleteForum(id: number): Observable<any> {
     const params = new HttpParams().set("isDeleted", true);
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }
