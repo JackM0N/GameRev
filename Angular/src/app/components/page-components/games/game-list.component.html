@@ -68,7 +68,7 @@
   </div>
 </div>
 
-<div class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
+<div class="grow z-10 bg-repeat font-arcade flex-row justify-center items-center tracking-wider">
   <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">
     <div class="flex justify-center font-arcade h-12 text-xl bg-black text-white pinkTextShadow">
       <button class="pinkTextShadowWide" (click)="openAddNewGameDialog()">Add a new game</button>
@@ -84,7 +84,7 @@
         </ng-container>
       
         <ng-container matColumnDef="title">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef> Title </th>
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-lg pinkTextShadowWide pl-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef>Title</th>
           <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
             <button class="text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">{{element.title}}</button>
           </td>
@@ -92,37 +92,37 @@
       
         <ng-container matColumnDef="developer">
           <th class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="developer" *matHeaderCellDef> Developer </th>
-          <td class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.developer}} </td>
+          <td class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.developer}} </td>
         </ng-container>
       
         <ng-container matColumnDef="publisher">
           <th class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="publisher" *matHeaderCellDef> Publisher </th>
-          <td class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.publisher}} </td>
+          <td class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.publisher}} </td>
         </ng-container>
       
         <ng-container matColumnDef="releaseDate">
           <th class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseDate" *matHeaderCellDef> Release date </th>
-          <td class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
+          <td class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
         </ng-container>
       
         <ng-container matColumnDef="releaseStatus">
           <th class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
-          <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
+          <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
         </ng-container>
       
         <ng-container matColumnDef="usersScore">
           <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="usersScore" *matHeaderCellDef> Users score </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.usersScore}} </td>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.usersScore}} </td>
         </ng-container>
       
         <ng-container matColumnDef="tags">
           <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Tags </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{getTags(element)}} </td>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{getTags(element)}} </td>
         </ng-container>
       
         <ng-container matColumnDef="description">
           <th class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Description </th>
-          <td class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.description}} </td>
+          <td class="max-[1115px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.description}} </td>
         </ng-container>
       
         <ng-container matColumnDef="options">
