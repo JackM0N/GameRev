@@ -18,11 +18,7 @@ import { FileUploadOptions } from '../../../../enums/fileUploadOptions';
 
 @Component({
   selector: 'app-own-profile',
-  templateUrl: './own-profile.component.html',
-  styleUrls: [
-    '/src/app/styles/shared-form-styles.css',
-    './own-profile.component.css'
-  ]
+  templateUrl: './own-profile.component.html'
 })
 export class OwnProfileComponent extends BaseAdComponent implements OnInit {
   public changeProfileInformationForm: FormGroup;
