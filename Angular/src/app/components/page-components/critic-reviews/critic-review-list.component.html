@@ -84,23 +84,38 @@
           </ng-container>
 
           <ng-container matColumnDef="content">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef> Content </th>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef>
+              Content
+            </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element" [innerHTML]="element.content"></td>
           </ng-container>
 
           <ng-container matColumnDef="postDate">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="postDate" mat-header-cell *matHeaderCellDef> Post date </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{formatDate(element.postDate)}} </td>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="postDate" mat-header-cell *matHeaderCellDef>
+              Post date
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              {{formatDate(element.postDate)}}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="score">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="score" mat-header-cell *matHeaderCellDef> Score </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.score}} </td>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="score" mat-header-cell *matHeaderCellDef>
+              Score
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              {{element.score}}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="reviewStatus">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="reviewStatus" mat-header-cell *matHeaderCellDef> Review status </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{findReviewStatusName(element)}} </td>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="reviewStatus" mat-header-cell *matHeaderCellDef>
+              Review status
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              {{findReviewStatusName(element)}}
+              <span *ngIf="element.statusChangedBy">(by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="options">

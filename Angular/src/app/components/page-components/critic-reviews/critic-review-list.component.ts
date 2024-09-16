@@ -191,11 +191,6 @@ export class CriticReviewListComponent implements AfterViewInit {
 
   findReviewStatusName(review: CriticReview) {
     var status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
-
-    if (review.statusChangedBy) {
-      status += ' (by ' + review.statusChangedBy.nickname + ')';
-    }
-
     return status;
   }
 
