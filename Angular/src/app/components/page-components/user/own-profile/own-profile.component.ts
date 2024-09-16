@@ -56,6 +56,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
   }
 
   override ngOnInit(): void {
+    super.ngOnInit();
+
     this.backgroundService.setClasses(['matrixNumbers']);
 
     const observer: Observer<any> = {
