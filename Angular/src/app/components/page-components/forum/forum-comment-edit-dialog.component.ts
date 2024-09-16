@@ -14,6 +14,12 @@ export class ForumCommentEditDialogComponent {
   protected content: string = '';
   public minLength: number = 4;
   
+  protected quillToolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
+
   constructor(
     private forumCommentService: ForumCommentService,
     private notificationService: NotificationService,
