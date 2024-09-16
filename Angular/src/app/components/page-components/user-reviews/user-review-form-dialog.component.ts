@@ -15,7 +15,7 @@ export class UserReviewFormDialogComponent {
   
   protected userReview: UserReview = {
     gameTitle: '',
-    userUsername: '',
+    userNickname: '',
     content: '',
     postDate: new Date(),
     score: undefined,

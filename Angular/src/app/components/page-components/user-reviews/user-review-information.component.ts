@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 export class GameInformationComponent implements OnInit {
   protected userReview: UserReview = {
     gameTitle: '',
-    userUsername: '',
+    userNickname: '',
     content: '',
     postDate: '',
     score: undefined,

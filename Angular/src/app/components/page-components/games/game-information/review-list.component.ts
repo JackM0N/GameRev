@@ -103,7 +103,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
     const dialogTitle = 'Confirm review deletion';
-    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userNickname + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -128,7 +128,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         return;
       }
 
-      review.userUsername = username;
+      review.userNickname = username;
 
       this.userReviewService.deleteUserReview(review).subscribe({
         next: () => {
@@ -224,7 +224,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   openReportReviewDialog(review: UserReview) {
-    const dialogContent = 'Report review by ' + review.userUsername;
+    const dialogContent = 'Report review by ' + review.userNickname;
 
     const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
       width: '400px',
@@ -240,11 +240,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   canDeleteReview(review: UserReview) {
     return this.authService.isAuthenticated() &&
-    (this.authService.getUsername() === review.userUsername || this.authService.hasAnyRole(['Admin', 'Critic']));
+    (this.authService.getUsername() === review.userNickname || this.authService.hasAnyRole(['Admin', 'Critic']));
   }
 
   ownsReview(review: UserReview) {
-    return this.authService.isAuthenticated() && this.authService.getUsername() === review.userUsername;
+    return this.authService.isAuthenticated() && this.authService.getUsername() === review.userNickname;
   }
 
   canAddReview() {
@@ -253,7 +253,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     }
 
     const userName = this.authService.getUsername();
-    return !this.reviewList.some(review => review.userUsername === userName);
+    return !this.reviewList.some(review => review.userNickname === userName);
   }
 
   openAddReviewDialog() {

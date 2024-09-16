@@ -142,7 +142,7 @@ class UserReviewServiceTest {
     @Test
     void testCreateUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testUser2");
+        userReviewDTO.setUserNickname("testUser2");
         userReviewDTO.setGameTitle("Cimbus Lompany");
         userReviewDTO.setContent("Nice game");
         userReviewDTO.setScore(7);
@@ -190,7 +190,7 @@ class UserReviewServiceTest {
     void testDeleteUserReviewByOwner() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         userReviewDTO.setId(1L);
-        userReviewDTO.setUserUsername("testUser2");
+        userReviewDTO.setUserNickname("testUser2");
 
         WebsiteUser websiteUser = new WebsiteUser();
         UserReview userReview = new UserReview();

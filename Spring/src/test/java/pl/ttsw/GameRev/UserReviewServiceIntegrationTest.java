@@ -70,7 +70,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testCreateAndRetrieveUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
@@ -95,7 +95,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testUpdateUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
@@ -117,7 +117,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testDeleteUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);

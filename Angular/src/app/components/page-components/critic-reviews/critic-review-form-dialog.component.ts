@@ -15,7 +15,7 @@ export class CriticReviewFormDialogComponent {
   
   protected criticReview: CriticReview = {
     gameTitle: '',
-    userUsername: '',
+    userNickname: '',
     content: '',
     postDate: new Date(),
     score: undefined,

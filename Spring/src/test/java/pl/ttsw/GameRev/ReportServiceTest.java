@@ -79,7 +79,7 @@ public class ReportServiceTest {
 
         testUserReviewDTO = new UserReviewDTO();
         testUserReviewDTO.setId(1L);
-        testUserReviewDTO.setUserUsername("testuser");
+        testUserReviewDTO.setUserNickname("testuser");
         testUserReviewDTO.setGameTitle("Test Game");
 
         testReportDTO = new ReportDTO();

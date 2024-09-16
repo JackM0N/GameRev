@@ -144,7 +144,7 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
         return;
       }
 
-      review.userUsername = username;
+      review.userNickname = username;
 
       this.userReviewService.deleteUserReview(review).subscribe({
         next: () => {
