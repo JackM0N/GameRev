@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -9,14 +9,12 @@ import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumComment } from '../../../interfaces/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
-import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
@@ -36,17 +34,9 @@ export class ForumPostComponent extends BaseAdComponent {
   protected commentsList: any[] = [];
   protected totalComments: number = 0;
   protected path?: any;
-  protected commentForm: FormGroup;
-  protected minLength: number = 4;
   protected moderators: WebsiteUser[] = [];
   protected imageUrl?: string;
   protected authorProfilePic?: string;
-
-  protected quillToolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    ['clean']
-  ];
 
   constructor(
     protected authService: AuthService,
@@ -57,16 +47,12 @@ export class ForumPostComponent extends BaseAdComponent {
     private imageCacheService: ImageCacheService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
     protected dialog: MatDialog,
     protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
-    this.commentForm = this.fb.group({
-      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]]
-    });
   }
 
   override ngOnInit(): void {
@@ -232,26 +218,6 @@ export class ForumPostComponent extends BaseAdComponent {
     }
   }
 
-  submitComment() {
-    if (this.commentForm.valid) {
-      const newComment = {
-        content: this.commentForm.value.content,
-        forumPostId: this.post?.id
-      };
-
-      this.forumCommentService.addComment(newComment).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Comment posted successfully');
-          if (this.post && this.post.id) {
-            this.loadComments(this.post.id);
-            this.commentForm.reset();
-          }
-        },
-        error: error => this.notificationService.popErrorToast('Comment posting failed', error)
-      });
-    }
-  }
-
   canEditComment(comment: ForumComment) {
     return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname());
   }
@@ -265,7 +231,7 @@ export class ForumPostComponent extends BaseAdComponent {
 
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         commentId: comment.id,
         commentContent: comment.content
@@ -352,5 +318,11 @@ export class ForumPostComponent extends BaseAdComponent {
       next: () => { this.notificationService.popSuccessToast('Post deleted successfully', NotificationAction.GO_BACK); },
       error: error => this.notificationService.popErrorToast('Post deletion failed', error)
     });
+  }
+
+  reloadComments() {
+    if (this.post?.id) {
+      this.loadComments(this.post.id);
+    }
   }
 }
