@@ -223,11 +223,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     });
   }
 
-  reportReview(review: UserReview) {
-    const dialogContent = 'Are you sure you want to report this review by ' + review.userUsername + '?';
+  openReportReviewDialog(review: UserReview) {
+    const dialogContent = 'Report review by ' + review.userUsername;
 
     const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: { dialogContent }
     });
 

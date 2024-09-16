@@ -52,15 +52,25 @@
             class="synthwaveButton synthwaveButtonSmall"
             (click)="openReviewDeletionConfirmationDialog(review)"
             *ngIf="canDeleteReview(review)">
-            Delete review
+            Delete
           </button>
+
           <button
             class="ml-2 synthwaveButton synthwaveButtonSmall"
             (click)="openEditReviewDialog(review)"
             *ngIf="ownsReview(review)">
-            Edit review
+            Edit
+          </button>
+
+          <button
+            class="ml-2 synthwaveButton synthwaveButtonSmall"
+            (click)="openReportReviewDialog(review)"
+            *ngIf="!ownsReview(review)">
+            Report
           </button>
         </div>
+        
+      <!-- Like / dislike -->
         <div *ngIf="review.userUsername != authService.getUsername()">
           <button
             class="synthwaveButton synthwaveButtonSmall"
