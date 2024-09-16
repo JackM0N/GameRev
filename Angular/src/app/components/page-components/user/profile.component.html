@@ -1,8 +1,36 @@
 
-<div class="text-center text-white">
-    <p>Nickname: {{this.user.nickname}}</p>
-    <img class="h-[200px] m-auto" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
-    <p>Description: {{this.user.description}}</p>
-    <p>Join date: {{formatDate(this.user.joinDate)}}</p>
-    <p>Is banned: {{this.user.isBanned}}</p>
+<div class="text-center bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-auto pixel-border font-arcade">
+  <!-- Nickname -->
+  <p class="text-2xl font-semibold text-white mb-4">{{ this.user.nickname }}</p>
+  
+  <!-- Profile picture -->
+  <div class="flex justify-center">
+    <img
+      class="h-[200px] w-[200px] rounded-full border-4 border-white object-cover"
+      [src]="imageUrl ? imageUrl : 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'"
+      alt="Loaded Image"
+    />
+  </div>
+
+  <div class="mt-4 text-gray-300">
+    <!-- Description -->
+    <p class="mb-2"><span class="font-medium text-white"></span> {{ this.user.description }}</p>
+
+    <!-- Join date -->
+    <p class="mb-2">Joined {{ formatDate(this.user.joinDate) }}</p>
+
+    <!-- Is banned -->
+    <p class="mb-2"><span class="font-medium text-white">Is banned:</span> 
+      <span [ngClass]="{ 'text-red-500': this.user.isBanned, 'text-green-500': !this.user.isBanned }">
+        {{ this.user.isBanned ? 'Yes' : 'No' }}
+      </span>
+    </p>
+
+    <!-- Roles -->
+    <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
+      <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base text-white" *ngFor="let role of user.roles">
+        {{ role.roleName }}
+      </div>
+    </div>
+  </div>
 </div>

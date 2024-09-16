@@ -95,7 +95,7 @@
             </td>
             <td class="p-4 border-b border-[#00CFFF]">{{ subforum.postCount }} Post(s)</td>
             <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
-              <p class="text-[#E5E5E5]">Last post by {{ subforum.lastPost.nickname }}</p>
+              <p class="text-[#E5E5E5]">Last post by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + subforum.lastPost.nickname">{{ subforum.lastPost.nickname }}</a></p>
               <p>
                 in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
                   {{ subforum.lastPost.title }}

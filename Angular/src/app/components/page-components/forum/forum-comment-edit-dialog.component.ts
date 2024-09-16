@@ -31,7 +31,7 @@ export class ForumCommentEditDialogComponent {
     }
   ) {
     this.commentForm = this.formBuilder.group({
-      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]],
+      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength), trimmedValidator(this.minLength)]],
     });
   }
 

@@ -49,7 +49,7 @@
     
     <div class="review-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
       <div class="review-item p-6 bg-[#1A1A1A] border-2 border-[#FF00FF] rounded-lg shadow-lg" *ngFor="let review of this.reviewsList">
-        <div class="m-0 p-0 text-lg font-bold text-[#FF00FF]">by {{ review.userUsername }}</div>
+        <div class="m-0 p-0 text-lg font-bold text-[#FF00FF]">by {{ review.userNickname }}</div>
         <p class="text-base">{{ review.content }}</p>
         
         <div class="text-sm">

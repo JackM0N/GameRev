@@ -50,6 +50,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
   
   override ngOnInit(): void {
+    super.ngOnInit();
     this.backgroundService.setClasses(['fallingCds']);
   }
 

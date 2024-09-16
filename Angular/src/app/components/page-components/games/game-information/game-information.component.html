@@ -7,7 +7,7 @@
     </div>
 
     <!-- Game Title -->
-    <div class="text-4xl font-bold my-4">{{this.game.title}}</div>
+    <div class="text-4xl font-bold mt-4 mb-6">{{this.game.title}}</div>
 
     <!-- Actions -->
     <div class="absolute right-6 top-6 flex flex-col gap-3 items-end" *ngIf="this.authService.isAuthenticated()">
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Game Info Section -->
-    <div class="p-6 m-4 bg-gradient-to-r from-purple-700 to-indigo-700 border-[2px] border-pink-500 rounded-lg shadow-lg max-w-4xl mx-auto">
+    <div class="p-6 m-4 bg-gradient-to-r from-purple-700 to-indigo-700 border-[2px] border-pink-500 shadow-lg max-w-4xl mx-auto">
       <div class="grid grid-cols-2 gap-4 text-left">
         <div><strong>Developer:</strong> {{this.game.developer}}</div>
         <div><strong>Publisher:</strong> {{this.game.publisher}}</div>
@@ -28,29 +28,23 @@
     </div>
 
     <!-- Game Description -->
-    <div class="px-6 py-8 my-4 bg-[#333] border-[2px] border-[#ff00ff] rounded-lg shadow-lg text-lg leading-relaxed max-w-4xl mx-auto">
+    <div class="px-6 py-8 my-4 bg-[#333] border-[2px] border-[#ff00ff] shadow-lg text-lg leading-relaxed max-w-4xl mx-auto">
       {{this.game.description}}
     </div>
 
     <!-- Tags Section -->
     <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
-      <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] rounded text-sm" *ngFor="let tag of game.tags">
+      <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-sm" *ngFor="let tag of game.tags">
         {{ tag.tagName }}
       </div>
     </div>
     
-  </div>
-</div>
-
-<!-- CRITIC REVIEWS -->
-<div *ngIf="gameTitle">
-  <div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full pinkTextShadow mt-8">
-    <div class="p-6 bg-gradient-to-r from-blue-900 to-purple-900 border-[2px] border-pink-500 rounded-lg shadow-lg max-w-5xl mx-auto">
+    <div *ngIf="gameTitle" class="mx-4 my-8">
       <!-- Critic Review Section -->
       <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
 
       <!-- User Review Section -->
-      <div class="p-4 mt-4 mb-4 bg-[#222] border-[2px] border-pink-500 rounded-lg shadow-lg">
+      <div class="p-4 mt-4 mb-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
         <app-gameinfo-review-list
           [gameTitle]="gameTitle"
           [game]="game"
@@ -58,6 +52,6 @@
         </app-gameinfo-review-list>
       </div>
     </div>
+
   </div>
 </div>
-

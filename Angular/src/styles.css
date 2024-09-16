@@ -549,3 +549,7 @@ button:disabled:hover {
 mat-paginator .mat-mdc-select-min-line {
   color: white !important;
 }
+
+mat-paginator .mat-mdc-select-value {
+  padding-right: 42px;
+}
