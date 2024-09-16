@@ -7,11 +7,11 @@ import { MatDialogRef } from '@angular/material/dialog';
   templateUrl: './account-deletion-confirmation-dialog.component.html',
 })
 export class AccountDeletionConfirmationDialogComponent {
-  hidePassword = signal(true);
+  protected hidePassword = signal(true);
   public deleteAccountForm: FormGroup;
 
   constructor(
-    public dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>,
+    protected dialogRef: MatDialogRef<AccountDeletionConfirmationDialogComponent>,
     private formBuilder: FormBuilder,
   ) {
     this.deleteAccountForm = this.formBuilder.group({

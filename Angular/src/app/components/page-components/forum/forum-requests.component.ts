@@ -17,7 +17,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   templateUrl: './forum-requests.component.html'
 })
 export class ForumRequestsComponent implements AfterViewInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) protected paginator!: MatPaginator;
 
   protected requestList: ForumRequest[] = [];
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
@@ -32,7 +32,7 @@ export class ForumRequestsComponent implements AfterViewInit {
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     protected authService: AuthService,
-    public dialog: MatDialog
+    protected dialog: MatDialog
   ) {
     this.filterForm = this.fb.group({
       approved: [undefined],

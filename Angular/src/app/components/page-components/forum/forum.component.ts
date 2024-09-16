@@ -33,7 +33,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   protected filtered = false;
 
-  public forumId?: number;
+  protected forumId?: number;
   private routeParamsSubscription?: Subscription;
 
   protected gameList: any[] = [];

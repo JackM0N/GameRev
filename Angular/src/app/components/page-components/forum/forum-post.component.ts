@@ -29,8 +29,8 @@ import { UserService } from '../../../services/user.service';
   templateUrl: './forum-post.component.html'
 })
 export class ForumPostComponent extends BaseAdComponent {
-  @Input() post?: ForumPost;
-  @ViewChild('paginator') paginator!: MatPaginator;
+  @Input() protected post?: ForumPost;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
 
   protected commentsList: any[] = [];

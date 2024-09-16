@@ -19,19 +19,18 @@ import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-user-review-list',
-  templateUrl: './user-review-list.component.html',
-  styleUrl: './user-review-list.component.css'
+  templateUrl: './user-review-list.component.html'
 })
 export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit {
-  reviewList: UserReview[] = [];
-  dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
-  totalReviews: number = 0;
-  displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
-  userId?: number;
-  formatDate = formatDateArray;
+  protected reviewList: UserReview[] = [];
+  protected dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
+  protected totalReviews: number = 0;
+  protected displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
+  protected userId?: number;
+  protected formatDate = formatDateArray;
 
-  @ViewChild('paginator') paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
 
   constructor(
     private route: ActivatedRoute,

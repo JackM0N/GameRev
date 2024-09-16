@@ -8,18 +8,14 @@ import { NewCredentials } from '../../../../interfaces/newCredentials';
 
 @Component({
   selector: 'app-email-change',
-  templateUrl: './email-change-component.html',
-  styleUrls: [
-    '/src/app/styles/shared-form-styles.css',
-    './own-profile.component.css'
-  ]
+  templateUrl: './email-change-component.html'
 })
 export class EmailChangeComponent {
-  @Input() passedEmail: string | null = null;
+  @Input() public passedEmail: string | null = null;
   
-  public changeEmailForm: FormGroup;
-  public emailErrorMessage = signal('');
-  public hidePassword = signal(true);
+  protected changeEmailForm: FormGroup;
+  protected emailErrorMessage = signal('');
+  protected hidePassword = signal(true);
 
   constructor(
     private formBuilder: FormBuilder,

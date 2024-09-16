@@ -27,27 +27,27 @@ class ReportInformation {
   styleUrl: './report-list.component.css'
 })
 export class ReportListComponent implements AfterViewInit {
-  public reviewsList: UserReview[] = [];
-  public totalReviews: number = 0;
-  public noReviews = false;
+  protected reviewsList: UserReview[] = [];
+  protected totalReviews: number = 0;
+  protected noReviews = false;
 
-  public reportsList: ReportInformation[] = [];
-  public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
-  public formatDate = formatDateArray;
+  protected reportsList: ReportInformation[] = [];
+  protected displayedColumns: string[] = ['id', 'user', 'content', 'options'];
+  protected formatDate = formatDateArray;
   
   private filters: reviewFilters = {};
   protected filterForm: FormGroup;
 
-  @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
-  @ViewChildren(MatPaginator) paginators!: QueryList<MatPaginator>;
-  @ViewChildren(MatPaginator, { read: ElementRef }) paginatorElements!: QueryList<ElementRef>;
+  @ViewChild('reviewsPaginator') protected reviewsPaginator!: MatPaginator;
+  @ViewChildren(MatPaginator) protected paginators!: QueryList<MatPaginator>;
+  @ViewChildren(MatPaginator, { read: ElementRef }) protected paginatorElements!: QueryList<ElementRef>;
 
   constructor(
     private reportService: ReportService,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
-    public dialog: MatDialog,
+    protected dialog: MatDialog,
     private datePipe: DatePipe,
   ) {
     this.filterForm = this.fb.group({

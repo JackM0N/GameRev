@@ -16,8 +16,7 @@ import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-game-information',
-  templateUrl: './game-information.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './game-information.component.html'
 })
 export class GameInformationComponent extends BaseAdComponent implements OnInit {
   @ViewChild(GameInfoReviewListComponent) protected reviewListComponent!: GameInfoReviewListComponent;

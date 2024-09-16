@@ -19,20 +19,20 @@ import { Observer } from 'rxjs';
   templateUrl: './forum-post-list.component.html'
 })
 export class ForumPostListComponent implements AfterViewInit {
-  @Input() currentForumId?: number;
-  public postList: ForumPost[] = [];
-  public totalPosts: number = 0;
-  @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTimeArray = formatDateTimeArray;
-  public moderators: WebsiteUser[] = [];
+  @Input() public currentForumId?: number;
+  protected postList: ForumPost[] = [];
+  protected totalPosts: number = 0;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
+  protected formatDateTimeArray = formatDateTimeArray;
+  protected moderators: WebsiteUser[] = [];
 
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,
     private imageCacheService: ImageCacheService,
     private forumService: ForumService,
-    public dialog: MatDialog,
-    public authService: AuthService,
+    protected dialog: MatDialog,
+    protected authService: AuthService,
     private router: Router
   ) {}
 

@@ -8,19 +8,15 @@ import { passwordMatchValidator } from '../../../../util/passwordMatchValidator'
 @Component({
   selector: 'app-password-change',
   templateUrl: './password-change-component.html',
-  styleUrls: [
-    '/src/app/styles/shared-form-styles.css',
-    './own-profile.component.css'
-  ]
 })
 export class PasswordChangeComponent {
-  public changePasswordForm: FormGroup;
+  protected changePasswordForm: FormGroup;
 
-  public hideCurrentPassword = signal(true);
-  public hideNewPassword = signal(true);
-  public hideConfirmNewPassword = signal(true);
+  protected hideCurrentPassword = signal(true);
+  protected hideNewPassword = signal(true);
+  protected hideConfirmNewPassword = signal(true);
 
-  public passwordMismatchErrorMessage = signal('');
+  protected passwordMismatchErrorMessage = signal('');
 
   constructor(
     private formBuilder: FormBuilder,

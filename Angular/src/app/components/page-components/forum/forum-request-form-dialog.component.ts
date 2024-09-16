@@ -33,9 +33,9 @@ export class ForumRequestFormDialogComponent {
     private forumRequestService: ForumRequestService,
     private gameService: GameService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<ForumRequestFormDialogComponent>,
+    protected dialogRef: MatDialogRef<ForumRequestFormDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data?: {
+    @Inject(MAT_DIALOG_DATA) protected data?: {
       id?: number,
       name?: string,
       description?: string,

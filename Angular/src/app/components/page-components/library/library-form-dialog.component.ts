@@ -16,10 +16,10 @@ import { Game } from '../../../interfaces/game';
   templateUrl: './library-form-dialog.component.html',
 })
 export class LibraryFormDialogComponent implements OnInit {
-  public libraryForm: FormGroup;
-  public completionStatuses: CompletionStatus[] = completionStatuses;
-  public gameList: Game[] = [];
-  public title: string = "";
+  protected libraryForm: FormGroup;
+  protected completionStatuses: CompletionStatus[] = completionStatuses;
+  protected gameList: Game[] = [];
+  protected title: string = "";
 
   private userGame: UserGame = {
     id: undefined,
@@ -34,9 +34,9 @@ export class LibraryFormDialogComponent implements OnInit {
     private libraryService: LibraryService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<LibraryFormDialogComponent>,
+    protected dialogRef: MatDialogRef<LibraryFormDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    @Inject(MAT_DIALOG_DATA) protected data: {
       editing: boolean,
       userGame: UserGame,
       existingGames: UserGame[]

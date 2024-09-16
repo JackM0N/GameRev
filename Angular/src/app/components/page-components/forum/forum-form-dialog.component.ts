@@ -12,11 +12,11 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './forum-form-dialog.component.html',
 })
 export class ForumFormDialogComponent {
-  public forumForm: FormGroup;
-  public nameMinLength: number = 4;
-  public descriptionMinLength: number = 8;
-  public gameList: Game[] = [];
-  public forumList: Forum[] = [];
+  protected forumForm: FormGroup;
+  protected nameMinLength: number = 4;
+  protected descriptionMinLength: number = 8;
+  protected gameList: Game[] = [];
+  protected forumList: Forum[] = [];
 
   private description: string = '';
   private name: string = '';
@@ -28,9 +28,9 @@ export class ForumFormDialogComponent {
     private forumService: ForumService,
     private gameService: GameService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<ForumFormDialogComponent>,
+    protected dialogRef: MatDialogRef<ForumFormDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data?: {
+    @Inject(MAT_DIALOG_DATA) protected data?: {
       id?: number,
       name?: string,
       description?: string,

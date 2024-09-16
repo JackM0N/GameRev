@@ -25,19 +25,19 @@ import { BackgroundService } from '../../../services/background.service';
   templateUrl: './critic-review-list.component.html'
 })
 export class CriticReviewListComponent implements AfterViewInit {
-  public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
-  public totalReviews: number = 0;
-  public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
-  public formatDate = formatDateArray;
-  public reviewStatuses = reviewStatuses;
-  public noCriticReviews = false;
+  protected dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
+  protected totalReviews: number = 0;
+  protected displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
+  protected formatDate = formatDateArray;
+  protected reviewStatuses = reviewStatuses;
+  protected noCriticReviews = false;
 
   private filters: criticReviewFilters = {};
   protected filterForm: FormGroup;
 
-  @ViewChild('paginator') paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) protected searchInput?: ElementRef;
 
   constructor(
     private criticReviewService: CriticReviewService,

@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 import { Game } from '../../../interfaces/game';
 import { Observer } from 'rxjs';
-import { NotificationAction } from '../../../enums/notificationActions';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { Tag } from '../../../interfaces/tag';
 import { GameService } from '../../../services/game.service';
@@ -16,10 +15,10 @@ import { TagService } from '../../../services/tag.service';
   templateUrl: './game-form-dialog.component.html',
 })
 export class GameFormDialogComponent {
-  public addingGameForm: FormGroup;
-  public releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  public listTitle: string = 'Add a new game';
-  public tagsList: Tag[] = [];
+  protected addingGameForm: FormGroup;
+  protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
+  protected listTitle: string = 'Add a new game';
+  protected tagsList: Tag[] = [];
   private gameDate: Date = new Date();
   
   private game: Game = {
@@ -38,8 +37,8 @@ export class GameFormDialogComponent {
     private notificationService: NotificationService,
     private gameService: GameService,
     private tagService: TagService,
-    public dialogRef: MatDialogRef<GameFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    protected dialogRef: MatDialogRef<GameFormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) protected data: {
       editing: boolean;
       game: Game;
     }

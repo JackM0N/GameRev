@@ -28,9 +28,9 @@ export class UserListComponent implements OnInit, AfterViewInit {
   protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
   protected isAdmin = false;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+  @ViewChild(MatPaginator) protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) protected searchInput?: ElementRef;
 
   private filters: userFilters = {};
   protected filterForm: FormGroup;

@@ -16,14 +16,14 @@ import { NotificationAction } from '../../../enums/notificationActions';
   ]
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  hidePassword = signal(true);
+  protected loginForm: FormGroup;
+  protected hidePassword = signal(true);
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    public dialog: MatDialog,
+    protected dialog: MatDialog,
     private backgroundService: BackgroundService
   ) {
     this.loginForm = this.formBuilder.group({

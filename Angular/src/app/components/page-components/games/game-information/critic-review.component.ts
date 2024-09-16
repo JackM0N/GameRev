@@ -8,14 +8,13 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-gameinfo-critic-review',
-  templateUrl: './critic-review.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './critic-review.component.html'
 })
 export class GameInfoCriticReviewComponent {
-  @Input() gameTitle?: string;
+  @Input() public gameTitle?: string;
   
-  public criticReview?: CriticReview;
-  public formatDateArray = formatDateArray;
+  protected criticReview?: CriticReview;
+  protected formatDateArray = formatDateArray;
 
   constructor(
     private criticReviewService: CriticReviewService,

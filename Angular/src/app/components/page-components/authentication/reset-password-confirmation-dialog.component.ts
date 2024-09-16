@@ -8,10 +8,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ResetPasswordConfirmationDialogComponent {
   public resetPasswordForm: FormGroup;
-  public emailErrorMessage = signal('');
+  protected emailErrorMessage = signal('');
 
   constructor(
-    public dialogRef: MatDialogRef<ResetPasswordConfirmationDialogComponent>,
+    protected dialogRef: MatDialogRef<ResetPasswordConfirmationDialogComponent>,
     private formBuilder: FormBuilder,
   ) {
     this.resetPasswordForm = this.formBuilder.group({

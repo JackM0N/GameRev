@@ -33,8 +33,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   protected completionStatuses = completionStatuses;
   protected tagList: Tag[] = [];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
 
   constructor(
     private libraryService: LibraryService,
@@ -48,8 +48,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   ) {
     super(adService, backgroundService, cdRef);
   }
-
-
+  
   override ngOnInit(): void {
     this.backgroundService.setClasses(['fallingCds']);
   }

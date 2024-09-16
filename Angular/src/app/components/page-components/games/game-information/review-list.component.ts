@@ -21,8 +21,7 @@ import { UserReviewFormDialogComponent } from '../../user-reviews/user-review-fo
 
 @Component({
   selector: 'app-gameinfo-review-list',
-  templateUrl: './review-list.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './review-list.component.html'
 })
 export class GameInfoReviewListComponent implements AfterViewInit {
   @Output() public usersScoreUpdated = new EventEmitter<number>();
