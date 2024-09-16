@@ -92,16 +92,13 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     });
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     if (this.routeParamsSubscription) {
       this.routeParamsSubscription.unsubscribe();
     }
-    super.ngOnDestroy();
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     this.paginator.page.subscribe(() => {
       this.loadForum(this.forumId);
     });

@@ -77,13 +77,13 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   }
 
   override ngOnInit(): void {
+    super.ngOnInit();
+    
     this.backgroundService.setClasses(['fallingCds']);
     this.loadTags();
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.loadGames();
     

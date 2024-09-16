@@ -28,7 +28,7 @@ import { UserService } from '../../../services/user.service';
   selector: 'app-forum-post',
   templateUrl: './forum-post.component.html'
 })
-export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
+export class ForumPostComponent extends BaseAdComponent {
   @Input() post?: ForumPost;
   @ViewChild('paginator') paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
@@ -84,10 +84,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
         this.loadModerators(params['forumid']);
       }
     });
-  }
-
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
   }
 
   loadPath(id: number) {

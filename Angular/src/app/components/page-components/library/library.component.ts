@@ -54,9 +54,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     this.backgroundService.setClasses(['fallingCds']);
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.loadGames();
     this.loadTags();

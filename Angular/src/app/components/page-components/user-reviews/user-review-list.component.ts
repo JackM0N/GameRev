@@ -48,12 +48,12 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
   }
 
   override ngOnInit(): void {
+    super.ngOnInit();
+    
     this.backgroundService.setClasses(['fallingCds']);
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.userId = params['id'];

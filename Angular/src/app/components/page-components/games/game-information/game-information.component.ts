@@ -55,6 +55,8 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   }
 
   override ngOnInit() {
+    super.ngOnInit();
+    
     this.backgroundService.setClasses(['fallingCds']);
 
     this.route.params.subscribe(params => {
@@ -83,9 +85,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     });
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     setTimeout(() => {
       if (this.reviewListComponent) {
         this.reviewListComponent.usersScoreUpdated.subscribe(newScore => {
