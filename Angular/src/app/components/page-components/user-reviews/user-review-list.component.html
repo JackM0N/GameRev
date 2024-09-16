@@ -1,5 +1,5 @@
 
-<div class="pixel-border w-[330px] h-fit py-[6px] px-[6px]">
+<div class="pixel-border w-[330px] h-fit py-[6px] px-[6px] mb-2">
   <div class="flex justify-center font-arcade h-10 text-lg bg-black text-white pinkTextShadow">
     <button class="pinkTextShadowWide"(click)="goBack()">Go back to profile</button>
   </div>
@@ -50,13 +50,15 @@
       </table>
     </div>
 
-    <mat-paginator
-      class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-      #paginator
-      [length]="totalReviews"
-      [pageSize]="5"
-      [pageSizeOptions]="[2, 5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
+    <div [hidden]="totalReviews < 5">
+      <mat-paginator
+        class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+        #paginator
+        [length]="totalReviews"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
   </div>
 </div>
