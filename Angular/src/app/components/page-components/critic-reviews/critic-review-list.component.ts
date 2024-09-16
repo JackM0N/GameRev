@@ -155,7 +155,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   restoreReview(review: CriticReview) {
-    review.reviewStatus = 'PENDING'
+    review.reviewStatus = 'RESTORED'
 
     this.criticReviewService.reviewReview(review).subscribe({
       next: () => { this.notificationService.popSuccessToast('Review restored successfully'); },

@@ -4,6 +4,7 @@ public enum ReviewStatus {
     APPROVED("Approved"),
     PENDING("Pending"),
     DELETED("Deleted"),
+    RESTORED("Restored"),
     EDITED("Edited");
 
     final String status;
