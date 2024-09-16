@@ -154,6 +154,15 @@ export class CriticReviewListComponent implements AfterViewInit {
     });
   }
 
+  restoreReview(review: CriticReview) {
+    review.reviewStatus = 'PENDING'
+
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review restored successfully'); },
+      error: error => this.notificationService.popErrorToast('Review restoration failed', error)
+    });
+  }
+
   deleteReview(review: CriticReview) {
     if (review.id == null) {
       console.log("Review is null");

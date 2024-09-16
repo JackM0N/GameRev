@@ -66,13 +66,21 @@
         <table class="appearance-none bg-black" mat-table [dataSource]="this.dataSource" matSort (matSortChange)="loadReviews()">
           
           <ng-container matColumnDef="gameTitle">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef> Game </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.gameTitle}} </td>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef>
+              Game
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              {{element.gameTitle}}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="user">
-            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="user" mat-header-cell *matHeaderCellDef> User </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.user.nickname}} </td>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="user" mat-header-cell *matHeaderCellDef>
+              User
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.user.nickname">{{element.user.nickname}}</a>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="content">
@@ -101,6 +109,7 @@
               <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.statusChangedBy == undefined" (click)="approveReview(element)">Approve</button>
               <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="editReview(element)">Edit</button>
               <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus != 'DELETED' && canDeleteReview(element)" (click)="softDeleteReview(element)">Delete</button>
+              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)" (click)="restoreReview(element)">Restore</button>
               <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)" (click)="openDeleteReviewDialog(element)">Delete permanently</button>
             </td>
           </ng-container>
