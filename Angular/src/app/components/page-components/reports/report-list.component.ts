@@ -14,6 +14,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
+import { AdService } from '../../../services/ad.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -49,6 +50,7 @@ export class ReportListComponent implements AfterViewInit {
     private fb: FormBuilder,
     protected dialog: MatDialog,
     private datePipe: DatePipe,
+    private adService: AdService
   ) {
     this.filterForm = this.fb.group({
       dateRange: this.fb.group({
@@ -63,6 +65,7 @@ export class ReportListComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.adService.setAdVisible(false);
     this.backgroundService.setClasses(['fallingCds']);
   }
 
@@ -184,7 +187,7 @@ export class ReportListComponent implements AfterViewInit {
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
     const dialogTitle = 'Confirm review deletion';
-    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userNickname + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 

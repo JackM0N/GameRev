@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -17,15 +17,17 @@ import { Role } from '../../../interfaces/role';
 import { userFilters } from '../../../interfaces/userFilters';
 import { BackgroundService } from '../../../services/background.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { BaseAdComponent } from '../../base-components/base-ad-component';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html'
 })
-export class UserListComponent implements OnInit, AfterViewInit {
+export class UserListComponent extends BaseAdComponent implements OnInit, AfterViewInit {
   protected totalUsers: number = 0;
   protected dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
-  protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+  protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'roles', 'options'];
   protected isAdmin = false;
 
   @ViewChild(MatPaginator) protected paginator!: MatPaginator;
@@ -43,8 +45,12 @@ export class UserListComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    private adService: AdService,
+    cdRef: ChangeDetectorRef
   ) {
+    super(adService, backgroundService, cdRef);
+
     this.filterForm = this.fb.group({
       dateRange: this.fb.group({
         start: [null],
@@ -57,12 +63,16 @@ export class UserListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.backgroundService.setClasses(['fallingCds']);
 
     this.isAdmin = this.authService.isAdmin();
+
     if (this.isAdmin) {
+      this.adService.setAdVisible(false);
       this.displayedColumns = ['id', 'username', 'nickname', 'email', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'isDeleted', 'roles', 'options'];
+    } else {
+      super.ngOnInit();
     }
   }
 

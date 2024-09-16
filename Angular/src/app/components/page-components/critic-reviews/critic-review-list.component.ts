@@ -19,6 +19,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-critic-review-list',
@@ -48,6 +49,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     private fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
+    private adService: AdService
   ) {
     this.filterForm = this.fb.group({
       reviewStatuses: [null],
@@ -64,6 +66,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.adService.setAdVisible(false);
     this.backgroundService.setClasses(['fallingCds']);
   }
 
