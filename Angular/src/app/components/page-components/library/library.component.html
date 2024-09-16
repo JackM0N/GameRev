@@ -58,7 +58,7 @@
     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="this.loadGames()" class="mat-elevation-z8 appearance-none bg-black">
       <ng-container matColumnDef="game">
         <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="game" mat-header-cell *matHeaderCellDef> Game </th>
-        <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.game.id}} -  {{element.game.title}} </td>
+        <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">{{element.game.title}}</td>
       </ng-container>
     
       <ng-container matColumnDef="completionStatus">
@@ -84,10 +84,12 @@
     </table>
   </div>
 
-  <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-    [length]="totalGames"
-    [pageSize]="5"
-    [pageSizeOptions]="[2, 5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+  <div [hidden]="totalGames < 5">
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalGames"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
 </div>
