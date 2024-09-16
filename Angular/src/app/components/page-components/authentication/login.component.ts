@@ -58,10 +58,14 @@ export class LoginComponent {
       }
 
       this.authService.login(credentials).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME);
-        },
-        error: error => this.notificationService.popErrorToast('Login failed', error)
+        next: () => { this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME); },
+        error: error => {
+          if (error.error == 'Bad credentials') {
+            this.notificationService.popErrorToast('Bad login or password', error);
+          } else {
+            this.notificationService.popErrorToast('Login failed', error);
+          }
+        }
       });
     }
   }
