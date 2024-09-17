@@ -20,7 +20,7 @@ public interface WebsiteUserMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "profilepic", target = "profilepic")
     @Mapping(source = "isDeleted", target = "isDeleted")
-    WebsiteUser partialUpdateProfile(UpdateWebsiteUserDTO updateWebsiteUserDTO, @MappingTarget WebsiteUser websiteUser);
+    void partialUpdateProfile(UpdateWebsiteUserDTO updateWebsiteUserDTO, @MappingTarget WebsiteUser websiteUser);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)

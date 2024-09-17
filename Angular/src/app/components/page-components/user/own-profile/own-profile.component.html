@@ -1,5 +1,5 @@
 
-<div class="grow min-h-lvh z-10 text-white bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center caret-[#fb049c]">
+<div class="grow z-10 text-white bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center caret-[#fb049c]">
   <div class="pixel-border max-[900px]:w-[390px] min-[900px]:w-5/6 h-fit p-[6px] m-auto max-w-[1200px]">
     <div class="synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex max-[899px]:flex-col-reverse justify-center bg-black">
       <div class="z-20 w-fit inline-block pt-4 ml-8">
@@ -10,25 +10,25 @@
         </form>
 
         <div class="screenHead w-80 h-80 py-7 mt-8 z-50">
-          <img class="max-w-32 max-h-32 m-auto -z-10 relative" *ngIf="imageUrl" [src]="imageUrl" alt="Loaded Image" />
+          <img class="max-w-[134px] max-h-[134px] m-auto -z-10 relative"[src]="imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Loaded Image" />
         </div>
       </div>
 
-      <div class="w-full inline-block pinkTextShadow p-4 px-8 flex flex-col">
-        <div class="text-xl w-fit">Profile information</div>
+      <div class="w-full inline-block p-4 px-8 flex flex-col">
+        <div class="text-xl w-fit pinkTextShadow">Profile information</div>
         <form class="text-base flex flex-col" autocomplete="off" [formGroup]="changeProfileInformationForm" (ngSubmit)="onSubmitProfileInformationChange()">
           <div class="mt-2">
-            <label class="w-full block">Enter your new nickname</label>
+            <label class="w-full block pinkTextShadow">Enter your new nickname</label>
             <input class="text-black px-1 w-[314px] h-7" maxlength="20" placeholder="Input nickname" formControlName="nickname"/>
           </div>
 
           <div class="flex flex-col mt-2">
-            <label class="w-full block">Description</label>
+            <label class="w-full block pinkTextShadow">Description</label>
             <textarea class="max-h-[112px] min-h-[112px] h-[112px] w-full text-black px-1 resize-none" formControlName="description"></textarea>
           </div>
 
           <div class="mt-2">
-            <label class="block">Enter your password</label>
+            <label class="block pinkTextShadow">Enter current password</label>
             <div class="flex items-center w-[314px] bg-white h-[28px]">
               <input class="px-1 h-full w-[56] text-black appearance-none" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
               <button class="px-1 flex items-center text-black"
@@ -42,6 +42,17 @@
               </button>
             </div>
           </div>
+
+          <!-- No current password typed error -->
+          <mat-error *ngIf="changeProfileInformationForm.get('currentPassword')?.touched && changeProfileInformationForm.get('currentPassword')?.hasError('required')" class="font-arcade text-red-600 font-bold drop-shadow-lg">
+            Please provide the current password.
+          </mat-error>
+
+          <!-- Min length current password error -->
+          <mat-error *ngIf="changeProfileInformationForm.get('currentPassword')?.touched && changeProfileInformationForm.get('currentPassword')?.getError('minlength') != undefined" class="font-arcade text-red-600 font-bold drop-shadow-lg">
+            Please provide a longer password.
+            <div class="m-0 p-0 text-sm">(min {{ changeProfileInformationForm.get('currentPassword')?.getError('minlength')["requiredLength"] }} characters)</div>
+          </mat-error>
 
           <div class="mt-4">
             <button class="text-lg pinkTextShadow pinkTextShadow text-white disabled:opacity-30" [disabled]="!changeProfileInformationForm.valid">Change profile</button>

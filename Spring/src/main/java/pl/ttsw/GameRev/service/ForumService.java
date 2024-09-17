@@ -22,7 +22,6 @@ import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +44,12 @@ public class ForumService {
         try {
             WebsiteUser currentUser = websiteUserService.getCurrentUser();
 
-            if(currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+            if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
                 forumFilter.setIsDeleted(false);
             }
-        }catch (Exception e){
+        } catch (Exception e){
             forumFilter.setIsDeleted(false);
         }
-
 
         Page<Forum> forums = forumRepository.findAll(spec, pageable);
         List<Forum> forumList = new ArrayList<>(forums.getContent());

@@ -20,20 +20,25 @@ import { Tag } from '../../../interfaces/tag';
 import { TagService } from '../../../services/tag.service';
 import { gameFilters } from '../../../interfaces/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { NotificationService } from '../../../services/notification.service';
+import { ForumRequestService } from '../../../services/forumRequest.service';
+import { ForumService } from '../../../services/forum.service';
 
 @Component({
   selector: 'app-game-list',
   templateUrl: './game-list.component.html'
 })
 export class GameListComponent extends BaseAdComponent implements AfterViewInit {
-  public gamesList: Game[] = [];
-  public totalGames: number = 0;
-  public dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  public displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+  protected gamesList: Game[] = [];
+  protected totalGames: number = 0;
+  protected dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
+  protected displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
-  public releaseStatuses = releaseStatuses;
-  public tagList: Tag[] = [];
+  protected releaseStatuses = releaseStatuses;
+  protected tagList: Tag[] = [];
   private filters: gameFilters = {};
+  protected filterForm: FormGroup;
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,26 +46,44 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
 
   constructor(
     private gameService: GameService,
+    private forumRequestService: ForumRequestService,
+    private forumService: ForumService,
+    private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
-    public authService: AuthService,
+    protected authService: AuthService,
     private tagService: TagService,
     private datePipe: DatePipe,
+    private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
+
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      releaseStatuses: [null],
+      tags: [null],
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      }),
+      search: [null]
+    });
   }
 
   override ngOnInit(): void {
+    super.ngOnInit();
+    
     this.backgroundService.setClasses(['fallingCds']);
     this.loadTags();
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
+  ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.loadGames();
     
@@ -169,6 +192,41 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     });
   }
 
+  openErrorDialog() {
+    const dialogTitle = 'Deleting game failed';
+
+    this.forumRequestService.getRequests().subscribe({
+      next: (response) => {
+        if (response && response.content && response.totalElements > 0) {
+
+          // There are forum requests that are related to this game
+          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
+          });
+
+        } else {
+
+          // There are no forum requests that are related to this game, check forums
+          this.forumService.getForums().subscribe({
+            next: (response2) => {
+              if (response2 && response2.length > 0) {
+                // There are forums that are related to this game
+                const dialogContent = 'There are forums that are related to this game. Please delete them first.';
+                this.dialog.open(PopupDialogComponent, {
+                  width: '400px',
+                  data: { dialogTitle, dialogContent, noSubmitButton: true }
+                });
+              }
+            }
+          });
+
+        }
+      }
+    });
+  }
+
   deleteGame(game: Game) {
     if (!game || !game.id) {
       console.log('Game ID is not valid.');
@@ -180,10 +238,12 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
         if (response) {
           this.dataSource.data = response;
           this.loadGames();
+          this.notificationService.popSuccessToast('Deleted game successfuly');
         }
       },
       error: error => {
-        console.error(error);
+        this.notificationService.popErrorToast('Deleting game failed', error);
+        this.openErrorDialog();
       },
       complete: () => {}
     };
@@ -192,7 +252,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   }
 
   getTags(game: Game) {
-    return game.tags.map(tag => tag.tagName).join(', ');
+    return game.tags?.map(tag => tag.tagName).join(', ');
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -266,6 +326,14 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadGames();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadGames();
   }
 }

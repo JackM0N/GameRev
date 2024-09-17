@@ -15,7 +15,6 @@ import pl.ttsw.GameRev.model.ForumPost;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.*;
 import pl.ttsw.GameRev.mapper.ForumPostMapper;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -132,12 +131,12 @@ public class ForumPostService {
             forumPost.setIsDeleted(isDeleted);
             if (isDeleted) {
                 forumPost.setDeletedAt(LocalDateTime.now());
-            }else{
+            } else {
                 forumPost.setDeletedAt(null);
             }
             forumPostRepository.save(forumPost);
             return true;
-        }else {
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }

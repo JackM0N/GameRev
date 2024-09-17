@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.util.Optional;
 
 @Repository

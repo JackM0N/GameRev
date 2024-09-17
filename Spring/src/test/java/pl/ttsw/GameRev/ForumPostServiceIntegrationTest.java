@@ -17,16 +17,13 @@ import pl.ttsw.GameRev.mapper.SimplifiedUserMapper;
 import pl.ttsw.GameRev.mapper.WebsiteUserMapper;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.ForumPost;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumPostRepository;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.ForumPostService;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
@@ -47,12 +44,6 @@ public class ForumPostServiceIntegrationTest {
 
     @Autowired
     private ForumMapper forumMapper;
-
-    @Autowired
-    private WebsiteUserMapper websiteUserMapper;
-
-    @Autowired
-    private SimplifiedUserMapper simplifiedUserMapper;
 
     private Forum testForum;
 

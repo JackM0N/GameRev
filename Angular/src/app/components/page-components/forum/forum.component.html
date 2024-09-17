@@ -1,73 +1,132 @@
-<div>
+
+<div class="p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
-      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-blue-500 cursor-pointer font-bold">
+      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
         {{ segment.forumName }}
       </a>
-      <span *ngIf="i < path.length - 1"> &gt; </span>
-      <span *ngIf="i === path.length - 1" class="font-bold">{{ segment.forumName }}</span>
+      <span *ngIf="i < path.length - 1" class="text-gray-500"> &gt; </span>
+      <span *ngIf="i === path.length - 1" class="font-bold text-gray-300">{{ segment.forumName }}</span>
     </ng-container>
   </nav>
 
-  <!-- Forum Header -->
-  <header class="forum-header text-center mt-4" *ngIf="currentForum">
-    <h1 class="text-2xl font-bold">{{ currentForum.forumName }}</h1>
-    <p class="text-base text-gray-700">{{ currentForum.description }}</p>
+  <!-- Forum Header with Button Aligned and Title Centered -->
+  <header class="forum-header mt-6 relative bg-[#222222] shadow-lg p-6 border border-[#00CFFF]">
+    <!-- Button to View All Requests (Positioned on the right) -->
+    <div class="absolute right-3 top-3" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+      <button class="synthwaveButton max-w-sm" (click)="routeToRequests()">
+        View All Requests
+      </button>
+    </div>
+
+    <!-- Forum title and description (Centered) -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-[#E5E5E5]">{{ currentForum?.forumName }}</h1>
+      <p class="text-lg text-[#B0B0B0] mt-2">{{ currentForum?.description }}</p>
+    </div>
   </header>
 
   <!-- Forum Table -->
-  <div *ngIf="currentForum" [hidden]="noSubForums" class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-xl font-bold mb-4">Subforums</h2>
-    <table class="forum-table w-full border-collapse table-auto">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="p-4 border border-gray-300 text-left font-bold">Subforum</th>
-          <th class="p-4 border border-gray-300 text-left font-bold">Posts</th>
-          <th class="p-4 border border-gray-300 text-left font-bold">Last Post</th>
-          <th class="p-4 border border-gray-300 text-left font-bold" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
-        </tr>
-      </thead>
+  <div *ngIf="currentForum" [hidden]="noSubForums && !filtered" class="mt-8 bg-[#222222] shadow-lg border border-[#00CFFF]">
+    <div class="px-6 py-4 px-1 overflow-x-auto">
 
-      <tbody>
-        <!-- Subforum Rows -->
-        <tr *ngFor="let subforum of subForumList" class="hover:bg-gray-100">
-          <td class="p-4 border border-gray-300">
-            <a (click)="navigateToSubforum(subforum.id)" class="text-blue-500 cursor-pointer font-semibold">
-              {{ subforum.forumName }}
-            </a>
-            <p class="text-gray-700">{{ subforum.description }}</p>
-          </td>
-          <td class="p-4 border border-gray-300">{{ subforum.postCount }} Post(s)</td>
-          <td *ngIf="subforum.lastPost" class="p-4 border border-gray-300">
-            <p class="text-gray-700">Last post by {{ subforum.lastPost.nickname }}</p>
-            <p>
-              in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-blue-500 cursor-pointer"><b>{{ subforum.lastPost.title }}</b></a>
-            </p>
-            <p class="text-gray-600">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
-          </td>
-          <td *ngIf="!subforum.lastPost" class="p-4 border border-gray-300">
-            <p class="text-gray-500">No interactions yet</p>
-          </td>
+      <div class="flex justify-between items-center mb-4">
+        <!-- Subforums Heading -->
+        <h2 class="text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
+        
+        <!-- Filters Section -->
+        <form [formGroup]="filterForm" class="flex space-x-4 items-start">
+          <!-- Game Filter -->
+          <div class="flex flex-col space-y-1 w-64">
+            <label class="text-sm text-white">Game</label>
+            <mat-select (selectionChange)="onGameFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="game">
+              <mat-option>-</mat-option>
+              @for (game of gameList; track game) {
+                <mat-option [value]="game">{{game.title}}</mat-option>
+              }
+            </mat-select>
+          </div>
 
-          <!-- Actions column with edit button -->
-          <td class="p-4 border border-gray-300" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-            <button mat-icon-button (click)="openEditSubforumDialog(subforum)">
-              <mat-icon>edit</mat-icon>
+          <!-- Is Deleted Filter -->
+          <div class="flex flex-col space-y-1 w-32">
+            <label class="text-sm text-white">Is deleted</label>
+            <mat-select (selectionChange)="onDeletedFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="isDeleted">
+              <mat-option>-</mat-option>
+              <mat-option [value]="true">True</mat-option>
+              <mat-option [value]="false">False</mat-option>
+            </mat-select>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="flex flex-col space-y-1 w-48">
+            <label class="text-sm text-white">Search</label>
+            <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search">
+          </div>
+
+          <!-- Clear Button -->
+          <div class="flex flex-col space-y-1">
+            <label class="text-sm text-white">Clear</label>
+            <button class="bg-blue-500 text-white flex items-center justify-center py-2 px-3 hover:bg-blue-600" (click)="clearFilters()">
+              <i class="material-icons">close</i>
             </button>
-    
-            <button mat-icon-button (click)="openDeleteSubforumDialog(subforum)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </form>
+      </div>
+
+      <table class="w-full border-collapse">
+        <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
+          <tr>
+            <th class="p-4 border-b border-[#00CFFF]">Subforum</th>
+            <th class="p-4 border-b border-[#00CFFF]">Posts</th>
+            <th class="p-4 border-b border-[#00CFFF]">Last Post</th>
+            <th class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Subforum Rows -->
+          <tr *ngFor="let subforum of subForumList" class="hover:bg-[#333333]">
+            <td class="p-4 border-b border-[#00CFFF]">
+              <a (click)="navigateToSubforum(subforum.id)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
+                {{ subforum.forumName }}
+              </a>
+              <p class="text-[#B0B0B0] mt-1">{{ subforum.description }}</p>
+            </td>
+            <td class="p-4 border-b border-[#00CFFF]">{{ subforum.postCount }} Post(s)</td>
+            <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
+              <p class="text-[#E5E5E5]">Last post by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + subforum.lastPost.nickname">{{ subforum.lastPost.nickname }}</a></p>
+              <p>
+                in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
+                  {{ subforum.lastPost.title }}
+                </a>
+              </p>
+              <p class="text-[#B0B0B0]">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
+            </td>
+            <td *ngIf="!subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
+              <p class="text-[#B0B0B0]">No interactions yet</p>
+            </td>
+
+            <!-- Actions column with edit button -->
+            <td class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600 mr-2" (click)="openEditSubforumDialog(subforum)">
+                <i class="material-icons">edit</i>
+              </button>
+
+              <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" (click)="openDeleteSubforumDialog(subforum)">
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  
+
   <!-- Add new subforum -->
-  <div class="mt-4" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-    <button mat-raised-button color="primary" (click)="openAddSubforumDialog()">Add Subforum</button>
+  <div class="mt-6" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+    <button class="synthwaveButton" (click)="openAddSubforumDialog()">Add Subforum</button><br>
+    <button class="mt-3 synthwaveButton" (click)="openAddNewRequestDialog()">Request new subforum</button>
   </div>
 
   <!-- Paginator for Forums -->
@@ -81,6 +140,8 @@
     </mat-paginator>
   </div>
 
-  <!-- Forum Posts Table -->
-  <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
+  <!-- Forum Posts List -->
+  <div class="mt-2">
+    <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
+  </div>
 </div>

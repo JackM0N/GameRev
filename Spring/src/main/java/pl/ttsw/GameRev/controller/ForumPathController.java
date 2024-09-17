@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.ttsw.GameRev.dto.ForumDTO;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.repository.ForumRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +21,19 @@ public class ForumPathController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getForumPath(@PathVariable("id") Long id) {
         Forum forum = forumRepository.findById(id).orElse(null);
+
         if (forum == null) {
             return ResponseEntity.notFound().build();
         }
+
         List<ForumDTO> forumDTOS = new ArrayList<>();
+
         ForumDTO currentForumDTO = new ForumDTO();
         currentForumDTO.setId(forum.getId());
         currentForumDTO.setForumName(forum.getForumName());
         forumDTOS.add(currentForumDTO);
 
-        while(forum.getParentForum() != null){
+        while (forum.getParentForum() != null) {
             ForumDTO forumDTO = new ForumDTO();
             forumDTO.setId(forum.getParentForum().getId());
             forumDTO.setForumName(forum.getParentForum().getForumName());

@@ -2,7 +2,6 @@
 import { UserReviewService } from '../../../../services/user-review.service';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
-import { Router } from '@angular/router';
 import { UserReview } from '../../../../interfaces/userReview';
 import { Observer } from 'rxjs';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
@@ -17,25 +16,28 @@ import { NotificationService } from '../../../../services/notification.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { reviewFilters } from '../../../../interfaces/reviewFilters';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserReviewFormDialogComponent } from '../../user-reviews/user-review-form-dialog.component';
 
 @Component({
   selector: 'app-gameinfo-review-list',
-  templateUrl: './review-list.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './review-list.component.html'
 })
 export class GameInfoReviewListComponent implements AfterViewInit {
-  @Output() usersScoreUpdated = new EventEmitter<number>();
+  @Output() public usersScoreUpdated = new EventEmitter<number>();
 
-  @Input() gameTitle?: string;
-  @Input() game?: Game;
+  @Input() public gameTitle?: string;
+  @Input() public game?: Game;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
 
-  public reviewList: UserReview[] = [];
-  public totalReviews: number = 0;
-  public formatDateArray = formatDateArray;
+  protected reviewList: UserReview[] = [];
+  protected totalReviews: number = 0;
+  protected formatDateArray = formatDateArray;
+  
   private filters: reviewFilters = {};
+  protected filterForm: FormGroup;
 
   private report: Report = {
     content: '',
@@ -47,12 +49,23 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   constructor(
     private userReviewService: UserReviewService,
     private notificationService: NotificationService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private reportService: ReportService,
-    private router: Router,
-    public dialog: MatDialog,
+    private fb: FormBuilder,
+    protected dialog: MatDialog,
     private datePipe: DatePipe,
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      })
+    });
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -90,7 +103,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
     const dialogTitle = 'Confirm review deletion';
-    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userNickname + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -115,7 +128,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         return;
       }
 
-      review.userUsername = username;
+      review.userNickname = username;
 
       this.userReviewService.deleteUserReview(review).subscribe({
         next: () => {
@@ -129,15 +142,24 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   toggleLike(review: UserReview) {
-    if (review.ownRatingIsPositive === true) {
-      review.ownRatingIsPositive = undefined;
-      if (review.positiveRating != undefined) {
+    // If the user has already liked the review, remove the like
+    if (review.ownRatingIsPositive == true) {
+      review.ownRatingIsPositive = null;
+      if (review.positiveRating != null) {
         review.positiveRating--;
       }
 
     } else {
+      // If the user has already disliked the review, remove the dislike
+      if (review.ownRatingIsPositive == false) {
+        if (review.negativeRating != null) {
+          review.negativeRating--;
+        }
+      }
+
+      // Add a like to the review
       review.ownRatingIsPositive = true;
-      if (review.positiveRating != undefined) {
+      if (review.positiveRating != null) {
         review.positiveRating++;
       }
     }
@@ -146,13 +168,22 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   }
 
   toggleDislike(review: UserReview) {
-    if (review.ownRatingIsPositive === false) {
-      review.ownRatingIsPositive = undefined;
-      if (review.negativeRating != undefined) {
+    // If the user has already disliked the review, remove the dislike
+    if (review.ownRatingIsPositive == false) {
+      review.ownRatingIsPositive = null;
+      if (review.negativeRating != null) {
         review.negativeRating--;
       }
 
     } else {
+      // If the user has already liked the review, remove the like
+      if (review.ownRatingIsPositive == true) {
+        if (review.positiveRating != null) {
+          review.positiveRating--;
+        }
+      }
+
+      // Add a dislike to the review
       review.ownRatingIsPositive = false;
       if (review.negativeRating != undefined) {
         review.negativeRating++;
@@ -192,11 +223,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     });
   }
 
-  reportReview(review: UserReview) {
-    const dialogContent = 'Are you sure you want to report this review by ' + review.userUsername + '?';
+  openReportReviewDialog(review: UserReview) {
+    const dialogContent = 'Report review by ' + review.userNickname;
 
     const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: { dialogContent }
     });
 
@@ -209,11 +240,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   canDeleteReview(review: UserReview) {
     return this.authService.isAuthenticated() &&
-    (this.authService.getUsername() === review.userUsername || this.authService.hasAnyRole(['Admin', 'Critic']));
+    (this.authService.getUsername() === review.userNickname || this.authService.hasAnyRole(['Admin', 'Critic']));
   }
 
   ownsReview(review: UserReview) {
-    return this.authService.isAuthenticated() && this.authService.getUsername() === review.userUsername;
+    return this.authService.isAuthenticated() && this.authService.getUsername() === review.userNickname;
   }
 
   canAddReview() {
@@ -222,17 +253,44 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     }
 
     const userName = this.authService.getUsername();
-    return !this.reviewList.some(review => review.userUsername === userName);
+    return !this.reviewList.some(review => review.userNickname === userName);
   }
 
-  routeToAddNewReview() {
+  openAddReviewDialog() {
     if (this.game) {
-      this.router.navigate(['/user-reviews/add/' + this.game.title]);
+      const dialogRef = this.dialog.open(UserReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: false,
+          game: this.game
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadReviews();
+        }
+      });
     }
   }
 
-  editReview(review: UserReview) {
-    this.router.navigate(['/user-reviews/edit/' + review.id]);
+  openEditReviewDialog(review: UserReview) {
+    if (this.game) {
+      const dialogRef = this.dialog.open(UserReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: true,
+          game: this.game,
+          review: review
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadReviews();
+        }
+      });
+    }
   }
 
   // Filters
@@ -282,6 +340,14 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }

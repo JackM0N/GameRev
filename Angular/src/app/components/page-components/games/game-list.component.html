@@ -1,55 +1,82 @@
 
-<mat-form-field>
-  <mat-label>Release status</mat-label>
-  <mat-select (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
-    <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
-      {{ status.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Tags</mat-label>
-  <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
-    <mat-option *ngFor="let tag of tagList" [value]="tag.id">
-      {{ tag.tagName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Release date range</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
-    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
-  </mat-date-range-input>
-  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
-
-<div class="bg-[#F5F5F5] w-min">
-  <label class="text-sm font-medium text-gray-700">User score</label>
-  <mat-slider min="1" max="10" showTickMarks discrete>
-    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
-    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
-  </mat-slider>
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Game list
+    </div>
+  </div>
 </div>
 
-<mat-form-field>
-  <mat-label>Search</mat-label>
-  <input matInput #searchInput>
-</mat-form-field>
+<!-- Filters Section -->
+<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+  <div class="synthwaveBg bg-repeat text-white p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="filterForm" class="contents">
+        <!-- Release Status -->
+        <mat-form-field>
+          <mat-label>Release status</mat-label>
+          <mat-select formControlName="releaseStatuses" (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
+            <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
+              {{ status.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <!-- Tags -->
+        <mat-form-field>
+          <mat-label>Tags</mat-label>
+          <mat-select formControlName="tags" (selectionChange)="onTagFilterChange($event)" multiple>
+            <mat-option *ngFor="let tag of tagList" [value]="tag.id">
+              {{ tag.tagName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-<div class="grow min-h-lvh z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
-  <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">
-    <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
+        <!-- Release Date Range -->
+        <mat-form-field>
+          <mat-label>Release date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+            <input matStartDate formControlName="start" placeholder="From" (dateChange)="onStartDateChange($event)">
+            <input matEndDate formControlName="end" placeholder="To" (dateChange)="onEndDateChange($event)">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <!-- User Score -->
+        <div class="bg-[#F5F5F5] grow p-4">
+          <label class="text-base text-[rgb(98,98,126)] pr-4">User score</label>
+          <mat-slider min="1" max="10" showTickMarks discrete formGroupName="userScore">
+            <input formControlName="min" value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+            <input formControlName="max" value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+          </mat-slider>
+        </div>
+
+        <!-- Search -->
+        <mat-form-field>
+          <mat-label>Search</mat-label>
+          <input matInput formControlName="search">
+        </mat-form-field>
+      </form>
+    </div>
+
+    <!-- Clear Filters Button -->
+    <div class="absolute bottom-4 right-4">
+      <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+</div>
+
+<div class="grow z-10 bg-repeat font-arcade flex-row justify-center items-center tracking-wider">
+  <div class="pixel-border w-[330px] h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">
+    <div class="flex justify-center font-arcade h-12 text-xl bg-black text-white pinkTextShadow">
       <button class="pinkTextShadowWide" (click)="openAddNewGameDialog()">Add a new game</button>
     </div>
   </div>
   
   <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
-    <div class="px-1">
+    <div class="px-1 overflow-x-auto">
       <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadGames()" >
         <ng-container matColumnDef="id">
           <th class="hidden" mat-sort-header="id" *matHeaderCellDef> Id </th>
@@ -57,7 +84,7 @@
         </ng-container>
       
         <ng-container matColumnDef="title">
-          <th class="  synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef> Title </th>
+          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-lg pinkTextShadowWide pl-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef>Title</th>
           <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
             <button class="text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">{{element.title}}</button>
           </td>
@@ -65,27 +92,27 @@
       
         <ng-container matColumnDef="developer">
           <th class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="developer" *matHeaderCellDef> Developer </th>
-          <td class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.developer}} </td>
+          <td class="max-[770px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.developer}} </td>
         </ng-container>
       
         <ng-container matColumnDef="publisher">
           <th class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="publisher" *matHeaderCellDef> Publisher </th>
-          <td class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.publisher}} </td>
+          <td class="max-[1300px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.publisher}} </td>
         </ng-container>
       
         <ng-container matColumnDef="releaseDate">
           <th class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseDate" *matHeaderCellDef> Release date </th>
-          <td class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
+          <td class="max-[1460px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
         </ng-container>
       
         <ng-container matColumnDef="releaseStatus">
           <th class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
-          <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
+          <td class="max-[930px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
         </ng-container>
       
         <ng-container matColumnDef="usersScore">
           <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="usersScore" *matHeaderCellDef> Users score </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white"   *matCellDef="let element"> {{element.usersScore}} </td>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.usersScore}} </td>
         </ng-container>
       
         <ng-container matColumnDef="tags">
@@ -102,8 +129,8 @@
           <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Options </th>
           <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white" *matCellDef="let element">
             <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">View</button>
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditGameDialog(element)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)" *ngIf="authService.hasAnyRole(['Admin', 'Critic'])">Delete</button>
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditGameDialog(element)" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">Delete</button>
           </td>
         </ng-container>
         

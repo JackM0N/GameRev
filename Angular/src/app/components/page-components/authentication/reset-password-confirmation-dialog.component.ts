@@ -8,10 +8,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ResetPasswordConfirmationDialogComponent {
   public resetPasswordForm: FormGroup;
-  public emailErrorMessage = signal('');
+  protected emailErrorMessage = signal('');
 
   constructor(
-    public dialogRef: MatDialogRef<ResetPasswordConfirmationDialogComponent>,
+    protected dialogRef: MatDialogRef<ResetPasswordConfirmationDialogComponent>,
     private formBuilder: FormBuilder,
   ) {
     this.resetPasswordForm = this.formBuilder.group({
@@ -36,7 +36,7 @@ export class ResetPasswordConfirmationDialogComponent {
 
     if(email != null) {
       if (email.hasError('required')) {
-        this.emailErrorMessage.set('You must enter a value');
+        this.emailErrorMessage.set('Please provide an email address');
   
       } else if (email.hasError('email')) {
         this.emailErrorMessage.set('Not a valid email');

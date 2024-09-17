@@ -52,6 +52,7 @@ export class ForumPostService {
 
   addPost(post: ForumPost, picture?: File): Observable<any> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
     const formData = new FormData();
     formData.append('post', JSON.stringify(post));
@@ -59,16 +60,13 @@ export class ForumPostService {
     if (picture) {
       formData.append('picture', picture);
     }
-  
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
   
     return this.http.post(this.addUrl, formData, { headers });
   }
   
   editPost(post: ForumPost, picture?: File): Observable<any> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
     const formData = new FormData();
     formData.append('post', JSON.stringify(post));
@@ -76,22 +74,15 @@ export class ForumPostService {
     if (picture) {
       formData.append('picture', picture);
     }
-  
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     return this.http.put(`${this.editUrl}/${post.id}`, formData, { headers });
   }
 
   deletePost(id: number): Observable<any> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams().set('isDeleted', true);
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
   }

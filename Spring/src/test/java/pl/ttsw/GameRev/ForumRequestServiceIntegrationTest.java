@@ -16,16 +16,13 @@ import pl.ttsw.GameRev.dto.ForumRequestDTO;
 import pl.ttsw.GameRev.dto.GameDTO;
 import pl.ttsw.GameRev.model.Forum;
 import pl.ttsw.GameRev.model.Game;
-import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.ForumRequestRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.service.ForumRequestService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
 import org.springframework.security.test.context.support.WithMockUser;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")

@@ -21,7 +21,6 @@ public class PasswordResetController {
     private final WebsiteUserRepository websiteUserRepository;
     private final PasswordResetTokenService passwordResetTokenService;
 
-
     @PostMapping("/request")
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) throws MessagingException, IOException {
         String resetUrl = passwordResetTokenService.createPasswordResetToken(email);

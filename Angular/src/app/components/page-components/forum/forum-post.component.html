@@ -1,59 +1,70 @@
-<nav class="breadcrumb flex space-x-2 text-sm mb-4">
-  <ng-container *ngFor="let segment of path; let i = index">
-    <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="breadcrumb-link text-blue-500 cursor-pointer font-bold">{{ segment.forumName }}</a>
-    <span *ngIf="i < path.length - 1">></span>
-    <span *ngIf="i === path.length - 1" class="font-bold">{{ segment.forumName }}</span>
-  </ng-container>
-</nav>
 
-<div class="post-page container mx-auto max-w-[800px] p-[20px] py-8">
+<!-- Breadcrumb Navigation -->
+<div class="bg-[#1E1E1E]">
+  <nav class="breadcrumb flex space-x-2 text-sm mb-4 text-white font-arcade p-2 px-4" *ngIf="path && path.length > 1">
+    <ng-container *ngFor="let segment of path; let i = index">
+      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
+        {{ segment.forumName }}
+      </a>
+      <span *ngIf="i < path.length - 1" class="text-gray-500"> &gt; </span>
+      <span *ngIf="i === path.length - 1" class="font-bold text-gray-300">{{ segment.forumName }}</span>
+    </ng-container>
+  </nav>
+</div>
+
+<div class="post-page container mx-auto max-w-[900px] p-[20px] py-8 bg-[#1E1E1E] text-white font-arcade">
   <!-- Original Post -->
-  <div class="original-post bg-gray-100 border border-gray-300 p-6 rounded-lg mb-8" *ngIf="post">
+  <div class="original-post bg-[#2A2A2A] border border-[#00CFFF] p-6 mb-8" *ngIf="post">
     <div class="post-header flex justify-between items-center mb-4">
       <div class="flex items-center space-x-4">
         <!-- Author Image -->
-        <img [src]="authorProfilePic || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Author Image" class="w-12 h-12 rounded-full border border-gray-300 object-cover">
+        <img [src]="authorProfilePic || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Author Image" class="w-12 h-12 rounded-full object-cover">
         
         <div>
-          <h2 class="text-xl font-bold mb-1">{{ post.title }}</h2>
-          <div class="post-info text-gray-600 text-sm">
-            <span>By {{ post.author?.nickname }} on {{ formatDateTimeArray(post.postDate) }}</span>
+          <h2 class="text-2xl font-bold text-[#E5E5E5] mb-1">{{ post.title }}</h2>
+          <div class="post-info text-[#B0B0B0] text-sm">
+            <span>By <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + post.author?.nickname">{{ post.author?.nickname }}</a> on {{ formatDateTimeArray(post.postDate) }}</span>
           </div>
         </div>
       </div>
       
       <div class="post-actions" *ngIf="canManagePost(post)">
-        <button mat-icon-button (click)="openEditPostDialog(post)">
-          <mat-icon>edit</mat-icon>
+        <button (click)="openEditPostDialog(post)" class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600 mr-2">
+          <i class="material-icons">edit</i>
         </button>
-        <button mat-icon-button (click)="openDeletePostDialog(post)">
-          <mat-icon>delete</mat-icon>
+
+        <button (click)="openDeletePostDialog(post)" class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600">
+          <i class="material-icons">delete</i>
         </button>
       </div>
     </div>
 
     <div class="post-body mt-4">
-      <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-gray-300 object-cover mt-4 mb-4">
-      <p class="text-gray-800" [innerHTML]="post.content"></p>
+      <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-[#00CFFF] object-cover mt-4 mb-4">
+      <p class="text-[#E5E5E5]" [innerHTML]="post.content"></p>
     </div>
   </div>
 
   <!-- Replies Section -->
   <div class="comments-section">
-    <div *ngFor="let comment of commentsList; let i = index" class="comment bg-white p-6 border border-gray-300 rounded-lg mb-4">
+    <div *ngFor="let comment of commentsList; let i = index" class="comment bg-[#2A2A2A] p-6 border border-[#00CFFF] mb-4">
       <div class="flex items-start space-x-4">
         <!-- Commenter Image -->
-        <img [src]="comment.author.nickname == post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')" alt="Commenter profile picture" class="w-10 h-10 rounded-full border border-gray-300 object-cover">
+        <img [src]="comment.author.nickname == post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')" alt="Commenter profile picture" class="w-12 h-12 rounded-full object-cover">
 
         <div class="flex-1">
-          <div class="comment-header flex justify-between items-center text-sm text-gray-600 mb-2">
-            <span><strong>{{ comment.author.nickname + (comment.author.nickname == post?.author?.nickname ? " (OP)": "") }}</strong> replied on {{ formatDateTimeArray(comment.postDate) }}</span>
-            <div class="comment-actions flex space-x-4">
-              <button *ngIf="canEditComment(comment)" (click)="openEditCommentDialog(comment)" class="text-blue-500 hover:text-blue-700">Edit</button>
+          <div class="comment-header flex justify-between items-center text-sm text-[#B0B0B0] mb-2">
+            <span>
+              <strong>
+                <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + comment.author.nickname">{{ comment.author.nickname + (comment.author.nickname == post?.author?.nickname ? " (OP)": "") }}</a>
+              </strong> replied on {{ formatDateTimeArray(comment.postDate) }}
+            </span>
+            <div class="comment-actions flex space-x-3">
+              <button *ngIf="canEditComment(comment)" (click)="openEditCommentDialog(comment)" class="text-cyan-400 hover:text-cyan-300">Edit</button>
               <button *ngIf="canDeleteComment(comment)" (click)="openDeleteCommentDialog(comment)" class="text-red-500 hover:text-red-700">Delete</button>
             </div>
           </div>
-          <div class="comment-body text-gray-800">
+          <div class="comment-body text-[#E5E5E5]">
             <p [innerHTML]="comment.content"></p>
           </div>
         </div>
@@ -62,7 +73,7 @@
   </div>
 
   <!-- Paginator -->
-  <div [hidden]="totalComments < 5">
+  <div [hidden]="totalComments < 5" class="text-white">
     <mat-paginator
       #paginator
       [length]="totalComments"
@@ -72,32 +83,6 @@
     </mat-paginator>
   </div>
 
-  <!-- Add Comment -->
-  <div class="add-comment-section bg-gray-100 border border-gray-300 p-6 rounded-lg mb-8">
-    <div class="post-header">
-      <h2 class="text-xl font-bold mb-2">Add a Comment</h2>
-    </div>
-    <div class="post-body mt-4">
-      <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
-        <div id="content-container">
-          <quill-editor
-            class="quill-editor-custom"
-            formControlName="content"
-            [modules]="{ toolbar: quillToolbarOptions }"
-            [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
-            rows="4"
-            >
-          </quill-editor>
-        
-          <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-            Content must be at least {{ minLength }} characters long.
-          </div>
-        </div>
-
-        <div class="submit-button">
-          <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- Add Comment Section -->
+   <app-forum-comment-form *ngIf="post" (commentPosted)="reloadComments()" [postId]="post.id"></app-forum-comment-form>
 </div>

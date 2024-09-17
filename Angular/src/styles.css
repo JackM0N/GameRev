@@ -5,183 +5,183 @@
 @tailwind utilities;
 
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial;
 }
 
 body { 
-    margin: 0; 
-    font-family: Roboto, "Helvetica Neue", sans-serif; 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
 }
 
 @font-face {
-    font-family: 'arcade';
-    font-weight: 400;
-    src: url(./app/fonts/joystixMonospace.otf) format('opentype');
+  font-family: 'arcade';
+  font-weight: 400;
+  src: url(./app/fonts/joystixMonospace.otf) format('opentype');
 }
 
 .pinkStars {
-    background-image: url(./app/images/pinkStars-bg.png);
+  background-image: url(./app/images/pinkStars-bg.png);
 }
 
 .matrixNumbers {
-    background-image: url(./app/images/matrixNumbers.png);
-    background-size: 600px 300px;
+  background-image: url(./app/images/matrixNumbers.png);
+  background-size: 600px 300px;
 }
 
 .titleShadow {
-    text-shadow: 0px 0px 30px white;
+  text-shadow: 0px 0px 30px white;
 }
 
 .screenBg {
-    background-image: url(./app/images/screen-bg.png);
-    background-size: 6px 6px;
+  background-image: url(./app/images/screen-bg.png);
+  background-size: 6px 6px;
 }
 
 .synthwaveFloor {
-    background-image: url(./app/images/synthwaveFloor.jpg);
+  background-image: url(./app/images/synthwaveFloor.jpg);
 }
 
 .neonAtSymbols {
-    background-image: url(./app/images/neonAtSymbols.jpg);
+  background-image: url(./app/images/neonAtSymbols.jpg);
 }
 
 .neonStarsSymbols {
-    background-image: url(./app/images/neonStarsSymbols.jpg);
+  background-image: url(./app/images/neonStarsSymbols.jpg);
 }
 
-.fallingCds{
-    background-image: url(./app/images/fallingCds.png);
+.fallingCds {
+  background-image: url(./app/images/fallingCds.png);
 }
 
-.synthwaveBg{
-    background-image: url(./app/images/synthwaveBg.png);
-    background-size: 22px 22px;
+.synthwaveBg {
+  background-image: url(./app/images/synthwaveBg.png) !important;
+  background-size: 22px 22px !important;
 }
 
-.screenHead{
-    background-image: url(./app/images/screenHead.png);
-    background-size: 320px 320px;
-    background-repeat: no-repeat;
+.screenHead {
+  background-image: url(./app/images/screenHead.png);
+  background-size: 320px 320px;
+  background-repeat: no-repeat;
 }
 
 .arcadeButtons {
-    background-image: url(./app/images/arcadeButtons.png);
-    background-repeat: no-repeat;
-    background-size: 70px 60px;
+  background-image: url(./app/images/arcadeButtons.png);
+  background-repeat: no-repeat;
+  background-size: 70px 60px;
 }
 
 .arcadeJoystick {
-    background-image: url(./app/images/arcadeJoystick.png);
-    background-repeat: no-repeat;
-    background-size: 60px 60px;
+  background-image: url(./app/images/arcadeJoystick.png);
+  background-repeat: no-repeat;
+  background-size: 60px 60px;
 }
 
 .arcadeButtonsOrange {
-    background-image: url(./app/images/arcadeButtonsOrange.png);
-    background-repeat: no-repeat;
-    background-size: 70px 60px;
+  background-image: url(./app/images/arcadeButtonsOrange.png);
+  background-repeat: no-repeat;
+  background-size: 70px 60px;
 }
 
 .arcadeJoystickOrange {
-    background-image: url(./app/images/arcadeJoystickOrange.png);
-    background-repeat: no-repeat;
-    background-size: 60px 60px;
+  background-image: url(./app/images/arcadeJoystickOrange.png);
+  background-repeat: no-repeat;
+  background-size: 60px 60px;
 }
 
 /*borrowed this one. not gonna translate this to tailwind*/
 .pixel-border {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .pixel-border::before, .pixel-border::after, 
 .pixel-border > div::before, .pixel-border > div::after {
-    content: '';
-    position: absolute;
-    background: white;
-    z-index: -1;
+  content: '';
+  position: absolute;
+  background: white;
+  z-index: -1;
 }
 
 /* Top and bottom borders */
 .pixel-border::before, .pixel-border::after {
-    height: 6px; /* Adjust pixel size */
-    left: 6px;
-    right: 6px;
+  height: 6px; /* Adjust pixel size */
+  left: 6px;
+  right: 6px;
 }
 
 .pixel-border::before {
-    top: 0;
+  top: 0;
 }
 
 .pixel-border::after {
-    bottom: 0;
+  bottom: 0;
 }
 
 /* Left and right borders */
 .pixel-border > div::before, .pixel-border > div::after {
-    width: 6px; /* Adjust pixel size */
-    top: 6px;
-    bottom: 6px;
+  width: 6px; /* Adjust pixel size */
+  top: 6px;
+  bottom: 6px;
 }
 
 .pixel-border > div::before {
-    left: 0;
+  left: 0;
 }
 
 .pixel-border > div::after {
-    right: 0;
+  right: 0;
 }
 
 /* Ukryj domyślny checkbox */
 .custom-checkbox input[type="checkbox"] {
-    display: none;
+  display: none;
 }
 
 
 /* Styl dla niestandardowego checkboxa */
 .custom-checkbox .checkbox-box {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    position: relative;
-    cursor: pointer;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
 }
 
 /* X w środku checkboxa gdy jest odznaczony */
 .custom-checkbox .checkbox-box::before {
-    content: "X";
-    color: red;
-    font-weight: bold;
-    font-size: 18px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: block;
+  content: "X";
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
 }
 
 /*text shadow in here since tailwind doesn't have that*/
 .pinkTextShadow {
-    text-shadow: 1px 1px 0px #fb049c;
+  text-shadow: 1px 1px 0px #fb049c;
 }
 
 .pinkTextShadowWide {
-    text-shadow: 2px 2px 0px #fb049c;
+  text-shadow: 2px 2px 0px #fb049c;
 }
 
 .noTextShadow {
-    text-shadow: none;
+  text-shadow: none;
 }
 
 /*material edits*/
 /*table column sort*/
 .mat-sort-header-arrow{
-    color: white !important;
-    fill: white !important;
-    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+  color: white !important;
+  fill: white !important;
+  filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
 /*paginator*/
@@ -191,256 +191,370 @@ body {
 }
 
 .mat-mdc-paginator-page-size{
-    text-align: center;
+  text-align: center;
 }
 
 .mat-mdc-paginator-page-size-label{
-    color: white;
-    font-family: 'arcade';
-    font-size: large;
+  color: white;
+  font-family: 'arcade';
+  font-size: large;
 }
 
 .mat-mdc-paginator-range-label{
-    color: white;
-    font-family: 'arcade';
-    font-size: large;
+  color: white;
+  font-family: 'arcade';
+  font-size: large;
 }
 
 
 
 .mat-mdc-form-field{
-    background-color: black;
+  background-color: black;
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading, .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch, .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing{
-    border: none;
+  border: none;
+}
+
+.mdc-text-field {
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
 }
 
 .mat-mdc-paginator-container{
-    display: flex;
-    flex-direction: column;
-    border-left: 6px white solid;
-    border-right: 6px white solid;
+  display: flex;
+  flex-direction: column;
+  border-left: 6px white solid;
+  border-right: 6px white solid;
 }
 
 .mat-mdc-form-field div::before, .mat-mdc-form-field div::after{
-    background: none !important;
+  background: none !important;
 }
 
 .cdk-overlay-pane{
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
 
 .mat-mdc-select-panel{
-    background-color: black !important;
-    color: white !important;
-    border-radius: 0px !important;
+  background-color: black !important;
+  color: white !important;
+  border-radius: 0px !important;
 }
 
 .mat-mdc-option{
-    background-color: black !important;
-    color: white !important;
-    text-shadow: 2px 2px 0px #fb049c !important;
-    font-size: large !important;
+  background-color: black !important;
+  color: white !important;
+  text-shadow: 2px 2px 0px #fb049c !important;
+  font-size: large !important;
 }
 
 .mdc-list-item__primary-text{
-    color: white !important;
-    font-family: "arcade" !important;
+  color: white !important;
+  font-family: "arcade" !important;
 }
 
 .mat-mdc-option:hover{
-    background-color: rgb(68, 0, 54) !important;
+  background-color: rgb(68, 0, 54) !important;
 }
 
 .mat-mdc-paginator-icon{
-    fill: white !important;
-    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+  fill: white !important;
+  filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
 .mat-mdc-select-arrow svg{
-    fill: black !important;
-    filter: drop-shadow( 2px 2px 0px #fb049c) !important;
+  fill: black !important;
+  filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
 .mat-mdc-form-field-infix > mat-select > div > div > span > span{
-    color: white;
-    font-family: 'arcade';
-    font-size: large;
+  color: white;
+  font-family: 'arcade';
+  font-size: large;
 }
 
 /*date picker*/
 .mat-datepicker-toggle-default-icon{
-    fill: black !important;
+  fill: black !important;
 }
 
 .mat-calendar{
-    background: black;
-    color: white !important;
+  background: black;
+  color: white !important;
 }
 
 .mdc-icon-button{
-    fill: white !important;
-    color: white !important;
-    filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
+  fill: white !important;
+  color: white !important;
+  filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
 }
 
 .mdc-button__label{
-    fill: white !important;
-    color: white !important;
-    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+  fill: white !important;
+  color: white !important;
+  filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
 .mat-calendar-arrow{
-    fill: white !important;
-    color: white !important;
-    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+  fill: white !important;
+  color: white !important;
+  filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
 .mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span{
-    fill: white !important;
-    color: white !important;
-    filter: drop-shadow( 1px 1px 0px #fb049c) !important;
+  fill: white !important;
+  color: white !important;
+  filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
 mat-datepicker-toggle > button{
-    margin-top: -10px !important;
+  margin-top: -10px !important;
 }
 
 mat-datepicker-toggle > button > span{
-    display: none !important;
+  display: none !important;
 }
 
 /*select*/
 .mat-mdc-select-min-line{
-    margin-left: 8px;
-    color: black; 
-    filter: none !important;
+  margin-left: 8px;
+  color: black; 
+  filter: none !important;
 }
 
 .mat-mdc-select-arrow{
-    margin: 8px;
+  margin: 8px;
 }
 
 .mat-mdc-select-value-text{
-    color: black !important;
+  color: black !important;
 }
 
 .noTextShadow > div > div > span > span{
-    color: black;
-    font-family: 'arcade';
-    font-size: large;
-    text-wrap: wrap;
+  color: black;
+  font-family: 'arcade';
+  font-size: large;
+  text-wrap: wrap;
 }
 
 
 
 /*practical joke until later solution*/
 .smallBgImageSize {
-    background-repeat: no-repeat;
-    background-size: 40px 32px;
+  background-repeat: no-repeat;
+  background-size: 40px 32px;
 }
 
 .smallBgImage1 {
-    background-image: url(./app/images/arcade/56.png);
+  background-image: url(./app/images/arcade/56.png);
 }
 
 .smallBgImage2 {
-    background-image: url(./app/images/arcade/19.png);
+  background-image: url(./app/images/arcade/19.png);
 }
 
 .smallBgImage3 {
-    background-image: url(./app/images/arcade/6.png);
+  background-image: url(./app/images/arcade/6.png);
 }
 
 .smallBgImage4 {
-    background-image: url(./app/images/arcade/7.png);
+  background-image: url(./app/images/arcade/7.png);
 }
 
 .smallBgImage5 {
-    background-image: url(./app/images/arcade/10.png);
+  background-image: url(./app/images/arcade/10.png);
 }
 
 .smallBgImage6 {
-    background-image: url(./app/images/arcade/13.png);
+  background-image: url(./app/images/arcade/13.png);
 }
 
 .smallBgImage7 {
-    background-image: url(./app/images/arcade/20.png);
+  background-image: url(./app/images/arcade/20.png);
 }
 
 .smallBgImage8 {
-    background-image: url(./app/images/arcade/22.png);
+  background-image: url(./app/images/arcade/22.png);
 }
 
 .smallBgImage9 {
-    background-image: url(./app/images/arcade/23.png);
+  background-image: url(./app/images/arcade/23.png);
 }
 
 .smallBgImage10 {
-    background-image: url(./app/images/arcade/24.png);
+  background-image: url(./app/images/arcade/24.png);
 }
 
 .smallBgImage11 {
-    background-image: url(./app/images/arcade/25.png);
+  background-image: url(./app/images/arcade/25.png);
 }
 
 .smallBgImage12 {
-    background-image: url(./app/images/arcade/26.png);
+  background-image: url(./app/images/arcade/26.png);
 }
 
 .smallBgImage13 {
-    background-image: url(./app/images/arcade/50.png);
+  background-image: url(./app/images/arcade/50.png);
 }
 
 .smallBgImage14 {
-    background-image: url(./app/images/arcade/28.png);
+  background-image: url(./app/images/arcade/28.png);
 }
 
 .smallBgImage15 {
-    background-image: url(./app/images/arcade/36.png);
+  background-image: url(./app/images/arcade/36.png);
 }
 
 .smallBgImage16 {
-    background-image: url(./app/images/arcade/37.png);
+  background-image: url(./app/images/arcade/37.png);
 }
 
 .smallBgImage17 {
-    background-image: url(./app/images/arcade/42.png);
+  background-image: url(./app/images/arcade/42.png);
 }
 
 .smallBgImage18 {
-    background-image: url(./app/images/arcade/46.png);
+  background-image: url(./app/images/arcade/46.png);
 }
 
 .smallBgImage19 {
-    background-image: url(./app/images/arcade/52.png);
+  background-image: url(./app/images/arcade/52.png);
 }
 
 
 /* Quill editor styles */
 .quill-editor-custom {
-    width: 100%; /* Ensure the editor takes full width */
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
-    margin-bottom: 18px; /* Consistent margin bottom */
-    font-size: 14px;
+  width: 100%; /* Ensure the editor takes full width */
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+  margin-bottom: 18px; /* Consistent margin bottom */
+  font-size: 14px;
+  
+  font-family: Arial, sans-serif !important; /* Ensure normal font */
+  text-shadow: none !important; /* Remove any text shadow */
 }
 
 .quill-editor-custom .ql-container {
-    height: 150px; /* Set a consistent height for the editor */
-    border: 1px solid #d6d6d6; /* Border to match input fields */
-    border-radius: 0px; /* No border radius */
-    font-size: 14px;
+  height: 150px; /* Set a consistent height for the editor */
+  border: 1px solid #d6d6d6; /* Border to match input fields */
+  border-radius: 0px; /* No border radius */
+  font-size: 14px;
 }
 
 .quill-editor-custom .ql-toolbar {
-    border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
-    border-bottom: none; /* Remove bottom border to avoid double border */
-    border-radius: 0px; /* No border radius */
-    margin-bottom: 0px; /* Consistent margin bottom */
+  border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
+  border-bottom: none; /* Remove bottom border to avoid double border */
+  border-radius: 0px; /* No border radius */
+  margin-bottom: 0px; /* Consistent margin bottom */
 }
 
 .quill-editor-custom .ql-editor {
-    font-size: 14px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+}
+
+.ql-editor::before {
+  color: inherit !important;
+  font-style: italic;
+}
+
+table {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Ensure padding does not affect the table size */
+}
+
+.mdc-data-table__row:last-child .mat-mdc-cell {
+  border-bottom: 2px solid white !important; /* Or any style you prefer */
+}
+
+
+.synthwaveButton {
+  background-color: #FF00FF;
+  color: white;
+  padding: 8px 14px;
+  font-family: 'arcade';
+  border-bottom: 3px solid #36fcff;
+  border-right: 3px solid #36fcff;
+}
+
+.synthwaveButtonSmall {
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.25rem;
+}
+
+.synthwaveButton:hover {
+  background-color: #db00db;
+  border: none;
+  transform: translate(3px, 3px); /* Shift to the bottom right */
+}
+
+.synthwaveButton:disabled {
+  background-color: #a100a1;
+  color: rgb(203, 203, 203);
+  border: none;
+  transform: none; /* No movement when disabled */
+}
+
+button:disabled:hover {
+  cursor: not-allowed;
+}
+
+/* Like button */
+.likeButton {
+  background-color: #1abb04;
+}
+
+.likeButton:hover {
+  background-color: #148a04;
+  border: none;
+  transform: translate(3px, 3px); /* Shift to the bottom right */
+}
+
+.likeButtonNotLiked {
+  background-color: #148a04;
+}
+
+.likeButtonNotLiked:hover {
+  background-color: #117903;
+  color: rgb(210, 210, 210);
+  transform: translate(3px, 3px);
+}
+
+/* Dislike button */
+.dislikeButton {
+  background-color: #e9061d;
+}
+
+.dislikeButton:hover {
+  background-color: #ad0617;
+  border: none;
+  transform: translate(3px, 3px);
+}
+
+.dislikeButtonNotLiked {
+  background-color: #ad0617;
+  color: rgb(210, 210, 210);
+}
+
+.dislikeButtonNotLiked:hover {
+  background-color: #930513;
+  color: rgb(210, 210, 210);
+  transform: translate(3px, 3px);
+}
+
+.mat-mdc-select-min-line {
+  color: black !important;
+}
+
+mat-paginator .mat-mdc-select-min-line {
+  color: white !important;
+}
+
+mat-paginator .mat-mdc-select-value {
+  padding-right: 42px;
 }

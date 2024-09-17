@@ -3,7 +3,6 @@ package pl.ttsw.GameRev.filter;
 import lombok.Getter;
 import lombok.Setter;
 import pl.ttsw.GameRev.enums.CompletionStatus;
-
 import java.util.List;
 
 @Getter

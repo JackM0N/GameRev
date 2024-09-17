@@ -7,16 +7,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './review-report-dialog.component.html',
 })
 export class ReviewReportDialogComponent {
-  reportForm: FormGroup;
-  content: string = '';
+  public reportForm: FormGroup;
+  protected content: string = '';
+  protected descriptionMinLength = 8;
   
   constructor(
-    public dialogRef: MatDialogRef<ReviewReportDialogComponent>,
+    protected dialogRef: MatDialogRef<ReviewReportDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: { dialogContent: string }
+    @Inject(MAT_DIALOG_DATA) protected data: { dialogContent: string }
   ) {
     this.reportForm = this.formBuilder.group({
-      content: [this.content, [Validators.required, Validators.minLength(1)]],
+      content: [this.content, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
     });
   }
 

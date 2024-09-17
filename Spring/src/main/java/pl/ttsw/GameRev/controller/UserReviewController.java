@@ -31,7 +31,8 @@ public class UserReviewController {
     public ResponseEntity<?> getUserReviewByGame(
             @PathVariable String title,
             UserReviewFilter userReviewFilter,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         title = title.replaceAll("-", " ");
         return ResponseEntity.ok(userReviewService.getUserReviewByGame(title, userReviewFilter, pageable));
     }
@@ -65,14 +66,16 @@ public class UserReviewController {
     public ResponseEntity<Page<UserReviewDTO>> getUserReviewByUserId(
             @PathVariable Long id,
             UserReviewFilter userReviewFilter,
-            Pageable pageable) throws BadRequestException {
+            Pageable pageable) throws BadRequestException
+    {
         return ResponseEntity.ok(userReviewService.getUserReviewByUser(id, userReviewFilter, pageable));
     }
 
     @GetMapping("/my-reviews")
     public ResponseEntity<Page<UserReviewDTO>> getUserReviews(
             UserReviewFilter userReviewFilter,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(userReviewService.getUserReviewByOwner(userReviewFilter, pageable));
     }
 

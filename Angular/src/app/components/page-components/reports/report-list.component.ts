@@ -5,7 +5,6 @@ import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../interfaces/report';
-import { AuthService } from '../../../services/auth.service';
 import { UserReview } from '../../../interfaces/userReview';
 import { formatDateArray } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
@@ -13,6 +12,9 @@ import { NotificationService } from '../../../services/notification.service';
 import { reviewFilters } from '../../../interfaces/reviewFilters';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { BackgroundService } from '../../../services/background.service';
+import { AdService } from '../../../services/ad.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -26,26 +28,46 @@ class ReportInformation {
   styleUrl: './report-list.component.css'
 })
 export class ReportListComponent implements AfterViewInit {
-  public reviewsList: UserReview[] = [];
-  public totalReviews: number = 0;
-  public noReviews = false;
+  protected reviewsList: UserReview[] = [];
+  protected totalReviews: number = 0;
+  protected noReviews = false;
 
-  public reportsList: ReportInformation[] = [];
-  public displayedColumns: string[] = ['id', 'user', 'content', 'options'];
-  public formatDate = formatDateArray;
+  protected reportsList: ReportInformation[] = [];
+  protected displayedColumns: string[] = ['id', 'user', 'content', 'options'];
+  protected formatDate = formatDateArray;
+  
   private filters: reviewFilters = {};
+  protected filterForm: FormGroup;
 
-  @ViewChild('reviewsPaginator') reviewsPaginator!: MatPaginator;
-  @ViewChildren(MatPaginator) paginators!: QueryList<MatPaginator>;
-  @ViewChildren(MatPaginator, { read: ElementRef }) paginatorElements!: QueryList<ElementRef>;
+  @ViewChild('reviewsPaginator') protected reviewsPaginator!: MatPaginator;
+  @ViewChildren(MatPaginator) protected paginators!: QueryList<MatPaginator>;
+  @ViewChildren(MatPaginator, { read: ElementRef }) protected paginatorElements!: QueryList<ElementRef>;
 
   constructor(
     private reportService: ReportService,
-    private authService: AuthService,
     private notificationService: NotificationService,
-    public dialog: MatDialog,
+    private backgroundService: BackgroundService,
+    private fb: FormBuilder,
+    protected dialog: MatDialog,
     private datePipe: DatePipe,
-  ) {}
+    private adService: AdService
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      })
+    });
+  }
+
+  ngOnInit(): void {
+    this.adService.setAdVisible(false);
+    this.backgroundService.setClasses(['fallingCds']);
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -165,7 +187,7 @@ export class ReportListComponent implements AfterViewInit {
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
     const dialogTitle = 'Confirm review deletion';
-    const dialogContent = 'Are you sure you want to delete review by ' + review.userUsername + '?';
+    const dialogContent = 'Are you sure you want to delete review by ' + review.userNickname + '?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
@@ -238,6 +260,14 @@ export class ReportListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }

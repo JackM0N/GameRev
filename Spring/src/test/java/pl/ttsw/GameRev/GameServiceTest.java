@@ -23,14 +23,12 @@ import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -77,7 +75,7 @@ class GameServiceTest {
     public void testGetAllGames() {
         Pageable pageable = PageRequest.of(0, 10);
         Game game = createGameForTesting();
-        GameDTO gameDTO = new GameDTO();
+
         Page<Game> gamesPage = new PageImpl<>(Collections.singletonList(game));
         Specification<Game> spec = Specification.anyOf();
         GameFilter gameFilter = new GameFilter();

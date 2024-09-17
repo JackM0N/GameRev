@@ -10,9 +10,9 @@ import { Location } from '@angular/common';
   styleUrl: './user-review-information.component.css'
 })
 export class GameInformationComponent implements OnInit {
-  userReview: UserReview = {
+  protected userReview: UserReview = {
     gameTitle: '',
-    userUsername: '',
+    userNickname: '',
     content: '',
     postDate: '',
     score: undefined,

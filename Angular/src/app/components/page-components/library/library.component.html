@@ -1,72 +1,95 @@
 
-<mat-form-field>
-  <mat-label>Is favorite</mat-label>
-  <mat-select (selectionChange)="onFavoriteFilterChange($event)">
-    <mat-option>-</mat-option>
-    <mat-option value="1">True</mat-option>
-    <mat-option value="0">False</mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Completion statuses</mat-label>
-  <mat-select (selectionChange)="onCompletionStatusFilterChange($event)" multiple>
-    <mat-option *ngFor="let status of completionStatuses" [value]="status.className">
-      {{ status.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Tags</mat-label>
-  <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
-    <mat-option *ngFor="let tag of tagList" [value]="tag.id">
-      {{ tag.tagName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<div class="centered-container">
-  <button type="button" mat-stroked-button (click)="openAddUserGameDialog()">Add a new game</button>
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Game library
+    </div>
+  </div>
 </div>
 
-<div [hidden]="libraryEmpty">
-  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="this.loadGames()" class="mat-elevation-z8">
-    <ng-container matColumnDef="game">
-      <th mat-sort-header="game" mat-header-cell *matHeaderCellDef> Game </th>
-      <td mat-cell *matCellDef="let element"> {{element.game.id}} -  {{element.game.title}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="completionStatus">
-      <th mat-sort-header="completionStatus" mat-header-cell *matHeaderCellDef> Completion Status </th>
-      <td mat-cell *matCellDef="let element"> {{findCompletionStatusName(element.completionStatus)}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="isFavourite">
-      <th mat-sort-header="isFavourite" mat-header-cell *matHeaderCellDef> Is Favorite </th>
-      <td mat-cell *matCellDef="let element"> {{element.isFavourite ? 'Yes' : 'No'}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="options">
-      <th mat-header-cell *matHeaderCellDef> Options </th>
-      <td mat-cell *matCellDef="let element">
-        <button type="button" mat-stroked-button (click)="openEditUserGameDialog(element)">Update</button>
-        <button type="button" mat-stroked-button (click)="openGameDeletionConfirmationDialog(element)">Delete</button>
-      </td>
-    </ng-container>
-  
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <mat-paginator
-    [length]="totalGames"
-    [pageSize]="5"
-    [pageSizeOptions]="[2, 5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+<!-- Filters Section -->
+<div [hidden]="libraryEmpty" class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+  <div class="synthwaveBg bg-repeat text-white p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <mat-form-field>
+        <mat-label>Is favorite</mat-label>
+        <mat-select (selectionChange)="onFavoriteFilterChange($event)">
+          <mat-option>-</mat-option>
+          <mat-option value="1">True</mat-option>
+          <mat-option value="0">False</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field>
+        <mat-label>Completion statuses</mat-label>
+        <mat-select (selectionChange)="onCompletionStatusFilterChange($event)" multiple>
+          <mat-option *ngFor="let status of completionStatuses" [value]="status.className">
+            {{ status.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field>
+        <mat-label>Tags</mat-label>
+        <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
+          <mat-option *ngFor="let tag of tagList" [value]="tag.id">
+            {{ tag.tagName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
 
-<div *ngIf="libraryEmpty">
-  <p>Library is empty</p>
+<div *ngIf="libraryEmpty" class="max-w-[400px] m-auto pixel-border p-1 mb-6">
+  <div>
+    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">Library is empty</p>
+  </div>
+</div>
+
+<div class="pixel-border w-[330px] h-fit py-[4px] m-auto mb-8 px-[4px]">
+  <div class="flex justify-center font-arcade h-10 text-xl bg-black text-white pinkTextShadow">
+    <button class="pinkTextShadowWide" (click)="openAddUserGameDialog()">Add a new game</button>
+  </div>
+</div>
+
+<div [hidden]="libraryEmpty" class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
+  <div class="px-1 overflow-x-auto">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="this.loadGames()" class="mat-elevation-z8 appearance-none bg-black">
+      <ng-container matColumnDef="game">
+        <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="game" mat-header-cell *matHeaderCellDef> Game </th>
+        <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">{{element.game.title}}</td>
+      </ng-container>
+    
+      <ng-container matColumnDef="completionStatus">
+        <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="completionStatus" mat-header-cell *matHeaderCellDef> Completion Status </th>
+        <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{findCompletionStatusName(element.completionStatus)}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="isFavourite">
+        <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="isFavourite" mat-header-cell *matHeaderCellDef> Is Favorite </th>
+        <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.isFavourite ? 'Yes' : 'No'}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="options">
+        <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
+        <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white" mat-cell *matCellDef="let element">
+          <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="openEditUserGameDialog(element)">Update</button>
+          <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="openGameDeletionConfirmationDialog(element)">Delete</button>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div [hidden]="totalGames < 5">
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalGames"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
 </div>

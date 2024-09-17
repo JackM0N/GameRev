@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class JWTService {
 
     public String generateToken(WebsiteUser user) {
-        String token = Jwts
+        return Jwts
                 .builder()
                 .subject(user.getUsername())
                 .claim("nickname", user.getNickname())
@@ -24,7 +24,6 @@ public class JWTService {
                 .expiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_TOKEN_EXPIRATION_TIME))
                 .signWith(getSigninKey())
                 .compact();
-        return token;
     }
 
     private SecretKey getSigninKey() {

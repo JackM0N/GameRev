@@ -15,7 +15,6 @@ import pl.ttsw.GameRev.dto.ForumCommentDTO;
 import pl.ttsw.GameRev.dto.ForumPostDTO;
 import pl.ttsw.GameRev.filter.ForumCommentFilter;
 import pl.ttsw.GameRev.service.ForumCommentService;
-
 import java.io.IOException;
 
 @RestController
@@ -33,7 +32,8 @@ public class ForumCommentController {
     public ResponseEntity<Page<ForumCommentDTO>> findById(
             @PathVariable Long id,
             ForumCommentFilter forumCommentFilter,
-            Pageable pageable){
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(forumCommentService.getForumCommentsByPost(id, forumCommentFilter, pageable));
     }
 
@@ -52,12 +52,15 @@ public class ForumCommentController {
     @PostMapping("/create")
     public ResponseEntity<ForumCommentDTO> create(
             @RequestParam(value = "comment") String commentJson,
-            @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
+            @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException
+    {
         ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
+
         ForumCommentDTO request = mapper.readValue(commentJson, ForumCommentDTO.class);
         ForumCommentDTO comment = forumCommentService.createForumComment(request, picture);
+
         if (comment == null){
             return ResponseEntity.badRequest().build();
         }
@@ -68,10 +71,12 @@ public class ForumCommentController {
     public ResponseEntity<ForumCommentDTO> edit(
             @PathVariable Long id,
             @RequestParam(value = "comment") String commentJson,
-            @RequestParam(value = "picture") MultipartFile picture) throws IOException {
+            @RequestParam(value = "picture") MultipartFile picture) throws IOException
+    {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
+
         ForumCommentDTO request = objectMapper.readValue(commentJson, ForumCommentDTO.class);
         return ResponseEntity.ok(forumCommentService.updateForumComment(id, request, picture));
     }
@@ -79,7 +84,7 @@ public class ForumCommentController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestParam(name = "isDeleted") Boolean isDeleted) {
         boolean gotDeleted = forumCommentService.deleteForumComment(id, isDeleted);
-        if(!gotDeleted){
+        if (!gotDeleted) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();

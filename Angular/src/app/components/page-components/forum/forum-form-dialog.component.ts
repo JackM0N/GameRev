@@ -12,11 +12,11 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './forum-form-dialog.component.html',
 })
 export class ForumFormDialogComponent {
-  public forumForm: FormGroup;
-  public nameMinLength: number = 4;
-  public descriptionMinLength: number = 8;
-  public gameList: Game[] = [];
-  public forumList: Forum[] = [];
+  protected forumForm: FormGroup;
+  protected nameMinLength: number = 4;
+  protected descriptionMinLength: number = 8;
+  protected gameList: Game[] = [];
+  protected forumList: Forum[] = [];
 
   private description: string = '';
   private name: string = '';
@@ -28,9 +28,9 @@ export class ForumFormDialogComponent {
     private forumService: ForumService,
     private gameService: GameService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<ForumFormDialogComponent>,
+    protected dialogRef: MatDialogRef<ForumFormDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data?: {
+    @Inject(MAT_DIALOG_DATA) protected data?: {
       id?: number,
       name?: string,
       description?: string,
@@ -40,7 +40,7 @@ export class ForumFormDialogComponent {
     }
   ) {
     this.forumForm = this.formBuilder.group({
-      parentForum: [this.parentForumId],
+      parentForum: [this.parentForumId, [Validators.required]],
       name: [this.name, [Validators.required, Validators.minLength(this.nameMinLength)]],
       description: [this.description, [Validators.required, Validators.minLength(this.descriptionMinLength)]],
       game: [this.game, [Validators.required]]
@@ -151,6 +151,7 @@ export class ForumFormDialogComponent {
           next: () => { this.notificationService.popSuccessToast('Forum edited'); },
           error: error => this.notificationService.popErrorToast('Forum editing failed', error)
         });
+        this.dialogRef.close(true);
         return;
       }
 
@@ -163,14 +164,11 @@ export class ForumFormDialogComponent {
         next: () => { this.notificationService.popSuccessToast('Forum added'); },
         error: error => this.notificationService.popErrorToast('Forum adding failed', error)
       });
-
-    } else {
-      console.error('Form is invalid');
+      this.dialogRef.close(true);
     }
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);
     this.submitForm();
   }
 

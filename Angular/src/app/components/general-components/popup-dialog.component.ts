@@ -7,12 +7,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class PopupDialogComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<PopupDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    private dialogRef: MatDialogRef<PopupDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) protected data: {
       dialogTitle: string;
       dialogContent: string;
       submitText: string;
       cancelText: string;
+      noSubmitButton?: boolean;
     }
   ) {}
 

@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
-
 
     public void sendEmail(String to, String subject, String text) throws MessagingException, IOException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();

@@ -20,13 +20,14 @@ public class UserGameController {
     public ResponseEntity<Page<UserGameDTO>> getUsersGames(
             @PathVariable String nickname,
             UserGameFilter userGameFilter,
-            Pageable pageable) throws BadRequestException {
+            Pageable pageable) throws BadRequestException
+    {
         return ResponseEntity.ok(userGameService.getUserGame(nickname, userGameFilter, pageable));
     }
 
     @PostMapping
     public ResponseEntity<UserGameDTO> addUserGame(@RequestBody UserGameDTO userGameDTO) throws BadRequestException {
-        if (userGameDTO == null){
+        if (userGameDTO == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(userGameService.addGameToUser(userGameDTO));
@@ -34,7 +35,7 @@ public class UserGameController {
 
     @PutMapping
     public ResponseEntity<UserGameDTO> updateUserGame(@RequestBody UserGameDTO userGameDTO) throws BadRequestException {
-        if (userGameDTO == null){
+        if (userGameDTO == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userGameService.updateGame(userGameDTO));

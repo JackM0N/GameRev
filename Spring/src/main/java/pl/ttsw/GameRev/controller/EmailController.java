@@ -18,7 +18,9 @@ public class EmailController {
     @GetMapping("/emails")
     public String getEmails() {
         MimeMessage[] messages = greenMail.getReceivedMessages();
+
         StringBuilder emailContents = new StringBuilder();
+
         for (MimeMessage message : messages) {
             String content = GreenMailUtil.getBody(message);
             Document doc = Jsoup.parse(content);
@@ -26,6 +28,7 @@ public class EmailController {
             String htmlContent = doc.html();
             emailContents.append("<div class='email'>").append(htmlContent).append("</div>");
         }
+
         return emailContents.toString();
     }
 }

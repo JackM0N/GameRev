@@ -57,32 +57,37 @@ export class GameService {
     return this.http.get<Game>(`${this.baseUrl}/${name}`);
   }
 
-  addGame(game: Game): Observable<Game> {
+  addGame(game: Game, picture?: string): Observable<Game> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const formData = new FormData();
+    formData.append('game', JSON.stringify(game));
 
-    return this.http.post<Game>(this.addUrl, game, { headers });
+    if (picture) {
+      formData.append('picture', picture);
+    }
+
+    return this.http.post<Game>(this.addUrl, formData, { headers });
   }
 
-  editGame(title: string, game: Game): Observable<Game> {
+  editGame(title: string, game: Game, picture?: string): Observable<Game> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const formData = new FormData();
+    formData.append('game', JSON.stringify(game));
 
-    return this.http.put<Game>(`${this.editUrl}/${title}`, game, { headers });
+    if (picture) {
+      formData.append('picture', picture);
+    }
+
+    return this.http.put<Game>(`${this.editUrl}/${title}`, formData, { headers });
   }
 
   deleteGame(id: number): Observable<Game> {
     const token = this.authService.getToken();
-    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
   }

@@ -3,35 +3,41 @@ import { CriticReview } from '../../../../interfaces/criticReview';
 import { CriticReviewService } from '../../../../services/critic-review.service';
 import { formatDateArray } from '../../../../util/formatDate';
 import { AuthService } from '../../../../services/auth.service';
-import { Router } from '@angular/router';
+import { CriticReviewFormDialogComponent } from '../../critic-reviews/critic-review-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-gameinfo-critic-review',
-  templateUrl: './critic-review.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './critic-review.component.html'
 })
 export class GameInfoCriticReviewComponent {
-  @Input() gameTitle?: string;
+  @Input() public gameTitle?: string;
   
-  public criticReview?: CriticReview;
-  public formatDateArray = formatDateArray;
+  protected criticReview?: CriticReview;
+  protected formatDateArray = formatDateArray;
 
   constructor(
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
-    private router: Router,
+    protected dialog: MatDialog,
   ) {}
 
   ngOnInit() {
+    // Load critic review
+    this.loadCriticReview();
+  }
+
+  loadCriticReview() {
     if (!this.gameTitle) {
       console.log("Game title is undefined");
       return;
     }
 
-    // Load critic review
     this.criticReviewService.getCriticReviewsByGameTitle(this.gameTitle).subscribe({
       next: response => {
-        this.criticReview = response;
+        if (response) {
+          this.criticReview = response;
+        }
       },
       error: err => {
         console.error('Error fetching critic review:', err);
@@ -40,11 +46,44 @@ export class GameInfoCriticReviewComponent {
   }
 
   canAddCriticReview() {
-    return this.authService.isAuthenticated() && this.authService.hasRole('Critic') && this.criticReview == undefined;
+    return this.authService.isAuthenticated() && this.authService.hasRole('Critic');
   }
 
-  routeToAddNewCriticReview() {
-    this.router.navigate(['/critic-reviews/add/' + this.gameTitle]);
+  openAddCriticReviewDialog() {
+    if (this.gameTitle) {
+      const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: false,
+          gameTitle: this.gameTitle
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadCriticReview();
+        }
+      });
+    }
+  }
+
+  openEditCriticReviewDialog(review: CriticReview) {
+    if (this.gameTitle) {
+      const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
+        width: '400px',
+        data: {
+          editing: true,
+          gameTitle: this.gameTitle,
+          review: review
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.loadCriticReview();
+        }
+      });
+    }
   }
 }
 

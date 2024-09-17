@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import pl.ttsw.GameRev.enums.ReleaseStatus;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;

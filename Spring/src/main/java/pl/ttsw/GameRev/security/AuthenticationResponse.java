@@ -1,12 +1,12 @@
 package pl.ttsw.GameRev.security;
 
+import lombok.Getter;
+
+@Getter
 public class AuthenticationResponse {
-    private String token;
+    private final String token;
 
     public AuthenticationResponse(String token) {
         this.token = token;
-    }
-    public String getToken() {
-        return token;
     }
 }

@@ -18,5 +18,5 @@ public interface ForumCommentMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "content", source = "content")
     @Mapping(target = "author", ignore = true)
-    ForumComment partialUpdateContent(ForumCommentDTO forumCommentDTO, @MappingTarget ForumComment forumComment);
+    void partialUpdateContent(ForumCommentDTO forumCommentDTO, @MappingTarget ForumComment forumComment);
 }

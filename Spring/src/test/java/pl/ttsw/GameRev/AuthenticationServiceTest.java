@@ -16,9 +16,7 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.security.AuthenticationResponse;
 import pl.ttsw.GameRev.security.JWTService;
 import pl.ttsw.GameRev.service.AuthenticationService;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;

@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReleaseStatus } from '../../../interfaces/releaseStatus';
 import { Game } from '../../../interfaces/game';
 import { Observer } from 'rxjs';
-import { NotificationAction } from '../../../enums/notificationActions';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { Tag } from '../../../interfaces/tag';
 import { GameService } from '../../../services/game.service';
@@ -16,10 +15,10 @@ import { TagService } from '../../../services/tag.service';
   templateUrl: './game-form-dialog.component.html',
 })
 export class GameFormDialogComponent {
-  public addingGameForm: FormGroup;
-  public releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  public listTitle: string = 'Add a new game';
-  public tagsList: Tag[] = [];
+  protected addingGameForm: FormGroup;
+  protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
+  protected listTitle: string = 'Add a new game';
+  protected tagsList: Tag[] = [];
   private gameDate: Date = new Date();
   
   private game: Game = {
@@ -38,8 +37,8 @@ export class GameFormDialogComponent {
     private notificationService: NotificationService,
     private gameService: GameService,
     private tagService: TagService,
-    public dialogRef: MatDialogRef<GameFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    protected dialogRef: MatDialogRef<GameFormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) protected data: {
       editing: boolean;
       game: Game;
     }
@@ -54,10 +53,6 @@ export class GameFormDialogComponent {
       description: [this.game.description, [Validators.required, Validators.minLength(1)]],
       usersScore: [this.game.usersScore]
     });
-  }
-
-  onConfirm(): void {
-    this.dialogRef.close(true);
   }
 
   onCancel(): void {
@@ -100,17 +95,21 @@ export class GameFormDialogComponent {
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
 
       if (this.data.editing) {
-        this.gameService.editGame(this.game.title, gameData).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited game successfuly', NotificationAction.GO_BACK); },
-          error: error => this.notificationService.popErrorToast('Editing game failed', error)
-        });
+        if (this.game.title) {
+          this.gameService.editGame(this.game.title, gameData).subscribe({
+            next: () => { this.notificationService.popSuccessToast('Edited game successfuly'); },
+            error: error => this.notificationService.popErrorToast('Editing game failed', error)
+          });
+          this.dialogRef.close(true);
+        }
         return;
       }
 
       this.gameService.addGame(gameData).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Added game successfuly', NotificationAction.GO_BACK); },
+        next: () => { this.notificationService.popSuccessToast('Added game successfuly'); },
         error: error => this.notificationService.popErrorToast('Adding game failed', error)
       });
+      this.dialogRef.close(true);
     }
   }
 
@@ -122,10 +121,12 @@ export class GameFormDialogComponent {
           this.tagsList.sort((a, b) => b.priority - a.priority);
   
           var tags = [];
-          for (let i = 0; i < this.tagsList.length; i++) {
-            for (let j = 0; j < this.game.tags.length; j++) {
-              if (this.tagsList[i].id == this.game.tags[j].id) {
-                tags.push(this.tagsList[i]);
+          if (this.game.tags) {
+            for (let i = 0; i < this.tagsList.length; i++) {
+              for (let j = 0; j < this.game.tags.length; j++) {
+                if (this.tagsList[i].id == this.game.tags[j].id) {
+                  tags.push(this.tagsList[i]);
+                }
               }
             }
           }

@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.ttsw.GameRev.enums.ReviewStatus;
-
 import java.time.LocalDate;
 
 @Getter

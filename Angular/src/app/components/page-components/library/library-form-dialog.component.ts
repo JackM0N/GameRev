@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CompletionStatus } from '../../../interfaces/completionStatus';
 import { UserGame } from '../../../interfaces/userGame';
 import { completionStatuses } from '../../../enums/completionStatuses';
-import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from '../../../services/auth.service';
 import { LibraryService } from '../../../services/library.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -17,9 +16,10 @@ import { Game } from '../../../interfaces/game';
   templateUrl: './library-form-dialog.component.html',
 })
 export class LibraryFormDialogComponent implements OnInit {
-  public libraryForm: FormGroup;
-  public completionStatuses: CompletionStatus[] = completionStatuses;
-  public gameList: Game[] = [];
+  protected libraryForm: FormGroup;
+  protected completionStatuses: CompletionStatus[] = completionStatuses;
+  protected gameList: Game[] = [];
+  protected title: string = "";
 
   private userGame: UserGame = {
     id: undefined,
@@ -34,10 +34,9 @@ export class LibraryFormDialogComponent implements OnInit {
     private libraryService: LibraryService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<LibraryFormDialogComponent>,
+    protected dialogRef: MatDialogRef<LibraryFormDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      dialogTitle: string,
+    @Inject(MAT_DIALOG_DATA) protected data: {
       editing: boolean,
       userGame: UserGame,
       existingGames: UserGame[]
@@ -48,6 +47,8 @@ export class LibraryFormDialogComponent implements OnInit {
       isFavourite: [this.userGame.isFavourite, [Validators.required]],
       game: [{value: this.userGame.game, disabled: this.data.editing}, [Validators.required]]
     });
+
+    this.title = this.data.editing ? 'Edit library' : 'Add to library';
   }
 
   ngOnInit(): void {

@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .password(websiteUser.getPassword())
                     .roles(websiteUser.getRoles().stream().map(Role::getRoleName).toArray(String[]::new))
                     .build();
-        }else {
+        } else {
             throw new UsernameNotFoundException("User not found");
         }
     }

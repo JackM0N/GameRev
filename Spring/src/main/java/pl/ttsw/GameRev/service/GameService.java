@@ -2,8 +2,8 @@ package pl.ttsw.GameRev.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -12,14 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ttsw.GameRev.dto.GameDTO;
-import pl.ttsw.GameRev.enums.ReleaseStatus;
 import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,12 +64,26 @@ public class GameService {
                 return tagJoin.get("id").in(gameFilter.getTagIds());
             });
         }
+        if (gameFilter.getSearchText() != null) {
+            String likePattern = "%" + gameFilter.getSearchText().toLowerCase() + "%";
+
+            spec = spec.and((root, query, builder) -> {
+                Predicate titlePredicate = builder.like(builder.lower(root.get("title")), likePattern);
+                Predicate developerPredicate = builder.like(builder.lower(root.get("developer")), likePattern);
+                Predicate descriptionPredicate = builder.like(builder.lower(root.get("description")), likePattern);
+                Predicate publisherPredicate = builder.like(builder.lower(root.get("publisher")), likePattern);
+
+                return builder.or(titlePredicate, developerPredicate, descriptionPredicate, publisherPredicate);
+            });
+        }
 
         Page<Game> games = gameRepository.findAll(spec, pageable);
         return games.map(gameMapper::toDto);
     }
 
     public GameDTO getGameByTitle(String title) {
+        title = title.replaceAll("-", " ");
+
         Game game = gameRepository.findGameByTitle(title)
                 .orElseThrow(() -> new EntityNotFoundException("Game not found"));
         return gameMapper.toDto(game);
@@ -91,7 +103,6 @@ public class GameService {
 
                 newGame.setPicture(filepath.toString());
             }
-
 
             List<Tag> tags = game.getTags().stream()
                     .map(tagDTO -> tagRepository.findById(tagDTO.getId())
@@ -149,5 +160,4 @@ public class GameService {
         }
         return false;
     }
-
 }

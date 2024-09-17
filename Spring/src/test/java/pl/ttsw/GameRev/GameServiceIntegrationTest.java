@@ -18,12 +18,10 @@ import pl.ttsw.GameRev.model.Tag;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.service.GameService;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -110,7 +108,7 @@ public class GameServiceIntegrationTest {
     @Transactional
     public void testUpdateGame() throws IOException {
         Game existingGame = createGameForTesting();
-        existingGame = gameRepository.save(existingGame);
+        gameRepository.save(existingGame);
 
         Tag updatedTag = tagRepository.findById(2L).orElseThrow(RuntimeException::new);
 
@@ -225,5 +223,4 @@ public class GameServiceIntegrationTest {
         assertTrue(result.getTotalElements() > 0);
         assertTrue(result.getContent().stream().allMatch(game -> game.getReleaseDate().isAfter(fromDate.minusDays(1)) && game.getReleaseDate().isBefore(toDate.plusDays(1)) && game.getUsersScore() >= minUsersScore && game.getUsersScore() <= maxUsersScore && game.getTags().stream().anyMatch(tag -> tagIds.contains(tag.getId())) && releaseStatuses.contains(game.getReleaseStatus())));
     }
-
 }

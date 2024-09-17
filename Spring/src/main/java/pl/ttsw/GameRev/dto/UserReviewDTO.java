@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class UserReviewDTO implements Serializable {
     Long id;
     String gameTitle;
-    String userUsername;
+    String userNickname;
     String content;
     LocalDate postDate;
     Integer score;
