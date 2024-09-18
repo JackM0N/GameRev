@@ -123,7 +123,7 @@ export class ForumRequestsComponent implements AfterViewInit {
 
     const dialogTitle = 'Forum request ' + action1;
     const dialogContent = 'Are you sure you want to ' + action2 + ' the request for forum ' + request.forumName + '?';
-    const submitText = action2.charAt(0).toUpperCase() + action2.slice(1);;
+    const submitText = action2.charAt(0).toUpperCase() + action2.slice(1);
     const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
@@ -138,8 +138,43 @@ export class ForumRequestsComponent implements AfterViewInit {
     });
   }
 
-  clearFilters() {
+  openDeleteRequestDialog(request: ForumRequest) {
+    const dialogTitle = 'Forum request deletion';
+    const dialogContent = 'Are you sure you want to delete the request for forum ' + request.forumName + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
 
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '400px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.deleteRequest(request);
+      }
+    });
+  }
+
+  deleteRequest(request: ForumRequest) {
+    if (!request || !request.id) {
+      console.error('Request ID is not valid.');
+      return;
+    }
+
+    this.forumRequestService.deleteRequest(request).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Deleted request successfuly');
+        this.loadForumRequests();
+      },
+      error: error => this.notificationService.popErrorToast('Deleting request failed', error)
+    });
+  }
+
+  clearFilters() {
+    this.filterForm.reset();
+    this.approvedFilter = undefined;
+    this.loadForumRequests();
   }
 
   onApprovedFilterChange(event: MatSelectChange) {

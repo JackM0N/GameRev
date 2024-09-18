@@ -13,6 +13,7 @@ export class ForumRequestService {
   private listUrl = 'http://localhost:8080/forum-request/list';
   private addUrl = 'http://localhost:8080/forum-request/create';
   private editUrl = 'http://localhost:8080/forum-request/edit';
+  private deleteUrl = 'http://localhost:8080/forum-request/delete';
   private approveUrl = 'http://localhost:8080/forum-request/approve';
 
   constructor(
@@ -60,5 +61,12 @@ export class ForumRequestService {
     var params = new HttpParams().set('approved', approved.toString());
 
     return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
+  }
+
+  deleteRequest(request: ForumRequest): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+
+    return this.http.delete<any>(`${this.deleteUrl}/${request.id}`, { headers });
   }
 }

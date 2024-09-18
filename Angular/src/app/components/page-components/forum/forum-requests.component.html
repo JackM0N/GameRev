@@ -128,6 +128,13 @@
               *ngIf="element.approved != false && authService.hasAnyRole(['Admin'])">
               Disaprove
             </button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+              (click)="openDeleteRequestDialog(element)"
+              *ngIf="element.approved != true && authService.hasAnyRole(['Admin'])">
+              Delete
+            </button>
           </td>
         </ng-container>
 
