@@ -29,8 +29,6 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   
   protected formatDate = formatDateArray;
   protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  protected likeColor: 'primary' | '' = '';
-  protected dislikeColor: 'warn' | '' = '';
   protected usersScoreText: string = '';
 
   protected gameTitle: string = '';
