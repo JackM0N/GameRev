@@ -172,47 +172,32 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
         this.router.navigate(['/games']);
       },
       error: error => {
-        this.notificationService.popErrorToast('Deleting game failed', error);
-        this.openErrorDialog();
-      },
-      complete: () => {}
-    };
-    this.gameService.deleteGame(game.id).subscribe(observer);
-  }
+        if (error.error == "Game is used in forums") {
+          const dialogTitle = 'Deleting game failed';
+          const dialogContent = 'There are forums that are related to this game. Please delete them first.';
 
-  openErrorDialog() {
-    const dialogTitle = 'Deleting game failed';
-
-    this.forumRequestService.getRequests().subscribe({
-      next: (response) => {
-        if (response && response.content && response.totalElements > 0) {
-
-          // There are forum requests that are related to this game
-          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
           this.dialog.open(PopupDialogComponent, {
             width: '400px',
             data: { dialogTitle, dialogContent, noSubmitButton: true }
           });
 
-        } else {
+          return;
 
-          // There are no forum requests that are related to this game, check forums
-          this.forumService.getForums().subscribe({
-            next: (response2) => {
-              if (response2 && response2.length > 0) {
-                // There are forums that are related to this game
-                const dialogContent = 'There are forums that are related to this game. Please delete them first.';
-                this.dialog.open(PopupDialogComponent, {
-                  width: '400px',
-                  data: { dialogTitle, dialogContent, noSubmitButton: true }
-                });
-              }
-            }
+        } else if (error.error == "Game is used in forum requests") {
+          const dialogTitle = 'Deleting game failed';
+          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
+
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
           });
-
         }
-      }
-    });
+
+        this.notificationService.popErrorToast('Deleting game failed', error);
+      },
+      complete: () => {}
+    };
+    this.gameService.deleteGame(game.id).subscribe(observer);
   }
 
   openEditGameDialog() {
