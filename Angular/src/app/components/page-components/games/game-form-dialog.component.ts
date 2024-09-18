@@ -26,7 +26,6 @@ export class GameFormDialogComponent {
     developer: '',
     publisher: '',
     releaseDate: [],
-    releaseStatus: undefined,
     description: '',
     tags: [],
     usersScore: 0
@@ -82,6 +81,14 @@ export class GameFormDialogComponent {
         description: this.game.description,
         usersScore: this.game.usersScore
       });
+
+      var status = this.releaseStatuses.find(rs => rs.name === this.game.releaseStatus);
+
+      if (status) {
+        this.addingGameForm.patchValue({
+          releaseStatus: status,
+        });
+      }
     }
   }
 
@@ -93,6 +100,7 @@ export class GameFormDialogComponent {
       };
 
       gameData.releaseDate = [gameData.releaseDate.getFullYear(), gameData.releaseDate.getMonth() + 1, gameData.releaseDate.getDate()];
+      gameData.releaseStatus = gameData.releaseStatus.className;
 
       if (this.data.editing) {
         if (this.game.title) {
