@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Game } from '../../../../interfaces/game';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../../services/game.service';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +13,12 @@ import { AdService } from '../../../../services/ad.service';
 import { GameInfoReviewListComponent } from './review-list.component';
 import { LibraryFormDialogComponent } from '../../library/library-form-dialog.component';
 import { AuthService } from '../../../../services/auth.service';
+import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
+import { Observer } from 'rxjs';
+import { NotificationService } from '../../../../services/notification.service';
+import { ForumRequestService } from '../../../../services/forumRequest.service';
+import { ForumService } from '../../../../services/forum.service';
+import { GameFormDialogComponent } from '../game-form-dialog.component';
 
 @Component({
   selector: 'app-game-information',
@@ -46,7 +52,11 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     private _location: Location,
     protected dialog: MatDialog,
     protected authService: AuthService,
+    protected forumRequestService: ForumRequestService,
+    protected forumService: ForumService,
     protected backgroundService: BackgroundService,
+    private router: Router,
+    private notificationService: NotificationService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -130,6 +140,96 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('The dialog was closed with result: ', result);
+      }
+    });
+  }
+
+  openGameDeletionConfirmationDialog() {
+    const dialogTitle = 'Game deletion';
+    const dialogContent = 'Are you sure you want to delete the game ' + this.game.title + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.deleteGame(this.game);
+      }
+    });
+  }
+
+  deleteGame(game: Game) {
+    if (!game || !game.id) {
+      console.log('Game ID is not valid.');
+      return;
+    }
+
+    const observer: Observer<any> = {
+      next: () => {
+        this.notificationService.popSuccessToast('Deleted game successfuly');
+        this.router.navigate(['/games']);
+      },
+      error: error => {
+        this.notificationService.popErrorToast('Deleting game failed', error);
+        this.openErrorDialog();
+      },
+      complete: () => {}
+    };
+    this.gameService.deleteGame(game.id).subscribe(observer);
+  }
+
+  openErrorDialog() {
+    const dialogTitle = 'Deleting game failed';
+
+    this.forumRequestService.getRequests().subscribe({
+      next: (response) => {
+        if (response && response.content && response.totalElements > 0) {
+
+          // There are forum requests that are related to this game
+          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
+          });
+
+        } else {
+
+          // There are no forum requests that are related to this game, check forums
+          this.forumService.getForums().subscribe({
+            next: (response2) => {
+              if (response2 && response2.length > 0) {
+                // There are forums that are related to this game
+                const dialogContent = 'There are forums that are related to this game. Please delete them first.';
+                this.dialog.open(PopupDialogComponent, {
+                  width: '400px',
+                  data: { dialogTitle, dialogContent, noSubmitButton: true }
+                });
+              }
+            }
+          });
+
+        }
+      }
+    });
+  }
+
+  openEditGameDialog() {
+    const dialogRef = this.dialog.open(GameFormDialogComponent, {
+      data: {
+        editing: true,
+        game: this.game
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
+          this.game = game;
+        });
       }
     });
   }

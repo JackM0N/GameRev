@@ -12,8 +12,8 @@
     <!-- Actions -->
     <div class="absolute right-6 top-6 flex flex-col gap-3 items-end" *ngIf="this.authService.isAuthenticated()">
       <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
-      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Delete</button>
-      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Edit</button>
+      <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+      <button class="synthwaveButton" (click)="openEditGameDialog()">Edit</button>
     </div>
 
     <!-- Game Info Section -->
