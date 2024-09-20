@@ -12,24 +12,24 @@ import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { GameInfoReviewListComponent } from './review-list.component';
 import { LibraryFormDialogComponent } from '../../library/library-form-dialog.component';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-game-information',
-  templateUrl: './game-information.component.html',
-  styleUrl: './game-information.component.css'
+  templateUrl: './game-information.component.html'
 })
 export class GameInformationComponent extends BaseAdComponent implements OnInit {
-  @ViewChild(GameInfoReviewListComponent) reviewListComponent!: GameInfoReviewListComponent;
+  @ViewChild(GameInfoReviewListComponent) protected reviewListComponent!: GameInfoReviewListComponent;
   
-  formatDate = formatDateArray;
-  releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  likeColor: 'primary' | '' = '';
-  dislikeColor: 'warn' | '' = '';
-  usersScoreText: string = '';
+  protected formatDate = formatDateArray;
+  protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
+  protected likeColor: 'primary' | '' = '';
+  protected dislikeColor: 'warn' | '' = '';
+  protected usersScoreText: string = '';
 
-  gameTitle: string = '';
+  protected gameTitle: string = '';
 
-  game: Game = {
+  protected game: Game = {
     title: '',
     developer: '',
     publisher: '',
@@ -44,8 +44,9 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     private route: ActivatedRoute,
     private gameService: GameService,
     private _location: Location,
-    public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected authService: AuthService,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
@@ -53,6 +54,10 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
   }
 
   override ngOnInit() {
+    super.ngOnInit();
+    
+    this.backgroundService.setClasses(['fallingCds']);
+
     this.route.params.subscribe(params => {
       if (params['name']) {
         this.gameTitle = params['name'].replace(' ', '-');
@@ -69,7 +74,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
 
           this.updateUsersScoreText();
 
-          if (this.game.usersScore > 0) {
+          if (this.game.usersScore && this.game.usersScore > 0) {
             this.usersScoreText = "Users score: " + this.game.usersScore;
           } else {
             this.usersScoreText = "No reviews yet";
@@ -79,25 +84,29 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     });
   }
 
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
-
-    this.reviewListComponent.usersScoreUpdated.subscribe(newScore => {
-      this.updateUsersScoreText(newScore);
-    });
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.reviewListComponent) {
+        this.reviewListComponent.usersScoreUpdated.subscribe(newScore => {
+          this.updateUsersScoreText(newScore);
+        });
+      }
+    }, 0);
   }
 
   updateUsersScoreText(score?: number) {
-    var calculatedScore = this.game.usersScore;
+    if (this.game.usersScore) {
+      var calculatedScore = this.game.usersScore;
 
-    if (score) {
-      calculatedScore = calculatedScore - score;
-    }
-
-    if (calculatedScore > 0) {
-      this.usersScoreText = "Users score: " + calculatedScore;
-    } else {
-      this.usersScoreText = "No reviews yet";
+      if (score) {
+        calculatedScore = calculatedScore - score;
+      }
+  
+      if (calculatedScore > 0) {
+        this.usersScoreText = "Users score: " + calculatedScore;
+      } else {
+        this.usersScoreText = "No reviews yet";
+      }
     }
   }
 
@@ -109,7 +118,6 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
     const dialogRef = this.dialog.open(LibraryFormDialogComponent, {
       width: '400px',
       data: {
-        dialogTitle: 'Add Game to Library',
         editing: false,
         userGame: {
           game: this.game,

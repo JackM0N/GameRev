@@ -3,7 +3,7 @@ export interface UserReview {
   id?: number;
 
   gameTitle?: string;
-  userUsername?: string;
+  userNickname?: string;
   content?: string;
   postDate?: any;
   score?: number;

@@ -10,22 +10,28 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './forum-comment-edit-dialog.component.html',
 })
 export class ForumCommentEditDialogComponent {
-  commentForm: FormGroup;
-  content: string = '';
+  protected commentForm: FormGroup;
+  protected content: string = '';
   public minLength: number = 4;
   
+  protected quillToolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
+
   constructor(
     private forumCommentService: ForumCommentService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<ForumCommentEditDialogComponent>,
+    protected dialogRef: MatDialogRef<ForumCommentEditDialogComponent>,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    @Inject(MAT_DIALOG_DATA) protected data: {
       commentId: number,
       commentContent: string
     }
   ) {
     this.commentForm = this.formBuilder.group({
-      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]],
+      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength), trimmedValidator(this.minLength)]],
     });
   }
 

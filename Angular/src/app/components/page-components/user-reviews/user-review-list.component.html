@@ -1,36 +1,64 @@
-<div class="container">
-  <table mat-table [dataSource]="this.dataSource" matSort (matSortChange)="sortData()" class="mat-elevation-z8">
-    <ng-container matColumnDef="gameTitle">
-      <th mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef> Game </th>
-      <td mat-cell *matCellDef="let element"> {{element.gameTitle}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="content">
-      <th mat-sort-header="content" mat-header-cell *matHeaderCellDef> Content </th>
-      <td mat-cell *matCellDef="let element"> {{element.content}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="postDate">
-      <th mat-sort-header="postDate" mat-header-cell *matHeaderCellDef> Post date </th>
-      <td mat-cell *matCellDef="let element"> {{formatDate(element.postDate)}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="score">
-      <th mat-sort-header="score" mat-header-cell *matHeaderCellDef> Score </th>
-      <td mat-cell *matCellDef="let element"> {{element.score}} </td>
-    </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+<div class="pixel-border w-[330px] h-fit py-[6px] px-[6px] mb-2">
+  <div class="flex justify-center font-arcade h-10 text-lg bg-black text-white pinkTextShadow">
+    <button class="pinkTextShadowWide"(click)="goBack()">Go back to profile</button>
+  </div>
+</div>
 
-  <mat-paginator
-    #paginator
-    [length]="totalReviews"
-    [pageSize]="5"
-    [pageSizeOptions]="[2, 5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Review list
+    </div>
+  </div>
+</div>
 
-  <button type="button" mat-stroked-button (click)="goBack()">Go back</button>
+<div class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
+  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
+    <div class="px-1 overflow-x-auto">
+      <table mat-table [dataSource]="this.dataSource" matSort (matSortChange)="sortData()" class="appearance-none bg-black">
+        <ng-container matColumnDef="gameTitle">
+          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef> Game </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.gameTitle}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="content">
+          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef> Content </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.content}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="postDate">
+          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="postDate" mat-header-cell *matHeaderCellDef> Post date </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{formatDate(element.postDate)}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="score">
+          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="score" mat-header-cell *matHeaderCellDef> Score </th>
+          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.score}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+          <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Options </th>
+          <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white" *matCellDef="let element">
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditReviewDialog(element)">Edit</button>
+            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openReviewDeletionConfirmationDialog(element)">Delete</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <div [hidden]="totalReviews < 5">
+      <mat-paginator
+        class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+        #paginator
+        [length]="totalReviews"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </div>
 </div>

@@ -1,11 +1,11 @@
-﻿import { AfterViewInit, ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
+﻿import { ChangeDetectorRef, Component } from '@angular/core';
 import { BackgroundService } from '../../services/background.service';
 import { AdService } from '../../services/ad.service';
 
 @Component({
   template: ''
 })
-export abstract class BaseAdComponent implements AfterViewInit {
+export abstract class BaseAdComponent {
   constructor(
     protected _adService: AdService,
     protected _backgroundService: BackgroundService,
@@ -30,11 +30,5 @@ export abstract class BaseAdComponent implements AfterViewInit {
     }
 
     this._cdRef.detectChanges();
-  }
-
-  ngAfterViewInit(): void {
-  }
-
-  ngOnDestroy(): void {
   }
 }

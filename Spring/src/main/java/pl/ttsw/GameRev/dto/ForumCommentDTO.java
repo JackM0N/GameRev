@@ -21,5 +21,4 @@ public class ForumCommentDTO implements Serializable {
     LocalDateTime postDate;
     Boolean isDeleted;
     LocalDateTime deletedAt;
-
 }

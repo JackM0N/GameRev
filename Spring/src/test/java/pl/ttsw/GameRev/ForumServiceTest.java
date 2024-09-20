@@ -23,11 +23,9 @@ import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.service.ForumService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

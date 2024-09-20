@@ -25,10 +25,8 @@ import pl.ttsw.GameRev.repository.UserReviewRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -144,7 +142,7 @@ class UserReviewServiceTest {
     @Test
     void testCreateUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testUser2");
+        userReviewDTO.setUserNickname("testUser2");
         userReviewDTO.setGameTitle("Cimbus Lompany");
         userReviewDTO.setContent("Nice game");
         userReviewDTO.setScore(7);
@@ -192,7 +190,7 @@ class UserReviewServiceTest {
     void testDeleteUserReviewByOwner() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
         userReviewDTO.setId(1L);
-        userReviewDTO.setUserUsername("testUser2");
+        userReviewDTO.setUserNickname("testUser2");
 
         WebsiteUser websiteUser = new WebsiteUser();
         UserReview userReview = new UserReview();

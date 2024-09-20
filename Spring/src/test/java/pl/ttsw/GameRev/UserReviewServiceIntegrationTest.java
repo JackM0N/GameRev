@@ -20,10 +20,8 @@ import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.UserReviewService;
-
 import java.time.LocalDate;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -72,7 +70,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testCreateAndRetrieveUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
@@ -97,7 +95,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testUpdateUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);
@@ -119,7 +117,7 @@ public class UserReviewServiceIntegrationTest {
     @WithMockUser(username = "testuser")
     public void testDeleteUserReview() throws BadRequestException {
         UserReviewDTO userReviewDTO = new UserReviewDTO();
-        userReviewDTO.setUserUsername("testuser");
+        userReviewDTO.setUserNickname("testuser");
         userReviewDTO.setGameTitle(game.getTitle());
         userReviewDTO.setContent("Great game!");
         userReviewDTO.setScore(9);

@@ -35,8 +35,8 @@ public class UserReviewService{
     public Page<UserReviewDTO> getUserReviewByGame(
             String title,
             UserReviewFilter userReviewFilter,
-            Pageable pageable) {
-
+            Pageable pageable
+    ) {
         Specification<UserReview> spec = Specification.where((root, query, builder) ->
                 builder.equal(root.get("game").get("title"), title)
         );
@@ -45,11 +45,13 @@ public class UserReviewService{
 
         Page<UserReview> userReviews = userReviewRepository.findAll(spec, pageable);
         WebsiteUser currentUser;
+
         try {
             currentUser = websiteUserService.getCurrentUser();
-        }catch (Exception e){
+        } catch (Exception e) {
             currentUser = null;
         }
+
         WebsiteUser finalCurrentUser = currentUser;
         List<UserReviewDTO> userReviewDTOList = userReviews.stream().map(userReview -> {
             UserReviewDTO userReviewDTO = userReviewMapper.toDto(userReview);
@@ -68,7 +70,8 @@ public class UserReviewService{
     public Page<UserReviewDTO> getUserReviewByUser(
             Long userId,
             UserReviewFilter userReviewFilter,
-            Pageable pageable) throws BadRequestException {
+            Pageable pageable) throws BadRequestException
+    {
         WebsiteUser wsUser = websiteUserRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
@@ -81,7 +84,8 @@ public class UserReviewService{
 
     public Page<UserReviewDTO> getUserReviewByOwner(
             UserReviewFilter userReviewFilter,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         WebsiteUser currentUser = websiteUserService.getCurrentUser();
         Specification<UserReview> spec = filterCheck(userReviewFilter, currentUser);
 

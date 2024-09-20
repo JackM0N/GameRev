@@ -40,28 +40,22 @@ export class LibraryService {
 
   updateUserGame(userReview: UserGame): Observable<UserGame> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.put<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
 
   addUserGame(userReview: UserGame): Observable<UserGame> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.post<UserGame>(this.baseUrl, userReview, { headers: headers });
   }
 
   deleteUserGame(id: number): Observable<void> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+    
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: headers });
   }
 }

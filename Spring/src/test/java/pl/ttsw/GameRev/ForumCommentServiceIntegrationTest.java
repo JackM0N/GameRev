@@ -22,9 +22,7 @@ import pl.ttsw.GameRev.repository.ForumCommentRepository;
 import pl.ttsw.GameRev.service.ForumCommentService;
 import pl.ttsw.GameRev.service.ForumPostService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()

@@ -1,58 +1,121 @@
 ﻿
-<mat-form-field>
-  <mat-label>Post date range</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
-    <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
-  </mat-date-range-input>
-  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
+<!-- Filters Section -->
+<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 my-4 px-[6px]">
+  <div class="synthwaveBg bg-repeat text-white p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="filterForm" class="contents">
+        <!-- Post Date Range -->
+        <mat-form-field>
+          <mat-label>Post date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="From" (dateChange)="onStartDateChange($event)">
+            <input matEndDate placeholder="To" (dateChange)="onEndDateChange($event)">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
 
-<div class="bg-[#F5F5F5] w-min">
-  <label class="text-sm font-medium text-gray-700">Score</label>
-  <mat-slider min="1" max="10" showTickMarks discrete>
-    <input value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
-    <input value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
-  </mat-slider>
-</div>
-
-<h3>Reviews</h3>
-<div class="review-container">
-  <div class="review-item" *ngFor="let review of reviewList">
-    <p>{{ review.userUsername }}, score: {{ review.score }}, date: {{ formatDateArray(review.postDate) }}</p>
-    <p>{{ review.content }}</p>
-    <p>Likes: {{ review.positiveRating }}</p>
-    <p>Dislikes: {{ review.negativeRating }}</p>
-
-    <div>
-      <button type="button" mat-stroked-button (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="this.canDeleteReview(review)">Delete review</button>
-      <button type="button" mat-stroked-button (click)="editReview(review)" *ngIf="this.ownsReview(review)">Edit review</button>
+        <!-- User Score -->
+        <div class="bg-[#F5F5F5] grow p-4">
+          <label class="text-base text-[rgb(98,98,126)] pr-4">Score</label>
+          <mat-slider min="1" max="10" showTickMarks discrete formGroupName="userScore">
+            <input formControlName="min" value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+            <input formControlName="max" value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+          </mat-slider>
+        </div>
+      </form>
     </div>
-    <button type="button" mat-stroked-button (click)="reportReview(review)" *ngIf="!this.ownsReview(review)">Report review</button>
 
-    <div *ngIf="!this.ownsReview(review)">
-      <button mat-button [color]="review.ownRatingIsPositive === true ? 'primary' : ''" (click)="toggleLike(review)">Like</button>
-      <button mat-button [color]="review.ownRatingIsPositive === false ? 'warn' : ''" (click)="toggleDislike(review)">Dislike</button>
+    <!-- Clear Filters Button -->
+    <div class="absolute bottom-4 right-4">
+      <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
 </div>
 
-<div [hidden]="totalReviews < 5">
-  <mat-paginator
-    [length]="totalReviews"
-    [pageSize]="5"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+<!-- Reviews Section -->
+<div class="p-4 mt-4 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-5xl mx-auto">
+  <div class="text-2xl text-center font-bold mb-4">User reviews</div>
+
+  <!-- Each Review -->
+  <div class="review-container">
+    <div class="review-item p-4 bg-[#333] border-[2px] border-pink-500 shadow mb-4" *ngFor="let review of reviewList">
+      <!-- Post info -->
+      <p class="pb-2">
+        <strong><a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + review.userNickname">{{ review.userNickname }}</a></strong>, Score: {{ review.score }}, Date: {{ formatDateArray(review.postDate) }}
+      </p>
+      
+      <!-- Content -->
+      <p class="text-base">{{ review.content }}</p>
+
+      <!-- Likes and dislikes -->
+      <p class="text-sm pt-2">Likes: {{ review.positiveRating }} | Dislikes: {{ review.negativeRating }}</p>
+
+      <!-- Review Actions -->
+      <div class="flex justify-between mt-4">
+        <div>
+          <button
+            class="synthwaveButton synthwaveButtonSmall"
+            (click)="openReviewDeletionConfirmationDialog(review)"
+            *ngIf="canDeleteReview(review)">
+            Delete
+          </button>
+
+          <button
+            class="ml-2 synthwaveButton synthwaveButtonSmall"
+            (click)="openEditReviewDialog(review)"
+            *ngIf="ownsReview(review)">
+            Edit
+          </button>
+
+          <button
+            class="ml-2 synthwaveButton synthwaveButtonSmall"
+            (click)="openReportReviewDialog(review)"
+            *ngIf="!ownsReview(review)">
+            Report
+          </button>
+        </div>
+        
+      <!-- Like / dislike -->
+        <div *ngIf="review.userNickname != authService.getUsername()">
+          <button
+            class="synthwaveButton synthwaveButtonSmall"
+            [ngClass]="{
+              'likeButton': review.ownRatingIsPositive != true,
+              'likeButtonNotLiked': review.ownRatingIsPositive == true,
+              }"
+            (click)="toggleLike(review)">
+            {{ review.ownRatingIsPositive == true ? 'Remove like': 'Like 👍' }}
+          </button>
+
+          <button
+            class="ml-2 synthwaveButton synthwaveButtonSmall"
+            [ngClass]="{
+              'dislikeButton': review.ownRatingIsPositive != false,
+              'dislikeButtonNotLiked': review.ownRatingIsPositive == false
+              }"
+            (click)="toggleDislike(review)">
+            {{ review.ownRatingIsPositive == false ? 'Remove dislike': 'Dislike 👎' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginator -->
+  <div class="m-auto" [hidden]="totalReviews < 5">
+    <mat-paginator
+      class="pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalReviews"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
+  <div *ngIf="totalReviews == 0" class="p-4 border border-gray-300 text-center max-w-80 m-auto my-6" colspan="7">No reviews yet</div>
+
+  <!-- Add Review Button -->
+  <button class="synthwaveButton mt-2" type="button" (click)="openAddReviewDialog()" *ngIf="this.canAddReview()">Add review</button>
 </div>
-
-<button
-  id="gotoreview-button"
-  type="button" mat-stroked-button
-  (click)="routeToAddNewReview()"
-  *ngIf="this.canAddReview()">
-  Add review
-</button>
-

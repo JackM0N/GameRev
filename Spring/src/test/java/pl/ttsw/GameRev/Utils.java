@@ -3,7 +3,6 @@ package pl.ttsw.GameRev;
 import org.hibernate.Hibernate;
 import org.hibernate.collection.spi.PersistentBag;
 import org.hibernate.proxy.HibernateProxy;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 import java.time.LocalDate;

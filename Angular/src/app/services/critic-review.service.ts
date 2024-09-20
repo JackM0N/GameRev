@@ -31,20 +31,14 @@ export class CriticReviewService {
 
   getCriticReviewById(id: number): Observable<CriticReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
   getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -70,30 +64,21 @@ export class CriticReviewService {
 
   addCriticReview(criticReview: CriticReview): Observable<CriticReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.post<CriticReview>(this.addUrl, criticReview, { headers });
   }
 
   editCriticReview(criticReview: CriticReview): Observable<CriticReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.put<CriticReview>(`${this.editUrl}/${criticReview.id}`, criticReview, { headers });
   }
 
   reviewReview(criticReview: CriticReview): Observable<CriticReview> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams();
 
@@ -107,10 +92,7 @@ export class CriticReviewService {
 
   deleteReview(id: number): Observable<void> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers: headers });
   }

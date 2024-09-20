@@ -21,7 +21,6 @@ public class MailConfig {
     @Profile("test")
     @Bean
     public GreenMail greenMailDisabled() {
-        GreenMail greenMail = new GreenMail();
-        return greenMail;
+        return new GreenMail();
     }
 }

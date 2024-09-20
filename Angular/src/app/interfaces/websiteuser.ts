@@ -1,3 +1,4 @@
+import { Role } from "./role";
 
 export interface WebsiteUser {
   id?: number;
@@ -13,4 +14,6 @@ export interface WebsiteUser {
   isBanned?: boolean;
   isDeleted?: boolean;
   lastActionDate?: string;
+
+  roles?: Role[];
 }

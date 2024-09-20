@@ -2,7 +2,6 @@ package pl.ttsw.GameRev.dto;
 
 import lombok.*;
 import pl.ttsw.GameRev.enums.CompletionStatus;
-
 import java.io.Serializable;
 
 /**

@@ -21,15 +21,12 @@ import pl.ttsw.GameRev.model.*;
 import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.ForumRequestRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import pl.ttsw.GameRev.service.ForumRequestService;
 import pl.ttsw.GameRev.service.GameService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -48,9 +45,6 @@ public class ForumRequestServiceTest {
 
     @Mock
     private WebsiteUserService websiteUserService;
-
-    @Mock
-    private GameService gameService;
 
     @Spy
     private ForumRequestMapper forumRequestMapper = new ForumRequestMapperImpl();

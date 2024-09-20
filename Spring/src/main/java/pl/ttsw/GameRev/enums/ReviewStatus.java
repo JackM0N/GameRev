@@ -4,9 +4,10 @@ public enum ReviewStatus {
     APPROVED("Approved"),
     PENDING("Pending"),
     DELETED("Deleted"),
+    RESTORED("Restored"),
     EDITED("Edited");
 
-    private String status;
+    final String status;
 
     ReviewStatus(String status) {
         this.status = status;

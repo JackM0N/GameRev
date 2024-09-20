@@ -44,7 +44,6 @@ public class WebsiteUserService {
     public Page<WebsiteUserDTO> getAllWebsiteUsers(WebsiteUserFilter websiteUserFilter, Pageable pageable) {
         Specification<WebsiteUser> spec = Specification.where((root, query, builder) -> builder.conjunction());
 
-
         if (websiteUserFilter.getJoinDateFrom() != null) {
             spec = spec.and((root, query, builder) -> builder
                     .greaterThanOrEqualTo(root.get("joinDate"), websiteUserFilter.getJoinDateFrom()));
@@ -146,15 +145,19 @@ public class WebsiteUserService {
     public boolean updateRoles(RoleDTO roleDTO, long userId, boolean isAdded) throws BadRequestException {
         WebsiteUser websiteUser = websiteUserRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
+
         List<Role> roles = websiteUser.getRoles();
+
         Role role = roleRepository.findByRoleName(roleDTO.getRoleName())
                 .orElseThrow(() -> new BadRequestException("Role not found"));
+
         if (websiteUser.getRoles().contains(role) && !isAdded){
             roles.remove(role);
             websiteUser.setRoles(roles);
             websiteUserRepository.save(websiteUser);
             return true;
         }
+
         if (!websiteUser.getRoles().contains(role) && isAdded) {
             roles.add(role);
             websiteUser.setRoles(roles);
@@ -190,12 +193,14 @@ public class WebsiteUserService {
     public void uploadProfilePicture(ProfilePictureDTO profilePictureDTO) throws IOException {
         String username = profilePictureDTO.getUsername();
         MultipartFile file = profilePictureDTO.getProfilePicture();
+
         WebsiteUser user = websiteUserRepository.findByUsername(username)
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-        if (!user.equals(getCurrentUser())){
+        if (!user.equals(getCurrentUser())) {
             throw new BadCredentialsException("You can only edit your own profile picture");
         }
+
         if (user.getProfilepic() != null && !user.getProfilepic().isEmpty()) {
             Path oldFilepath = Paths.get(user.getProfilepic());
             Files.deleteIfExists(oldFilepath);

@@ -21,5 +21,4 @@ public class ForumModerator {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "moderator_id", nullable = false)
     private WebsiteUser moderator;
-
 }

@@ -27,17 +27,14 @@ import pl.ttsw.GameRev.repository.ForumRepository;
 import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.service.ForumPostService;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 public class ForumPostServiceTest {
 
     @Mock
@@ -61,7 +58,7 @@ public class ForumPostServiceTest {
     @Spy
     private ForumPostMapper forumPostMapper = new ForumPostMapperImpl();
 
-    private Pageable pageable = PageRequest.of(0, 10);
+    private final Pageable pageable = PageRequest.of(0, 10);
 
     @BeforeEach
     public void setUp() {

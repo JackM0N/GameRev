@@ -14,12 +14,10 @@ import pl.ttsw.GameRev.model.Role;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.RoleRepository;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

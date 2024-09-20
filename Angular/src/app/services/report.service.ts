@@ -24,19 +24,14 @@ export class ReportService {
 
   reportReview(report: Report): Observable<Report> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.put<Report>(this.reportUrl, report, { headers: headers });
   }
 
   getReviewsWithReports(page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
     var params = new HttpParams()
       .set('page', (page - 1).toString())
@@ -56,10 +51,7 @@ export class ReportService {
 
   getReportsForReview(reviewId: number, sortBy: string, sortDir: string, page?: number, size?: number): Observable<UserReview[]> {
     const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams()
       .set('sort', sortBy + ',' + sortDir
@@ -77,39 +69,31 @@ export class ReportService {
 
   approveReport(report: Report): Observable<Report> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     report.approved = true;
     return this.http.put<Report>(this.approveUrl, report, { headers: headers });
   }
 
   disapproveReport(report: Report): Observable<Report> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     report.approved = false;
     return this.http.put<Report>(this.approveUrl, report, { headers: headers });
   }
 
   deleteReport(report: Report): Observable<Report> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.delete<Report>(`${this.baseUrl}/${report.id}`, { headers: headers });
   }
 
   deleteReview(review: UserReview): Observable<Report> {
     const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
     return this.http.delete<Report>(`${this.baseUrl}/${review.id}`, { headers: headers });
   }
 }

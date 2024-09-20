@@ -2,7 +2,6 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
-import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BackgroundService } from '../../../services/background.service';
 import { ResetPasswordConfirmationDialogComponent } from './reset-password-confirmation-dialog.component';
@@ -17,14 +16,14 @@ import { NotificationAction } from '../../../enums/notificationActions';
   ]
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  hidePassword = signal(true);
+  protected loginForm: FormGroup;
+  protected hidePassword = signal(true);
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    public dialog: MatDialog,
+    protected dialog: MatDialog,
     private backgroundService: BackgroundService
   ) {
     this.loginForm = this.formBuilder.group({
@@ -59,10 +58,14 @@ export class LoginComponent {
       }
 
       this.authService.login(credentials).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME);
-        },
-        error: error => this.notificationService.popErrorToast('Login failed', error)
+        next: () => { this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME); },
+        error: error => {
+          if (error.error == 'Bad credentials') {
+            this.notificationService.popErrorToast('Bad login or password', error);
+          } else {
+            this.notificationService.popErrorToast('Login failed', error);
+          }
+        }
       });
     }
   }
@@ -74,7 +77,7 @@ export class LoginComponent {
 
   openResetPasswordConfirmationDialog() {
     const dialogRef = this.dialog.open(ResetPasswordConfirmationDialogComponent, {
-      width: '300px'
+      width: '400px'
     });
 
     dialogRef.afterClosed().subscribe(result => {

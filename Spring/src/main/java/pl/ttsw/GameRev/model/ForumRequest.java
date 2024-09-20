@@ -34,5 +34,4 @@ public class ForumRequest {
 
     @Column(name = "approved")
     private Boolean approved;
-
 }

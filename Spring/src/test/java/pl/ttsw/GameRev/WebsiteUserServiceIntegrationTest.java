@@ -19,12 +19,10 @@ import pl.ttsw.GameRev.dto.WebsiteUserDTO;
 import pl.ttsw.GameRev.model.WebsiteUser;
 import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.WebsiteUserService;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

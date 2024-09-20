@@ -4,7 +4,7 @@ export interface CriticReview {
   id?: number;
 
   gameTitle?: string;
-  userUsername?: string;
+  userNickname?: string;
 
   content?: string;
   postDate?: any;

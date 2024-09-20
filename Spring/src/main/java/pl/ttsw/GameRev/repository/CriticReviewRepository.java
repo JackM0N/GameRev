@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.enums.ReviewStatus;
 import pl.ttsw.GameRev.model.CriticReview;
-
 import java.util.Optional;
 
 @Repository

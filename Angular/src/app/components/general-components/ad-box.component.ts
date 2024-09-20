@@ -6,8 +6,8 @@ import { AdService } from '../../services/ad.service';
   templateUrl: './ad-box.component.html'
 })
 export class AdBoxComponent implements OnInit {
-  currentAd?: string;
-  closed = false;
+  protected currentAd?: string;
+  protected closed = false;
 
   constructor(
     private adService: AdService,

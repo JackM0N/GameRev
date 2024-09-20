@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -9,14 +9,12 @@ import { ForumPost } from '../../../interfaces/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumComment } from '../../../interfaces/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
-import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
@@ -28,28 +26,20 @@ import { UserService } from '../../../services/user.service';
   selector: 'app-forum-post',
   templateUrl: './forum-post.component.html'
 })
-export class ForumPostComponent extends BaseAdComponent implements AfterViewInit {
-  @Input() post?: ForumPost;
-  @ViewChild('paginator') paginator!: MatPaginator;
-  public formatDateTimeArray = formatDateTimeArray;
+export class ForumPostComponent extends BaseAdComponent {
+  @Input() protected post?: ForumPost;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
+  protected formatDateTimeArray = formatDateTimeArray;
 
-  public commentsList: any[] = [];
-  public totalComments: number = 0;
-  public path?: any;
-  public commentForm: FormGroup;
-  public minLength: number = 4;
-  public moderators: WebsiteUser[] = [];
-  public imageUrl?: string;
-  public authorProfilePic?: string;
-
-  public quillToolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    ['clean']
-  ];
+  protected commentsList: any[] = [];
+  protected totalComments: number = 0;
+  protected path?: any;
+  protected moderators: WebsiteUser[] = [];
+  protected imageUrl?: string;
+  protected authorProfilePic?: string;
 
   constructor(
-    public authService: AuthService,
+    protected authService: AuthService,
     private forumService: ForumService,
     private forumPostService: ForumPostService,
     private forumCommentService: ForumCommentService,
@@ -57,20 +47,19 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     private imageCacheService: ImageCacheService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
-    public dialog: MatDialog,
-    backgroundService: BackgroundService,
+    protected dialog: MatDialog,
+    protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
-    this.commentForm = this.fb.group({
-      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]]
-    });
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.backgroundService.setClasses(['fallingCds']);
+    
     this.route.params.subscribe(params => {
       if (params['postid']) {
         this.loadPost(params['postid']);
@@ -81,10 +70,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
         this.loadModerators(params['forumid']);
       }
     });
-  }
-
-  override ngAfterViewInit() {
-    super.ngAfterViewInit();
   }
 
   loadPath(id: number) {
@@ -233,26 +218,6 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
     }
   }
 
-  submitComment() {
-    if (this.commentForm.valid) {
-      const newComment = {
-        content: this.commentForm.value.content,
-        forumPostId: this.post?.id
-      };
-
-      this.forumCommentService.addComment(newComment).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Comment posted successfully');
-          if (this.post && this.post.id) {
-            this.loadComments(this.post.id);
-            this.commentForm.reset();
-          }
-        },
-        error: error => this.notificationService.popErrorToast('Comment posting failed', error)
-      });
-    }
-  }
-
   canEditComment(comment: ForumComment) {
     return (this.authService.isAuthenticated() && comment.author.nickname === this.authService.getNickname());
   }
@@ -266,7 +231,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         commentId: comment.id,
         commentContent: comment.content
@@ -331,7 +296,7 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         forumId: post.forum.id,
         editing: true,
@@ -353,5 +318,11 @@ export class ForumPostComponent extends BaseAdComponent implements AfterViewInit
       next: () => { this.notificationService.popSuccessToast('Post deleted successfully', NotificationAction.GO_BACK); },
       error: error => this.notificationService.popErrorToast('Post deletion failed', error)
     });
+  }
+
+  reloadComments() {
+    if (this.post?.id) {
+      this.loadComments(this.post.id);
+    }
   }
 }

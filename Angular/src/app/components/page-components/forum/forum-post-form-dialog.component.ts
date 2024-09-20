@@ -12,10 +12,10 @@ import { FileUploadOptions } from '../../../enums/fileUploadOptions';
   templateUrl: './forum-post-form-dialog.component.html',
 })
 export class ForumPostFormDialogComponent {
-  public forumPostForm: FormGroup;
-  public titleMinLength: number = 4;
-  public contentMinLength: number = 8;
-  public forumList: Forum[] = [];
+  protected forumPostForm: FormGroup;
+  protected titleMinLength: number = 4;
+  protected contentMinLength: number = 8;
+  protected forumList: Forum[] = [];
 
   private title: string = '';
   private content: string = '';
@@ -23,9 +23,9 @@ export class ForumPostFormDialogComponent {
   private postId?: number;
 
   private selectedImage?: File;
-  public imageUrl: string = '';
+  protected imageUrl: string = '';
   
-  public quillToolbarOptions = [
+  protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
     [{ 'color': [] }, { 'background': [] }],
     ['clean']
@@ -34,7 +34,7 @@ export class ForumPostFormDialogComponent {
   constructor(
     private forumPostService: ForumPostService,
     private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<ForumPostFormDialogComponent>,
+    protected dialogRef: MatDialogRef<ForumPostFormDialogComponent>,
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data?: {
       id?: number,

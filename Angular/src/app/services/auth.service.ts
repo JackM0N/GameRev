@@ -135,10 +135,7 @@ export class AuthService {
 
   getUserProfileInformation(): Observable<WebsiteUser> {
     const token = this.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     return this.http.get<WebsiteUser>(this.profileInformationUrl, { headers });
   }
@@ -157,12 +154,9 @@ export class AuthService {
 
   changeProfilePicture(username: string, profilePicture: File): Observable<any> {
     const token = this.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-    });
 
     const formData = new FormData();
     formData.append('file', profilePicture, profilePicture.name);

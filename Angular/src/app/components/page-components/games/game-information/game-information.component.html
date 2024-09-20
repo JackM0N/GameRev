@@ -1,32 +1,57 @@
 
-<div class="container">
-    <!-- GAME INFO -->
-    <h3>{{this.game.title}}</h3>
-    <p>Developer: {{this.game.developer}}</p>
-    <p>Publisher: {{this.game.publisher}}</p>
-    <p>Release date: {{formatDate(this.game.releaseDate)}}</p>
-    <p>Release status: {{this.game.releaseStatus}}</p>
-    <p>Description: {{this.game.description}}</p>
-    <p>{{this.usersScoreText}}</p>
-
-    <!-- TAGS -->
-    <div class="grid-container">
-        <div class="grid-item" *ngFor="let tag of game.tags">
-        {{ tag.tagName }}
-        </div>
+<div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full pinkTextShadow">
+  <div>
+    <!-- Go Back Button -->
+    <div class="absolute left-6 top-6">
+      <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
     </div>
 
-    <button id="add-to-library-button" type="button" mat-stroked-button (click)="openLibraryFormDialog()">Add to Library</button>
+    <!-- Game Title -->
+    <div class="text-4xl font-bold mt-4 mb-6">{{this.game.title}}</div>
 
-    <!-- CRITIC REVIEWS -->
-    <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+    <!-- Actions -->
+    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end" *ngIf="this.authService.isAuthenticated()">
+      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
+      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Delete</button>
+      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Edit</button>
+    </div>
 
-    <!-- REVIEWS -->
-    <app-gameinfo-review-list
-        [gameTitle]="gameTitle"
-        [game]="game"
-        (usersScoreUpdated)="updateUsersScoreText($event)">>
-    </app-gameinfo-review-list>
+    <!-- Game Info Section -->
+    <div class="p-6 m-4 bg-gradient-to-r from-purple-700 to-indigo-700 border-[2px] border-pink-500 shadow-lg max-w-4xl mx-auto">
+      <div class="grid grid-cols-2 gap-4 text-left">
+        <div><strong>Developer:</strong> {{this.game.developer}}</div>
+        <div><strong>Publisher:</strong> {{this.game.publisher}}</div>
+        <div><strong>Release date:</strong> {{formatDate(this.game.releaseDate)}}</div>
+        <div><strong>Release status:</strong> {{this.game.releaseStatus}}</div>
+      </div>
+      <div class="text-lg mt-4 text-center font-semibold">{{this.usersScoreText}}</div>
+    </div>
+
+    <!-- Game Description -->
+    <div class="px-6 py-8 my-4 bg-[#333] border-[2px] border-[#ff00ff] shadow-lg text-lg leading-relaxed max-w-4xl mx-auto">
+      {{this.game.description}}
+    </div>
+
+    <!-- Tags Section -->
+    <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
+      <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-sm" *ngFor="let tag of game.tags">
+        {{ tag.tagName }}
+      </div>
+    </div>
     
-    <button id="goback-button" type="button" mat-stroked-button (click)="goBack()">Go back</button>
+    <div *ngIf="gameTitle" class="mx-4 my-8">
+      <!-- Critic Review Section -->
+      <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+
+      <!-- User Review Section -->
+      <div class="p-4 mt-4 mb-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
+        <app-gameinfo-review-list
+          [gameTitle]="gameTitle"
+          [game]="game"
+          (usersScoreUpdated)="updateUsersScoreText($event)">
+        </app-gameinfo-review-list>
+      </div>
+    </div>
+
+  </div>
 </div>

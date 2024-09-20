@@ -11,41 +11,64 @@ import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { BackgroundService } from '../../../services/background.service';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-critic-review-list',
-  templateUrl: './critic-review-list.component.html',
-  styleUrl: './critic-review-list.component.css'
+  templateUrl: './critic-review-list.component.html'
 })
 export class CriticReviewListComponent implements AfterViewInit {
-  public dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
-  public totalReviews: number = 0;
-  public displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
-  public formatDate = formatDateArray;
-  public reviewStatuses = reviewStatuses;
-  public noCriticReviews = false;
+  protected dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
+  protected totalReviews: number = 0;
+  protected displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
+  protected formatDate = formatDateArray;
+  protected reviewStatuses = reviewStatuses;
+  protected noCriticReviews = false;
 
   private filters: criticReviewFilters = {};
+  protected filterForm: FormGroup;
 
-  @ViewChild('paginator') paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+  @ViewChild('paginator') protected paginator!: MatPaginator;
+  @ViewChild(MatSort) protected sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) protected searchInput?: ElementRef;
 
   constructor(
     private criticReviewService: CriticReviewService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private _location: Location,
     private notificationService: NotificationService,
+    private backgroundService: BackgroundService,
+    private fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
-  ) {}
+    private adService: AdService
+  ) {
+    this.filterForm = this.fb.group({
+      reviewStatuses: [null],
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      userScore: this.fb.group({
+        min: [null],
+        max: [null]
+      }),
+      search: [null]
+    });
+  }
+
+  ngOnInit(): void {
+    this.adService.setAdVisible(false);
+    this.backgroundService.setClasses(['fallingCds']);
+  }
 
   ngAfterViewInit() {
     this.loadReviews();
@@ -92,10 +115,6 @@ export class CriticReviewListComponent implements AfterViewInit {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
-  goBack() {
-    this._location.back();
-  }
-
   approveReview(review: CriticReview) {
     review.reviewStatus = 'APPROVED'
 
@@ -135,6 +154,15 @@ export class CriticReviewListComponent implements AfterViewInit {
     });
   }
 
+  restoreReview(review: CriticReview) {
+    review.reviewStatus = 'RESTORED'
+
+    this.criticReviewService.reviewReview(review).subscribe({
+      next: () => { this.notificationService.popSuccessToast('Review restored successfully'); },
+      error: error => this.notificationService.popErrorToast('Review restoration failed', error)
+    });
+  }
+
   deleteReview(review: CriticReview) {
     if (review.id == null) {
       console.log("Review is null");
@@ -142,7 +170,13 @@ export class CriticReviewListComponent implements AfterViewInit {
     }
 
     this.criticReviewService.deleteReview(review.id).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Review deleted successfully'); },
+      next: () => {
+        this.notificationService.popSuccessToast('Review deleted successfully');
+        if (this.dataSource.data.length === 1 && this.paginator.pageIndex > 0) {
+          this.paginator.previousPage();
+        }
+        this.loadReviews();
+      },
       error: error => this.notificationService.popErrorToast('Review deletion failed', error)
     });
   }
@@ -157,11 +191,6 @@ export class CriticReviewListComponent implements AfterViewInit {
 
   findReviewStatusName(review: CriticReview) {
     var status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
-
-    if (review.statusChangedBy) {
-      status += ' (by ' + review.statusChangedBy.nickname + ')';
-    }
-
     return status;
   }
 
@@ -226,6 +255,14 @@ export class CriticReviewListComponent implements AfterViewInit {
     if (!this.filters.scoreMin) {
       this.filters.scoreMin = 1;
     }
+    this.loadReviews();
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.filterForm.get('userScore')?.get('min')?.setValue(1);
+    this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
   }
 }

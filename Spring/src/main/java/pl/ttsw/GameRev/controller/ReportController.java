@@ -20,7 +20,7 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<Page<UserReviewDTO>> reviewsWithReports(UserReviewFilter userReviewFilter, Pageable pageable){
+    public ResponseEntity<Page<UserReviewDTO>> reviewsWithReports(UserReviewFilter userReviewFilter, Pageable pageable) {
         return ResponseEntity.ok(userReviewService.getUserReviewsWithReports(userReviewFilter, pageable));
     }
     
