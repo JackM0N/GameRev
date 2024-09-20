@@ -14,6 +14,7 @@ export class PopupDialogComponent implements OnInit {
       submitText: string;
       cancelText: string;
       noSubmitButton?: boolean;
+      submitColor: string;
     }
   ) {}
 

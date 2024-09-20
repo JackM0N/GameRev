@@ -226,6 +226,40 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     });
   }
 
+  openRestoreSubforumDialog(subForum: Forum) {
+    const dialogTitle = 'Forum restoration';
+    const dialogContent = 'Are you sure you want to restore the forum ' + subForum.forumName + '?';
+    const submitText = 'Restore';
+    const cancelText = 'Cancel';
+    const submitColor = 'bg-blue-600 hover:bg-blue-700';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText, submitColor }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.restoreSubForum(subForum);
+      }
+    });
+  }
+
+  restoreSubForum(subForum: Forum) {
+    if(!subForum.id) {
+      console.error('No subforum id found');
+      return;
+    }
+
+    this.forumService.deleteForum(subForum.id, false).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Forum restored successfully');
+        this.loadForum(this.forumId);
+      },
+      error: error => this.notificationService.popErrorToast('Forum restoration failed', error)
+    });
+  }
+
   openAddNewRequestDialog() {
     this.dialog.open(ForumRequestFormDialogComponent, {
       width: '300px',

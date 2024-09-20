@@ -81,8 +81,8 @@ export class ForumService {
     return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
   }
 
-  deleteForum(id: number): Observable<any> {
-    const params = new HttpParams().set("isDeleted", true);
+  deleteForum(id: number, isDeleted: boolean = true): Observable<any> {
+    const params = new HttpParams().set("isDeleted", isDeleted);
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 

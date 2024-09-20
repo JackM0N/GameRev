@@ -553,3 +553,11 @@ mat-paginator .mat-mdc-select-min-line {
 mat-paginator .mat-mdc-select-value {
   padding-right: 42px;
 }
+
+.deleted-forum {
+  background: repeating-linear-gradient(160deg, #222222, #222222 70px, #535353 10px, #535353 80px);
+}
+
+.deleted-forum:hover {
+  background: repeating-linear-gradient(160deg, #333333, #333333 70px, #535353 10px, #535353 80px);
+}
