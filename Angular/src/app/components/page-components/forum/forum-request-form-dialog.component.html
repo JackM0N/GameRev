@@ -6,7 +6,7 @@
     <div class="mt-2 mb-1">
       <label class="w-full">Parent forum</label><br>
       <mat-select class="border-2 bg-white text-black noTextShadow w-full" formControlName="parentForum">
-        @for (forum of forumList; track forum) {
+        @for (forum of forumList; track forum.id) {
           <mat-option [value]="forum">{{forum.forumName}}</mat-option>
         }
       </mat-select>
@@ -35,7 +35,7 @@
       <label class="w-full">Game</label><br>
       <mat-select class="border-2 bg-white text-black noTextShadow w-full" formControlName="game">
         <mat-option>-</mat-option>
-        @for (game of gameList; track game) {
+        @for (game of gameList; track game.id) {
           <mat-option [value]="game">{{game.title}}</mat-option>
         }
       </mat-select>

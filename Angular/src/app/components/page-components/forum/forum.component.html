@@ -42,7 +42,7 @@
             <label class="text-sm text-white">Game</label>
             <mat-select (selectionChange)="onGameFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="game">
               <mat-option>-</mat-option>
-              @for (game of gameList; track game) {
+              @for (game of gameList; track game.id) {
                 <mat-option [value]="game">{{game.title}}</mat-option>
               }
             </mat-select>

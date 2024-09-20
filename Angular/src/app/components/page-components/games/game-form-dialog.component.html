@@ -43,7 +43,7 @@
     <div class="mt-2 mb-1">
       <label>Tags</label><br>
       <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="tags" multiple required>
-        @for (tag of tagsList; track tag) {
+        @for (tag of tagsList; track tag.id) {
           <mat-option [value]="tag">{{tag.tagName}}</mat-option>
         }
       </mat-select>
