@@ -30,13 +30,13 @@
           <div class="mt-2">
             <label class="block pinkTextShadow">Enter current password</label>
             <div class="flex items-center w-[314px] bg-white h-[28px]">
-              <input class="px-1 h-full w-[56] text-black appearance-none" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+              <input class="px-1 h-full w-[56] text-black appearance-none" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required/>
               <button class="px-1 flex items-center text-black"
-              matSuffix
-              type="button"
-              (mousedown)="hidePasswordClickEvent($event)"
-              [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hidePassword()"
+                matSuffix
+                type="button"
+                (mousedown)="hidePasswordClickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()"
               >
                 <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
               </button>

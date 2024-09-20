@@ -1,12 +1,14 @@
 ﻿
-<div class="pixel-border max-[900px]:w-[390px] min-[900px]:w-5/6 py-[6px] m-auto max-w-[1200px] my-10 text-base flex">
-  <div class="px-8 py-4 h-full w-fit mx-[6px] bg-no-repeat bg-right z-0 flex flex-col bg-black">
+<div class="pixel-border max-[900px]:w-[390px] min-[900px]:w-5/6 py-[6px] m-auto max-w-[1200px] my-10 text-base flex neonAtSymbols bg-cover bg-left bg-no-repeat">
+  <div class="px-8 py-4 h-full w-fit ml-[6px] z-0 flex flex-col">
     <h3 class="text-xl pinkTextShadow">Change email</h3>
 
     <form autocomplete="off" [formGroup]="changeEmailForm" (ngSubmit)="onSubmitEmailChange()">
       <div class="mt-2">
         <label class="pinkTextShadow">Enter new email</label>
-        <input class="w-full text-black px-1 h-7" placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+        <div class="flex items-center w-full bg-white h-[28px]">
+          <input class="px-1 h-full text-black" placeholder="pat@example.com" formControlName="email" (blur)="updateEmailErrorMessage()" required/>
+        </div>
       </div>
 
       <!-- No current password typed error -->
@@ -17,7 +19,8 @@
       <div class="mt-2">
         <label class="pinkTextShadow">Enter current password</label>
         <div class="flex items-center w-full bg-white h-[28px]">
-          <input class="px-1 h-full text-black" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required />
+          <input class="px-1 h-full text-black" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required/>
+
           <button class="px-1 flex items-center text-black"
             matSuffix
             type="button"
@@ -46,5 +49,5 @@
       </div>
     </form>
   </div>
-  <div class="neonAtSymbols w-full h-full bg-cover bg-no-repeat -ml-5"></div>
+  <div class="w-full h-full max-[900px]:-ml-20"></div>
 </div>
