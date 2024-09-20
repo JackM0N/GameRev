@@ -36,6 +36,9 @@ export class ForumService {
   }
 
   getForum(id?: number, page?: number, size?: number, filters?: forumFilters): Observable<Forum> {
+    const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+
     var params = new HttpParams();
 
     if (page) {
@@ -61,7 +64,7 @@ export class ForumService {
       url += `/${id}`;
     }
 
-    return this.http.get<Forum>(url, { params });
+    return this.http.get<Forum>(url, { params, headers });
   }
 
   addForum(forum: Forum): Observable<Forum> {
