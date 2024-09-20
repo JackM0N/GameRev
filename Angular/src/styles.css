@@ -561,3 +561,10 @@ mat-paginator .mat-mdc-select-value {
 .deleted-forum:hover {
   background: repeating-linear-gradient(160deg, #333333, #333333 70px, #535353 10px, #535353 80px);
 }
+
+.clampContent {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

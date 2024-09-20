@@ -1,0 +1,20 @@
+
+<div class="pixel-border p-[6px] bg-black rounded-none text-white font-arcade w-fit">
+  <div class="px-5 p-3">
+    <h1 class="text-xl pinkTextShadow">{{ data.dialogTitle }}</h1>
+
+    <div class="mt-4 text-sm pinkTextShadow max-h-[40rem] overflow-y-auto">
+      <p [innerHTML]="data.dialogContent"></p>
+    </div>
+
+    <div class="mt-4 flex flex-row justify-center gap-5">
+      <div class="pixel-border p-[6px] px-6">
+        <div class="w-full">
+          <button class="text-base w-full" type="button" (click)="onCancel()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

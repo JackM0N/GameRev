@@ -69,6 +69,7 @@ import { ForumRequestFormDialogComponent } from './components/page-components/fo
 import { UserReviewFormDialogComponent } from './components/page-components/user-reviews/user-review-form-dialog.component';
 import { CriticReviewFormDialogComponent } from './components/page-components/critic-reviews/critic-review-form-dialog.component';
 import { ForumCommentFormComponent } from './components/page-components/forum/forum-comment-form.component';
+import { CriticReviewContentDialogComponent } from './components/page-components/critic-reviews/critic-review-content-dialog.component';
 
 @NgModule({
     declarations: [
@@ -105,7 +106,8 @@ import { ForumCommentFormComponent } from './components/page-components/forum/fo
         ForumRequestFormDialogComponent,
         UserReviewFormDialogComponent,
         CriticReviewFormDialogComponent,
-        ForumCommentFormComponent
+        ForumCommentFormComponent,
+        CriticReviewContentDialogComponent
     ],
     bootstrap: [
         AppComponent

@@ -87,7 +87,7 @@
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef>
               Content
             </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element" [innerHTML]="element.content"></td>
+            <td (click)="openContentDialog(element)" class="cursor-pointer synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white clampContent" mat-cell *matCellDef="let element" [innerHTML]="element.content"></td>
           </ng-container>
 
           <ng-container matColumnDef="postDate">

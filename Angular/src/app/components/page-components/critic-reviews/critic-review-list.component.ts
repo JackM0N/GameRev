@@ -20,6 +20,7 @@ import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';
+import { CriticReviewContentDialogComponent } from './critic-review-content-dialog.component';
 
 @Component({
   selector: 'app-critic-review-list',
@@ -264,5 +265,14 @@ export class CriticReviewListComponent implements AfterViewInit {
     this.filterForm.get('userScore')?.get('min')?.setValue(1);
     this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
+  }
+
+  openContentDialog(review: CriticReview) {
+    const dialogTitle = 'Review by ' + review.user?.nickname;
+    const dialogContent = review.content;
+
+    this.dialog.open(CriticReviewContentDialogComponent, {
+      data: { dialogTitle, dialogContent }
+    });
   }
 }
