@@ -47,7 +47,8 @@ public class ForumService {
             if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
                 forumFilter.setIsDeleted(false);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             forumFilter.setIsDeleted(false);
         }
 
@@ -119,7 +120,14 @@ public class ForumService {
     private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum) {
         Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+        if (forumFilter.getIsDeleted() != null) {
+            spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+        } else {
+            spec = spec.and((root, query, builder) -> builder.or(
+                    builder.isTrue(root.get("isDeleted")),
+                    builder.isFalse(root.get("isDeleted"))
+            ));
+        }
 
         if (forumFilter.getGameId() != null) {
             spec = spec.and((root, query, builder) -> {
