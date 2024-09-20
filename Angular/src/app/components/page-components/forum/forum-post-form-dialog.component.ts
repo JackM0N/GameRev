@@ -115,6 +115,8 @@ export class ForumPostFormDialogComponent {
       }
       newForumPost.forum = newForum;
 
+      console.log(newForumPost);
+
       if (this.data && this.data.editing) {
         newForumPost.id = this.postId;
         this.forumPostService.editPost(newForumPost, this.selectedImage).subscribe({

@@ -33,7 +33,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   protected filtered = false;
 
-  protected forumId?: number;
+  protected forumId: number = 1;
   private routeParamsSubscription?: Subscription;
 
   protected gameList: any[] = [];
@@ -76,7 +76,9 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.backgroundService.setClasses(['fallingCds']);
 
     this.routeParamsSubscription = this.route.params.subscribe(params => {
-      this.forumId = params['id'];
+      if (params['id']) {
+        this.forumId = params['id'];
+      }
       this.loadForum(this.forumId);
       if (this.forumId) {
         this.loadPath(this.forumId);
@@ -195,12 +197,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   openDeleteSubforumDialog(subForum: Forum) {
     const dialogTitle = 'Forum deletion';
-    const dialogContent = 'Are you sure you want to delete the forum ' + subForum.forumName + '?';
+    const dialogContent = 'Are you sure you want to delete the forum "' + subForum.forumName + '"?';
     const submitText = 'Delete';
     const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
+      width: '340px',
       data: { dialogTitle, dialogContent, submitText, cancelText }
     });
 
@@ -228,7 +230,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   openRestoreSubforumDialog(subForum: Forum) {
     const dialogTitle = 'Forum restoration';
-    const dialogContent = 'Are you sure you want to restore the forum ' + subForum.forumName + '?';
+    const dialogContent = 'Are you sure you want to restore the forum "' + subForum.forumName + '"?';
     const submitText = 'Restore';
     const cancelText = 'Cancel';
     const submitColor = 'bg-blue-600 hover:bg-blue-700';

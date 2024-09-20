@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -6,28 +6,49 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './popup-dialog.component.html',
 })
 export class PopupDialogComponent implements OnInit {
+  @Input() dialogTitle: string = '';
+  @Input() dialogContent: string = '';
+  @Input() submitText: string = 'Submit';
+  @Input() cancelText: string = 'Cancel';
+  @Input() noSubmitButton: boolean = false;
+  @Input() cancelColor: string = '';
+  @Input() submitColor: string = '';
+  @Input() submitDisabled: boolean = false;
+  
+  @Output() submitted = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
+
   constructor(
     private dialogRef: MatDialogRef<PopupDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) protected data: {
-      dialogTitle: string;
-      dialogContent: string;
-      submitText: string;
-      cancelText: string;
-      noSubmitButton?: boolean;
-      submitColor: string;
-    }
+    @Inject(MAT_DIALOG_DATA) protected injectedData: any
   ) {}
 
   ngOnInit(): void {
-    this.data.submitText = this.data.submitText || 'Submit';
-    this.data.cancelText = this.data.cancelText || 'Cancel';
+    if (this.injectedData) {
+      this.dialogTitle = this.injectedData.dialogTitle || this.dialogTitle;
+      this.dialogContent = this.injectedData.dialogContent || this.dialogContent;
+      this.submitText = this.injectedData.submitText || this.submitText;
+      this.cancelText = this.injectedData.cancelText || this.cancelText;
+      this.noSubmitButton = this.injectedData.noSubmitButton || this.noSubmitButton;
+      this.cancelColor = this.injectedData.cancelColor || this.cancelColor;
+      this.submitColor = this.injectedData.submitColor || this.submitColor;
+      this.submitDisabled = this.injectedData.submitDisabled || this.submitDisabled;
+    }
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);
+    if (!this.submitDisabled) {
+      this.submitted.emit();
+      if (this.dialogRef) {
+        this.dialogRef.close(true);
+      }
+    }
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.cancelled.emit();
+    if (this.dialogRef) {
+      this.dialogRef.close(false);
+    }
   }
 }

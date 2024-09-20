@@ -91,6 +91,7 @@ export class ForumPostListComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((response) => {
+      console.log(response, "AWAWAW!!!");
       if (response) {
         this.loadPosts(this.currentForumId ?? 0);
       }

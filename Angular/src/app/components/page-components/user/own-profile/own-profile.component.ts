@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,7 +10,6 @@ import { ImageCacheService } from '../../../../services/imageCache.service';
 import { BackgroundService } from '../../../../services/background.service';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog.component';
-import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationAction } from '../../../../enums/notificationActions';
@@ -20,7 +19,7 @@ import { FileUploadOptions } from '../../../../enums/fileUploadOptions';
   selector: 'app-own-profile',
   templateUrl: './own-profile.component.html'
 })
-export class OwnProfileComponent extends BaseAdComponent implements OnInit {
+export class OwnProfileComponent implements OnInit {
   public changeProfileInformationForm: FormGroup;
   public changeProfilePictureForm: FormGroup;
 
@@ -39,11 +38,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     public dialog: MatDialog,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
-    adService: AdService,
-    cdRef: ChangeDetectorRef
+    private adService: AdService
   ) {
-    super(adService, backgroundService, cdRef);
-    
     this.changeProfileInformationForm = this.formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       nickname: ['', [Validators.minLength(3)]],
@@ -55,9 +51,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     });
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-
+  ngOnInit(): void {
+    this.adService.setAdVisible(false);
     this.backgroundService.setClasses(['matrixNumbers']);
 
     const observer: Observer<any> = {
