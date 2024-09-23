@@ -168,6 +168,10 @@ body {
   text-shadow: 1px 1px 0px #fb049c;
 }
 
+.noTextShadow {
+  text-shadow: none;
+}
+
 .pinkTextShadowWide {
   text-shadow: 2px 2px 0px #fb049c;
 }

@@ -1,5 +1,5 @@
 
-<div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full pinkTextShadow">
+<div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full">
   <div>
     <!-- Go Back Button -->
     <div class="absolute left-6 top-6">
@@ -7,7 +7,7 @@
     </div>
 
     <!-- Game Title -->
-    <div class="text-4xl font-bold mt-4 mb-6">{{this.game.title}}</div>
+    <div class="text-4xl font-bold mt-4 mb-6 pinkTextShadow">{{this.game.title}}</div>
 
     <!-- Actions -->
     <div class="absolute right-6 top-6 flex flex-col gap-3 items-end" *ngIf="this.authService.isAuthenticated()">
@@ -49,13 +49,13 @@
     </div>
 
     <!-- Tags Section -->
-    <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 m-4 max-w-4xl mx-auto">
       <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base" *ngFor="let tag of game.tags">
         {{ tag.tagName }}
       </div>
     </div>
     
-    <div *ngIf="gameTitle" class="mx-4 my-8">
+    <div *ngIf="gameTitle" class="mx-4 mb-8 mt-10">
       <!-- Critic Review Section -->
       <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
 
