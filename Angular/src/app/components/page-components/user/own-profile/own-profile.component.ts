@@ -116,7 +116,8 @@ export class OwnProfileComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.notificationService.popSuccessToast('Successfully logged out', NotificationAction.GO_TO_HOME);
+    this.notificationService.popSuccessToast('Successfully logged out');
+    this.router.navigate(['/login']);
   }
 
   openAccountDeletionDialog() {
