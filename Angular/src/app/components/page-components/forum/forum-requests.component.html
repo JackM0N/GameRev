@@ -145,10 +145,10 @@
     </div>
 
     <!-- Paginator for Forum Requests -->
-     <div [hidden]="requestList.length < 5">
+     <div [hidden]="totalRequests < 5">
       <mat-paginator
         class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        [length]="requestList.length"
+        [length]="totalRequests"
         [pageSize]="5"
         [pageSizeOptions]="[5, 10, 20]"
         showFirstLastButtons>

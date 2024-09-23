@@ -178,24 +178,24 @@ body {
 
 /*material edits*/
 /*table column sort*/
-.mat-sort-header-arrow{
+.mat-sort-header-arrow {
   color: white !important;
   fill: white !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
 /*paginator*/
-.mat-mdc-paginator-page-size{
+.mat-mdc-paginator-page-size {
   text-align: center;
 }
 
-.mat-mdc-paginator-page-size-label{
+.mat-mdc-paginator-page-size-label {
   color: white;
   font-family: 'arcade';
   font-size: large;
 }
 
-.mat-mdc-paginator-range-label{
+.mat-mdc-paginator-range-label {
   color: white;
   font-family: 'arcade';
   font-size: large;
@@ -216,118 +216,118 @@ body {
   border-top-right-radius: 0px !important;
 }
 
-.mat-mdc-paginator-container{
+.mat-mdc-paginator-container {
   display: flex;
   flex-direction: column;
   border-left: 6px white solid;
   border-right: 6px white solid;
 }
 
-.mat-mdc-form-field div::before, .mat-mdc-form-field div::after{
+.mat-mdc-form-field div::before, .mat-mdc-form-field div::after {
   background: none !important;
 }
 
-.cdk-overlay-pane{
+.cdk-overlay-pane {
   background-color: black;
   color: white;
 }
 
-.mat-mdc-select-panel{
+.mat-mdc-select-panel {
   background-color: black !important;
   color: white !important;
   border-radius: 0px !important;
 }
 
-.mat-mdc-option{
+.mat-mdc-option {
   background-color: black !important;
   color: white !important;
   text-shadow: 2px 2px 0px #fb049c !important;
   font-size: large !important;
 }
 
-.mdc-list-item__primary-text{
+.mdc-list-item__primary-text {
   color: white !important;
   font-family: "arcade" !important;
 }
 
-.mat-mdc-option:hover{
+.mat-mdc-option:hover {
   background-color: rgb(68, 0, 54) !important;
 }
 
-.mat-mdc-paginator-icon{
+.mat-mdc-paginator-icon {
   fill: white !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
-.mat-mdc-select-arrow svg{
+.mat-mdc-select-arrow svg {
   fill: black !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
-.mat-mdc-form-field-infix > mat-select > div > div > span > span{
+.mat-mdc-form-field-infix > mat-select > div > div > span > span {
   color: white;
   font-family: 'arcade';
   font-size: large;
 }
 
 /*date picker*/
-.mat-datepicker-toggle-default-icon{
+.mat-datepicker-toggle-default-icon {
   fill: black !important;
 }
 
-.mat-calendar{
+.mat-calendar {
   background: black;
   color: white !important;
 }
 
-.mdc-icon-button{
+.mdc-icon-button {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
 }
 
-.mdc-button__label{
+.mdc-button__label {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-.mat-calendar-arrow{
+.mat-calendar-arrow {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span{
+.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-mat-datepicker-toggle > button{
+mat-datepicker-toggle > button {
   margin-top: -10px !important;
 }
 
-mat-datepicker-toggle > button > span{
+mat-datepicker-toggle > button > span {
   display: none !important;
 }
 
 /*select*/
-.mat-mdc-select-min-line{
+.mat-mdc-select-min-line {
   margin-left: 8px;
   color: black; 
   filter: none !important;
 }
 
-.mat-mdc-select-arrow{
+.mat-mdc-select-arrow {
   margin: 8px;
 }
 
-.mat-mdc-select-value-text{
+.mat-mdc-select-value-text {
   color: black !important;
 }
 
-.noTextShadow > div > div > span > span{
+.noTextShadow > div > div > span > span {
   color: black;
   font-family: 'arcade';
   font-size: large;
@@ -567,4 +567,13 @@ mat-paginator .mat-mdc-select-value {
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.forumPaginator {
+  background-color: inherit !important;
+  background-size: 22px 22px !important;
+}
+
+.forumPaginator .mat-mdc-paginator-container {
+  border: none !important;
 }

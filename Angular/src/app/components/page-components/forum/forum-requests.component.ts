@@ -21,6 +21,7 @@ export class ForumRequestsComponent implements AfterViewInit {
 
   protected requestList: ForumRequest[] = [];
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
+  protected totalRequests: number = 0;
   protected displayedColumns: string[] = ['forumName', 'description', 'game', 'parentForum', 'author', 'approved', 'options'];
 
   private approvedFilter?: boolean = undefined;
@@ -52,6 +53,7 @@ export class ForumRequestsComponent implements AfterViewInit {
 
   loadForumRequests() {
     this.requestList = [];
+    this.totalRequests = 0;
 
     const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? this.paginator.pageSize : 10;
@@ -60,6 +62,7 @@ export class ForumRequestsComponent implements AfterViewInit {
       next: (response) => {
         if (response) {
           this.requestList = response.content;
+          this.totalRequests = response.totalElements;
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
 

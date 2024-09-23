@@ -99,14 +99,16 @@
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
                 
-                <mat-paginator
-                  class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white border-2 border-white"
-                  [id]="review.id"
-                  [length]="this.reportsList[review.id].totalReports"
-                  [pageSize]="5"
-                  [pageSizeOptions]="[1, 2, 5, 10, 20]"
-                  showFirstLastButtons>
-                </mat-paginator>
+                <div [hidden]="this.reportsList[review.id].totalReports < 5">
+                  <mat-paginator
+                    class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white border-2 border-white"
+                    [id]="review.id"
+                    [length]="this.reportsList[review.id].totalReports"
+                    [pageSize]="5"
+                    [pageSizeOptions]="[5, 10, 20]"
+                    showFirstLastButtons>
+                  </mat-paginator>
+                </div>
               </ng-container>
 
               <ng-template #noReports>
@@ -127,13 +129,15 @@
     </div>
   </div>
 
-  <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-    #reviewsPaginator
-    [length]="totalReviews"
-    [pageSize]="5"
-    [pageSizeOptions]="[2, 5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+  <div [hidden]="totalReviews < 5">
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      #reviewsPaginator
+      [length]="totalReviews"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
 </div>
 
 <div *ngIf="this.noReviews" class="max-w-[500px] m-auto pixel-border">

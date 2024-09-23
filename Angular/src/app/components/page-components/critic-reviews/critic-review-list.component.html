@@ -135,13 +135,15 @@
       </div>
 
       <!-- Paginator -->
-      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        #paginator
-        [length]="totalReviews"
-        [pageSize]="5"
-        [pageSizeOptions]="[2, 5, 10, 20]"
-        showFirstLastButtons>
-      </mat-paginator>
+      <div [hidden]="totalReviews < 5">
+        <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+          #paginator
+          [length]="totalReviews"
+          [pageSize]="5"
+          [pageSizeOptions]="[2, 5, 10, 20]"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
     </div>
   </div>
 </div>

@@ -63,20 +63,21 @@
       </tbody>
     </table>
   </div>
-</div>
 
-<!-- Add new post -->
-<div class="mt-6">
-  <button class="synthwaveButton" *ngIf="authService.isAuthenticated()" (click)="openNewPostDialog()">Add new post</button>
-</div>
+  <!-- Add new post -->
+  <div class="mt-6">
+    <button class="synthwaveButton" *ngIf="authService.isAuthenticated()" (click)="openNewPostDialog()">Add new post</button>
+  </div>
 
-<!-- Paginator -->
-<div [hidden]="totalPosts < 5">
-  <mat-paginator
-    #paginator
-    [length]="totalPosts"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons>
-  </mat-paginator>
+  <!-- Paginator -->
+  <div [hidden]="totalPosts < 5" class="mt-6">
+    <mat-paginator
+      class="font-arcade text-base pinkTextShadowWide forumPaginator bg-repeat text-white"
+      #paginator
+      [length]="totalPosts"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
 </div>
