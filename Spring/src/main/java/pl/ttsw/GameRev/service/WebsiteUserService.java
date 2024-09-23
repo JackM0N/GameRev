@@ -168,8 +168,9 @@ public class WebsiteUserService {
     }
 
     public boolean banUser(WebsiteUserDTO userDTO) {
-        WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername())
+        WebsiteUser user = websiteUserRepository.findByNickname(userDTO.getNickname())
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
+
         WebsiteUser currentUser = getCurrentUser();
 
         if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {

@@ -88,7 +88,7 @@ export class UserService {
 
   openBanDialog(user: WebsiteUser) {
     const dialogTitle = 'User banning';
-    const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
+    const dialogContent = 'Are you sure you want to ban user ' + user.nickname + '?';
     const submitText = 'Ban';
     const cancelText = 'Cancel';
 
@@ -109,7 +109,7 @@ export class UserService {
 
   openUnbanDialog(user: WebsiteUser) {
     const dialogTitle = 'User unbanning';
-    const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
+    const dialogContent = 'Are you sure you want to unban user ' + user.nickname + '?';
     const submitText = 'Unban';
     const cancelText = 'Cancel';
 
