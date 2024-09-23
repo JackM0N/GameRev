@@ -29,7 +29,7 @@
 
   <!-- Forum Table -->
   <div *ngIf="currentForum" [hidden]="noSubForums && !filtered" class="mt-8 bg-[#222222] shadow-lg border border-[#00CFFF]">
-    <div class="px-6 py-4 px-1 overflow-x-auto">
+    <div class="p-6 overflow-x-auto">
 
       <div class="flex justify-between items-center mb-4">
         <!-- Subforums Heading -->
@@ -85,8 +85,8 @@
         </thead>
 
         <tbody>
-          <!-- Subforum Rows -->
           <tr *ngFor="let subforum of subForumList" class="hover:bg-[#333333]" [ngClass]="subforum.isDeleted? 'deleted-forum': ''">
+            <!-- Title and description -->
             <td class="p-4 border-b border-[#00CFFF]">
               <a (click)="navigateToSubforum(subforum.id)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
                 {{ subforum.forumName }} <span class="text-red-600" *ngIf="subforum.isDeleted">(deleted)</span>
@@ -94,8 +94,10 @@
               <p class="text-[#B0B0B0] mt-1">{{ subforum.description }}</p>
             </td>
 
+            <!-- Post count -->
             <td class="p-4 border-b border-[#00CFFF]">{{ subforum.postCount }} Post(s)</td>
 
+            <!-- Last post -->
             <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
               <p class="text-[#E5E5E5]">Last post by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + subforum.lastPost.nickname">{{ subforum.lastPost.nickname }}</a></p>
               <p>
@@ -105,7 +107,6 @@
               </p>
               <p class="text-[#B0B0B0]">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
             </td>
-            
             <td *ngIf="!subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
               <p class="text-[#B0B0B0]">No interactions yet</p>
             </td>

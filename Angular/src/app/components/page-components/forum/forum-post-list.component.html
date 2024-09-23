@@ -1,6 +1,6 @@
 
 <!-- Forum Posts Table -->
-<div class="forum-posts mt-4 bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] px-6 py-4">
+<div class="forum-posts bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] p-6">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold">Posts</h2>
     <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
@@ -12,7 +12,6 @@
     <table class="forum-posts-table w-full table-auto border-collapse">
       <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
         <tr>
-          <th class="p-4 border-b border-[#00CFFF]">Image</th>
           <th class="p-4 border-b border-[#00CFFF]">Post</th>
           <th class="p-4 border-b border-[#00CFFF]">Author</th>
           <th class="p-4 border-b border-[#00CFFF]">Post date</th>
@@ -26,9 +25,7 @@
         <tr *ngFor="let post of postList; let i = index" class="hover:bg-[#333333]">
           <td class="p-4 border-b border-[#00CFFF]">
             <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
-          </td>
 
-          <td class="p-4 border-b border-[#00CFFF]">
             <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
               {{ post.title }}
             </a>
