@@ -24,8 +24,9 @@
           <button class="pinkTextShadow text-white animate-pulse disabled:opacity-30 disabled:animate-none text-xl font-arcade mt-4" [disabled]="!changeProfilePictureForm.valid">Save avatar</button>
         </form>
 
+        <!-- Own profile picture -->
         <div class="screenHead w-80 h-80 py-7 mt-8 z-50">
-          <img class="max-w-[134px] max-h-[134px] m-auto -z-10 relative"[src]="imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Loaded Image" />
+          <img class="max-w-[134px] max-h-[134px] m-auto -z-10 relative" [src]="imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'" alt="Loaded Image" />
         </div>
       </div>
 
@@ -45,8 +46,14 @@
           <div class="mt-2">
             <label class="block pinkTextShadow">Enter current password</label>
             <div class="flex items-center w-[314px] bg-white h-[28px]">
-              <input class="px-1 h-full w-[56] text-black appearance-none" autocomplete="off" [type]="hidePassword() ? 'password' : 'text'" formControlName="currentPassword" required/>
-              <button class="px-1 flex items-center text-black"
+              <input
+                class="h-full w-[56] text-black appearance-none"
+                autocomplete="off"
+                [type]="hidePassword() ? 'password' : 'text'"
+                formControlName="currentPassword"
+                required
+              />
+              <button class="flex items-center text-black"
                 matSuffix
                 type="button"
                 (mousedown)="hidePasswordClickEvent($event)"
