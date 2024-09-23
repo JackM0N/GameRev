@@ -99,7 +99,7 @@
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
                 
-                <div [hidden]="this.reportsList[review.id].totalReports < 5">
+                <div [hidden]="this.reportsList[review.id].totalReports < 6">
                   <mat-paginator
                     class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white border-2 border-white"
                     [id]="review.id"
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <div [hidden]="totalReviews < 5">
+  <div [hidden]="totalReviews < 6">
     <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
       #reviewsPaginator
       [length]="totalReviews"

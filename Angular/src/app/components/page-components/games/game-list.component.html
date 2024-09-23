@@ -139,11 +139,11 @@
       </table>
     </div>
 
-    <div [hidden]="totalGames < 5">
+    <div [hidden]="totalGames < 6">
       <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
         [length]="totalGames"
         [pageSize]="5"
-        [pageSizeOptions]="[2, 5, 10, 20]"
+        [pageSizeOptions]="[5, 10, 20]"
         showFirstLastButtons>
       </mat-paginator>
     </div>
