@@ -169,6 +169,7 @@ export class ForumPostListComponent implements AfterViewInit {
   loadPostPictures() {
     this.postList.forEach(post => {
       if (post.picture && post.id) {
+
         const didPicChange = this.imageCacheService.didPictureNameChange("postPicName" + post.id, post.picture);
         if (!didPicChange && this.imageCacheService.isCached("postPic" + post.id)) {
           const cachedImage = this.imageCacheService.getCachedImage("postPic" + post.id);
