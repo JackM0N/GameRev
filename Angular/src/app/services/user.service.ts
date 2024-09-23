@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { WebsiteUser } from '../interfaces/websiteUser';
 import { userFilters } from '../interfaces/userFilters';
 import { AuthService } from './auth.service';
+import { PopupDialogComponent } from '../components/general-components/popup-dialog.component';
+import { NotificationService } from './notification.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +20,8 @@ export class UserService {
   constructor(
     private authService: AuthService,
     private http: HttpClient,
+    private notificationService: NotificationService,
+    protected dialog: MatDialog,
   ) {}
 
   getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<WebsiteUser> {
@@ -78,6 +83,48 @@ export class UserService {
     return this.http.get<Blob>(url, {
       headers: headers,
       responseType: 'blob' as 'json'
+    });
+  }
+
+  openBanDialog(user: WebsiteUser) {
+    const dialogTitle = 'User banning';
+    const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
+    const submitText = 'Ban';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.banUser(user).subscribe({
+          next: () => { this.notificationService.popSuccessToast('User banned successfuly!'); },
+          error: error => this.notificationService.popErrorToast('User ban failed', error)
+        });
+      }
+    });
+  }
+
+  openUnbanDialog(user: WebsiteUser) {
+    const dialogTitle = 'User unbanning';
+    const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
+    const submitText = 'Unban';
+    const cancelText = 'Cancel';
+
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '300px',
+      data: { dialogTitle, dialogContent, submitText, cancelText  }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.unbanUser(user).subscribe({
+          next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!'); },
+          error: error => this.notificationService.popErrorToast('User unban failed', error)
+        });
+      }
     });
   }
 }

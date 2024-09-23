@@ -179,10 +179,33 @@
             Options
           </th>
           <td class="synthwaveBg bg-repeat border-2 border-white" *matCellDef="let element">
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" (click)="openProfile(element)">Profile</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin" (click)="openUserReviews(element)">Reviews</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && !element.isBanned" (click)="openBanDialog(element)">Ban</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && element.isBanned" (click)="openUnbanDialog(element)">Unban</button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+              (click)="openProfile(element)">
+              Profile
+            </button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+              *ngIf="isAdmin"
+              (click)="openUserReviews(element)">
+              Reviews
+            </button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+              *ngIf="isAdmin && !element.isBanned"
+              (click)="userService.openBanDialog(element)">
+              Ban
+            </button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+              *ngIf="isAdmin && element.isBanned"
+              (click)="userService.openUnbanDialog(element)">
+              Unban
+            </button>
           </td>
         </ng-container>
 

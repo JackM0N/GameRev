@@ -8,7 +8,6 @@ import { MatSort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../interfaces/websiteUser';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
-import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -38,8 +37,7 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
   protected filterForm: FormGroup;
 
   constructor(
-    private userService: UserService,
-    private notificationService: NotificationService,
+    protected userService: UserService,
     private authService: AuthService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
@@ -126,56 +124,6 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
-  openBanDialog(user: WebsiteUser) {
-    const dialogTitle = 'User banning';
-    const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
-    const submitText = 'Ban';
-    const cancelText = 'Cancel';
-
-    const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
-      data: { dialogTitle, dialogContent, submitText, cancelText }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.banUser(user);
-      }
-    });
-  }
-
-  openUnbanDialog(user: WebsiteUser) {
-    const dialogTitle = 'User unbanning';
-    const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
-    const submitText = 'Unban';
-    const cancelText = 'Cancel';
-
-    const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
-      data: { dialogTitle, dialogContent, submitText, cancelText  }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.unbanUser(user);
-      }
-    });
-  }
-
-  banUser(user: WebsiteUser) {
-    this.userService.banUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User banned successfuly!'); },
-      error: error => this.notificationService.popErrorToast('User ban failed', error)
-    });
-  }
-
-  unbanUser(user: WebsiteUser) {
-    this.userService.unbanUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!'); },
-      error: error => this.notificationService.popErrorToast('User unban failed', error)
-    });
   }
 
   openProfile(user: WebsiteUser) {
