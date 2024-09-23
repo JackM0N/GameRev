@@ -1,12 +1,12 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { WebsiteUser } from '../interfaces/websiteUser';
 import { LoginCredentials } from '../interfaces/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { NewCredentials } from '../interfaces/newCredentials';
 import { Role } from '../interfaces/role';
+import { WebsiteUser } from '../interfaces/websiteUser';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +76,14 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return isPlatformBrowser(this.platformId) ? localStorage.getItem('access_token') : null;
+    const token = localStorage.getItem('access_token');
+
+    if (this.jwtHelper.isTokenExpired(token)) {
+      localStorage.removeItem('access_token');
+      return null;
+    }
+
+    return isPlatformBrowser(this.platformId) ? token : null;
   }
   
 
