@@ -8,6 +8,7 @@ import { ImageCacheService } from '../../../services/imageCache.service';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -27,7 +28,8 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
   }
 
   constructor(
-    private userService: UserService,
+    protected authService: AuthService,
+    protected userService: UserService,
     private route: ActivatedRoute,
     private imageCacheService: ImageCacheService,
     private backgroundService: BackgroundService,
@@ -84,5 +86,9 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
         this.userService.getUser(params['name']).subscribe(observer);
       }
     });
+  }
+
+  canManageUser(): boolean {
+    return this.authService.isAuthenticated() && this.authService.isAdmin() && this.user.nickname != this.authService.getNickname();
   }
 }
