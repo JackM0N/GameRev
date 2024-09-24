@@ -33,7 +33,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   protected filtered = false;
 
-  protected forumId: number = 1;
+  protected forumId?: number = undefined;
   private routeParamsSubscription?: Subscription;
 
   protected gameList: any[] = [];
@@ -41,7 +41,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   protected filterForm: FormGroup;
 
   @ViewChild('paginator') paginator!: MatPaginator;
-  @ViewChild('paginatorPosts') paginatorPosts!: MatPaginator;
 
   protected formatDateTime = formatDateTime;
   protected formatDateTimeArray = formatDateTimeArray;
@@ -78,18 +77,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.routeParamsSubscription = this.route.params.subscribe(params => {
       if (params['id']) {
         this.forumId = params['id'];
+      } else {
+        this.forumId = 1;
       }
       this.loadForum(this.forumId);
       if (this.forumId) {
         this.loadPath(this.forumId);
-      }
-    });
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this._adService.adBoxActive$.subscribe(isActive => {
-          super.adjustMargin(isActive);
-        });
       }
     });
   }
