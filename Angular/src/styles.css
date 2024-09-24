@@ -470,6 +470,13 @@ table {
   border-bottom: 2px solid white !important; /* Or any style you prefer */
 }
 
+.ql-editor {
+  font-family: "arcade" !important;
+}
+
+.ql-editor[contenteditable='false'] {
+  padding: 0;
+}
 
 .synthwaveButton {
   background-color: #FF00FF;
