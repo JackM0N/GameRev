@@ -23,11 +23,13 @@ export class AppComponent {
   ) {}
 
   ngOnInit() {
+    /*
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.backgroundService.resetStyles();
       }
     });
+    */
 
     this.backgroundService.style$.subscribe(styles => {
       this.styles = styles;
