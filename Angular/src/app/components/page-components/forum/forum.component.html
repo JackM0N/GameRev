@@ -111,7 +111,7 @@
               <p class="text-[#B0B0B0]">No interactions yet</p>
             </td>
 
-            <!-- Actions column with edit button -->
+            <!-- Post actions -->
             <td class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
               <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600 mr-2" (click)="openEditSubforumDialog(subforum)">
                 <i class="material-icons">edit</i>

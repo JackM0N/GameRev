@@ -5,7 +5,7 @@ import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
 import { Forum } from '../../../interfaces/forum';
 import { MatPaginator } from '@angular/material/paginator';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
 import { parseTopPost } from '../../../util/parseTopPost';
 import { Subscription } from 'rxjs';
