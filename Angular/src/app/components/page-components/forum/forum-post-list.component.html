@@ -23,14 +23,26 @@
 
       <tbody>
         <tr *ngFor="let post of postList; let i = index" class="hover:bg-[#333333]">
+          <!-- Post picture and title -->
           <td class="p-4 border-b border-[#00CFFF]">
-            <img *ngIf="post.picture" [src]="post.picture" alt="Post image" class="w-16 h-16 object-cover rounded">
-
-            <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
-              {{ post.title }}
-            </a>
+            <div style="display: table;">
+              <div style="display: table-cell; vertical-align: middle;">
+                <img
+                  (click)="navigateToPost(post.id)"
+                  *ngIf="post.picture"
+                  [src]="post.picture"
+                  alt="Post image"
+                  class="max-w-16 w-16 h-16 object-cover rounded cursor-pointer">
+              </div>
+              <div style="display: table-cell; vertical-align: middle; padding-left: 10px;">
+                <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
+                  {{ post.title }}
+                </a>
+              </div>
+            </div>
           </td>
-
+          
+          <!-- Clickable author's nickname -->
           <td class="p-4 border-b border-[#00CFFF]">
             <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + post.author?.nickname">{{ post.author?.nickname }}</a>
           </td>
@@ -39,10 +51,12 @@
 
           <td class="p-4 border-b border-[#00CFFF]">{{ post.commentCount }}</td>
 
+          <!-- Last reply -->
           <td class="p-4 border-b border-[#00CFFF]">
             {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
           </td>
 
+          <!-- Post actions - edit and delete -->
           <td class="pl-2 border-b border-[#00CFFF]" *ngIf="canManagePost(post) || isModerator()">
             <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600 ml-[1.5px]" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
               <i class="material-icons">edit</i>
