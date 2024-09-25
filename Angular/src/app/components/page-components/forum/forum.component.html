@@ -61,7 +61,7 @@
           <!-- Search Filter -->
           <div class="flex flex-col space-y-1 w-48">
             <label class="text-sm text-white">Search</label>
-            <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search">
+            <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search" #searchInput>
           </div>
 
           <!-- Clear Button -->
@@ -149,7 +149,5 @@
   </div>
 
   <!-- Forum Posts List -->
-  <div class="mt-2">
-    <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
-  </div>
+  <app-forum-post-list [currentForumId]="forumId" class="m-8"></app-forum-post-list>
 </div>

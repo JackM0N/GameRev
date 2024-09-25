@@ -133,11 +133,9 @@ export class ForumRequestFormDialogComponent {
 
   isGameInvalid() {
     const gameControl = this.forumForm.get('game');
-
     if (!gameControl) {
       return true;
     }
-
     return gameControl.hasError('required') && gameControl.touched
   }
 

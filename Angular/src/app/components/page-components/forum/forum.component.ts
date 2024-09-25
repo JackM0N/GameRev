@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -8,7 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
 import { parseTopPost } from '../../../util/parseTopPost';
-import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { ForumFormDialogComponent } from './forum-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,7 +40,9 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   private filters: forumFilters = {};
   protected filterForm: FormGroup;
 
-  @ViewChild('paginator') paginator!: MatPaginator;
+  @ViewChild('paginator') private paginator!: MatPaginator;
+  @ViewChild('searchInput', { static: false }) private searchInput?: ElementRef;
+
 
   protected formatDateTime = formatDateTime;
   protected formatDateTimeArray = formatDateTimeArray;
@@ -56,7 +58,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     protected dialog: MatDialog,
     protected backgroundService: BackgroundService,
     adService: AdService,
-    cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
 
@@ -80,7 +82,9 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
       } else {
         this.forumId = 1;
       }
+
       this.loadForum(this.forumId);
+
       if (this.forumId) {
         this.loadPath(this.forumId);
       }
@@ -97,6 +101,20 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.paginator.page.subscribe(() => {
       this.loadForum(this.forumId);
     });
+  }
+
+  activateSearchFilter() {
+    setTimeout(() => {
+      if (this.searchInput) {
+        fromEvent(this.searchInput.nativeElement, 'input').pipe(
+          map((event: any) => event.target.value),
+          debounceTime(300),
+          distinctUntilChanged()
+        ).subscribe(value => {
+          this.onSearchFilterChange(value);
+        });
+      }
+    }, 0);
   }
 
   loadGames() {
@@ -146,6 +164,8 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
               subforum.lastPost = parseTopPost(subforum.topPost);
             }
           });
+
+          this.activateSearchFilter();
         }
       },
       error: (error: any) => console.error(error)
@@ -309,6 +329,5 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.filterForm.reset();
     this.filterForm.get('userScore')?.get('min')?.setValue(1);
     this.filterForm.get('userScore')?.get('max')?.setValue(10);
-    this.loadGames();
   }
 }

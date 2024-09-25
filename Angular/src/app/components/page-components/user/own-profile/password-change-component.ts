@@ -65,8 +65,6 @@ export class PasswordChangeComponent {
   }
 
   hideCurrentPasswordClickEvent(event: MouseEvent) {
-    console.log(this.changePasswordForm);
-
     this.hideCurrentPassword.set(!this.hideCurrentPassword());
     event.stopPropagation();
   }

@@ -32,7 +32,6 @@ export class CriticReviewListComponent implements AfterViewInit {
   protected displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
   protected formatDate = formatDateArray;
   protected reviewStatuses = reviewStatuses;
-  protected noCriticReviews = false;
 
   private filters: criticReviewFilters = {};
   protected filterForm: FormGroup;
@@ -88,6 +87,9 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
+    this.totalReviews = 0;
+    this.dataSource = new MatTableDataSource<CriticReview>([]);
+
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
@@ -98,15 +100,9 @@ export class CriticReviewListComponent implements AfterViewInit {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);
-          this.noCriticReviews = (this.dataSource.data.length == 0);
-
-        } else {
-          this.noCriticReviews = true
         }
       },
-      error: error => {
-        console.error(error);
-      },
+      error: error => { console.error(error); },
       complete: () => {}
     };
     this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);

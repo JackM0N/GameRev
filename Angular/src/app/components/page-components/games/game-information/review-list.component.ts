@@ -78,6 +78,9 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       return;
     }
 
+    this.reviewList = [];
+    this.totalReviews = 0;
+
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = 'id';
@@ -88,14 +91,9 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         if (response) {
           this.reviewList = response.content;
           this.totalReviews = response.totalElements;
-        } else {
-          this.reviewList = [];
-          this.totalReviews = 0;
         }
       },
-      error: error => {
-        console.error(error);
-      },
+      error: error => { console.error(error); },
       complete: () => {}
     };
     this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe(observer);
@@ -127,7 +125,6 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         console.log("Username is null");
         return;
       }
-
       review.userNickname = username;
 
       this.userReviewService.deleteUserReview(review).subscribe({

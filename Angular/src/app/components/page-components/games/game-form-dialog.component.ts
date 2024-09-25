@@ -144,9 +144,7 @@ export class GameFormDialogComponent {
           });
         }
       },
-      error: error => {
-        console.error(error);
-      },
+      error: error => { console.error(error); },
       complete: () => {}
     };
     this.tagService.getTags().subscribe(observerTag);
@@ -154,11 +152,9 @@ export class GameFormDialogComponent {
 
   isReleaseStatusInvalid() {
     const releaseStatusControl = this.addingGameForm.get('releaseStatus');
-
     if (!releaseStatusControl) {
       return true;
     }
-
     return releaseStatusControl.hasError('required') && releaseStatusControl.touched
   }
 }

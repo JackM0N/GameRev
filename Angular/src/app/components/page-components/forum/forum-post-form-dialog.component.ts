@@ -90,8 +90,10 @@ export class ForumPostFormDialogComponent {
   checkError(error: any) {
     if (error.error == "Maximum upload size exceeded") {
       this.maxSizeError();
+      
     } else if (this.data?.editing) {
       this.notificationService.popErrorToast('Post editing failed', error);
+
     } else {
       this.notificationService.popErrorToast('Post adding failed', error);
     }
@@ -114,8 +116,6 @@ export class ForumPostFormDialogComponent {
         id: this.forumId
       }
       newForumPost.forum = newForum;
-
-      console.log(newForumPost);
 
       if (this.data && this.data.editing) {
         newForumPost.id = this.postId;

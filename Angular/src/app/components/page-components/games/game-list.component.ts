@@ -22,8 +22,6 @@ import { gameFilters } from '../../../interfaces/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumRequestService } from '../../../services/forumRequest.service';
-import { ForumService } from '../../../services/forum.service';
 
 @Component({
   selector: 'app-game-list',
@@ -40,14 +38,12 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   private filters: gameFilters = {};
   protected filterForm: FormGroup;
   
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+  @ViewChild(MatSort) private sort!: MatSort;
+  @ViewChild('searchInput', { static: true }) private searchInput?: ElementRef;
 
   constructor(
     private gameService: GameService,
-    private forumRequestService: ForumRequestService,
-    private forumService: ForumService,
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,

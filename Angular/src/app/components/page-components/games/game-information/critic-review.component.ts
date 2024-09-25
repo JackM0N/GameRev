@@ -23,7 +23,6 @@ export class GameInfoCriticReviewComponent {
   ) {}
 
   ngOnInit() {
-    // Load critic review
     this.loadCriticReview();
   }
 
@@ -86,5 +85,3 @@ export class GameInfoCriticReviewComponent {
     }
   }
 }
-
-

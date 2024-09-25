@@ -74,11 +74,13 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
         this.gameService.getGameByName(this.gameTitle).subscribe((game: Game) => {
           this.game = game;
 
-          this.releaseStatuses.forEach(status => {
+          // Replace release status with status from the list so it shows up in select
+          for (let status of this.releaseStatuses) {
             if (status.className === this.game.releaseStatus) {
               this.game.releaseStatus = status.name;
+              break;
             }
-          });
+          }
 
           this.updateUsersScoreText();
 
@@ -180,7 +182,6 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
             width: '400px',
             data: { dialogTitle, dialogContent, noSubmitButton: true }
           });
-
           return;
 
         } else if (error.error == "Game is used in forum requests") {
@@ -191,6 +192,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
             width: '400px',
             data: { dialogTitle, dialogContent, noSubmitButton: true }
           });
+          return;
         }
 
         this.notificationService.popErrorToast('Deleting game failed', error);

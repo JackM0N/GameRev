@@ -91,7 +91,6 @@ export class ForumPostListComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((response) => {
-      console.log(response, "AWAWAW!!!");
       if (response) {
         this.loadPosts(this.currentForumId ?? 0);
       }
@@ -190,9 +189,7 @@ export class ForumPostListComponent implements AfterViewInit {
                 }
               }
             },
-            error: error => {
-              console.error(error);
-            },
+            error: error => { console.error(error); },
             complete: () => {}
           };
           this.forumPostService.getPicture(post.id).subscribe(observerPicture);

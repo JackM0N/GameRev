@@ -136,6 +136,8 @@ export class ForumPostComponent extends BaseAdComponent {
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.commentsList = response.content;
+
+          // Load profile pics for all comments
           this.commentsList.forEach((comment: any) => {
             if (comment.author.nickname != this.post?.author?.nickname) {
               this.loadUserProfilePicture(comment.author.nickname, comment.author.profilepic);

@@ -109,6 +109,7 @@ export class ForumFormDialogComponent {
         if (response) {
           this.forumList = response.content;
 
+          // Replace parentForum with object from forum list so it shows in select
           if (this.parentForumId) {
             const findForum = this.forumList.find(forum => forum.id == this.parentForumId);
     
