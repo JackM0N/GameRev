@@ -46,7 +46,7 @@ export class ForumCommentService {
     return this.http.get<ForumComment[]>(`${this.baseUrl}/${id}`, { params });
   }
 
-  editComment(comment: any): Observable<ForumComment> {
+  editComment(comment: any, picture?: File): Observable<ForumComment> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -55,7 +55,14 @@ export class ForumCommentService {
       content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
     };
 
-    return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, sanitizedComment, { headers });
+    const formData = new FormData();
+    formData.append('comment', JSON.stringify(sanitizedComment));
+  
+    if (picture) {
+      formData.append('picture', picture);
+    }
+
+    return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, formData, { headers });
   }
 
   addComment(comment: any, picture?: File): Observable<ForumComment> {
