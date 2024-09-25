@@ -12,8 +12,7 @@
           formControlName="content"
           [modules]="{ toolbar: quillToolbarOptions }"
           [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
-          rows="4"
-          >
+          rows="4">
         </quill-editor>
       
         <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">

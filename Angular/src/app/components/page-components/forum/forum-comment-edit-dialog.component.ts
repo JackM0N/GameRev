@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { NotificationService } from '../../../services/notification.service';
+import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
 
 @Component({
   selector: 'app-forum-comment-edit-dialog',
@@ -16,7 +16,6 @@ export class ForumCommentEditDialogComponent {
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
     ['clean']
   ];
 
@@ -31,7 +30,7 @@ export class ForumCommentEditDialogComponent {
     }
   ) {
     this.commentForm = this.formBuilder.group({
-      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength), trimmedValidator(this.minLength)]],
+      content: [this.content, [Validators.required, quillTextLengthValidator(this.minLength)]],
     });
   }
 

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { AuthService } from '../../../services/auth.service';
-import { trimmedValidator } from '../../../validators/trimmedValidator';
+import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
 
 @Component({
   selector: 'app-forum-comment-form',
@@ -17,7 +17,6 @@ export class ForumCommentFormComponent {
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
     ['clean']
   ];
 
@@ -25,19 +24,14 @@ export class ForumCommentFormComponent {
     protected authService: AuthService,
     private notificationService: NotificationService,
     private forumCommentService: ForumCommentService,
-    private fb: FormBuilder
+    private formBuilder: FormBuilder
   ) {
-    this.commentForm = this.fb.group({
-      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength)]]
+    this.commentForm = this.formBuilder.group({
+      content: [{value: '', disabled: !authService.isAuthenticated()}, [Validators.required, quillTextLengthValidator(this.minLength)]]
     });
   }
 
   submitComment() {
-    if (true) {
-      console.log(this.commentForm);
-      return;
-    }
-
     if (this.commentForm.valid && this.postId) {
       const newComment = {
         content: this.commentForm.value.content,
@@ -55,3 +49,4 @@ export class ForumCommentFormComponent {
     }
   }
 }
+
