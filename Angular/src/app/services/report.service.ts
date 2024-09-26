@@ -6,15 +6,18 @@ import { Report } from '../interfaces/report';
 import { UserReview } from '../interfaces/userReview';
 import { reviewFilters } from '../interfaces/reviewFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling user reports of reviews
 export class ReportService {
-  private baseUrl = 'http://localhost:8080/reports';
-  private reportUrl = 'http://localhost:8080/users-reviews/report';
-  private approveUrl = 'http://localhost:8080/reports/approve';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/reports';
+  private reportUrl = this.apiUrl + '/users-reviews/report';
+  private approveUrl = this.apiUrl + '/reports/approve';
 
   constructor(
     private authService: AuthService,

@@ -4,16 +4,19 @@ import { Observable } from 'rxjs';
 import { Game } from '../interfaces/game';
 import { gameFilters } from '../interfaces/gameFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling games
 export class GameService {
-  private baseUrl = 'http://localhost:8080/games';
-  private addUrl = 'http://localhost:8080/games/create';
-  private editUrl = 'http://localhost:8080/games/edit';
-  private deleteUrl = 'http://localhost:8080/games/delete';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/games';
+  private addUrl = this.apiUrl + '/games/create';
+  private editUrl = this.apiUrl + '/games/edit';
+  private deleteUrl = this.apiUrl + '/games/delete';
 
   constructor(
     private authService: AuthService,

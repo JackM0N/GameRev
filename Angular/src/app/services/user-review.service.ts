@@ -5,17 +5,20 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserReview } from '../interfaces/userReview';
 import { reviewFilters } from '../interfaces/reviewFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling user reviews
 export class UserReviewService {
-  private baseUrl = 'http://localhost:8080/users-reviews';
-  private getByIdUrl = 'http://localhost:8080/users-reviews/id';
-  private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
-  private ownReviews = 'http://localhost:8080/users-reviews/my-reviews';
-  private adminReviews = 'http://localhost:8080/users-reviews/admin/';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/users-reviews';
+  private getByIdUrl = this.apiUrl + '/users-reviews/id';
+  private ratingUrl = this.apiUrl + '/users-reviews/add-rating';
+  private ownReviews = this.apiUrl + '/users-reviews/my-reviews';
+  private adminReviews = this.apiUrl + '/users-reviews/admin/';
 
   constructor(
     private authService: AuthService,

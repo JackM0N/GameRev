@@ -7,18 +7,21 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { NewCredentials } from '../interfaces/newCredentials';
 import { Role } from '../interfaces/role';
 import { WebsiteUser } from '../interfaces/websiteUser';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling website authentication
 export class AuthService {
-  private registerUrl = 'http://localhost:8080/register';
-  private loginUrl = 'http://localhost:8080/login';
-  private profileChangeUrl = 'http://localhost:8080/user/edit-profile';
-  private profileInformationUrl = 'http://localhost:8080/user/account';
-  private profileChangePictureUrl = 'http://localhost:8080/user';
-  private requestPasswordResetUrl = 'http://localhost:8080/password-reset/request';
+  private apiUrl: string = environment.apiUrl;
+  
+  private registerUrl = this.apiUrl + '/register';
+  private loginUrl = this.apiUrl + '/login';
+  private profileChangeUrl = this.apiUrl + '/user/edit-profile';
+  private profileInformationUrl = this.apiUrl + '/user/account';
+  private profileChangePictureUrl = this.apiUrl + '/user';
+  private requestPasswordResetUrl = this.apiUrl + '/password-reset/request';
 
   constructor(
     private http: HttpClient,

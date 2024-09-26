@@ -5,18 +5,21 @@ import { Forum } from '../interfaces/forum';
 import { forumFilters } from '../interfaces/forumFilters';
 import { AuthService } from './auth.service';
 import { WebsiteUser } from '../interfaces/websiteUser';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling forums
 export class ForumService {
-  private baseUrl = 'http://localhost:8080/forum';
-  private pathUrl = 'http://localhost:8080/path';
-  private addUrl = 'http://localhost:8080/forum/create';
-  private editUrl = 'http://localhost:8080/forum/edit';
-  private deleteUrl = 'http://localhost:8080/forum/delete';
-  private moderatorsUrl = 'http://localhost:8080/forum/moderators';
+  private apiUrl: string = environment.apiUrl;
+  
+  private baseUrl = this.apiUrl + '/forum';
+  private pathUrl = this.apiUrl + '/path';
+  private addUrl = this.apiUrl + '/forum/create';
+  private editUrl = this.apiUrl + '/forum/edit';
+  private deleteUrl = this.apiUrl + '/forum/delete';
+  private moderatorsUrl = this.apiUrl + '/forum/moderators';
 
   constructor(
     public authService: AuthService,

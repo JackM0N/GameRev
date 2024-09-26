@@ -3,18 +3,21 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ForumRequest } from '../interfaces/forumRequest';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling forum requests
 export class ForumRequestService {
-  private baseUrl = 'http://localhost:8080/forum-request';
-  private listUrl = 'http://localhost:8080/forum-request/list';
-  private addUrl = 'http://localhost:8080/forum-request/create';
-  private editUrl = 'http://localhost:8080/forum-request/edit';
-  private deleteUrl = 'http://localhost:8080/forum-request/delete';
-  private approveUrl = 'http://localhost:8080/forum-request/approve';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/forum-request';
+  private listUrl = this.apiUrl + '/forum-request/list';
+  private addUrl = this.apiUrl + '/forum-request/create';
+  private editUrl = this.apiUrl + '/forum-request/edit';
+  private deleteUrl = this.apiUrl + '/forum-request/delete';
+  private approveUrl = this.apiUrl + '/forum-request/approve';
 
   constructor(
     private http: HttpClient,

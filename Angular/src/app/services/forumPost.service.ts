@@ -4,18 +4,21 @@ import { Observable } from 'rxjs';
 import { forumPostFilters } from '../interfaces/forumPostFilters';
 import { ForumPost } from '../interfaces/forumPost';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling forum posts
 export class ForumPostService {
-  private baseUrl = 'http://localhost:8080/forum-post';
-  private postByIdUrl = 'http://localhost:8080/post/origin';
-  private deleteUrl = 'http://localhost:8080/forum-post/delete';
-  private addUrl = 'http://localhost:8080/forum-post/create';
-  private editUrl = 'http://localhost:8080/forum-post/edit';
-  private pictureUrl = 'http://localhost:8080/forum-post/picture';
+  private apiUrl: string = environment.apiUrl;
+  
+  private baseUrl = this.apiUrl + '/forum-post';
+  private postByIdUrl = this.apiUrl + '/post/origin';
+  private deleteUrl = this.apiUrl + '/forum-post/delete';
+  private addUrl = this.apiUrl + '/forum-post/create';
+  private editUrl = this.apiUrl + '/forum-post/edit';
+  private pictureUrl = this.apiUrl + '/forum-post/picture';
 
   constructor(
     private http: HttpClient,

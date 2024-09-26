@@ -7,15 +7,18 @@ import { AuthService } from './auth.service';
 import { PopupDialogComponent } from '../components/general-components/popup-dialog.component';
 import { NotificationService } from './notification.service';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling users
 export class UserService {
-  private baseUrl = 'http://localhost:8080/user/list';
-  private banUrl = 'http://localhost:8080/user/ban';
-  private profileUrl = 'http://localhost:8080/user';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/user/list';
+  private banUrl = this.apiUrl + '/user/ban';
+  private profileUrl = this.apiUrl + '/user';
 
   constructor(
     private authService: AuthService,

@@ -5,16 +5,19 @@ import { ForumComment } from '../interfaces/forumComment';
 import { forumCommentFilters } from '../interfaces/forumCommentFilters';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling forum comments
 export class ForumCommentService {
-  private baseUrl = 'http://localhost:8080/post';
-  private addUrl = 'http://localhost:8080/post/create';
-  private editUrl = 'http://localhost:8080/post/edit';
-  private deleteUrl = 'http://localhost:8080/post/delete';
+  private apiUrl: string = environment.apiUrl;
+  
+  private baseUrl = this.apiUrl + '/post';
+  private addUrl = this.apiUrl + '/post/create';
+  private editUrl = this.apiUrl + '/post/edit';
+  private deleteUrl = this.apiUrl + '/post/delete';
 
   constructor(
     public authService: AuthService,

@@ -5,13 +5,16 @@ import { Game } from '../interfaces/game';
 import { UserGame } from '../interfaces/userGame';
 import { libraryFilters } from '../interfaces/libraryFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling user's game library
 export class LibraryService {
-  private baseUrl = 'http://localhost:8080/library';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/library';
 
   constructor(
     private authService: AuthService,

@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Tag } from '../interfaces/tag';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling tags
 export class TagService {
-  private baseUrl = 'http://localhost:8080/tags';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/tags';
 
   constructor(
     private http: HttpClient,
