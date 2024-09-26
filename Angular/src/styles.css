@@ -284,11 +284,13 @@ body {
   color: white !important;
 }
 
+/*
 .mdc-icon-button {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
 }
+*/
 
 .mdc-button__label {
   fill: white !important;

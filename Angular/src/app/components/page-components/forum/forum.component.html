@@ -11,19 +11,23 @@
     </ng-container>
   </nav>
 
-  <!-- Forum Header with Button Aligned and Title Centered -->
-  <header class="forum-header mt-6 relative bg-[#222222] shadow-lg p-6 border border-[#00CFFF]">
-    <!-- Button to View All Requests (Positioned on the right) -->
+  <!-- Forum Header -->
+  <header class="forum-header relative bg-[#222222] shadow-lg p-6 border border-[#00CFFF]">
+    <!-- Button to View All Requests -->
     <div class="absolute right-3 top-3" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
       <button class="synthwaveButton max-w-sm" (click)="routeToRequests()">
         View All Requests
       </button>
     </div>
 
-    <!-- Forum title and description (Centered) -->
+    <!-- Forum title and description -->
     <div class="text-center">
-      <h1 class="text-4xl font-bold text-[#E5E5E5]">{{ currentForum?.forumName }}</h1>
-      <p class="text-lg text-[#B0B0B0] mt-2">{{ currentForum?.description }}</p>
+      <h1 class="text-3xl md:text-4xl font-bold text-[#E5E5E5]">
+        {{ currentForum?.forumName }}
+      </h1>
+      <p class="text-base md:text-lg text-[#B0B0B0] mt-2">
+        {{ currentForum?.description }}
+      </p>
     </div>
   </header>
 
@@ -33,7 +37,7 @@
 
       <div class="flex justify-between items-center mb-4">
         <!-- Subforums Heading -->
-        <h2 class="text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
+        <h2 class="text-2xl min-[450px]:text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
 
         <!-- Filters Section -->
         <div [hidden]="hideFilters && !isFilterExpanded">
@@ -80,11 +84,11 @@
         </button>
       </div>
 
-      <table class="w-full border-collapse">
+      <table class="w-full border-collapse text-sm md:text-base">
         <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
           <tr>
             <th class="p-4 border-b border-[#00CFFF]">Subforum</th>
-            <th class="p-4 border-b border-[#00CFFF]">Posts</th>
+            <th class="p-4 border-b border-[#00CFFF] hidden sm:table-cell">Posts</th>
             <th class="p-4 border-b border-[#00CFFF]">Last Post</th>
             <th class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
           </tr>
@@ -98,10 +102,12 @@
                 {{ subforum.forumName }} <span class="text-red-600" *ngIf="subforum.isDeleted">(deleted)</span>
               </a>
               <p class="text-[#B0B0B0] mt-1">{{ subforum.description }}</p>
+
+              <p class="block sm:hidden">{{ subforum.postCount }} Post(s)</p>
             </td>
 
             <!-- Post count -->
-            <td class="p-4 border-b border-[#00CFFF]">{{ subforum.postCount }} Post(s)</td>
+            <td class="p-4 border-b border-[#00CFFF] hidden sm:table-cell">{{ subforum.postCount }} Post(s)</td>
 
             <!-- Last post -->
             <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">

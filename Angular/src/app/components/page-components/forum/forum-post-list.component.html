@@ -2,14 +2,14 @@
 <!-- Forum Posts Table -->
 <div class="forum-posts bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] p-6">
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold">Posts</h2>
+    <h2 class="text-2xl min-[450px]:text-3xl font-bold">Posts</h2>
     <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
       You are a moderator of this forum
     </p>
   </div>
   
   <div class="overflow-x-auto">
-    <table class="forum-posts-table w-full table-auto border-collapse">
+    <table class="forum-posts-table w-full table-auto border-collapse text-sm md:text-base">
       <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
         <tr>
           <th class="p-4 border-b border-[#00CFFF]">Post</th>
