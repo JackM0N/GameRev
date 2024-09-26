@@ -1,5 +1,5 @@
 
-<div class="p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
+<div class="forum-content p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
@@ -36,42 +36,48 @@
         <h2 class="text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
 
         <!-- Filters Section -->
-        <form [formGroup]="filterForm" class="flex space-x-4 items-start">
-          <!-- Game Filter -->
-          <div class="flex flex-col space-y-1 w-64">
-            <label class="text-sm text-white">Game</label>
-            <mat-select (selectionChange)="onGameFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="game">
-              <mat-option>-</mat-option>
-              @for (game of gameList; track game.id) {
-                <mat-option [value]="game">{{game.title}}</mat-option>
-              }
-            </mat-select>
-          </div>
+        <div [hidden]="hideFilters && !isFilterExpanded">
+          <form [formGroup]="filterForm" [ngClass]="(hideFilters && isFilterExpanded) ? 'flex flex-col space-y-4 fixed z-60 bg-[#222222] p-6 max-w-fit mt-8 right-6 border-2' : 'flex space-x-4 items-start'" id="filter-form">
+            <!-- Game Filter -->
+            <div class="flex flex-col space-y-1 w-64">
+              <label class="text-sm text-white">Game</label>
+              <mat-select (selectionChange)="onGameFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="game">
+                <mat-option>-</mat-option>
+                @for (game of gameList; track game.id) {
+                  <mat-option [value]="game">{{game.title}}</mat-option>
+                }
+              </mat-select>
+            </div>
 
-          <!-- Is Deleted Filter -->
-          <div class="flex flex-col space-y-1 w-32" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-            <label class="text-sm text-white">Is deleted</label>
-            <mat-select (selectionChange)="onDeletedFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="isDeleted">
-              <mat-option>-</mat-option>
-              <mat-option [value]="true">True</mat-option>
-              <mat-option [value]="false">False</mat-option>
-            </mat-select>
-          </div>
+            <!-- Is Deleted Filter -->
+            <div class="flex flex-col space-y-1 w-32" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+              <label class="text-sm text-white">Is deleted</label>
+              <mat-select (selectionChange)="onDeletedFilterChange($event)" class="border-2 bg-white text-black text-sm noTextShadow" formControlName="isDeleted">
+                <mat-option>-</mat-option>
+                <mat-option [value]="true">True</mat-option>
+                <mat-option [value]="false">False</mat-option>
+              </mat-select>
+            </div>
 
-          <!-- Search Filter -->
-          <div class="flex flex-col space-y-1 w-48">
-            <label class="text-sm text-white">Search</label>
-            <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search" #searchInput>
-          </div>
+            <!-- Search Filter -->
+            <div class="flex flex-col space-y-1 w-48">
+              <label class="text-sm text-white">Search</label>
+              <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search" #searchInput>
+            </div>
 
-          <!-- Clear Button -->
-          <div class="flex flex-col space-y-1">
-            <label class="text-sm text-white">Clear</label>
-            <button class="bg-blue-500 text-white flex items-center justify-center py-2 px-3 hover:bg-blue-600" (click)="clearFilters()">
-              <i class="material-icons">close</i>
-            </button>
-          </div>
-        </form>
+            <!-- Clear Button -->
+            <div class="flex flex-col space-y-1">
+              <label class="text-sm text-white">Clear</label>
+              <button class="bg-blue-500 text-white flex items-center justify-center py-2 px-3 hover:bg-blue-600" (click)="clearFilters()">
+                <i class="material-icons">close</i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <button [hidden]="!hideFilters" id="filtersMenuButton" mat-icon-button aria-label="Subforum filters" (click)="toggleFilterPanel()">
+          <mat-icon>filter_alt</mat-icon>
+        </button>
       </div>
 
       <table class="w-full border-collapse">

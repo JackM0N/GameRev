@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -57,8 +57,9 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     private route: ActivatedRoute,
     protected dialog: MatDialog,
     protected backgroundService: BackgroundService,
+    private elRef: ElementRef,
     adService: AdService,
-    private cdRef: ChangeDetectorRef
+    cdRef: ChangeDetectorRef
   ) {
     super(adService, backgroundService, cdRef);
 
@@ -89,6 +90,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
         this.loadPath(this.forumId);
       }
     });
+
+    this._adService.adBoxActive$.subscribe(isActive => {
+      setTimeout(() => {
+        this.adjustFilterVisibility();
+      }, 0);
+    });
   }
 
   ngOnDestroy(): void {
@@ -101,6 +108,53 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.paginator.page.subscribe(() => {
       this.loadForum(this.forumId);
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.adjustFilterVisibility();
+  }
+
+  protected hideFilters: boolean = false;
+  protected isFilterExpanded: boolean = false;
+  toggleFilterPanel() {
+    this.isFilterExpanded = !this.isFilterExpanded;
+  }
+
+  private isForumContentSmall(): boolean {
+    const forumContent = this.elRef.nativeElement.querySelector('.forum-content');
+    const filterForm = this.elRef.nativeElement.querySelector('#filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#filtersMenuButton');
+
+    if (forumContent && filterForm && filterMenuButton) {
+      const forumContentWidth = forumContent.offsetWidth;
+  
+      this.hideFilters = (forumContentWidth < 900);
+      return (forumContentWidth < 900);
+    }
+
+    return false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    const filterForm = this.elRef.nativeElement.querySelector('#filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#filtersMenuButton');
+
+    if (filterForm && this.isFilterExpanded && !filterForm.contains(targetElement) && (filterMenuButton && !filterMenuButton.contains(targetElement))) {
+      this.isFilterExpanded = false;
+    }
+  }
+
+  adjustFilterVisibility() {
+    const isSmall = this.isForumContentSmall();
+
+    this.hideFilters = isSmall;
+
+    if (!isSmall && this.isFilterExpanded) {
+      this.isFilterExpanded = false;
+    }
   }
 
   activateSearchFilter() {
@@ -164,6 +218,10 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
               subforum.lastPost = parseTopPost(subforum.topPost);
             }
           });
+
+          setTimeout(() => {
+            this.adjustFilterVisibility();
+          }, 0);
 
           this.activateSearchFilter();
         }
