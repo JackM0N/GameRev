@@ -5,7 +5,7 @@
   </div>
 </div>
 
-<div class="w-fit m-auto my-6 pixel-border p-[6px]">
+<div class="w-fit m-auto pixel-border p-[6px]">
   <div class="synthwaveBg py-2 px-6">
     <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
       Review list
@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div [hidden]="totalReviews < 1" class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
+<div [hidden]="totalReviews < 1" class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider mt-6">
   <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
     <div class="px-1 overflow-x-auto">
       <table mat-table [dataSource]="this.dataSource" matSort (matSortChange)="sortData()" class="appearance-none bg-black">

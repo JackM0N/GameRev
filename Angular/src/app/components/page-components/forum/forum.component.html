@@ -34,7 +34,7 @@
       <div class="flex justify-between items-center mb-4">
         <!-- Subforums Heading -->
         <h2 class="text-3xl font-bold text-[#E5E5E5] mr-6">Subforums</h2>
-        
+
         <!-- Filters Section -->
         <form [formGroup]="filterForm" class="flex space-x-4 items-start">
           <!-- Game Filter -->
@@ -113,17 +113,19 @@
 
             <!-- Post actions -->
             <td class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
-              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600 mr-2" (click)="openEditSubforumDialog(subforum)">
-                <i class="material-icons">edit</i>
-              </button>
+              <div class="flex space-x-2">
+                <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditSubforumDialog(subforum)">
+                  <i class="material-icons">edit</i>
+                </button>
 
-              <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" *ngIf="!subforum.isDeleted" (click)="openDeleteSubforumDialog(subforum)">
-                <i class="material-icons">delete</i>
-              </button>
+                <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" *ngIf="!subforum.isDeleted" (click)="openDeleteSubforumDialog(subforum)">
+                  <i class="material-icons">delete</i>
+                </button>
 
-              <button class="bg-blue-500 text-white px-3 pb-1 pt-2 hover:bg-blue-600" *ngIf="subforum.isDeleted" (click)="openRestoreSubforumDialog(subforum)">
-                <i class="material-icons">restore</i>
-              </button>
+                <button class="bg-blue-500 text-white px-3 pb-1 pt-2 hover:bg-blue-600" *ngIf="subforum.isDeleted" (click)="openRestoreSubforumDialog(subforum)">
+                  <i class="material-icons">restore</i>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
