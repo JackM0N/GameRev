@@ -25,7 +25,7 @@
 </app-ad-box>
 
 <main class="grow flex flex-col justify-between" [ngStyle]="styles" [ngClass]="classes">
-  <div class="main-container" [ngStyle]="mainStyles">
+  <div class="main-container flex-1 p-0 min-[560px]:p-4" [ngStyle]="mainStyles">
     <router-outlet class="flex flex-col justify-between"></router-outlet>
   </div>
 </main>

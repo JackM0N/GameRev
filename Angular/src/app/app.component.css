@@ -79,8 +79,3 @@
 main {
     display: flex;
 }
-
-.main-container {
-    flex: 1;
-    padding: 20px;
-}
