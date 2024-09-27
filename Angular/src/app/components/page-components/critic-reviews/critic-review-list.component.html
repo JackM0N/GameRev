@@ -87,7 +87,7 @@
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef>
               Content
             </th>
-            <td (click)="openContentDialog(element)" class="synthwaveBg quillViewCell bg-repeat text-white font-arcade ml-1 text-center text-xs pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+            <td (click)="openContentDialog(element)" class="synthwaveBg quillViewCell bg-repeat text-white font-arcade ml-1 text-center pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
               <quill-view [content]="element.content"></quill-view>
             </td>
           </ng-container>
