@@ -4,7 +4,7 @@
     <h1 class="text-xl pinkTextShadow">{{ data.dialogTitle }}</h1>
 
     <div class="mt-4 text-sm pinkTextShadow max-h-[40rem] overflow-y-auto">
-      <p [innerHTML]="data.dialogContent"></p>
+      <quill-view [content]="data.dialogContent" theme="snow"></quill-view>
     </div>
 
     <div class="mt-4 flex flex-row justify-center gap-5">
