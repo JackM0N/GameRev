@@ -224,7 +224,6 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     const dialogContent = 'Report review by ' + review.userNickname;
 
     const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
-      width: '400px',
       data: { dialogContent }
     });
 
