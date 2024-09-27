@@ -58,7 +58,7 @@ export class ForumPostListComponent implements AfterViewInit {
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const size = this.paginator ? this.paginator.pageSize : 10;
 
-    this.forumPostService.getPosts(id, page, size).subscribe({
+    this.forumPostService.getPosts(id, page, size, "postDate", "desc").subscribe({
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.postList = response.content;
