@@ -79,8 +79,8 @@ export class CriticReviewFormDialogComponent {
       }
 
       this.criticReviewService.addCriticReview(reviewData).subscribe({
-        next: () => this.notificationService.popSuccessToast('Added review successfully'),
-        error: error => this.notificationService.popErrorToast('Adding review failed', error)
+        next: () => this.notificationService.popSuccessToast('Requested review successfully'),
+        error: error => this.notificationService.popErrorToast('Requesting review failed', error)
       });
       this.dialogRef.close(true);
     }

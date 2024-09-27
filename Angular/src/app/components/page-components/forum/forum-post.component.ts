@@ -233,7 +233,6 @@ export class ForumPostComponent extends BaseAdComponent {
 
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
-      width: '400px',
       data: {
         commentId: comment.id,
         commentContent: comment.content
@@ -298,7 +297,6 @@ export class ForumPostComponent extends BaseAdComponent {
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: post.forum.id,
         editing: true,

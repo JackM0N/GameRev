@@ -21,6 +21,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';
 import { CriticReviewContentDialogComponent } from './critic-review-content-dialog.component';
+import { CriticReviewFormDialogComponent } from './critic-review-form-dialog.component';
 
 @Component({
   selector: 'app-critic-review-list',
@@ -191,8 +192,19 @@ export class CriticReviewListComponent implements AfterViewInit {
     return status;
   }
 
-  editReview(review: CriticReview) {
-    this.router.navigate(['/critic-reviews/edit/' + review.id]);
+  openEditCriticReviewDialog(review: CriticReview) {
+    const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
+      data: {
+        editing: true,
+        review: review
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadReviews();
+      }
+    });
   }
 
   // Filters

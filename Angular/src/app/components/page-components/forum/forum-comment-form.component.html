@@ -6,25 +6,22 @@
   
   <div class="post-body mt-4">
     <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
-      <div id="content-container">
-        <quill-editor
-          class="quill-editor-custom bg-[#1E1E1E] text-white border border-[#00CFFF]"
-          formControlName="content"
-          [modules]="{ toolbar: quillToolbarOptions }"
-          [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
-          rows="4">
-        </quill-editor>
-      
-        <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-          Content must be at least {{ minLength }} characters long.
-        </div>
+
+      <quill-editor
+        class="comment-quill-editor bg-[#1E1E1E] text-white border border-[#00CFFF] w-full h-48"
+        formControlName="content"
+        [modules]="{ toolbar: quillToolbarOptions }"
+        [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
+        rows="4">
+      </quill-editor>
+    
+      <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
+        Content must be at least {{ minLength }} characters long.
       </div>
 
-      <div>
-        <button class="synthwaveButton" color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">
-          Submit
-        </button>
-      </div>
+      <button class="synthwaveButton mt-2" color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">
+        Submit
+      </button>
     </form>
   </div>
 </div>

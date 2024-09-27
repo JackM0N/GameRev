@@ -83,7 +83,6 @@ export class ForumPostListComponent implements AfterViewInit {
 
   openNewPostDialog() {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: this.currentForumId,
         editing: false
@@ -116,7 +115,6 @@ export class ForumPostListComponent implements AfterViewInit {
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: this.currentForumId,
         editing: true,

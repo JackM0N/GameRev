@@ -426,34 +426,29 @@ mat-datepicker-toggle > button > span {
 
 
 /* Quill editor styles */
-.quill-editor-custom {
-  width: 100%; /* Ensure the editor takes full width */
-  box-sizing: border-box; /* Ensure padding and border are included in the width */
-  margin-bottom: 18px; /* Consistent margin bottom */
-  font-size: 14px;
-  
-  font-family: Arial, sans-serif !important; /* Ensure normal font */
+.white-quill-editor {
   text-shadow: none !important; /* Remove any text shadow */
 }
 
-.quill-editor-custom .ql-container {
-  height: 150px; /* Set a consistent height for the editor */
-  border: 1px solid #d6d6d6; /* Border to match input fields */
-  border-radius: 0px; /* No border radius */
-  font-size: 14px;
+.white-quill-editor .ql-editor {
+  background-color: white;
 }
 
-.quill-editor-custom .ql-toolbar {
-  border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
-  border-bottom: none; /* Remove bottom border to avoid double border */
-  border-radius: 0px; /* No border radius */
-  margin-bottom: 0px; /* Consistent margin bottom */
+.comment-quill-editor .ql-container {
+  height: 150px;
+  border: none !important;
 }
 
-.quill-editor-custom .ql-editor {
-  font-size: 14px;
-  font-family: Arial, sans-serif;
+.comment-quill-editor .ql-toolbar {
+  border: none !important;
+  border-bottom: 1px solid #00CFFF !important;
 }
+
+.ql-editor::before {
+  color: inherit !important;
+  font-style: italic;
+}
+
 
 .ql-editor::before {
   color: inherit !important;
