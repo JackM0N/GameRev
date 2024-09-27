@@ -59,7 +59,7 @@
 </div>
 
 <!-- Review Table Section -->
-<div [hidden]="this.noCriticReviews">
+<div [hidden]="totalReviews < 1">
   <div class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
     <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
       <div class="px-1 overflow-x-auto">
@@ -87,7 +87,9 @@
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef>
               Content
             </th>
-            <td (click)="openContentDialog(element)" class="cursor-pointer synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white clampContent" mat-cell *matCellDef="let element" [innerHTML]="element.content"></td>
+            <td (click)="openContentDialog(element)" class="synthwaveBg quillViewCell bg-repeat text-white font-arcade ml-1 text-center text-xs pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              <quill-view [content]="element.content"></quill-view>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="postDate">
@@ -182,4 +184,8 @@
 </div>
 
 <!-- No Critic Reviews Message -->
-<div *ngIf="this.noCriticReviews" class="text-center text-white pinkTextShadowWide">No critic reviews to show</div>
+<div *ngIf="totalReviews < 1" class="max-w-[500px] m-auto pixel-border px-[6px]">
+  <div class="py-[6px]">
+    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No critic reviews to show</p>
+  </div>
+</div>

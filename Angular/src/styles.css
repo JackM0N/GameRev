@@ -590,3 +590,19 @@ mat-paginator .mat-mdc-select-value {
 .forumPaginator .mat-mdc-paginator-container {
   border: none !important;
 }
+
+.quillViewCell .ql-editor {
+  max-height: 140px;
+  overflow: auto;
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.quillViewCell .ql-editor * {
+  cursor: pointer;
+}
+
+.quillViewCell {
+  padding: 0 !important;
+}
