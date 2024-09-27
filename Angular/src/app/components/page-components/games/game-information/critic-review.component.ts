@@ -44,14 +44,13 @@ export class GameInfoCriticReviewComponent {
     });
   }
 
-  canAddCriticReview() {
+  canRequestCriticReview() {
     return this.authService.isAuthenticated() && this.authService.hasRole('Critic');
   }
 
-  openAddCriticReviewDialog() {
+  openRequestCriticReviewDialog() {
     if (this.gameTitle) {
       const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
-        width: '400px',
         data: {
           editing: false,
           gameTitle: this.gameTitle
@@ -69,7 +68,6 @@ export class GameInfoCriticReviewComponent {
   openEditCriticReviewDialog(review: CriticReview) {
     if (this.gameTitle) {
       const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
-        width: '400px',
         data: {
           editing: true,
           gameTitle: this.gameTitle,
