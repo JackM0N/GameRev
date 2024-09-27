@@ -24,8 +24,7 @@ class ReportInformation {
 
 @Component({
   selector: 'app-report-list',
-  templateUrl: './report-list.component.html',
-  styleUrl: './report-list.component.css'
+  templateUrl: './report-list.component.html'
 })
 export class ReportListComponent implements AfterViewInit {
   protected reviewsList: UserReview[] = [];

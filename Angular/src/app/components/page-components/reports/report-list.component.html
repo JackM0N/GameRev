@@ -45,10 +45,10 @@
 <!-- Reviews Section -->
 <div [hidden]="noReviews" class="text-white font-arcade synthwaveBg bg-repeat pixel-border max-[500px]:w-full w-11/12 h-fit m-auto bg-black pinkTextShadow pb-4">
   <div class="p-5 px-6">
-    <h3 class="text-lg pb-4">Reviews</h3>
+    <h3 class="text-lg pb-4">Reviews with reports</h3>
     
     <div class="review-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-      <div class="review-item p-6 bg-[#1A1A1A] border-2 border-[#FF00FF] rounded-lg shadow-lg" *ngFor="let review of this.reviewsList">
+      <div class="review-item p-6 bg-[#1A1A1A] border-2 border-[#FF00FF] shadow-lg" *ngFor="let review of this.reviewsList">
         <div class="m-0 p-0 text-lg font-bold text-[#FF00FF]">by {{ review.userNickname }}</div>
         <p class="text-base">{{ review.content }}</p>
         
@@ -59,13 +59,11 @@
           <div><strong>Dislikes:</strong> {{ review.negativeRating }}</div>
         </div>
 
-        <button type="button" (click)="openReviewDeletionConfirmationDialog(review)" class="mb-4 mt-4 w-full bg-[#FF00FF] text-white px-6 py-2 rounded-lg">
-          Delete review
-        </button>
-
-        <mat-expansion-panel hideToggle class="reportsPanel" (opened)="onPanelOpened(review)">
+        <mat-expansion-panel hideToggle class="!bg-[#282828] border-2 !mt-4 !rounded-none" (opened)="onPanelOpened(review)" #panel>
           <mat-expansion-panel-header>
-            <mat-panel-title class="reportPanelTitle font-arcade">Show reports</mat-panel-title>
+            <mat-panel-title class="!text-white font-arcade">
+              {{ panel.expanded ? 'Hide reports' : 'Show reports' }}
+            </mat-panel-title>
           </mat-expansion-panel-header>
 
           <ng-container *ngIf="review.id; else noId">
@@ -125,6 +123,10 @@
             <p>Review ID is not available</p>
           </ng-template>
         </mat-expansion-panel>
+
+        <button type="button" (click)="openReviewDeletionConfirmationDialog(review)" class="mb-4 mt-4 w-full bg-[#FF00FF] hover:bg-[#d600d6] text-white px-6 py-2">
+          Delete review
+        </button>
       </div>
     </div>
   </div>
