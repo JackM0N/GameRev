@@ -1,27 +1,59 @@
 
 <toaster-container></toaster-container>
 
-<header class="header">
-  <div class="container">
-    <h1 class="logo">Gamerev</h1>
-    <nav class="navbar">
-      <ul class="nav-list">
-        <li class="nav-item"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Homepage</a></li>
-        <li class="nav-item"><a routerLink="/games" routerLinkActive="active">Games</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])"><a routerLink="/users" routerLinkActive="active">Users</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin'])"><a routerLink="/reports" routerLinkActive="active">Reports</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])"><a routerLink="/critic-reviews" routerLinkActive="active">Critics</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/library" routerLinkActive="active">Library</a></li>
+<header class="bg-[blueviolet] text-white font-arcade">
+  <div class="container mx-auto flex items-center justify-between p-4">
+    <h1 class="text-2xl font-bold">
+      <a href="/" class="hover:text-gray-400">
+        Gamerev
+      </a>
+    </h1>
 
-        <li class="nav-item" *ngIf="!authService.isAuthenticated()"><a routerLink="/login" routerLinkActive="active">Login</a></li>
-        <li class="nav-item" *ngIf="!authService.isAuthenticated()"><a routerLink="/register" routerLinkActive="active">Register</a></li>
-        <li class="nav-item" *ngIf="authService.isAuthenticated()"><a routerLink="/profile" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Profile</a></li>
+    <!-- Navbar for larger screens -->
+    <nav class="hidden sm:flex sm:items-center">
+      <ul class="flex flex-col sm:flex-row sm:space-x-8 space-y-4 sm:space-y-0">
+        <ng-container *ngFor="let route of routes">
+          <li *ngIf="canUseRoute(route) && !route.onlyMobile">
+            <a [routerLink]="route.link" routerLinkActive="active" class="hover:text-gray-400">{{ route.label }}</a>
+          </li>
+        </ng-container>
       </ul>
     </nav>
+
+    <div class="flex items-center space-x-4">
+      <!-- Hamburger Icon for mobile navigation -->
+      <button id="mobile-navbar-button" class="block sm:!hidden" mat-icon-button aria-label="Toggle Navigation" (click)="toggleNavbar()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <a mat-icon-button href="/profile" class="block sm:!hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+        </svg>      
+      </a>
+    </div>
   </div>
+
+  <!-- Mobile Navbar -->
+  <nav id="mobile-navbar-menu" [ngClass]="{'block': isNavbarOpen, 'hidden': !isNavbarOpen}" class="sm:hidden bg-[#670abf]">
+    <ul class="flex flex-col text-right">
+      <ng-container *ngFor="let route of routes">
+        <li *ngIf="canUseRoute(route)" class="border-b-2 px-4 h-12 flex items-center cursor-pointer">
+          <mat-icon class="mr-2">arrow_back_ios</mat-icon>
+          <a [routerLink]="route.link" routerLinkActive="active" class="flex-1 text-right hover:text-gray-400" (click)="closeNavbar()">
+            {{ route.label }}
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </nav>
 </header>
 
-<app-ad-box class="z-100 fixed my-auto ml-4 min-h-dvh flex items-center bottom-0 transform">
+
+
+<app-ad-box class="fixed my-auto ml-4 min-h-dvh flex items-center bottom-0 transform">
 </app-ad-box>
 
 <main class="grow flex flex-col justify-between" [ngStyle]="styles" [ngClass]="classes">

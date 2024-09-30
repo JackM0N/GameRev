@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
-import { Router, NavigationStart } from '@angular/router';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +10,30 @@ import { Router, NavigationStart } from '@angular/router';
 })
 export class AppComponent {
   title = 'Gamerev';
+  isNavbarOpen = false;
 
   styles: { [key: string]: string } = {};
   mainStyles: { [key: string]: string } = {};
   classes: string[] = [];
 
+  routes = [
+    { label: 'Homepage', link: '/', onlyMobile: true },
+    { label: 'Games', link: '/games' },
+    { label: 'Users', link: '/users', roles: ['Admin', 'Critic'] },
+    { label: 'Reports', link: '/reports', roles: ['Admin'] },
+    { label: 'Critics', link: '/critic-reviews', roles: ['Admin', 'Critic'] },
+    { label: 'Library', link: '/library' },
+    { label: 'Profile', link: '/profile' },
+
+    { label: 'Login', link: '/login', guestOnly: true },
+    { label: 'Register', link: '/register', guestOnly: true }
+  ];
+
   constructor(
-    private router: Router,
     public authService: AuthService,
     private backgroundService: BackgroundService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private elRef: ElementRef,
   ) {}
 
   ngOnInit() {
@@ -43,5 +57,39 @@ export class AppComponent {
       this.classes = classes;
       this.cdRef.detectChanges();
     });
+  }
+
+  toggleNavbar() {
+    this.isNavbarOpen = !this.isNavbarOpen;
+  }
+
+  closeNavbar() {
+    this.isNavbarOpen = false;
+  }
+
+  canUseRoute(route: any) {
+    if (route.guestOnly) {
+      return !this.authService.isAuthenticated();
+    }
+    if (!route.roles || route.roles.length === 0) {
+      return true;
+    }
+    return this.authService.hasAnyRole(route.roles);
+  }
+
+  // Close the navbar if the click is outside of it and it is currently open
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    const mobileNavbar = this.elRef.nativeElement.querySelector('#mobile-navbar-menu');
+    const mobileNavbarButton = this.elRef.nativeElement.querySelector('#mobile-navbar-button');
+
+    if (targetElement) {
+      const clickedInside = mobileNavbar.contains(targetElement);
+  
+      if (!clickedInside && this.isNavbarOpen && !mobileNavbarButton.contains(targetElement)) {
+        this.closeNavbar();
+      }
+    }
   }
 }
