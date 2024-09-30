@@ -49,13 +49,13 @@
     </div>
 
     <!-- Tags Section -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 m-4 max-w-4xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4 max-w-4xl mx-auto">
       <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base" *ngFor="let tag of game.tags">
         {{ tag.tagName }}
       </div>
     </div>
     
-    <div *ngIf="gameTitle" class="mx-4 mb-8 mt-10">
+    <div *ngIf="gameTitle">
       <!-- Critic Review Section -->
       <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
 
