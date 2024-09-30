@@ -43,7 +43,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   @ViewChild('paginator') private paginator!: MatPaginator;
   @ViewChild('searchInput', { static: false }) private searchInput?: ElementRef;
 
-
   protected formatDateTime = formatDateTime;
   protected formatDateTimeArray = formatDateTimeArray;
 
@@ -122,15 +121,14 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   private isForumContentSmall(): boolean {
-    const forumContent = this.elRef.nativeElement.querySelector('.forum-content');
+    const subForumContent = this.elRef.nativeElement.querySelector('#subforum-content');
     const filterForm = this.elRef.nativeElement.querySelector('#filter-form');
     const filterMenuButton = this.elRef.nativeElement.querySelector('#filtersMenuButton');
 
-    if (forumContent && filterForm && filterMenuButton) {
-      const forumContentWidth = forumContent.offsetWidth;
-  
-      this.hideFilters = (forumContentWidth < 900);
-      return (forumContentWidth < 900);
+    if (subForumContent && filterForm && filterMenuButton) {
+      const subForumContentWidth = subForumContent.offsetWidth;
+      
+      return (subForumContentWidth < 960);
     }
 
     return false;
