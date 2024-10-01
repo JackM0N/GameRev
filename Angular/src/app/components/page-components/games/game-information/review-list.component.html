@@ -44,7 +44,7 @@
       <!-- Post info -->
       <p class="pb-2">
         <strong>
-          <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + review.userNickname">{{ review.userNickname }}</a>
+          <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + review.userNickname">{{ review.userNickname }}</a>
           </strong>, Score: {{ review.score }}, Date: {{ formatDateArray(review.postDate) }}
       </p>
       

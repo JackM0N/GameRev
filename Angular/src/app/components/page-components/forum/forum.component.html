@@ -3,7 +3,7 @@
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
-      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
+      <a *ngIf="i < path.length - 1" [routerLink]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
         {{ segment.forumName }}
       </a>
       <span *ngIf="i < path.length - 1" class="text-gray-500"> &gt; </span>
@@ -111,7 +111,7 @@
 
             <!-- Last post -->
             <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
-              <p class="text-[#E5E5E5]">Last post by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + subforum.lastPost.nickname">{{ subforum.lastPost.nickname }}</a></p>
+              <p class="text-[#E5E5E5]">Last post by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + subforum.lastPost.nickname">{{ subforum.lastPost.nickname }}</a></p>
               <p>
                 in <a (click)="navigateToLastPost(subforum.lastPost)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
                   {{ subforum.lastPost.title }}

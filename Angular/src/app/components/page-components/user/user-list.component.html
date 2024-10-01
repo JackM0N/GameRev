@@ -100,7 +100,7 @@
             Nickname
           </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
-            <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.nickname">{{element.nickname}}</a>
+            <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.nickname">{{element.nickname}}</a>
           </td>
         </ng-container>
 

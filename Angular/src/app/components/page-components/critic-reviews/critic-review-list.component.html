@@ -79,7 +79,7 @@
               User
             </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
-              <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.user.nickname">{{element.user.nickname}}</a>
+              <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.user.nickname">{{element.user.nickname}}</a>
             </td>
           </ng-container>
 
@@ -116,7 +116,7 @@
             </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
               {{findReviewStatusName(element)}}
-              <span *ngIf="element.statusChangedBy">(by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+              <span *ngIf="element.statusChangedBy">(by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
             </td>
           </ng-container>
 

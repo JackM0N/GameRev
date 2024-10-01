@@ -3,7 +3,7 @@
 <div class="bg-[#1E1E1E]">
   <nav class="breadcrumb flex space-x-2 text-sm mb-4 text-white font-arcade p-2 px-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
-      <a *ngIf="i < path.length - 1" [href]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
+      <a *ngIf="i < path.length - 1" [routerLink]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
         {{ segment.forumName }}
       </a>
       <span *ngIf="i < path.length - 1" class="text-gray-500"> &gt; </span>
@@ -23,7 +23,7 @@
         <div>
           <h2 class="text-2xl font-bold text-[#E5E5E5] mb-1">{{ post.title }}</h2>
           <div class="post-info text-[#B0B0B0] text-sm">
-            <span>By <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + post.author?.nickname">{{ post.author?.nickname }}</a> on {{ formatDateTimeArray(post.postDate) }}</span>
+            <span>By <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + post.author?.nickname">{{ post.author?.nickname }}</a> on {{ formatDateTimeArray(post.postDate) }}</span>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
           <div class="comment-header flex justify-between items-center text-sm text-[#B0B0B0] mb-2">
             <span>
               <strong>
-                <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + comment.author.nickname">{{ comment.author.nickname + (comment.author.nickname == post?.author?.nickname ? " (OP)": "") }}</a>
+                <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + comment.author.nickname">{{ comment.author.nickname + (comment.author.nickname == post?.author?.nickname ? " (OP)": "") }}</a>
               </strong> replied on {{ formatDateTimeArray(comment.postDate) }}
             </span>
             <div class="comment-actions flex space-x-3">
