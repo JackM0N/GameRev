@@ -19,7 +19,7 @@ body {
 @font-face {
   font-family: 'arcade';
   font-weight: 400;
-  src: url(./app/fonts/joystixMonospace.otf) format('opentype');
+  src: url(assets/fonts/joystixMonospace.otf) format('opentype');
 }
 
 .pinkStars {
