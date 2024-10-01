@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
-import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
