@@ -434,6 +434,10 @@ mat-datepicker-toggle > button > span {
   background-color: white;
 }
 
+.white-quill-editor::before {
+  color: gray !important;
+}
+
 .comment-quill-editor .ql-container {
   height: 150px;
   border: none !important;
@@ -444,14 +448,15 @@ mat-datepicker-toggle > button > span {
   border-bottom: 1px solid #00CFFF !important;
 }
 
-.ql-editor::before {
-  color: inherit !important;
-  font-style: italic;
+.comment-quill-editor::before {
+  color: gray !important;
 }
 
+.comment-quill-editor .ql-editor::before {
+  color: gray !important;
+}
 
 .ql-editor::before {
-  color: inherit !important;
   font-style: italic;
 }
 
