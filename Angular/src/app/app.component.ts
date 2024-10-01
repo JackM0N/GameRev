@@ -8,15 +8,15 @@ import { BackgroundService } from './services/background.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Gamerev';
-  isNavbarOpen = false;
+  protected title = 'Gamerev';
+  protected isNavbarOpen = false;
 
-  styles: { [key: string]: string } = {};
-  mainStyles: { [key: string]: string } = {};
-  classes: string[] = [];
+  protected styles: { [key: string]: string } = {};
+  protected mainStyles: { [key: string]: string } = {};
+  protected classes: string[] = [];
 
-  routes = [
-    { label: 'Homepage', link: '/', onlyMobile: true },
+  protected routes = [
+    { label: 'Forums', link: '/', onlyMobile: true },
     { label: 'Games', link: '/games' },
     { label: 'Users', link: '/users', roles: ['Admin', 'Critic'] },
     { label: 'Reports', link: '/reports', roles: ['Admin'] },
