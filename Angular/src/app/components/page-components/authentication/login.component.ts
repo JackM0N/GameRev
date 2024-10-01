@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/loginCredentials';
@@ -7,6 +7,8 @@ import { BackgroundService } from '../../../services/background.service';
 import { ResetPasswordConfirmationDialogComponent } from './reset-password-confirmation-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';
+import { BaseAdComponent } from '../../base-components/base-ad-component';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +17,7 @@ import { NotificationAction } from '../../../enums/notificationActions';
     '/src/app/styles/shared-form-styles.css',
   ]
 })
-export class LoginComponent {
+export class LoginComponent extends BaseAdComponent {
   protected loginForm: FormGroup;
   protected hidePassword = signal(true);
 
@@ -24,15 +26,20 @@ export class LoginComponent {
     private authService: AuthService,
     private notificationService: NotificationService,
     protected dialog: MatDialog,
-    private backgroundService: BackgroundService
+    private backgroundService: BackgroundService,
+    adService: AdService,
+    cdRef: ChangeDetectorRef
   ) {
+    super(adService, backgroundService, cdRef);
+
     this.loginForm = this.formBuilder.group({
       usernameOrEmail: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.backgroundService.setClasses(['pinkStars']);
   }
 
