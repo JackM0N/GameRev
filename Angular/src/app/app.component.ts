@@ -68,8 +68,8 @@ export class AppComponent {
   }
 
   canUseRoute(route: any) {
-    if (route.guestOnly) {
-      return !this.authService.isAuthenticated();
+    if (!this.authService.isAuthenticated()) {
+      return route.guestOnly;
     }
     if (!route.roles || route.roles.length === 0) {
       return true;
