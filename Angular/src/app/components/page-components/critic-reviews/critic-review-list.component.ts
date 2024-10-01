@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
-import { CriticReview } from '../../../interfaces/criticReview';
+import { CriticReview } from '../../../models/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
@@ -16,7 +16,7 @@ import { PopupDialogComponent } from '../../general-components/popup-dialog.comp
 import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
+import { criticReviewFilters } from '../../../filters/criticReviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';

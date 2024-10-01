@@ -1,5 +1,5 @@
 ﻿import { Component, Input } from '@angular/core';
-import { CriticReview } from '../../../../interfaces/criticReview';
+import { CriticReview } from '../../../../models/criticReview';
 import { CriticReviewService } from '../../../../services/critic-review.service';
 import { formatDateArray } from '../../../../util/formatDate';
 import { AuthService } from '../../../../services/auth.service';

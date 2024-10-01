@@ -2,12 +2,12 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GameService } from '../../../services/game.service';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 import { ForumService } from '../../../services/forum.service';
-import { Forum } from '../../../interfaces/forum';
+import { Forum } from '../../../models/forum';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumRequestService } from '../../../services/forumRequest.service';
-import { ForumRequest } from '../../../interfaces/forumRequest';
+import { ForumRequest } from '../../../models/forumRequest';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({

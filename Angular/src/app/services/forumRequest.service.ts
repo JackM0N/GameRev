@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { ForumRequest } from '../interfaces/forumRequest';
+import { ForumRequest } from '../models/forumRequest';
 import { environment } from '../../environments/environment';
 
 @Injectable({

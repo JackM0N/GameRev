@@ -3,7 +3,7 @@ import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { ForumService } from '../../../services/forum.service';
-import { Forum } from '../../../interfaces/forum';
+import { Forum } from '../../../models/forum';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDateTime, formatDateTimeArray } from '../../../util/formatDate';
@@ -17,7 +17,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { GameService } from '../../../services/game.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { forumFilters } from '../../../interfaces/forumFilters';
+import { forumFilters } from '../../../filters/forumFilters';
 import { MatSelectChange } from '@angular/material/select';
 
 @Component({

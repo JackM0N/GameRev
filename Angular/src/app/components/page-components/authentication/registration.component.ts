@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { AuthService } from '../../../services/auth.service';
 import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { BackgroundService } from '../../../services/background.service';

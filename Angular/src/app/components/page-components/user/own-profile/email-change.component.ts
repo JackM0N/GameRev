@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { NewCredentials } from '../../../../interfaces/newCredentials';
+import { NewCredentials } from '../../../../models/newCredentials';
 
 @Component({
   selector: 'app-email-change',

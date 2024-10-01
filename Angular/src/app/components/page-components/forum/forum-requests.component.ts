@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ForumRequestService } from '../../../services/forumRequest.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumRequest } from '../../../interfaces/forumRequest';
+import { ForumRequest } from '../../../models/forumRequest';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from '../../../services/auth.service';
 import { MatTableDataSource } from '@angular/material/table';

@@ -3,7 +3,7 @@ import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
-import { NewCredentials } from '../../../../interfaces/newCredentials';
+import { NewCredentials } from '../../../../models/newCredentials';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../../../services/user.service';
 import { ImageCacheService } from '../../../../services/imageCache.service';

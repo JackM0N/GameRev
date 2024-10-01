@@ -1,12 +1,12 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { LoginCredentials } from '../interfaces/loginCredentials';
+import { LoginCredentials } from '../models/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { NewCredentials } from '../interfaces/newCredentials';
-import { Role } from '../interfaces/role';
-import { WebsiteUser } from '../interfaces/websiteUser';
+import { NewCredentials } from '../models/newCredentials';
+import { Role } from '../models/role';
+import { WebsiteUser } from '../models/websiteUser';
 import { environment } from '../../environments/environment';
 
 @Injectable({

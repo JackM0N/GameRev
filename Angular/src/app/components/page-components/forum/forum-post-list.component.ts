@@ -3,14 +3,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
-import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPost } from '../../../models/forumPost';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
 import { ForumService } from '../../../services/forum.service';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
 import { Observer } from 'rxjs';
 

@@ -2,20 +2,20 @@
 import { UserReviewService } from '../../../../services/user-review.service';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
-import { UserReview } from '../../../../interfaces/userReview';
+import { UserReview } from '../../../../models/userReview';
 import { Observer } from 'rxjs';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
-import { Game } from '../../../../interfaces/game';
-import { Report } from '../../../../interfaces/report';
+import { Game } from '../../../../models/game';
+import { Report } from '../../../../models/report';
 import { formatDateArray } from '../../../../util/formatDate';
 import { NotificationService } from '../../../../services/notification.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { reviewFilters } from '../../../../interfaces/reviewFilters';
+import { reviewFilters } from '../../../../filters/reviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserReviewFormDialogComponent } from '../../user-reviews/user-review-form-dialog.component';
 

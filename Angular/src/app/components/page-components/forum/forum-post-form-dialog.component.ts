@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Forum } from '../../../interfaces/forum';
+import { Forum } from '../../../models/forum';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumPostService } from '../../../services/forumPost.service';
-import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPost } from '../../../models/forumPost';
 import { FileUploadOptions } from '../../../enums/fileUploadOptions';
 
 @Component({

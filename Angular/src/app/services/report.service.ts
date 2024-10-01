@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Report } from '../interfaces/report';
-import { UserReview } from '../interfaces/userReview';
-import { reviewFilters } from '../interfaces/reviewFilters';
+import { Report } from '../models/report';
+import { UserReview } from '../models/userReview';
+import { reviewFilters } from '../filters/reviewFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 

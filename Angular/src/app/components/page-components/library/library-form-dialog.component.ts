@@ -1,15 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CompletionStatus } from '../../../interfaces/completionStatus';
-import { UserGame } from '../../../interfaces/userGame';
+import { CompletionStatus } from '../../../models/completionStatus';
+import { UserGame } from '../../../models/userGame';
 import { completionStatuses } from '../../../enums/completionStatuses';
 import { AuthService } from '../../../services/auth.service';
 import { LibraryService } from '../../../services/library.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Observer } from 'rxjs';
 import { GameService } from '../../../services/game.service';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 
 @Component({
   selector: 'app-library-form-dialog',

@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { Game } from '../../../../interfaces/game';
+import { Game } from '../../../../models/game';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../../services/game.service';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDateArray } from '../../../../util/formatDate';
 import { releaseStatuses } from '../../../../enums/releaseStatuses';
-import { ReleaseStatus } from '../../../../interfaces/releaseStatus';
+import { ReleaseStatus } from '../../../../models/releaseStatus';
 import { BackgroundService } from '../../../../services/background.service';
 import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';

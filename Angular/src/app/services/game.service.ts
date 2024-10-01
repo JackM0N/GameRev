@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Game } from '../interfaces/game';
-import { gameFilters } from '../interfaces/gameFilters';
+import { Game } from '../models/game';
+import { gameFilters } from '../filters/gameFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 

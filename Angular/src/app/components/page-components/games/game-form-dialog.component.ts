@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ReleaseStatus } from '../../../interfaces/releaseStatus';
-import { Game } from '../../../interfaces/game';
+import { ReleaseStatus } from '../../../models/releaseStatus';
+import { Game } from '../../../models/game';
 import { Observer } from 'rxjs';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
-import { Tag } from '../../../interfaces/tag';
+import { Tag } from '../../../models/tag';
 import { GameService } from '../../../services/game.service';
 import { NotificationService } from '../../../services/notification.service';
 import { TagService } from '../../../services/tag.service';

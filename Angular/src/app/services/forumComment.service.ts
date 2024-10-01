@@ -1,8 +1,8 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ForumComment } from '../interfaces/forumComment';
-import { forumCommentFilters } from '../interfaces/forumCommentFilters';
+import { ForumComment } from '../models/forumComment';
+import { forumCommentFilters } from '../filters/forumCommentFilters';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';

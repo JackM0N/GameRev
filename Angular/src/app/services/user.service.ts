@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WebsiteUser } from '../interfaces/websiteUser';
-import { userFilters } from '../interfaces/userFilters';
+import { WebsiteUser } from '../models/websiteUser';
+import { userFilters } from '../filters/userFilters';
 import { AuthService } from './auth.service';
 import { PopupDialogComponent } from '../components/general-components/popup-dialog.component';
 import { NotificationService } from './notification.service';

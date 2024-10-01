@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { CriticReview } from '../interfaces/criticReview';
-import { criticReviewFilters } from '../interfaces/criticReviewFilters';
+import { CriticReview } from '../models/criticReview';
+import { criticReviewFilters } from '../filters/criticReviewFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 

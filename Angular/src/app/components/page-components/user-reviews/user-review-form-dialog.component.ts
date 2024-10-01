@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 import { NotificationService } from '../../../services/notification.service';
-import { UserReview } from '../../../interfaces/userReview';
+import { UserReview } from '../../../models/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 
 @Component({

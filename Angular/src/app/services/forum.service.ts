@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Forum } from '../interfaces/forum';
-import { forumFilters } from '../interfaces/forumFilters';
+import { Forum } from '../models/forum';
+import { forumFilters } from '../filters/forumFilters';
 import { AuthService } from './auth.service';
-import { WebsiteUser } from '../interfaces/websiteUser';
+import { WebsiteUser } from '../models/websiteUser';
 import { environment } from '../../environments/environment';
 
 @Injectable({

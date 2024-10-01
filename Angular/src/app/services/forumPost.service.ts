@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { forumPostFilters } from '../interfaces/forumPostFilters';
-import { ForumPost } from '../interfaces/forumPost';
+import { forumPostFilters } from '../filters/forumPostFilters';
+import { ForumPost } from '../models/forumPost';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 
