@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -8,6 +8,8 @@ import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';
+import { BaseAdComponent } from '../../base-components/base-ad-component';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-registration',
@@ -15,7 +17,7 @@ import { NotificationAction } from '../../../enums/notificationActions';
   styleUrl: '/src/app/styles/shared-form-styles.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegistrationComponent {
+export class RegistrationComponent extends BaseAdComponent {
   registrationForm: FormGroup;
 
   emailErrorMessage = signal('');
@@ -27,8 +29,12 @@ export class RegistrationComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private backgroundService: BackgroundService
+    protected backgroundService: BackgroundService,
+    adService: AdService,
+    cdRef: ChangeDetectorRef
   ) {
+    super(adService, backgroundService, cdRef);
+    
     this.registrationForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, Validators.minLength(4)]],
@@ -53,7 +59,8 @@ export class RegistrationComponent {
     }
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.backgroundService.setClasses(['pinkStars']);
   }
 
