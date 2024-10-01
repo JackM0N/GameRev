@@ -23,11 +23,11 @@ body {
 }
 
 .pinkStars {
-  background-image: url(./app/images/pinkStars-bg.png);
+  background-image: url(assets/images/pinkStars-bg.png);
 }
 
 .matrixNumbers {
-  background-image: url(./app/images/matrixNumbers.png);
+  background-image: url(assets/images/matrixNumbers.png);
   background-size: 600px 300px;
 }
 
@@ -36,57 +36,57 @@ body {
 }
 
 .screenBg {
-  background-image: url(./app/images/screen-bg.png);
+  background-image: url(assets/images/screen-bg.png);
   background-size: 6px 6px;
 }
 
 .synthwaveFloor {
-  background-image: url(./app/images/synthwaveFloor.jpg);
+  background-image: url(assets/images/synthwaveFloor.jpg);
 }
 
 .neonAtSymbols {
-  background-image: url(./app/images/neonAtSymbols.jpg);
+  background-image: url(assets/images/neonAtSymbols.jpg);
 }
 
 .neonStarsSymbols {
-  background-image: url(./app/images/neonStarsSymbols.jpg);
+  background-image: url(assets/images/neonStarsSymbols.jpg);
 }
 
 .fallingCds {
-  background-image: url(./app/images/fallingCds.png);
+  background-image: url(assets/images/fallingCds.png);
 }
 
 .synthwaveBg {
-  background-image: url(./app/images/synthwaveBg.png) !important;
+  background-image: url(assets/images/synthwaveBg.png) !important;
   background-size: 22px 22px !important;
 }
 
 .screenHead {
-  background-image: url(./app/images/screenHead.png);
+  background-image: url(assets/images/screenHead.png);
   background-size: 320px 320px;
   background-repeat: no-repeat;
 }
 
 .arcadeButtons {
-  background-image: url(./app/images/arcadeButtons.png);
+  background-image: url(assets/images/arcadeButtons.png);
   background-repeat: no-repeat;
   background-size: 70px 60px;
 }
 
 .arcadeJoystick {
-  background-image: url(./app/images/arcadeJoystick.png);
+  background-image: url(assets/images/arcadeJoystick.png);
   background-repeat: no-repeat;
   background-size: 60px 60px;
 }
 
 .arcadeButtonsOrange {
-  background-image: url(./app/images/arcadeButtonsOrange.png);
+  background-image: url(assets/images/arcadeButtonsOrange.png);
   background-repeat: no-repeat;
   background-size: 70px 60px;
 }
 
 .arcadeJoystickOrange {
-  background-image: url(./app/images/arcadeJoystickOrange.png);
+  background-image: url(assets/images/arcadeJoystickOrange.png);
   background-repeat: no-repeat;
   background-size: 60px 60px;
 }
@@ -349,79 +349,79 @@ mat-datepicker-toggle > button > span {
 }
 
 .smallBgImage1 {
-  background-image: url(./app/images/arcade/56.png);
+  background-image: url(assets/images/arcade/56.png);
 }
 
 .smallBgImage2 {
-  background-image: url(./app/images/arcade/19.png);
+  background-image: url(assets/images/arcade/19.png);
 }
 
 .smallBgImage3 {
-  background-image: url(./app/images/arcade/6.png);
+  background-image: url(assets/images/arcade/6.png);
 }
 
 .smallBgImage4 {
-  background-image: url(./app/images/arcade/7.png);
+  background-image: url(assets/images/arcade/7.png);
 }
 
 .smallBgImage5 {
-  background-image: url(./app/images/arcade/10.png);
+  background-image: url(assets/images/arcade/10.png);
 }
 
 .smallBgImage6 {
-  background-image: url(./app/images/arcade/13.png);
+  background-image: url(assets/images/arcade/13.png);
 }
 
 .smallBgImage7 {
-  background-image: url(./app/images/arcade/20.png);
+  background-image: url(assets/images/arcade/20.png);
 }
 
 .smallBgImage8 {
-  background-image: url(./app/images/arcade/22.png);
+  background-image: url(assets/images/arcade/22.png);
 }
 
 .smallBgImage9 {
-  background-image: url(./app/images/arcade/23.png);
+  background-image: url(assets/images/arcade/23.png);
 }
 
 .smallBgImage10 {
-  background-image: url(./app/images/arcade/24.png);
+  background-image: url(assets/images/arcade/24.png);
 }
 
 .smallBgImage11 {
-  background-image: url(./app/images/arcade/25.png);
+  background-image: url(assets/images/arcade/25.png);
 }
 
 .smallBgImage12 {
-  background-image: url(./app/images/arcade/26.png);
+  background-image: url(assets/images/arcade/26.png);
 }
 
 .smallBgImage13 {
-  background-image: url(./app/images/arcade/50.png);
+  background-image: url(assets/images/arcade/50.png);
 }
 
 .smallBgImage14 {
-  background-image: url(./app/images/arcade/28.png);
+  background-image: url(assets/images/arcade/28.png);
 }
 
 .smallBgImage15 {
-  background-image: url(./app/images/arcade/36.png);
+  background-image: url(assets/images/arcade/36.png);
 }
 
 .smallBgImage16 {
-  background-image: url(./app/images/arcade/37.png);
+  background-image: url(assets/images/arcade/37.png);
 }
 
 .smallBgImage17 {
-  background-image: url(./app/images/arcade/42.png);
+  background-image: url(assets/images/arcade/42.png);
 }
 
 .smallBgImage18 {
-  background-image: url(./app/images/arcade/46.png);
+  background-image: url(assets/images/arcade/46.png);
 }
 
 .smallBgImage19 {
-  background-image: url(./app/images/arcade/52.png);
+  background-image: url(assets/images/arcade/52.png);
 }
 
 
