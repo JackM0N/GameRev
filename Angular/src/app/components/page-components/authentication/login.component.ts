@@ -12,10 +12,7 @@ import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: [
-    '/src/app/styles/shared-form-styles.css',
-  ]
+  templateUrl: './login.component.html'
 })
 export class LoginComponent extends BaseAdComponent {
   protected loginForm: FormGroup;

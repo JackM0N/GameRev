@@ -14,7 +14,6 @@ import { AdService } from '../../../services/ad.service';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationComponent extends BaseAdComponent {
