@@ -9,7 +9,7 @@
       <p>Date: {{ formatDateArray(this.criticReview.postDate) }}</p>
       <p>Score: {{ this.criticReview.score }}</p>
 
-      <quill-view class="pt-4 mt-4" [content]="this.criticReview.content"></quill-view>
+      <quill-view class="pt-4 mt-4 noQuillViewPadding" [content]="this.criticReview.content"></quill-view>
     </div>
   </div>
 

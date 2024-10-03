@@ -41,7 +41,7 @@
 
     <div class="post-body mt-4">
       <img *ngIf="imageUrl" [src]="imageUrl" alt="Post image" class="h-72 border border-[#00CFFF] object-cover mt-4 mb-4">
-      <p class="text-[#E5E5E5]" [innerHTML]="post.content"></p>
+      <quill-view class="noQuillViewPadding" [content]="post.content" theme="snow"></quill-view>
     </div>
   </div>
 
@@ -65,7 +65,7 @@
             </div>
           </div>
           <div class="comment-body text-[#E5E5E5]">
-            <quill-view [content]="comment.content"></quill-view>
+            <quill-view class="noQuillViewPadding" [content]="comment.content"></quill-view>
           </div>
         </div>
       </div>

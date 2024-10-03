@@ -602,3 +602,7 @@ mat-paginator .mat-mdc-select-value {
 .quillViewCell {
   padding: 0 !important;
 }
+
+.noQuillViewPadding .ql-editor {
+  padding: 0 !important;
+}
