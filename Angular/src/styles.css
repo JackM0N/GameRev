@@ -606,3 +606,8 @@ mat-paginator .mat-mdc-select-value {
 .noQuillViewPadding .ql-editor {
   padding: 0 !important;
 }
+
+.comment-body {
+  max-height: 26rem;
+  overflow-y: auto;
+}
