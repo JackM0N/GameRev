@@ -476,10 +476,6 @@ table {
   font-family: "arcade" !important;
 }
 
-.ql-editor[contenteditable='false'] {
-  padding: 0;
-}
-
 .synthwaveButton {
   background-color: #FF00FF;
   color: white;
