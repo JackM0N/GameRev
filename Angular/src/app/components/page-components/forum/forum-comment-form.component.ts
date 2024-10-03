@@ -4,6 +4,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { AuthService } from '../../../services/auth.service';
 import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
+import { FileUploadOptions } from '../../../enums/fileUploadOptions';
+//import Quill from 'quill';
+//import ImageResizor from 'quill-image-resizor';
+//Quill.register('modules/imageResizor', ImageResizor)
 
 @Component({
   selector: 'app-forum-comment-form',
@@ -14,11 +18,18 @@ export class ForumCommentFormComponent {
   protected minLength: number = 4;
   @Input() public postId: any;
   @Output() public commentPosted = new EventEmitter<void>();
+
+  protected imageUrl: string = '';
+  private selectedImage?: File;
   
-  protected quillToolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],
-    ['clean']
-  ];
+  protected modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['clean'],
+      ['image', 'link']
+    ],
+    imageResizor: {},
+  };
 
   constructor(
     protected authService: AuthService,
@@ -46,6 +57,24 @@ export class ForumCommentFormComponent {
         },
         error: error => this.notificationService.popErrorToast('Comment posting failed', error)
       });
+    }
+  }
+
+  maxSizeError() {
+    this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+
+    if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
+      this.maxSizeError();
+      return;
+    }
+
+    if (file) {
+      this.selectedImage = file;
+      this.imageUrl = URL.createObjectURL(this.selectedImage);
     }
   }
 }

@@ -10,7 +10,7 @@
       <quill-editor
         class="comment-quill-editor bg-[#1E1E1E] text-white border border-[#00CFFF] w-full h-48"
         formControlName="content"
-        [modules]="{ toolbar: quillToolbarOptions }"
+        [modules]="modules"
         [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
         rows="4">
       </quill-editor>
