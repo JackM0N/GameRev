@@ -176,10 +176,6 @@ body {
   text-shadow: 2px 2px 0px #fb049c;
 }
 
-.noTextShadow {
-  text-shadow: none;
-}
-
 /*material edits*/
 /*table column sort*/
 .mat-sort-header-arrow {
@@ -336,7 +332,7 @@ mat-datepicker-toggle > button > span {
 .noTextShadow > div > div > span > span {
   color: black;
   font-family: 'arcade';
-  font-size: large;
+  font-size: inherit !important;
   text-wrap: wrap;
 }
 
