@@ -305,7 +305,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     const submitColor = 'bg-blue-600 hover:bg-blue-700';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: { dialogTitle, dialogContent, submitText, cancelText, submitColor }
     });
 
