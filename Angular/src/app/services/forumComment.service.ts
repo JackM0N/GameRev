@@ -6,6 +6,7 @@ import { forumCommentFilters } from '../filters/forumCommentFilters';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { StyleSanitizerUtil } from '../util/styleSanitizerUtil';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +75,7 @@ export class ForumCommentService {
 
     const sanitizedComment = {
       ...comment,
-      content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
+      content: StyleSanitizerUtil.sanitizeContentAndReapplyStyles(comment.content.trim(), this.sanitizer)
     };
 
     const formData = new FormData();

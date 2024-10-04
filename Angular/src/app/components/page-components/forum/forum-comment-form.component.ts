@@ -5,9 +5,6 @@ import { ForumCommentService } from '../../../services/forumComment.service';
 import { AuthService } from '../../../services/auth.service';
 import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
 import { FileUploadOptions } from '../../../enums/fileUploadOptions';
-//import Quill from 'quill';
-//import ImageResizor from 'quill-image-resizor';
-//Quill.register('modules/imageResizor', ImageResizor)
 
 @Component({
   selector: 'app-forum-comment-form',
@@ -28,7 +25,9 @@ export class ForumCommentFormComponent {
       ['clean'],
       ['image', 'link']
     ],
-    imageResizor: {},
+    resize: {
+      locale: {},
+    }
   };
 
   constructor(

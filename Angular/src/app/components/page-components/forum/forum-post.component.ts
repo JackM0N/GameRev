@@ -11,7 +11,6 @@ import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumComment } from '../../../models/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
@@ -21,15 +20,18 @@ import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
 import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ForumComment } from '../../../models/forumComment';
 
 @Component({
   selector: 'app-forum-post',
   templateUrl: './forum-post.component.html'
 })
 export class ForumPostComponent extends BaseAdComponent {
-  @Input() protected post?: ForumPost;
   @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
+
+  @Input() protected post?: ForumPost;
 
   protected commentsList: any[] = [];
   protected totalComments: number = 0;
@@ -48,6 +50,7 @@ export class ForumPostComponent extends BaseAdComponent {
     private userService: UserService,
     private route: ActivatedRoute,
     protected dialog: MatDialog,
+    private sanitizer: DomSanitizer,
     protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -97,6 +100,7 @@ export class ForumPostComponent extends BaseAdComponent {
       next: (response: any) => {
         if (response && response.content.length > 0) {
           this.post = response;
+
           this.loadPostPicture(response.id, response.picture);
           this.loadUserProfilePicture(response.author.nickname, response.author.profilepic);
 
@@ -147,6 +151,10 @@ export class ForumPostComponent extends BaseAdComponent {
       },
       error: (error: any) => console.error(error)
     });
+  }
+
+  getTrustedContent(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   loadPostPicture(postId: number, pictureUrl: string) {

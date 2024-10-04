@@ -2,6 +2,11 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener } from '@angular
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
 
+import Quill from 'quill';
+import QuillResizeImage from 'quill-resize-image';
+
+Quill.register('modules/resize', QuillResizeImage);
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
