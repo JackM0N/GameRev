@@ -65,7 +65,6 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
 import { GameFormDialogComponent } from './components/page-components/games/game-form-dialog.component';
 import { LibraryFormDialogComponent } from './components/page-components/library/library-form-dialog.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
-import { ForumRequestFormDialogComponent } from './components/page-components/forum/forum-request-form-dialog.component';
 import { UserReviewFormDialogComponent } from './components/page-components/user-reviews/user-review-form-dialog.component';
 import { CriticReviewFormDialogComponent } from './components/page-components/critic-reviews/critic-review-form-dialog.component';
 import { ForumCommentFormComponent } from './components/page-components/forum/forum-comment-form.component';
@@ -103,7 +102,6 @@ import { CriticReviewContentDialogComponent } from './components/page-components
         ForumPostFormDialogComponent,
         GameFormDialogComponent,
         ForumRequestsComponent,
-        ForumRequestFormDialogComponent,
         UserReviewFormDialogComponent,
         CriticReviewFormDialogComponent,
         ForumCommentFormComponent,

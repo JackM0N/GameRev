@@ -6,11 +6,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from '../../../services/auth.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { BackgroundService } from '../../../services/background.service';
-import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatSelectChange } from '@angular/material/select';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ForumFormDialogComponent } from './forum-form-dialog.component';
 
 @Component({
   selector: 'app-forum-requests',
@@ -72,10 +72,11 @@ export class ForumRequestsComponent implements AfterViewInit {
   }
 
   openAddNewRequestDialog() {
-    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
-        editing: false
+        editing: false,
+        requesting: true
       }
     });
 
@@ -87,15 +88,16 @@ export class ForumRequestsComponent implements AfterViewInit {
   }
 
   openEditRequestDialog(forumRequest: ForumRequest) {
-    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
         editing: true,
-        parentForum: forumRequest.parentForum,
+        requesting: true,
+        parentForumId: forumRequest.parentForum.id,
         id: forumRequest.id,
         name: forumRequest.forumName,
         description: forumRequest.description,
-        game: forumRequest.game
+        gameTitle: forumRequest.game.title
       }
     });
 

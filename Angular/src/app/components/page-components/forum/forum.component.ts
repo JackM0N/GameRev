@@ -14,7 +14,6 @@ import { ForumFormDialogComponent } from './forum-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { GameService } from '../../../services/game.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { forumFilters } from '../../../filters/forumFilters';
@@ -332,11 +331,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   openAddNewRequestDialog() {
-    this.dialog.open(ForumRequestFormDialogComponent, {
+    this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
         editing: false,
-        parentForum: this.currentForum,
+        requesting: true,
+        parentForumId: this.currentForum?.id,
         lockParentForum: true
       }
     });
