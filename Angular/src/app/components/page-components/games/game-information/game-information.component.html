@@ -1,46 +1,43 @@
 
 <div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full">
   <div>
-    <!-- Go Back Button -->
-    <div class="absolute left-6 top-6">
+    <!-- Container for Go Back and Add to Library Buttons on Small Screens -->
+    <div class="flex justify-between items-center w-full md:hidden mb-6">
+      <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
+      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
+      <button class="synthwaveButton" (click)="toggleSmallScreenMenu = !toggleSmallScreenMenu">☰</button>
+    </div>
+
+    <!-- Collapsible Dropdown Menu for Small Screens -->
+    <div *ngIf="toggleSmallScreenMenu" class="flex flex-col items-end gap-3 mt-2 md:hidden">
+      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openEditGameDialog()">Edit</button>
+    </div>
+
+    <!-- Go Back Button for Medium and Larger Screens -->
+    <div class="md:absolute md:left-6 md:top-6 flex justify-start hidden md:flex">
       <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
     </div>
 
-    <!-- Game Title -->
-    <div class="text-4xl font-bold mt-4 mb-6 pinkTextShadow">{{this.game.title}}</div>
-
-    <!-- Actions -->
-    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end" *ngIf="this.authService.isAuthenticated()">
-      <button
-        class="synthwaveButton"
-        (click)="openLibraryFormDialog()">
-        Add to Library
-      </button>
-
-      <button
-        class="synthwaveButton"
-        *ngIf="this.authService.isAdmin()"
-        (click)="openGameDeletionConfirmationDialog()">
-        Delete
-      </button>
-
-      <button
-        class="synthwaveButton"
-        *ngIf="this.authService.isAdmin()"
-        (click)="openEditGameDialog()">
-        Edit
-      </button>
+    <!-- Actions on the Right for Medium and Larger Screens -->
+    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end invisible md:visible" *ngIf="this.authService.isAuthenticated()">
+      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
+      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openEditGameDialog()">Edit</button>
     </div>
+
+    <!-- Game Title -->
+    <div class="text-4xl font-bold mt-3 mb-6 pinkTextShadow">{{this.game.title}}</div>
 
     <!-- Game Info Section -->
     <div class="p-6 m-4 bg-gradient-to-r from-purple-700 to-indigo-700 border-[2px] border-pink-500 shadow-lg max-w-4xl mx-auto">
-      <div class="grid grid-cols-2 gap-4 text-left">
+      <div class="grid grid-cols-1 text-left">
         <div><strong>Developer:</strong> {{this.game.developer}}</div>
         <div><strong>Publisher:</strong> {{this.game.publisher}}</div>
         <div><strong>Release date:</strong> {{formatDate(this.game.releaseDate)}}</div>
         <div><strong>Release status:</strong> {{this.game.releaseStatus}}</div>
       </div>
-      <div class="text-lg mt-4 text-center font-semibold">{{this.usersScoreText}}</div>
+      <div class="text-base mt-4 text-center font-semibold">{{this.usersScoreText}}</div>
     </div>
 
     <!-- Game Description -->

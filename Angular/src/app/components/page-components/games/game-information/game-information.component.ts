@@ -33,6 +33,8 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
 
   protected gameTitle: string = '';
 
+  protected toggleSmallScreenMenu: boolean = false;
+
   protected game: Game = {
     title: '',
     developer: '',

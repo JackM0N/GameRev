@@ -1,15 +1,17 @@
 ﻿
 <!-- Critic Review Section -->
-<div *ngIf="criticReview != undefined || (criticReview == undefined && this.canRequestCriticReview())" class="p-4 mt-4 mb-8 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-5xl mx-auto">
+<div *ngIf="criticReview != undefined || (criticReview == undefined && this.canRequestCriticReview())" class="p-6 mt-4 mb-8 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-7xl mx-auto">
   <div *ngIf="criticReview != undefined">
     <h3 class="text-lg font-bold text-center mb-2" *ngIf="criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
 
     <!-- Critic Review Content -->
     <div class="review-item">
       <p>Date: {{ formatDateArray(this.criticReview.postDate) }}</p>
-      <p>Score: {{ this.criticReview.score }}</p>
+      <p class="text-xl mt-2">Score: {{ this.criticReview.score }}</p>
 
-      <quill-view class="pt-4 mt-4 noQuillViewPadding" [content]="this.criticReview.content"></quill-view>
+      <div class="overflow-y-auto max-h-[400px] sm:max-h-[600px] my-4">
+        <quill-view class="pt-4 mt-4 noQuillViewPadding" [content]="this.criticReview.content"></quill-view>
+      </div>
     </div>
   </div>
 

@@ -28,7 +28,7 @@
     </div>
 
     <!-- Clear Filters Button -->
-    <div class="absolute bottom-4 right-4">
+    <div class="mt-4 lg:mt-0 lg:absolute bottom-4 right-4">
       <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
@@ -49,38 +49,25 @@
       </p>
       
       <!-- Content -->
-      <p class="text-base">
+      <p class="text-base my-2">
         {{ review.content }}
       </p>
 
       <!-- Likes and dislikes -->
-      <p class="text-base pt-2">
+      <p class="text-base pt-2 max-[450px]:hidden">
         <span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }} | <span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}
       </p>
+      <div class="text-base pt-2 min-[450px]:hidden">
+        <div><span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }}</div>
+        <div><span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}</div>
+      </div>
 
       <!-- Review Actions -->
       <div class="flex justify-between mt-4">
         <div>
-          <button
-            class="synthwaveButton synthwaveButtonSmall"
-            (click)="openReviewDeletionConfirmationDialog(review)"
-            *ngIf="canDeleteReview(review)">
-            Delete
-          </button>
-
-          <button
-            class="ml-2 synthwaveButton synthwaveButtonSmall"
-            (click)="openEditReviewDialog(review)"
-            *ngIf="ownsReview(review)">
-            Edit
-          </button>
-
-          <button
-            class="ml-2 synthwaveButton synthwaveButtonSmall"
-            (click)="openReportReviewDialog(review)"
-            *ngIf="!ownsReview(review)">
-            Report
-          </button>
+          <button class="synthwaveButton synthwaveButtonSmall" (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="canDeleteReview(review)">Delete</button>
+          <button class="ml-2 synthwaveButton synthwaveButtonSmall" (click)="openEditReviewDialog(review)" *ngIf="ownsReview(review)">Edit</button>
+          <button class="ml-2 synthwaveButton synthwaveButtonSmall" (click)="openReportReviewDialog(review)" *ngIf="!ownsReview(review)">Report</button>
         </div>
         
         <!-- Like / dislike -->
