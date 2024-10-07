@@ -54,7 +54,7 @@ export class ForumRequestService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.put<any>(this.editUrl, request, { headers });
+    return this.http.put<any>(`${this.editUrl}/${request.id}`, request, { headers });
   }
 
   approveRequest(request: ForumRequest, approved: boolean): Observable<any> {
