@@ -14,7 +14,7 @@
   <!-- Forum Header -->
   <header class="forum-header relative bg-[#222222] shadow-lg p-6 border border-[#00CFFF]">
     <!-- Button to View All Requests -->
-    <div class="absolute right-3 top-3" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+    <div class="mb-4 lg:mb-0 lg:absolute lg:right-3 lg:top-3" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
       <button class="synthwaveButton max-w-sm" (click)="routeToRequests()">
         View All Requests
       </button>
@@ -90,13 +90,13 @@
             <th class="p-4 border-b border-[#00CFFF]">Subforum</th>
             <th class="p-4 border-b border-[#00CFFF] hidden sm:table-cell">Posts</th>
             <th class="p-4 border-b border-[#00CFFF]">Last Post</th>
-            <th class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
+            <th class="p-4 border-b border-[#00CFFF] hidden sm:table-cell" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">Actions</th>
           </tr>
         </thead>
 
         <tbody>
           <tr *ngFor="let subforum of subForumList" class="hover:bg-[#333333]" [ngClass]="subforum.isDeleted? 'deleted-forum': ''">
-            <!-- Title and description -->
+            <!-- Title and description, also shows post count and actions when the screen is small -->
             <td class="p-4 border-b border-[#00CFFF]">
               <a (click)="navigateToSubforum(subforum.id)" class="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
                 {{ subforum.forumName }} <span class="text-red-600" *ngIf="subforum.isDeleted">(deleted)</span>
@@ -104,10 +104,26 @@
               <p class="text-[#B0B0B0] mt-1">{{ subforum.description }}</p>
 
               <p class="block sm:hidden">{{ subforum.postCount }} Post(s)</p>
+
+              <div *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()" class="flex space-x-2 pt-2 table-cell sm:hidden">
+                <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditSubforumDialog(subforum)">
+                  <i class="material-icons">edit</i>
+                </button>
+
+                <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" *ngIf="!subforum.isDeleted" (click)="openDeleteSubforumDialog(subforum)">
+                  <i class="material-icons">delete</i>
+                </button>
+
+                <button class="bg-blue-500 text-white px-3 pb-1 pt-2 hover:bg-blue-600" *ngIf="subforum.isDeleted" (click)="openRestoreSubforumDialog(subforum)">
+                  <i class="material-icons">restore</i>
+                </button>
+              </div>
             </td>
 
-            <!-- Post count -->
-            <td class="p-4 border-b border-[#00CFFF] hidden sm:table-cell">{{ subforum.postCount }} Post(s)</td>
+            <!-- Post count (visible when screen is big) -->
+            <td class="p-4 border-b border-[#00CFFF] hidden sm:table-cell">
+              {{ subforum.postCount }} Post(s)
+            </td>
 
             <!-- Last post -->
             <td *ngIf="subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
@@ -119,12 +135,13 @@
               </p>
               <p class="text-[#B0B0B0]">on {{ formatDateTime(subforum.lastPost.last_response_date) }}</p>
             </td>
+
             <td *ngIf="!subforum.lastPost" class="p-4 border-b border-[#00CFFF]">
               <p class="text-[#B0B0B0]">No interactions yet</p>
             </td>
 
-            <!-- Post actions -->
-            <td class="p-4 border-b border-[#00CFFF]" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
+            <!-- Post actions (visible when screen is big) -->
+            <td class="p-4 border-b border-[#00CFFF] hidden sm:table-cell" *ngIf="this.authService.isAuthenticated() && this.authService.isAdmin()">
               <div class="flex space-x-2">
                 <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditSubforumDialog(subforum)">
                   <i class="material-icons">edit</i>
