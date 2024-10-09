@@ -2,25 +2,25 @@
 <div class="container text-white synthwaveBg p-4 font-arcade m-auto text-center pixel-border max-[500px]:w-full">
   <div>
     <!-- Container for Go Back and Add to Library Buttons on Small Screens -->
-    <div class="flex justify-between items-center w-full md:hidden mb-6">
+    <div class="flex justify-between items-center w-full lg:hidden mb-6">
       <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
       <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
-      <button class="synthwaveButton" (click)="toggleSmallScreenMenu = !toggleSmallScreenMenu">☰</button>
+      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="toggleSmallScreenMenu = !toggleSmallScreenMenu">☰</button>
     </div>
 
     <!-- Collapsible Dropdown Menu for Small Screens -->
-    <div *ngIf="toggleSmallScreenMenu" class="flex flex-col items-end gap-3 mt-2 md:hidden">
-      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openGameDeletionConfirmationDialog()">Delete</button>
-      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openEditGameDialog()">Edit</button>
+    <div *ngIf="toggleSmallScreenMenu && this.authService.isAdmin()" class="flex flex-col items-end gap-3 mt-2 lg:hidden">
+      <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+      <button class="synthwaveButton" (click)="openEditGameDialog()">Edit</button>
     </div>
 
     <!-- Go Back Button for Medium and Larger Screens -->
-    <div class="md:absolute md:left-6 md:top-6 flex justify-start hidden md:flex">
+    <div class="lg:absolute lg:left-6 lg:top-6 flex justify-start hidden lg:flex">
       <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
     </div>
 
     <!-- Actions on the Right for Medium and Larger Screens -->
-    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end invisible md:visible" *ngIf="this.authService.isAuthenticated()">
+    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end invisible lg:visible" *ngIf="this.authService.isAuthenticated()">
       <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
       <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openGameDeletionConfirmationDialog()">Delete</button>
       <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openEditGameDialog()">Edit</button>
