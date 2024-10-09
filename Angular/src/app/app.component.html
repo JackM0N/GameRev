@@ -4,7 +4,7 @@
 <header class="bg-[blueviolet] text-white font-arcade z-[51]">
   <div class="container mx-auto flex items-center justify-between p-4">
     <h1 class="text-2xl font-bold">
-      <a [routerLink]="'/'" class="hover:text-gray-400">
+      <a [routerLink]="'/'" class="hover:text-gray-300">
         Gamerev
       </a>
     </h1>
@@ -14,7 +14,7 @@
       <ul class="flex flex-col lg:flex-row lg:space-x-8 space-y-4 lg:space-y-0">
         <ng-container *ngFor="let route of routes">
           <li *ngIf="canUseRoute(route) && !route.onlyMobile">
-            <a [routerLink]="route.link" routerLinkActive="active" class="hover:text-gray-400">{{ route.label }}</a>
+            <a [routerLink]="route.link" routerLinkActive="active" class="hover:text-gray-300">{{ route.label }}</a>
           </li>
         </ng-container>
       </ul>
@@ -38,12 +38,12 @@
   </div>
 
   <!-- Mobile Navbar -->
-  <nav id="mobile-navbar-menu" [ngClass]="{'block': isNavbarOpen, 'hidden': !isNavbarOpen}" class="lg:hidden bg-[#670abf]">
+  <nav id="mobile-navbar-menu" [ngClass]="{'block': isNavbarOpen, 'hidden': !isNavbarOpen}" class="lg:hidden bg-[#730bd6]">
     <ul class="flex flex-col text-right">
       <ng-container *ngFor="let route of routes">
-        <li *ngIf="canUseRoute(route)" class="border-b-2 px-4 h-12 flex items-center cursor-pointer">
+        <li *ngIf="canUseRoute(route)" class="border-b-2 px-4 h-12 flex items-center cursor-pointer hover:bg-[#670abf] hover:text-gray-300">
           <mat-icon class="mr-2">arrow_back_ios</mat-icon>
-          <a [routerLink]="route.link" routerLinkActive="active" class="flex-1 text-right hover:text-gray-400" (click)="closeNavbar()">
+          <a [routerLink]="route.link" routerLinkActive="active" class="flex-1 text-right" (click)="closeNavbar()">
             {{ route.label }}
           </a>
         </li>
