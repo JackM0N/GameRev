@@ -27,6 +27,7 @@ export class AppComponent {
     { label: 'Reports', link: '/reports', roles: ['Admin'] },
     { label: 'Critics', link: '/critic-reviews', roles: ['Admin', 'Critic'] },
     { label: 'Library', link: '/library' },
+    { label: 'Users', link: '/users' },
     { label: 'Profile', link: '/profile' },
 
     { label: 'Login', link: '/login', guestOnly: true },
