@@ -1,6 +1,6 @@
 ﻿
 <!-- Critic Review Section -->
-<div *ngIf="criticReview != undefined || (criticReview == undefined && this.canRequestCriticReview())" class="p-6 mt-4 mb-8 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-7xl mx-auto">
+<div *ngIf="criticReview != undefined || (criticReview == undefined && this.canRequestCriticReview())" class="p-4 sm:p-6 mx-auto m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-7xl">
   <div *ngIf="criticReview != undefined">
     <h3 class="text-lg font-bold text-center mb-2" *ngIf="criticReview.user">Critic review by {{ this.criticReview.user.nickname }}</h3>
 
@@ -27,4 +27,3 @@
     <button class="my-3 synthwaveButton" (click)="openRequestCriticReviewDialog()">Request critic review</button>
   </div>
 </div>
-

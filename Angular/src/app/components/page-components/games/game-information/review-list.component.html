@@ -1,6 +1,8 @@
 ﻿
+<div class="text-2xl text-center font-bold mb-4">User reviews</div>
+
 <!-- Filters Section -->
-<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 my-4 px-[6px]">
+<div class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-4 my-4 px-[6px]">
   <div class="synthwaveBg bg-repeat text-white p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <form [formGroup]="filterForm" class="contents">
@@ -35,9 +37,7 @@
 </div>
 
 <!-- Reviews Section -->
-<div class="p-4 mt-4 bg-[#222] max-w-5xl mx-auto">
-  <div class="text-2xl text-center font-bold mb-4">User reviews</div>
-
+<div class="mt-4 bg-[#222] max-w-5xl mx-auto">
   <!-- Each Review -->
   <div class="review-container">
     <div class="review-item p-4 bg-[#333] border-[2px] border-pink-500 shadow mb-4" *ngFor="let review of reviewList">
@@ -49,7 +49,7 @@
       </p>
       
       <!-- Content -->
-      <p class="text-base my-2">
+      <p class="text-sm sm:text-base my-2">
         {{ review.content }}
       </p>
 
@@ -66,8 +66,8 @@
       <div class="flex justify-between mt-4">
         <div>
           <button class="synthwaveButton synthwaveButtonSmall" (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="canDeleteReview(review)">Delete</button>
-          <button class="ml-2 synthwaveButton synthwaveButtonSmall" (click)="openEditReviewDialog(review)" *ngIf="ownsReview(review)">Edit</button>
-          <button class="ml-2 synthwaveButton synthwaveButtonSmall" (click)="openReportReviewDialog(review)" *ngIf="!ownsReview(review)">Report</button>
+          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall" (click)="openEditReviewDialog(review)" *ngIf="ownsReview(review)">Edit</button>
+          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall" (click)="openReportReviewDialog(review)" *ngIf="!ownsReview(review)">Report</button>
         </div>
         
         <!-- Like / dislike -->
@@ -83,7 +83,7 @@
           </button>
 
           <button
-            class="ml-2 synthwaveButton synthwaveButtonSmall"
+            class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
             [ngClass]="{
               'dislikeButton': review.ownRatingIsPositive != false,
               'dislikeButtonNotLiked': review.ownRatingIsPositive == false
