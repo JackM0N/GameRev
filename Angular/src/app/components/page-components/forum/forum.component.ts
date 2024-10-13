@@ -29,13 +29,12 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   protected noSubForums = false;
   protected currentForum?: Forum;
   protected path?: any;
-
-  protected filtered = false;
+  protected gameList: any[] = [];
 
   protected forumId?: number = undefined;
   private routeParamsSubscription?: Subscription;
 
-  protected gameList: any[] = [];
+  protected filtered = false;
   private filters: forumFilters = {};
   protected filterForm: FormGroup;
 
@@ -106,66 +105,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.paginator.page.subscribe(() => {
       this.loadForum(this.forumId);
     });
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.adjustFilterVisibility();
-  }
-
-  protected hideFilters: boolean = false;
-  protected isFilterExpanded: boolean = false;
-  toggleFilterPanel() {
-    this.isFilterExpanded = !this.isFilterExpanded;
-  }
-
-  private isForumContentSmall(): boolean {
-    const subForumContent = this.elRef.nativeElement.querySelector('#subforum-content');
-    const filterForm = this.elRef.nativeElement.querySelector('#filter-form');
-    const filterMenuButton = this.elRef.nativeElement.querySelector('#filtersMenuButton');
-
-    if (subForumContent && filterForm && filterMenuButton) {
-      const subForumContentWidth = subForumContent.offsetWidth;
-      
-      return (subForumContentWidth < 960);
-    }
-
-    return false;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClick(event: MouseEvent) {
-    const targetElement = event.target as HTMLElement;
-    const filterForm = this.elRef.nativeElement.querySelector('#filter-form');
-    const filterMenuButton = this.elRef.nativeElement.querySelector('#filtersMenuButton');
-
-    if (filterForm && this.isFilterExpanded && !filterForm.contains(targetElement) && (filterMenuButton && !filterMenuButton.contains(targetElement))) {
-      this.isFilterExpanded = false;
-    }
-  }
-
-  adjustFilterVisibility() {
-    const isSmall = this.isForumContentSmall();
-
-    this.hideFilters = isSmall;
-
-    if (!isSmall && this.isFilterExpanded) {
-      this.isFilterExpanded = false;
-    }
-  }
-
-  activateSearchFilter() {
-    setTimeout(() => {
-      if (this.searchInput) {
-        fromEvent(this.searchInput.nativeElement, 'input').pipe(
-          map((event: any) => event.target.value),
-          debounceTime(300),
-          distinctUntilChanged()
-        ).subscribe(value => {
-          this.onSearchFilterChange(value);
-        });
-      }
-    }, 0);
   }
 
   loadGames() {
@@ -358,6 +297,68 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.router.navigate(['forum', this.forumId, 'post', postId]);
   }
 
+  // Filters
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.adjustFilterVisibility();
+  }
+
+  protected hideFilters: boolean = false;
+  protected isFilterExpanded: boolean = false;
+  toggleFilterPanel() {
+    this.isFilterExpanded = !this.isFilterExpanded;
+  }
+
+  private isForumContentSmall(): boolean {
+    const subForumContent = this.elRef.nativeElement.querySelector('#subforum-content');
+    const filterForm = this.elRef.nativeElement.querySelector('#forum-filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#forum-filters-menu-button');
+
+    if (subForumContent && filterForm && filterMenuButton) {
+      const subForumContentWidth = subForumContent.offsetWidth;
+      
+      return (subForumContentWidth < 960);
+    }
+
+    return false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    const filterForm = this.elRef.nativeElement.querySelector('#forum-filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#forum-filters-menu-button');
+
+    if (filterForm && this.isFilterExpanded && !filterForm.contains(targetElement) && (filterMenuButton && !filterMenuButton.contains(targetElement))) {
+      this.isFilterExpanded = false;
+    }
+  }
+
+  adjustFilterVisibility() {
+    const isSmall = this.isForumContentSmall();
+
+    this.hideFilters = isSmall;
+
+    if (!isSmall && this.isFilterExpanded) {
+      this.isFilterExpanded = false;
+    }
+  }
+
+  activateSearchFilter() {
+    setTimeout(() => {
+      if (this.searchInput) {
+        fromEvent(this.searchInput.nativeElement, 'input').pipe(
+          map((event: any) => event.target.value),
+          debounceTime(300),
+          distinctUntilChanged()
+        ).subscribe(value => {
+          this.onSearchFilterChange(value);
+        });
+      }
+    }, 0);
+  }
+
   onDeletedFilterChange(event: MatSelectChange) {
     this.filters.isDeleted = event.value;
     this.filtered = true;
@@ -385,5 +386,6 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.filterForm.reset();
     this.filterForm.get('userScore')?.get('min')?.setValue(1);
     this.filterForm.get('userScore')?.get('max')?.setValue(10);
+    this.loadForum(this.forumId);
   }
 }

@@ -1,8 +1,47 @@
 
 <!-- Forum Posts Table -->
-<div class="forum-posts bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] p-6">
+<div id="forum-posts" class="bg-[#222222] shadow-lg overflow-hidden border border-[#00CFFF] p-6">
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl min-[450px]:text-3xl font-bold">Posts</h2>
+    <!-- Subforums Heading -->
+    <h2 class="text-2xl min-[450px]:text-3xl font-bold text-[#E5E5E5] mr-6">Posts</h2>
+
+    <!-- Filters Section -->
+    <div [hidden]="hideFilters && !isFilterExpanded">
+      <form [formGroup]="filterForm" [ngClass]="(hideFilters && isFilterExpanded) ? 'flex flex-col space-y-4 fixed z-60 bg-[#222222] p-6 max-w-fit mt-8 right-6 top-6 border-2' : 'flex space-x-4 items-start'" id="posts-filter-form">
+        <!-- Release Date Range -->
+        <div class="flex flex-col space-y-1 small-date-picker">
+          <label class="text-sm text-white">Post date</label>
+          <mat-form-field>
+            <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+              <input matStartDate formControlName="start" placeholder="From" (dateChange)="onStartDateChange($event)">
+              <input matEndDate formControlName="end" placeholder="To" (dateChange)="onEndDateChange($event)">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        
+        <!-- Search Filter -->
+        <div class="flex flex-col space-y-1 w-48">
+          <label class="text-sm text-white">Search</label>
+          <input class="text-sm w-full bg-white text-black noTextShadow h-7 p-1" formControlName="search" #searchInput>
+        </div>
+
+        <!-- Clear Button -->
+        <div class="flex flex-col space-y-1">
+          <label class="text-sm text-white">Clear</label>
+          <button class="bg-blue-500 text-white flex items-center justify-center py-2 px-3 hover:bg-blue-600" (click)="clearFilters()">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <button [hidden]="!hideFilters" id="posts-filters-menu-button" mat-icon-button aria-label="Subforum filters" (click)="toggleFilterPanel()">
+      <mat-icon>filter_alt</mat-icon>
+    </button>
+
     <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
       You are a moderator of this forum
     </p>
@@ -102,7 +141,7 @@
   </div>
 
   <!-- Paginator -->
-  <div [hidden]="totalPosts < 6" class="mt-6">
+  <div [hidden]="totalPosts < 6" class="mt-6 compactPaginator">
     <mat-paginator
       class="font-arcade text-base pinkTextShadowWide forumPaginator bg-repeat text-white"
       #paginator
