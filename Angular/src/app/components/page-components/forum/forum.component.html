@@ -1,5 +1,5 @@
 
-<div class="forum-content p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
+<div class="forum-content p-4 sm:p-8 bg-[#1b1b1b] min-h-screen text-white font-arcade">
   <!-- Breadcrumb Navigation -->
   <nav class="breadcrumb flex space-x-2 text-sm mb-4" *ngIf="path && path.length > 1">
     <ng-container *ngFor="let segment of path; let i = index">
@@ -32,8 +32,8 @@
   </header>
 
   <!-- Forum Table -->
-  <div *ngIf="currentForum" [hidden]="noSubForums && !filtered" class="mt-8 bg-[#222222] shadow-lg border border-[#00CFFF]">
-    <div id="subforum-content" class="p-6 overflow-x-auto">
+  <div *ngIf="currentForum" [hidden]="noSubForums && !filtered" class="mt-6 sm:mt-8 bg-[#222222] shadow-lg border border-[#00CFFF]">
+    <div id="subforum-content" class="p-4 sm:p-6 overflow-x-auto">
 
       <div class="flex justify-between items-center mb-4">
         <!-- Subforums Heading -->
