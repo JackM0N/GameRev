@@ -14,6 +14,7 @@ import { environment } from '../../environments/environment';
 })
 // Service for handling website authentication
 export class AuthService {
+  private tokenKey: string = 'gamerev_access_token';
   private apiUrl: string = environment.apiUrl;
   
   private registerUrl = this.apiUrl + '/register';
@@ -41,7 +42,7 @@ export class AuthService {
           const token = response.token;
           
           if (token && isPlatformBrowser(this.platformId)) {
-            localStorage.setItem('access_token', token);
+            localStorage.setItem(this.tokenKey, token);
           }
           return response;
         }),
@@ -59,7 +60,7 @@ export class AuthService {
           const token = response.token;
           
           if (token && isPlatformBrowser(this.platformId)) {
-            localStorage.setItem('access_token', token);
+            localStorage.setItem(this.tokenKey, token);
           }
           return response;
         }),
@@ -72,17 +73,17 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem(this.tokenKey);
       return token !== null && !this.jwtHelper.isTokenExpired(token);
     }
     return false;
   }
 
   getToken(): string | null {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem(this.tokenKey);
 
     if (this.jwtHelper.isTokenExpired(token)) {
-      localStorage.removeItem('access_token');
+      localStorage.removeItem(this.tokenKey);
       return null;
     }
 
@@ -92,13 +93,13 @@ export class AuthService {
 
   logout() {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('access_token');
+      localStorage.removeItem(this.tokenKey);
     }
   }
 
   getUsername(): string | undefined {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem(this.tokenKey);
       if (token) {
         const decodedToken = this.jwtHelper.decodeToken(token);
         return decodedToken.sub
@@ -109,7 +110,7 @@ export class AuthService {
 
   getNickname(): string | undefined {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem(this.tokenKey);
       if (token) {
         const decodedToken = this.jwtHelper.decodeToken(token);
         return decodedToken.nickname
@@ -120,7 +121,7 @@ export class AuthService {
 
   getRoles(): Role[] {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem(this.tokenKey);
       if (token) {
         const decodedToken = this.jwtHelper.decodeToken(token);
         return decodedToken.roles || [];
