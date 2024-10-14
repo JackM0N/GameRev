@@ -183,7 +183,13 @@ export class ForumFormDialogComponent {
 
       this.forumService.addForum(newForum).subscribe({
         next: () => { this.notificationService.popSuccessToast('Forum added'); },
-        error: error => this.notificationService.popErrorToast('Forum adding failed', error)
+        error: error => {
+          if (error.error == "A forum with this name already exists.") {
+            this.notificationService.popErrorToast('A forum with this name already exists.');
+            return;
+          }
+          this.notificationService.popErrorToast('Forum adding failed', error)
+        }
       });
       this.dialogRef.close(true);
     }
@@ -211,7 +217,13 @@ export class ForumFormDialogComponent {
 
       this.forumRequestService.addRequest(forumRequest).subscribe({
         next: () => { this.notificationService.popSuccessToast('Forum request added'); },
-        error: error => this.notificationService.popErrorToast('Forum request adding failed', error)
+        error: error => {
+          if (error.error == "A forum with this name already exists.") {
+            this.notificationService.popErrorToast('A forum with this name already exists.');
+            return;
+          }
+          this.notificationService.popErrorToast('Forum request adding failed', error)
+        }
       });
 
     } else {

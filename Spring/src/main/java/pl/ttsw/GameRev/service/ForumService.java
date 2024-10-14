@@ -74,6 +74,10 @@ public class ForumService {
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
+        if (forumRepository.existsForumByForumName(forumDTO.getForumName())) {
+            throw new BadRequestException("A forum with this name already exists.");
+        }
+
         Forum forum = forumMapper.toEntity(forumDTO);
 
         forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
