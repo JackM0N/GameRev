@@ -14,7 +14,7 @@
 
 <div class="post-page container mx-auto max-w-[900px] p-[20px] py-8 bg-[#1E1E1E] text-white font-arcade">
   <!-- Original Post -->
-  <div class="original-post bg-[#2A2A2A] border border-[#00CFFF] p-6 mb-8" *ngIf="post">
+  <div class="original-post bg-[#2A2A2A] border border-[#00CFFF] p-6" *ngIf="post">
     <div class="post-header flex justify-between items-center mb-4">
       <div class="flex items-center space-x-4">
         <!-- Author Image -->
@@ -46,7 +46,7 @@
   </div>
 
   <!-- Replies Section -->
-  <div class="comments-section">
+  <div class="comments-section mt-4">
     <div *ngFor="let comment of commentsList; let i = index" class="comment bg-[#2A2A2A] p-6 border border-[#00CFFF] mb-4">
       <div class="flex items-start space-x-4">
         <!-- Commenter Image -->
