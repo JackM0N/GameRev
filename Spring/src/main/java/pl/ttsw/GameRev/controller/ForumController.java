@@ -42,7 +42,7 @@ public class ForumController {
 
     @PostMapping("/create")
     public ResponseEntity<ForumDTO> createForum(@RequestBody ForumDTO forumDTO) throws BadRequestException {
-        if (forumDTO == null){
+        if (forumDTO == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(forumService.createForum(forumDTO));
@@ -50,7 +50,7 @@ public class ForumController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<ForumDTO> editForum(@PathVariable Long id, @RequestBody ForumDTO forumDTO) throws BadRequestException {
-        if (forumDTO == null){
+        if (forumDTO == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(forumService.updateForum(id,forumDTO));

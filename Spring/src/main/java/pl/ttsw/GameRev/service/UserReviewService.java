@@ -143,7 +143,7 @@ public class UserReviewService{
         UserReview userReview = userReviewRepository.findById(userReviewDTO.getId())
                 .orElseThrow(() -> new BadRequestException("User review not found"));
 
-        if (userReview.getUser() != websiteUserService.getCurrentUser()){
+        if (userReview.getUser() != websiteUserService.getCurrentUser()) {
             throw new BadCredentialsException("You cant delete a review that doesn't belong to you");
         }
 

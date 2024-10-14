@@ -89,7 +89,7 @@ public class UserReviewController {
 
     @PutMapping("/report")
     public ResponseEntity<ReportDTO> reportUserReview(@RequestBody ReportDTO reportDTO) throws BadRequestException {
-        if (reportDTO == null){
+        if (reportDTO == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));

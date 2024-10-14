@@ -20,7 +20,7 @@ public class CriticReviewController {
     private final CriticReviewService criticReviewService;
 
     @GetMapping("/list")
-    public ResponseEntity<Page<CriticReviewDTO>> getAll(CriticReviewFilter criticReviewFilter, Pageable pageable){
+    public ResponseEntity<Page<CriticReviewDTO>> getAll(CriticReviewFilter criticReviewFilter, Pageable pageable) {
         return ResponseEntity.ok(criticReviewService.getAllCriticReviews(criticReviewFilter, pageable));
     }
 

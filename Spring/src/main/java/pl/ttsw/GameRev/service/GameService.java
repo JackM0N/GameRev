@@ -154,7 +154,7 @@ public class GameService {
     }
 
     public boolean deleteGame(Long id) {
-        if (gameRepository.existsById(id)){
+        if (gameRepository.existsById(id)) {
             gameRepository.deleteById(id);
             return true;
         }

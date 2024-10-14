@@ -78,6 +78,7 @@ public class ForumService {
 
         forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
                 .orElseThrow(() -> new BadRequestException("Game not found")));
+
         forum.setParentForum(forumRepository.findById(forumDTO.getParentForumId())
                 .orElseThrow(() -> new BadRequestException("Parent forum not found")));
 
@@ -101,7 +102,7 @@ public class ForumService {
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
         }
-        if (forumDTO.getParentForumId() != null){
+        if (forumDTO.getParentForumId() != null) {
             Forum foundForum = forumRepository.findById(forumDTO.getParentForumId())
                     .orElseThrow(() -> new BadRequestException("Parent forum not found"));
             forum.setParentForum(foundForum);

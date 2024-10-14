@@ -57,7 +57,7 @@ public class ForumRequestService {
 
 
     public ForumRequestDTO createForumRequest(ForumRequestDTO forumRequestDTO) throws BadRequestException {
-        if(forumRepository.existsForumByForumName(forumRequestDTO.getForumName())){
+        if (forumRepository.existsForumByForumName(forumRequestDTO.getForumName())) {
             throw new BadRequestException("Forum name already exists");
         }
         ForumRequest forumRequest = forumRequestMapper.toEntity(forumRequestDTO);
@@ -80,7 +80,7 @@ public class ForumRequestService {
         boolean isAuthor = forumRequest.getAuthor().equals(currentUser);
         boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(role -> "Admin".equals(role.getRoleName()));
-        if(isAuthor || isAdmin) {
+        if (isAuthor || isAdmin) {
             forumRequest = forumRequestMapper.partialUpdate(forumRequestDTO, forumRequest);
 
             if (forumRequestDTO.getGame() != null) {
@@ -92,7 +92,7 @@ public class ForumRequestService {
                         .orElseThrow(() -> new RuntimeException("Parent forum not found")));
             }
             return forumRequestMapper.toDto(forumRequestRepository.save(forumRequest));
-        }else {
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }

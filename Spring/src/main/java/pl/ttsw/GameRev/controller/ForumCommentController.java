@@ -61,7 +61,7 @@ public class ForumCommentController {
         ForumCommentDTO request = mapper.readValue(commentJson, ForumCommentDTO.class);
         ForumCommentDTO comment = forumCommentService.createForumComment(request, picture);
 
-        if (comment == null){
+        if (comment == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(comment);
