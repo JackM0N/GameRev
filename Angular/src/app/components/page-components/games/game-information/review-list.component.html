@@ -63,11 +63,27 @@
       </div>
 
       <!-- Review Actions -->
-      <div class="flex justify-between mt-4">
+      <div *ngIf="authService.isAuthenticated()" class="flex justify-between mt-4">
         <div>
-          <button class="synthwaveButton synthwaveButtonSmall" (click)="openReviewDeletionConfirmationDialog(review)" *ngIf="canDeleteReview(review)">Delete</button>
-          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall" (click)="openEditReviewDialog(review)" *ngIf="ownsReview(review)">Edit</button>
-          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall" (click)="openReportReviewDialog(review)" *ngIf="!ownsReview(review)">Report</button>
+          <button
+            class="synthwaveButton synthwaveButtonSmall"
+            (click)="openReviewDeletionConfirmationDialog(review)"
+            *ngIf="canDeleteReview(review)">
+            Delete
+          </button>
+
+          <button
+            class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
+            (click)="openEditReviewDialog(review)"
+            *ngIf="ownsReview(review)">
+            Edit
+          </button>
+
+          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
+            (click)="openReportReviewDialog(review)"
+            *ngIf="!ownsReview(review)">
+            Report
+          </button>
         </div>
         
         <!-- Like / dislike -->
