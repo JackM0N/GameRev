@@ -336,12 +336,11 @@ mat-datepicker-toggle > button > span {
   text-wrap: wrap;
 }
 
-
-
-/*practical joke until later solution*/
 .smallBgImageSize {
   background-repeat: no-repeat;
   background-size: 40px 32px;
+  width: 40px;
+  height: 32px;
 }
 
 .smallBgImage1 {
