@@ -22,7 +22,7 @@ export class AppComponent {
 
   protected routes = [
     { label: 'Forums', link: '/', onlyMobile: true },
-    { label: 'Games', link: '/games' },
+    { label: 'Games', link: '/games', guestsCanAccess: true },
     { label: 'Users', link: '/users', roles: ['Admin', 'Critic'] },
     { label: 'Reports', link: '/reports', roles: ['Admin'] },
     { label: 'Critics', link: '/critic-reviews', roles: ['Admin', 'Critic'] },
@@ -30,8 +30,8 @@ export class AppComponent {
     { label: 'Users', link: '/users' },
     { label: 'Profile', link: '/profile' },
 
-    { label: 'Login', link: '/login', guestOnly: true },
-    { label: 'Register', link: '/register', guestOnly: true }
+    { label: 'Login', link: '/login', guestsCanAccess: true, guestOnly: true },
+    { label: 'Register', link: '/register', guestsCanAccess: true, guestOnly: true }
   ];
 
   constructor(
@@ -74,7 +74,7 @@ export class AppComponent {
 
   canUseRoute(route: any) {
     if (!this.authService.isAuthenticated()) {
-      return route.guestOnly;
+      return route.guestOnly || route.guestsCanAccess;
 
     } else if (route.guestOnly) {
       return false;
