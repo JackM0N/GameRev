@@ -106,7 +106,7 @@
 
           <!-- Comment count and last response when the screen is small -->
           <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
-            {{ post.commentCount }}<ng-container *ngIf="post.lastResponseDate && post.commentCount && post.commentCount > 0">, last on {{ formatDateTimeArray(post.lastResponseDate) }}</ng-container>
+            {{ post.commentCount }} replies<ng-container *ngIf="post.lastResponseDate && post.commentCount && post.commentCount > 0">, last on {{ formatDateTimeArray(post.lastResponseDate) }}</ng-container>
           </td>          
 
           <!-- Last reply (visible when screen is big) -->
