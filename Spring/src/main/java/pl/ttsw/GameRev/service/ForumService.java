@@ -39,7 +39,16 @@ public class ForumService {
     public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
-        Specification<Forum> spec = getForumSpecification(forumFilter, forum);
+
+        boolean isAdmin = false;
+        try {
+            WebsiteUser currentUser = websiteUserService.getCurrentUser();
+            isAdmin = currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()));
+        } catch (Exception e) {
+            // Assuming unauthenticated user
+        }
+
+        Specification<Forum> spec = getForumSpecification(forumFilter, forum, isAdmin);
 
         try {
             WebsiteUser currentUser = websiteUserService.getCurrentUser();
@@ -122,16 +131,20 @@ public class ForumService {
         return true;
     }
 
-    private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum) {
+    private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum, boolean isAdmin) {
         Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
-        if (forumFilter.getIsDeleted() != null) {
-            spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+        if (isAdmin) {
+            if (forumFilter.getIsDeleted() != null) {
+                spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+            } else {
+                spec = spec.and((root, query, builder) -> builder.or(
+                        builder.isTrue(root.get("isDeleted")),
+                        builder.isFalse(root.get("isDeleted"))
+                ));
+            }
         } else {
-            spec = spec.and((root, query, builder) -> builder.or(
-                    builder.isTrue(root.get("isDeleted")),
-                    builder.isFalse(root.get("isDeleted"))
-            ));
+            spec = spec.and((root, query, builder) -> builder.isFalse(root.get("isDeleted")));
         }
 
         if (forumFilter.getGameId() != null) {
@@ -140,6 +153,7 @@ public class ForumService {
                 return builder.equal(gameJoin.get("id"), forumFilter.getGameId());
             });
         }
+
         if (forumFilter.getSearchText() != null) {
             String likePattern = "%" + forumFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) ->  builder.like(builder.lower(root.get("forumName")), likePattern));
