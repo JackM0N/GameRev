@@ -22,7 +22,7 @@ export class ForumService {
   private moderatorsUrl = this.apiUrl + '/forum/moderators';
 
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
     private http: HttpClient,
   ) {}
 
