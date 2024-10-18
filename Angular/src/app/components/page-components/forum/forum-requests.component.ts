@@ -11,6 +11,7 @@ import { PopupDialogComponent } from '../../general-components/popup-dialog.comp
 import { MatSelectChange } from '@angular/material/select';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ForumFormDialogComponent } from './forum-form-dialog.component';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-forum-requests',
@@ -23,6 +24,7 @@ export class ForumRequestsComponent implements AfterViewInit {
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
   protected totalRequests: number = 0;
   protected displayedColumns: string[] = ['forumName', 'description', 'game', 'parentForum', 'author', 'approved', 'options'];
+  @ViewChild(MatSort) protected sort!: MatSort;
 
   private approvedFilter?: boolean = undefined;
   protected filterForm: FormGroup;
@@ -57,8 +59,10 @@ export class ForumRequestsComponent implements AfterViewInit {
 
     const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? this.paginator.pageSize : 10;
+    const sortBy = this.sort.active || 'id';
+    const sortDir = this.sort.direction || 'asc';
 
-    this.forumRequestService.getRequests(page, size, this.approvedFilter).subscribe({
+    this.forumRequestService.getRequests(page, size, sortBy, sortDir, this.approvedFilter).subscribe({
       next: (response) => {
         if (response) {
           this.requestList = response.content;

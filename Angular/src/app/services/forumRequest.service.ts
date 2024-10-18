@@ -24,12 +24,15 @@ export class ForumRequestService {
     private authService: AuthService,
   ) {}
 
-  getRequests(page?: number, size?: number, approved?: boolean): Observable<any> {
+  getRequests(page?: number, size?: number, sortBy?: string, sortDir?: string, approved?: boolean): Observable<any> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams();
 
+    if (sortBy && sortDir) {
+      params = params.set('sort', sortBy + ',' + sortDir);
+    }
     if (page) {
       params = params.set('page', page.toString());
     }
