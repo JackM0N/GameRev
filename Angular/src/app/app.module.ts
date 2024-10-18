@@ -47,7 +47,7 @@ import { OwnProfileComponent } from './components/page-components/user/own-profi
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
 import { GameListComponent } from './components/page-components/games/game-list.component';
-import { ReportListComponent } from './components/page-components/reports/report-list.component';
+import { AdminReportListComponent } from './components/page-components/reports/admin-report-list.component';
 import { GameInfoCriticReviewComponent } from './components/page-components/games/game-information/critic-review.component';
 import { GameInfoReviewListComponent } from './components/page-components/games/game-information/review-list.component';
 import { NotificationService } from './services/notification.service';
@@ -69,7 +69,7 @@ import { UserReviewFormDialogComponent } from './components/page-components/user
 import { CriticReviewFormDialogComponent } from './components/page-components/critic-reviews/critic-review-form-dialog.component';
 import { ForumCommentFormComponent } from './components/page-components/forum/forum-comment-form.component';
 import { CriticReviewContentDialogComponent } from './components/page-components/critic-reviews/critic-review-content-dialog.component';
-import { UserReportListComponent } from './components/page-components/user-reports/user-report-list.component';
+import { UserReportListComponent } from './components/page-components/reports/user-report-list.component';
 
 @NgModule({
     declarations: [
@@ -84,7 +84,7 @@ import { UserReportListComponent } from './components/page-components/user-repor
         PopupDialogComponent,
         ProfileComponent,
         ReviewReportDialogComponent,
-        ReportListComponent,
+        AdminReportListComponent,
         LibraryComponent,
         LibraryFormDialogComponent,
         UserReviewListComponent,

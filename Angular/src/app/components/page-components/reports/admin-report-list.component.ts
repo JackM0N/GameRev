@@ -23,10 +23,10 @@ class ReportInformation {
 }
 
 @Component({
-  selector: 'app-report-list',
-  templateUrl: './report-list.component.html'
+  selector: 'app-admin-report-list',
+  templateUrl: './admin-report-list.component.html'
 })
-export class ReportListComponent implements AfterViewInit {
+export class AdminReportListComponent implements AfterViewInit {
   protected reviewsList: UserReview[] = [];
   protected totalReviews: number = 0;
   protected noReviews = false;

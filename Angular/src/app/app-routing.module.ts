@@ -5,7 +5,7 @@ import { RegistrationComponent } from './components/page-components/authenticati
 import { CriticReviewListComponent } from './components/page-components/critic-reviews/critic-review-list.component';
 import { GameInformationComponent } from './components/page-components/games/game-information/game-information.component';
 import { GameListComponent } from './components/page-components/games/game-list.component';
-import { ReportListComponent } from './components/page-components/reports/report-list.component';
+import { AdminReportListComponent } from './components/page-components/reports/admin-report-list.component';
 import { UserReviewListComponent } from './components/page-components/user-reviews/user-review-list.component';
 import { OwnProfileComponent } from './components/page-components/user/own-profile/own-profile.component';
 import { ProfileComponent } from './components/page-components/user/profile.component';
@@ -15,7 +15,7 @@ import { AuthGuard } from './auth.guard';
 import { ForumComponent } from './components/page-components/forum/forum.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
-import { UserReportListComponent } from './components/page-components/user-reports/user-report-list.component';
+import { UserReportListComponent } from './components/page-components/reports/user-report-list.component';
 
 const routes: Routes = [
   { path: '', component: ForumComponent},
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'user-reviews/:name', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
   { path: 'user-reports', component: UserReportListComponent, canActivate: [AuthGuard]},
   { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
-  { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] }},
+  { path: 'reports', component: AdminReportListComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] }},
   { path: 'library', component: LibraryComponent, canActivate: [AuthGuard]},
   { path: 'critic-reviews', component: CriticReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
 ];
