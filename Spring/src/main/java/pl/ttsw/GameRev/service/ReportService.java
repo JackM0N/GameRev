@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.ttsw.GameRev.dto.ReportDTO;
 import pl.ttsw.GameRev.dto.UserReviewDTO;
+import pl.ttsw.GameRev.filter.UserReviewFilter;
 import pl.ttsw.GameRev.mapper.ReportMapper;
 import pl.ttsw.GameRev.model.Report;
 import pl.ttsw.GameRev.model.UserReview;
@@ -34,6 +36,19 @@ public class ReportService {
         return reports.map(reportMapper::toDto);
     }
 
+    public Page<ReportDTO> getReportByOwner(
+            Pageable pageable
+    ) {
+        WebsiteUser currentUser = websiteUserService.getCurrentUser();
+
+        Specification<Report> spec = Specification.where((root, query, builder) ->
+                builder.equal(root.get("user"), currentUser)
+        );
+
+        Page<Report> userReports = reportRepository.findAll(spec, pageable);
+        return userReports.map(reportMapper::toDto);
+    }
+
     public ReportDTO createReport(ReportDTO reportDTO) throws BadRequestException {
         UserReview userReview = userReviewRepository.findById(reportDTO.getUserReview().getId())
                 .orElseThrow(() -> new BadRequestException("User review not found"));
@@ -56,5 +71,12 @@ public class ReportService {
                 .orElseThrow(() -> new BadRequestException("Report not found"));
         reportMapper.partialUpdate(reportDTO, report);
         return reportMapper.toDto(reportRepository.save(report));
+    }
+
+    public boolean deleteReportById(Long id) throws BadRequestException {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Report not found"));
+        reportRepository.delete(report);
+        return true;
     }
 }

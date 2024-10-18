@@ -238,4 +238,8 @@ export class OwnProfileComponent implements OnInit {
   routeToOwnReviews() {
     this.router.navigate(['/user-reviews']);
   }
+
+  routeToOwnReports() {
+    this.router.navigate(['/user-reports']);
+  }
 }

@@ -15,6 +15,7 @@ import { AuthGuard } from './auth.guard';
 import { ForumComponent } from './components/page-components/forum/forum.component';
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
+import { UserReportListComponent } from './components/page-components/user-reports/user-report-list.component';
 
 const routes: Routes = [
   { path: '', component: ForumComponent},
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'games', component: GameListComponent},
   { path: 'user-reviews', component: UserReviewListComponent, canActivate: [AuthGuard]},
   { path: 'user-reviews/:name', component: UserReviewListComponent, canActivate: [AuthGuard], data: { roles: ['Admin', 'Critic'] }},
+  { path: 'user-reports', component: UserReportListComponent, canActivate: [AuthGuard]},
   { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
   { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] }},
   { path: 'library', component: LibraryComponent, canActivate: [AuthGuard]},

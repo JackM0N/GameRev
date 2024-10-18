@@ -94,4 +94,12 @@ public class UserReviewController {
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws BadRequestException {
+        if (reviewId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userReviewService.deleteUserReviewById(reviewId));
+    }
 }
