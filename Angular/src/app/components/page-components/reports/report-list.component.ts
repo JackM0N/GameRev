@@ -32,7 +32,7 @@ export class ReportListComponent implements AfterViewInit {
   protected noReviews = false;
 
   protected reportsList: ReportInformation[] = [];
-  protected displayedColumns: string[] = ['id', 'user', 'content', 'options'];
+  protected displayedColumns: string[] = ['user', 'content', 'options'];
   protected formatDate = formatDateArray;
   
   private filters: reviewFilters = {};
