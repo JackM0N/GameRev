@@ -31,7 +31,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   protected gamesList: Game[] = [];
   protected totalGames: number = 0;
   protected dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  protected displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+  protected displayedColumns: string[] = ['title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
   protected releaseStatuses = releaseStatuses;
   protected tagList: Tag[] = [];
