@@ -18,6 +18,7 @@ export class ReportService {
   private baseUrl = this.apiUrl + '/reports';
   private reportUrl = this.apiUrl + '/users-reviews/report';
   private approveUrl = this.apiUrl + '/reports/approve';
+  private ownReports = this.apiUrl + '/reports/my-reports';
 
   constructor(
     private authService: AuthService,
@@ -68,6 +69,24 @@ export class ReportService {
     }
 
     return this.http.get<UserReview[]>(`${this.baseUrl}/${reviewId}`, { headers, params });
+  }
+
+  getOwnUserReports(sortBy: string, sortDir: string, page?: number, size?: number): Observable<UserReview[]> {
+    const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+
+    var params = new HttpParams()
+      .set('sort', sortBy + ',' + sortDir
+    );
+
+    if (page) {
+      params = params.set('page', (page - 1).toString());
+    }
+    if (size) {
+      params = params.set('size', size.toString());
+    }
+
+    return this.http.get<UserReview[]>(this.ownReports, { headers, params });
   }
 
   approveReport(report: Report): Observable<Report> {
