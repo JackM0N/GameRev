@@ -71,14 +71,15 @@ export class ReportService {
     return this.http.get<UserReview[]>(`${this.baseUrl}/${reviewId}`, { headers, params });
   }
 
-  getOwnUserReports(sortBy: string, sortDir: string, page?: number, size?: number): Observable<UserReview[]> {
+  getOwnUserReports(sortBy?: string, sortDir?: string, page?: number, size?: number): Observable<UserReview[]> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams()
-      .set('sort', sortBy + ',' + sortDir
-    );
+    var params = new HttpParams();
 
+    if (sortBy) {
+      params = params.set('sort', sortBy + ',' + sortDir);
+    }
     if (page) {
       params = params.set('page', (page - 1).toString());
     }

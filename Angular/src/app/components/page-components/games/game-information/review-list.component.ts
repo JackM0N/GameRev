@@ -34,6 +34,9 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   protected reviewList: UserReview[] = [];
   protected totalReviews: number = 0;
+
+  protected reportList: Report[] = [];
+
   protected formatDateArray = formatDateArray;
   
   private filters: reviewFilters = {};
@@ -69,6 +72,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.loadReviews();
+
+    if (this.authService.isAuthenticated()) {
+      this.loadReports();
+    }
+
     this.paginator.page.subscribe(() => this.loadReviews());
   }
 
@@ -97,6 +105,23 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       complete: () => {}
     };
     this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+  }
+
+  loadReports() {
+    this.reportList = [];
+    this.totalReviews = 0;
+
+    const observer: Observer<any> = {
+      next: response => {
+        if (response) {
+          this.reportList = response.content;
+          this.totalReviews = response.totalElements;
+        }
+      },
+      error: error => { console.error(error); },
+      complete: () => {}
+    };
+    this.reportService.getOwnUserReports().subscribe(observer);
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
@@ -215,8 +240,17 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     }
 
     this.reportService.reportReview(this.report).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report sent successfully'); },
-      error: error => this.notificationService.popErrorToast('Report submission failed', error)
+      next: () => {
+        this.notificationService.popSuccessToast('Report sent successfully');
+        this.reportList.push({ ...this.report });
+      },
+      error: error => {
+        if (error.error == "You've already reported this review") {
+          this.notificationService.popErrorToast(error.error, error);
+        } else {
+          this.notificationService.popErrorToast('Report submission failed', error);
+        }
+      }
     });
   }
 
@@ -250,6 +284,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
     const userName = this.authService.getUsername();
     return !this.reviewList.some(review => review.userNickname === userName);
+  }
+
+  canReportReview(review: UserReview) {
+    // check reportList if user has already reported this review
+    return !this.ownsReview(review) && !this.reportList.some(report => report.userReview.id === review.id);
   }
 
   openAddReviewDialog() {

@@ -81,7 +81,7 @@
 
           <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
             (click)="openReportReviewDialog(review)"
-            *ngIf="!ownsReview(review)">
+            *ngIf="canReportReview(review)">
             Report
           </button>
         </div>
