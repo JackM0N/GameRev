@@ -23,7 +23,6 @@ export class AppComponent {
   protected routes = [
     { label: 'Forums', link: '/', onlyMobile: true },
     { label: 'Games', link: '/games', guestsCanAccess: true },
-    { label: 'Users', link: '/users', roles: ['Admin', 'Critic'] },
     { label: 'Reports', link: '/reports', roles: ['Admin'] },
     { label: 'Critics', link: '/critic-reviews', roles: ['Admin', 'Critic'] },
     { label: 'Library', link: '/library' },
