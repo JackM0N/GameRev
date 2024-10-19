@@ -2,7 +2,7 @@
 <div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
   <div class="synthwaveBg py-2 px-6">
     <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
-      Game list
+      Game List
     </div>
   </div>
 </div>
@@ -21,7 +21,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        
+
         <!-- Tags -->
         <mat-form-field>
           <mat-label>Tags</mat-label>
@@ -68,79 +68,39 @@
   </div>
 </div>
 
-<div class="grow z-10 bg-repeat font-arcade flex-row justify-center items-center tracking-wider">
-  <div class="pixel-border w-fit h-fit py-[6px] m-auto mb-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">
-    <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
-      <button class="pinkTextShadowWide px-8 py-2" (click)="openAddNewGameDialog()">Add a new game</button>
+<!-- Grid of Cards Section -->
+<div class="game-grid-container w-full px-6 py-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let game of gameList" class="game-card pixel-border p-4 synthwaveBg flex flex-col text-white">
+      <div class="game-card-header text-center">
+        <h2 class="text-2xl font-arcade">{{ game.title }}</h2>
+        <p class="text-lg">{{ game.developer }} / {{ game.publisher }}</p>
+        <p class="text-sm">{{ game.releaseDate | date: 'dd MMM yyyy' }}</p>
+      </div>
+
+      <div class="game-card-body mt-4">
+        <p *ngIf="game.releaseStatus"><strong>Release Status:</strong> {{ findReleaseStatusName(game.releaseStatus) }}</p>
+        <p class="mt-2"><strong>Score:</strong> {{ game.usersScore }}</p>
+        <p class="mt-2"><strong>Tags:</strong> {{ getTags(game) }}</p>
+        <p class="mt-2"><strong>Description:</strong> {{ game.description }}</p>
+      </div>
+
+      <div class="game-card-footer flex justify-between mt-4">
+        <button class="synthwaveButton" *ngIf="game.title" (click)="routeToViewGame(game.title)">View</button>
+        <button *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])" class="synthwaveButton" (click)="openEditGameDialog(game)">Edit</button>
+        <button *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])" class="synthwaveButton" (click)="openGameDeletionConfirmationDialog(game)">Delete</button>
+      </div>
     </div>
   </div>
-  
-  <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
-    <div class="px-1 overflow-x-auto">
-      <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadGames()" >
-        <ng-container matColumnDef="title">
-          <th class="synthwaveBg bg-repeat text-white font-arcade text-center text-lg pinkTextShadowWide pl-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="title" *matHeaderCellDef>Title</th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            <button class="text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">{{element.title}}</button>
-          </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="developer">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="developer" *matHeaderCellDef> Developer </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.developer}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="publisher">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="publisher" *matHeaderCellDef> Publisher </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.publisher}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="releaseDate">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseDate" *matHeaderCellDef> Release date </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.releaseDate | date: 'dd MMMM yyyy'}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="releaseStatus">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="releaseStatus" *matHeaderCellDef> Release status </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{ findReleaseStatusName(element.releaseStatus)}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="usersScore">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="usersScore" *matHeaderCellDef> Users score </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.usersScore}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="tags">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Tags </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{getTags(element)}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="description">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="description" *matHeaderCellDef> Description </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element"> {{element.description}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="options">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef> Options </th>
-          <td class="synthwaveBg bg-repeat  border-2 border-white" *matCellDef="let element">
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="routeToViewGame(element.title)">View</button>
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openEditGameDialog(element)" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">Edit</button>
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" (click)="openGameDeletionConfirmationDialog(element)" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])">Delete</button>
-          </td>
-        </ng-container>
-        
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
 
-    <div [hidden]="totalGames < 6">
-      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        [length]="totalGames"
-        [pageSize]="5"
-        [pageSizeOptions]="[5, 10, 20]"
-        showFirstLastButtons>
-      </mat-paginator>
-    </div>
+  <!-- Paginator -->
+  <div [hidden]="totalGames < 6" class="mt-8">
+    <mat-paginator
+      class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      [length]="totalGames"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
   </div>
 </div>

@@ -2,11 +2,9 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } fr
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../models/game';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
 import { AuthService } from '../../../services/auth.service';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { BackgroundService } from '../../../services/background.service';
@@ -28,10 +26,8 @@ import { NotificationService } from '../../../services/notification.service';
   templateUrl: './game-list.component.html'
 })
 export class GameListComponent extends BaseAdComponent implements AfterViewInit {
-  protected gamesList: Game[] = [];
+  protected gameList: Game[] = [];
   protected totalGames: number = 0;
-  protected dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  protected displayedColumns: string[] = ['title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
 
   protected releaseStatuses = releaseStatuses;
   protected tagList: Tag[] = [];
@@ -39,7 +35,6 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   protected filterForm: FormGroup;
   
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
-  @ViewChild(MatSort) private sort!: MatSort;
   @ViewChild('searchInput', { static: true }) private searchInput?: ElementRef;
 
   constructor(
@@ -80,14 +75,9 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
     this.loadGames();
     
     this.paginator.page.subscribe(() => this.loadGames());
-    this.sort.sortChange.subscribe(() => {
-      this.paginator.pageIndex = 0;
-      this.loadGames();
-    });
 
     if (this.searchInput) {
       fromEvent(this.searchInput.nativeElement, 'input').pipe(
@@ -114,27 +104,25 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   loadGames() {
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
-    const sortBy = this.sort.active || 'id';
-    const sortDir = this.sort.direction || 'asc';
 
     const observer: Observer<any> = {
       next: response => {
         if (response) {
           this.totalGames = response.totalElements;
-          this.dataSource = new MatTableDataSource<Game>(response.content);
+          this.gameList = response.content;
         } else {
           this.totalGames = 0;
-          this.dataSource = new MatTableDataSource<Game>([]);
+          this.gameList = [];
         }
       },
       error: error => {
         this.totalGames = 0;
-        this.dataSource = new MatTableDataSource<Game>([]);
+        this.gameList = [];
         console.error(error);
       },
       complete: () => {}
     };
-    this.gameService.getGames(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+    this.gameService.getGames(page, size, 'id', 'asc', this.filters).subscribe(observer);
   }
 
   openAddNewGameDialog() {
@@ -197,7 +185,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     const observer: Observer<any> = {
       next: response => {
         if (response) {
-          this.dataSource.data = response;
+          this.gameList = response;
           this.loadGames();
           this.notificationService.popSuccessToast('Deleted game successfuly');
         }
