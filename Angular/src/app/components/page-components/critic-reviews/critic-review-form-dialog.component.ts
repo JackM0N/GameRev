@@ -43,10 +43,6 @@ export class CriticReviewFormDialogComponent {
       score: [this.criticReview.score, [Validators.required]]
     });
   }
-
-  onCancel(): void {
-    this.dialogRef.close(false);
-  }
   
   ngOnInit() {
     if (this.data.review) {
