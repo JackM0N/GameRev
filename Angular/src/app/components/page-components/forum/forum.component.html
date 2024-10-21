@@ -3,13 +3,11 @@
   <!-- Breadcrumb Navigation -->
   @if (path && path.length > 1) {
     <nav class="breadcrumb flex space-x-2 text-sm mb-4">
-      @for (segment of path; track segment; let i = $index) {
+      @for (segment of path; track segment.forumName; let i = $index) {
         @if (i < path.length - 1) {
           <a [routerLink]="'/forum/' + segment.id" class="text-cyan-400 hover:text-cyan-300 font-bold">
             {{ segment.forumName }}
           </a>
-        }
-        @else if (i < path.length - 1) {
           <span class="text-gray-500"> &gt; </span>
         }
         @else if (i === path.length - 1) {
@@ -102,7 +100,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (subforum of subForumList; track subforum) {
+            @for (subforum of subForumList; track subforum.id) {
               <tr class="hover:bg-[#333333]" [ngClass]="subforum.isDeleted? 'deleted-forum': ''">
                 <!-- Title and description, also shows post count and actions when the screen is small -->
                 <td class="p-4 border-b border-[#00CFFF]">

@@ -56,7 +56,7 @@
 
     <!-- Tags Section -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4 max-w-4xl mx-auto">
-      @for (tag of game.tags; track tag) {
+      @for (tag of game.tags; track tag.id) {
         <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base">
           {{ tag.tagName }}
         </div>

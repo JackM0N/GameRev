@@ -28,7 +28,7 @@
         <mat-form-field>
           <mat-label>Tags</mat-label>
           <mat-select formControlName="tags" (selectionChange)="onTagFilterChange($event)" multiple>
-            @for (tag of tagList; track tag) {
+            @for (tag of tagList; track tag.id) {
               <mat-option [value]="tag.id">
                 {{ tag.tagName }}
               </mat-option>
@@ -72,10 +72,16 @@
   </div>
 </div>
 
+<div class="pixel-border w-fit h-fit p-[6px] m-auto mb-4">
+  <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
+    <button class="pinkTextShadowWide px-8 py-2" (click)="openAddNewGameDialog()">Add a new game</button>
+  </div>
+</div>
+
 <!-- Grid of Cards Section -->
 <div class="game-grid-container w-full px-6 py-4">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    @for (game of gameList; track game) {
+    @for (game of gameList; track game.id) {
       <div class="game-card pixel-border p-4 synthwaveBg flex flex-col text-white">
         <div class="game-card-header text-center">
           <h2 class="text-2xl font-arcade">{{ game.title }}</h2>

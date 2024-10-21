@@ -48,22 +48,26 @@
     <h3 class="text-lg pb-4">Reviews with reports</h3>
 
     <div class="review-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-      @for (review of this.reviewsList; track review) {
+      @for (review of this.reviewsList; track review.id) {
         <div class="review-item p-6 bg-[#1A1A1A] border-2 border-[#FF00FF] shadow-lg">
           <div class="m-0 p-0 text-base sm:text-lg font-bold text-[#FF00FF] noTextShadow">by {{ review.userNickname }}</div>
+
           <p class="text-sm sm:text-base">{{ review.content }}</p>
+
           <div class="text-sm mt-2 grid grid-cols-1 sm:grid-cols-2">
             <div><strong>Score:</strong> {{ review.score }}</div>
             <div><strong>Date:</strong> {{ formatDate(review.postDate) }}</div>
             <div><strong>Likes:</strong> {{ review.positiveRating }}</div>
             <div><strong>Dislikes:</strong> {{ review.negativeRating }}</div>
           </div>
+
           <mat-expansion-panel hideToggle class="!bg-[#282828] border-2 !mt-4 !rounded-none report-expansion-panel" (opened)="onPanelOpened(review)" #panel>
             <mat-expansion-panel-header class="!px-2">
               <mat-panel-title class="!text-white font-arcade !px-2">
                 {{ panel.expanded ? 'Hide reports' : 'Show reports' }}
               </mat-panel-title>
             </mat-expansion-panel-header>
+
             @if (review.id) {
               @if (this.reportsList[review.id]) {
                 @if (this.reportsList[review.id].totalReports > 0) {
@@ -73,10 +77,12 @@
                         <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> User </th>
                         <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element"> {{element.user.nickname}} </td>
                       </ng-container>
+
                       <ng-container matColumnDef="content">
                         <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> Content </th>
                         <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element"> {{element.content}} </td>
                       </ng-container>
+
                       <ng-container matColumnDef="options">
                         <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
                         <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element">
@@ -88,10 +94,12 @@
                           }
                         </td>
                       </ng-container>
+                      
                       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                     </table>
                   </div>
+
                   <div [hidden]="this.reportsList[review.id].totalReports < 6">
                     <mat-paginator
                       class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white border-2 border-white"

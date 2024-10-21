@@ -65,7 +65,7 @@
       </thead>
 
       <tbody>
-        @for (post of postList; track post; let i = $index) {
+        @for (post of postList; track post.id; let i = $index) {
           <tr class="hover:bg-[#333333]">
             <!-- Post picture and title -->
             <td class="p-2 sm:p-4 border-b border-[#00CFFF]">

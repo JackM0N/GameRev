@@ -105,7 +105,7 @@ export class GameFormDialogComponent {
   
           const tags: any = [];
           const formTags = this.addingGameForm.get('tags');
-          if (formTags) {
+          if (formTags && formTags.value) {
             formTags.value.forEach((tag: any) => {
               const matchingTag = this.tagsList.find((t: any) => t.id === tag.id);
               if (matchingTag) {

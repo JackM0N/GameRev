@@ -23,7 +23,7 @@
       <mat-form-field>
         <mat-label>Completion statuses</mat-label>
         <mat-select (selectionChange)="onCompletionStatusFilterChange($event)" multiple>
-          @for (status of completionStatuses; track status) {
+          @for (status of completionStatuses; track status.className) {
             <mat-option [value]="status.className">
               {{ status.name }}
             </mat-option>
@@ -34,7 +34,7 @@
       <mat-form-field>
         <mat-label>Tags</mat-label>
         <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
-          @for (tag of tagList; track tag) {
+          @for (tag of tagList; track tag.id) {
             <mat-option [value]="tag.id">
               {{ tag.tagName }}
             </mat-option>

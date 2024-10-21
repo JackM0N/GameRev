@@ -40,7 +40,7 @@
 <div class="mt-4 bg-[#222] max-w-5xl mx-auto">
   <!-- Each Review -->
   <div class="review-container">
-    @for (review of reviewList; track review) {
+    @for (review of reviewList; track review.id) {
       <div class="review-item p-4 bg-[#333] border-[2px] border-pink-500 shadow mb-4">
         <!-- Post info -->
         <p class="pb-2">

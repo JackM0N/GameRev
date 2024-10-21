@@ -27,7 +27,7 @@
 
     <!-- Roles -->
     <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
-      @for (role of user.roles; track role) {
+      @for (role of user.roles; track role.id) {
         <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base text-white w-fit">
           {{ role.roleName }}
         </div>
