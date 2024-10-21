@@ -8,11 +8,13 @@
 </div>
 
 <!-- Add new request button -->
-<div class="pixel-border max-w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin'])">
-  <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
-    <button class="pinkTextShadowWide px-[1px] py-2" (click)="openAddNewRequestDialog()">Add a new request</button>
+@if (authService.isAuthenticated() && authService.hasAnyRole(['Admin'])) {
+  <div class="pixel-border max-w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]">
+    <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
+      <button class="pinkTextShadowWide px-[1px] py-2" (click)="openAddNewRequestDialog()">Add a new request</button>
+    </div>
   </div>
-</div>
+}
 
 <!-- Filters Section -->
 <div class="pixel-border w-11/12 h-fit py-[6px] m-auto mt-10 px-[6px]">
@@ -110,32 +112,39 @@
               Options
             </th>
             <td class="synthwaveBg bg-repeat border-2 border-white px-2" *matCellDef="let element">
-              <button
-                class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
-                (click)="openEditRequestDialog(element)"
-                *ngIf="canEditRequest(element)">
-                Edit
-              </button>
+              @if (canEditRequest(element)) {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                  (click)="openEditRequestDialog(element)"
+                  >
+                  Edit
+                </button>
+              }
 
-              <button class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
-                (click)="openApproveRequestDialog(element, true)"
-                *ngIf="element.approved != true && authService.hasAnyRole(['Admin'])">
-                Approve
-              </button>
-
-              <button
-                class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
-                (click)="openApproveRequestDialog(element, false)"
-                *ngIf="element.approved != false && authService.hasAnyRole(['Admin'])">
-                Disaprove
-              </button>
-
-              <button
-                class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
-                (click)="openDeleteRequestDialog(element)"
-                *ngIf="element.approved != true && authService.hasAnyRole(['Admin'])">
-                Delete
-              </button>
+              @if (authService.isAdmin()) {
+                @if (element.approved != true) {
+                  <button class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openApproveRequestDialog(element, true)"
+                    >
+                    Approve
+                  </button>
+                  
+                  <button
+                    class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openDeleteRequestDialog(element)"
+                    >
+                    Delete
+                  </button>
+                }
+                @else if (element.approved != false) {
+                  <button
+                    class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openApproveRequestDialog(element, false)"
+                    >
+                    Disaprove
+                  </button>
+                }
+              }
             </td>
           </ng-container>
 
@@ -147,7 +156,7 @@
     </div>
 
     <!-- Paginator for Forum Requests -->
-     <div [hidden]="totalRequests < 6">
+    <div [hidden]="totalRequests < 6">
       <mat-paginator
         class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
         [length]="totalRequests"

@@ -37,18 +37,10 @@ export class AppComponent {
     public authService: AuthService,
     private backgroundService: BackgroundService,
     private cdRef: ChangeDetectorRef,
-    private elRef: ElementRef,
+    private elRef: ElementRef
   ) {}
 
   ngOnInit() {
-    /*
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.backgroundService.resetStyles();
-      }
-    });
-    */
-
     this.backgroundService.style$.subscribe(styles => {
       this.styles = styles;
     });
@@ -88,15 +80,17 @@ export class AppComponent {
   // Close the navbar if the click is outside of it and it is currently open
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    const targetElement = event.target as HTMLElement;
-    const mobileNavbar = this.elRef.nativeElement.querySelector('#mobile-navbar-menu');
-    const mobileNavbarButton = this.elRef.nativeElement.querySelector('#mobile-navbar-button');
+    if (this.isNavbarOpen) {
+      const targetElement = event.target as HTMLElement;
+      const mobileNavbar = this.elRef.nativeElement.querySelector('#mobile-navbar-menu');
+      const mobileNavbarButton = this.elRef.nativeElement.querySelector('#mobile-navbar-button');
 
-    if (targetElement) {
-      const clickedInside = mobileNavbar.contains(targetElement);
-  
-      if (!clickedInside && this.isNavbarOpen && !mobileNavbarButton.contains(targetElement)) {
-        this.closeNavbar();
+      if (targetElement) {
+        const clickedInside = mobileNavbar.contains(targetElement);
+    
+        if (!clickedInside && !mobileNavbarButton.contains(targetElement)) {
+          this.closeNavbar();
+        }
       }
     }
   }

@@ -12,9 +12,11 @@
       </div>
 
       <!-- No current password typed error -->
-      <mat-error *ngIf="isEmailInvalid()" class="font-arcade text-red-600 font-bold">
-        {{emailErrorMessage()}}
-      </mat-error>
+      @if (isEmailInvalid()) {
+        <mat-error class="font-arcade text-red-600 font-bold">
+          {{emailErrorMessage()}}
+        </mat-error>
+      }
 
       <div class="mt-2">
         <label class="pinkTextShadow">Enter current password</label>
@@ -27,22 +29,26 @@
             (mousedown)="hidePasswordClickEvent($event)"
             [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hidePassword()"
-          >
+            >
             <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
         </div>
       </div>
 
       <!-- No current password typed error -->
-      <mat-error *ngIf="changeEmailForm.get('currentPassword')?.touched && changeEmailForm.get('currentPassword')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-        Please provide the current password.
-      </mat-error>
+      @if (changeEmailForm.get('currentPassword')?.touched && changeEmailForm.get('currentPassword')?.hasError('required')) {
+        <mat-error class="font-arcade text-red-600 font-bold">
+          Please provide the current password.
+        </mat-error>
+      }
 
       <!-- Min length current password error -->
-      <mat-error *ngIf="changeEmailForm.get('currentPassword')?.touched && changeEmailForm.get('currentPassword')?.getError('minlength') != undefined" class="font-arcade text-red-600 font-bold">
-        Please provide a longer password.
-        <div class="m-0 p-0 text-sm">(min {{ changeEmailForm.get('currentPassword')?.getError('minlength')["requiredLength"] }} characters)</div>
-      </mat-error>
+      @if (changeEmailForm.get('currentPassword')?.touched && changeEmailForm.get('currentPassword')?.getError('minlength') != undefined) {
+        <mat-error class="font-arcade text-red-600 font-bold">
+          Please provide a longer password.
+          <div class="m-0 p-0 text-sm">(min {{ changeEmailForm.get('currentPassword')?.getError('minlength')["requiredLength"] }} characters)</div>
+        </mat-error>
+      }
 
       <div class="mt-4">
         <button class="text-white pinkTextShadow text-lg disabled:opacity-30" [disabled]="!changeEmailForm.valid">Save email</button>

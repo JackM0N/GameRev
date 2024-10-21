@@ -53,7 +53,7 @@
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-        
+
         <!-- Search Filter -->
         <mat-form-field class="w-full text-white">
           <mat-label>Search</mat-label>
@@ -170,7 +170,7 @@
             Roles
           </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{ parseRoles(element.roles) }} </td>
+          {{ parseRoles(element.roles) }} </td>
         </ng-container>
 
         <!-- Options Column -->
@@ -186,26 +186,28 @@
               Profile
             </button>
 
-            <button
-              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
-              *ngIf="isAdmin"
-              (click)="openUserReviews(element)">
-              Reviews
-            </button>
+            @if (isAdmin) {
+              <button
+                class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                (click)="openUserReviews(element)">
+                Reviews
+              </button>
 
-            <button
-              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
-              *ngIf="isAdmin && !element.isBanned"
-              (click)="userService.openBanDialog(element)">
-              Ban
-            </button>
-
-            <button
-              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
-              *ngIf="isAdmin && element.isBanned"
-              (click)="userService.openUnbanDialog(element)">
-              Unban
-            </button>
+              @if (element.isBanned) {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                  (click)="userService.openUnbanDialog(element)">
+                  Unban
+                </button>
+              }
+              @else {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                  (click)="userService.openBanDialog(element)">
+                  Ban
+                </button>
+              }
+            }
           </td>
         </ng-container>
 

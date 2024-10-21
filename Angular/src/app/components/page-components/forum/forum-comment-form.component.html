@@ -3,7 +3,7 @@
   <div class="post-header">
     <h2 class="text-2xl font-bold text-[#E5E5E5] mb-2">Add a Comment</h2>
   </div>
-  
+
   <div class="post-body mt-4">
     <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
 
@@ -14,10 +14,12 @@
         [placeholder]="authService.isAuthenticated() ? 'Write your comment here...' : 'Log in to be able to post a comment'"
         rows="4">
       </quill-editor>
-    
-      <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-        Content must be at least {{ minLength }} characters long.
-      </div>
+
+      @if (commentForm.get('content')?.hasError('minLength')) {
+        <div class="p-2 text-red-600">
+          Content must be at least {{ minLength }} characters long.
+        </div>
+      }
 
       <button class="synthwaveButton mt-2" color="primary" type="submit" [disabled]="commentForm.invalid || !authService.isAuthenticated()">
         Submit

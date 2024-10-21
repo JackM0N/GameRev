@@ -21,7 +21,7 @@
           <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef> Content </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.content}} </td>
         </ng-container>
-      
+
         <ng-container matColumnDef="approved">
           <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="postDate" mat-header-cell *matHeaderCellDef> Approved </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.approved ? 'Yes' : 'No'}} </td>
@@ -53,8 +53,10 @@
 </div>
 
 <!-- No Reviews Message -->
-<div *ngIf="totalReports < 1" class="max-w-[500px] m-auto pixel-border px-[6px] mt-4">
-  <div class="py-[6px]">
-    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No reviews to show</p>
+@if (totalReports < 1) {
+  <div class="max-w-[500px] m-auto pixel-border px-[6px] mt-4">
+    <div class="py-[6px]">
+      <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No reviews to show</p>
+    </div>
   </div>
-</div>
+}

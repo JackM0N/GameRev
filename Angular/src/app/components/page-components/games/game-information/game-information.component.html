@@ -5,14 +5,18 @@
     <div class="flex justify-between items-center w-full lg:hidden mb-6">
       <button class="synthwaveButton" type="button" (click)="goBack()">Go back</button>
       <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
-      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="toggleSmallScreenMenu = !toggleSmallScreenMenu">☰</button>
+      @if (this.authService.isAdmin()) {
+        <button class="synthwaveButton" (click)="toggleSmallScreenMenu = !toggleSmallScreenMenu">☰</button>
+      }
     </div>
 
     <!-- Collapsible Dropdown Menu for Small Screens -->
-    <div *ngIf="toggleSmallScreenMenu && this.authService.isAdmin()" class="flex flex-col items-end gap-3 mt-2 lg:hidden">
-      <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog()">Delete</button>
-      <button class="synthwaveButton" (click)="openEditGameDialog()">Edit</button>
-    </div>
+    @if (toggleSmallScreenMenu && this.authService.isAdmin()) {
+      <div class="flex flex-col items-end gap-3 mt-2 lg:hidden">
+        <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+        <button class="synthwaveButton" (click)="openEditGameDialog()">Edit</button>
+      </div>
+    }
 
     <!-- Go Back Button for Medium and Larger Screens -->
     <div class="lg:absolute lg:left-6 lg:top-6 flex justify-start hidden lg:flex">
@@ -20,11 +24,16 @@
     </div>
 
     <!-- Actions on the Right for Medium and Larger Screens -->
-    <div class="absolute right-6 top-6 flex flex-col gap-3 items-end invisible lg:visible" *ngIf="this.authService.isAuthenticated()">
-      <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
-      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openGameDeletionConfirmationDialog()">Delete</button>
-      <button class="synthwaveButton" *ngIf="this.authService.isAdmin()" (click)="openEditGameDialog()">Edit</button>
-    </div>
+    @if (this.authService.isAuthenticated()) {
+      <div class="absolute right-6 top-6 flex flex-col gap-3 items-end invisible lg:visible">
+        <button class="synthwaveButton" (click)="openLibraryFormDialog()">Add to Library</button>
+
+        @if (this.authService.isAdmin()) {
+          <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog()">Delete</button>
+          <button class="synthwaveButton" (click)="openEditGameDialog()">Edit</button>
+        }
+      </div>
+    }
 
     <!-- Game Title -->
     <div class="text-4xl font-bold mt-3 mb-6 pinkTextShadow">{{this.game.title}}</div>
@@ -47,24 +56,26 @@
 
     <!-- Tags Section -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4 max-w-4xl mx-auto">
-      <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base" *ngFor="let tag of game.tags">
-        {{ tag.tagName }}
-      </div>
-    </div>
-    
-    <div *ngIf="gameTitle">
-      <!-- Critic Review Section -->
-      <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
-
-      <!-- User Review Section -->
-      <div class="p-2 sm:p-4 md:m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
-        <app-gameinfo-review-list
-          [gameTitle]="gameTitle"
-          [game]="game"
-          (usersScoreUpdated)="updateUsersScoreText($event)">
-        </app-gameinfo-review-list>
-      </div>
+      @for (tag of game.tags; track tag) {
+        <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base">
+          {{ tag.tagName }}
+        </div>
+      }
     </div>
 
+    @if (gameTitle) {
+      <div>
+        <!-- Critic Review Section -->
+        <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+        <!-- User Review Section -->
+        <div class="p-2 sm:p-4 md:m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
+          <app-gameinfo-review-list
+            [gameTitle]="gameTitle"
+            [game]="game"
+            (usersScoreUpdated)="updateUsersScoreText($event)">
+          </app-gameinfo-review-list>
+        </div>
+      </div>
+    }
   </div>
 </div>

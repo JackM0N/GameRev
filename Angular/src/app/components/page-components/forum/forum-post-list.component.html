@@ -21,7 +21,7 @@
             <mat-date-range-picker #picker></mat-date-range-picker>
           </mat-form-field>
         </div>
-        
+
         <!-- Search Filter -->
         <div class="flex flex-col space-y-1 w-48">
           <label class="text-sm text-white">Search</label>
@@ -42,11 +42,13 @@
       <mat-icon>filter_alt</mat-icon>
     </button>
 
-    <p *ngIf="isModerator()" class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
-      You are a moderator of this forum
-    </p>
+    @if (isModerator()) {
+      <p class="text-[#fcba03] text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
+        You are a moderator of this forum
+      </p>
+    }
   </div>
-  
+
   <div class="overflow-x-auto">
     <table class="forum-posts-table w-full table-auto border-collapse text-sm md:text-base">
       <thead class="bg-[#1A1A1A] text-[#E5E5E5]">
@@ -56,99 +58,114 @@
           <th class="p-2 sm:p-4 border-b border-[#00CFFF]">Post date</th>
           <th class="p-2 sm:p-4 border-b border-[#00CFFF]">Replies</th>
           <th class="p-2 sm:p-4 border-b border-[#00CFFF] hidden md:table-cell">Last reply</th>
-          <th class="p-2 sm:p-4 border-b border-[#00CFFF] hidden lg:table-cell" *ngIf="canManageAnyPost() || isModerator()">Actions</th>
+          @if (canManageAnyPost() || isModerator()) {
+            <th class="p-2 sm:p-4 border-b border-[#00CFFF] hidden lg:table-cell">Actions</th>
+          }
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let post of postList; let i = index" class="hover:bg-[#333333]">
-
-          <!-- Post picture and title -->
-          <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
-            <div style="display: table;">
-              <div style="display: table-cell; vertical-align: middle;">
-                <img
-                  (click)="navigateToPost(post.id)"
-                  *ngIf="post.picture"
-                  [src]="post.picture"
-                  alt="Post image"
-                  class="max-w-16 w-16 h-16 object-cover rounded cursor-pointer">
+        @for (post of postList; track post; let i = $index) {
+          <tr class="hover:bg-[#333333]">
+            <!-- Post picture and title -->
+            <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
+              <div style="display: table;">
+                <div style="display: table-cell; vertical-align: middle;">
+                  @if (post.picture) {
+                    <img
+                      (click)="navigateToPost(post.id)"
+                      [src]="post.picture"
+                      alt="Post image"
+                      class="max-w-16 w-16 h-16 object-cover rounded cursor-pointer">
+                  }
+                </div>
+                <div style="display: table-cell; vertical-align: middle; padding-left: 10px;">
+                  <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
+                    {{ post.title }}
+                  </a>
+                </div>
               </div>
-              <div style="display: table-cell; vertical-align: middle; padding-left: 10px;">
-                <a (click)="navigateToPost(post.id)" class="text-cyan-400 hover:text-cyan-300 cursor-pointer font-semibold">
-                  {{ post.title }}
-                </a>
-              </div>
-            </div>
 
-            <!-- Actions when the screen is small -->
-            <div *ngIf="canManageAnyPost() || isModerator()" class="pt-2 justify-center table-cell lg:hidden">
-              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
-                <i class="material-icons">edit</i>
-              </button>
-          
-              <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600 ml-2" (click)="openDeletePostDialog(post)">
-                <i class="material-icons">delete</i>
-              </button>
-            </div>
-          </td>
-          
-          <!-- Clickable author's nickname (visible when screen is big) -->
-          <td class="p-2 sm:p-4 border-b border-[#00CFFF] hidden md:table-cell">
-            <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + post.author?.nickname">{{ post.author?.nickname }}</a>
-          </td>
+              <!-- Actions when the screen is small -->
+              @if (canManageAnyPost() || isModerator()) {
+                <div class="pt-2 justify-center table-cell lg:hidden">
+                  @if (canManagePost(post)) {
+                    <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditPostDialog(post)">
+                      <i class="material-icons">edit</i>
+                    </button>
+                  }
+                  <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600 ml-2" (click)="openDeletePostDialog(post)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </div>
+              }
+            </td>
+            
+            <!-- Clickable author's nickname (visible when screen is big) -->
+            <td class="p-2 sm:p-4 border-b border-[#00CFFF] hidden md:table-cell">
+              <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + post.author?.nickname">{{ post.author?.nickname }}</a>
+            </td>
 
-          <!-- Post date and nickname when the screen is small -->
-          <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
-            {{ formatDateTimeArray(post.postDate) }}
-            <div class="table-cell md:hidden">by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + post.author?.nickname">{{ post.author?.nickname }}</a></div>
+            <!-- Post date and nickname when the screen is small -->
+            <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
+              {{ formatDateTimeArray(post.postDate) }}
+              <div class="table-cell md:hidden">by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + post.author?.nickname">{{ post.author?.nickname }}</a></div>
+            </td>
+            
+            <!-- Comment count and last response when the screen is small -->
+            <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
+              {{ post.commentCount }} replies@if (post.lastResponseDate && post.commentCount && post.commentCount > 0) {
+              , last on {{ formatDateTimeArray(post.lastResponseDate) }}
+            }
           </td>
-
-          <!-- Comment count and last response when the screen is small -->
-          <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
-            {{ post.commentCount }} replies<ng-container *ngIf="post.lastResponseDate && post.commentCount && post.commentCount > 0">, last on {{ formatDateTimeArray(post.lastResponseDate) }}</ng-container>
-          </td>          
 
           <!-- Last reply (visible when screen is big) -->
           <td class="p-2 sm:p-4 border-b border-[#00CFFF] hidden md:table-cell">
             {{ (post.lastResponseDate && post.commentCount && post.commentCount > 0) ? formatDateTimeArray(post.lastResponseDate) : '-' }}
           </td>
-
-          <!-- Post actions - edit and delete (visible when screen is big) -->
-          <td class="pl-2 border-b border-[#00CFFF] hidden lg:table-cell" *ngIf="canManagePost(post) || isModerator()">
-            <div class="flex flex-wrap justify-center gap-2">
-              <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditPostDialog(post)" *ngIf="canManagePost(post)">
-                <i class="material-icons">edit</i>
-              </button>
           
-              <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" (click)="openDeletePostDialog(post)">
-                <i class="material-icons">delete</i>
-              </button>
-            </div>
-          </td>          
+          <!-- Post actions - edit and delete (visible when screen is big) -->
+          @if (canManagePost(post) || isModerator()) {
+            <td class="pl-2 border-b border-[#00CFFF] hidden lg:table-cell">
+              <div class="flex flex-wrap justify-center gap-2">
+                @if (canManagePost(post)) {
+                  <button class="bg-yellow-500 text-white px-3 pb-1 pt-2 hover:bg-yellow-600" (click)="openEditPostDialog(post)">
+                    <i class="material-icons">edit</i>
+                  </button>
+                }
+                <button class="bg-red-500 text-white px-3 pb-1 pt-2 hover:bg-red-600" (click)="openDeletePostDialog(post)">
+                  <i class="material-icons">delete</i>
+                </button>
+              </div>
+            </td>
+          }
         </tr>
-        
-        <tr *ngIf="totalPosts == 0">
+      }
+
+      @if (totalPosts == 0) {
+        <tr>
           <td class="p-4 border border-gray-300 text-center" colspan="7">No posts yet</td>
         </tr>
-      </tbody>
-    </table>
-  </div>
+      }
+    </tbody>
+  </table>
+</div>
 
-  <!-- Add new post -->
-  <div class="mt-6">
-    <button class="synthwaveButton" *ngIf="authService.isAuthenticated()" (click)="openNewPostDialog()">Add new post</button>
-  </div>
+<!-- Add new post -->
+<div class="mt-6">
+  @if (authService.isAuthenticated()) {
+    <button class="synthwaveButton" (click)="openNewPostDialog()">Add new post</button>
+  }
+</div>
 
-  <!-- Paginator -->
-  <div [hidden]="totalPosts < 6" class="mt-6 compactPaginator">
-    <mat-paginator
-      class="font-arcade text-base pinkTextShadowWide forumPaginator bg-repeat text-white"
-      #paginator
-      [length]="totalPosts"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
-  </div>
+<!-- Paginator -->
+<div [hidden]="totalPosts < 6" class="mt-6 compactPaginator">
+  <mat-paginator
+    class="font-arcade text-base pinkTextShadowWide forumPaginator bg-repeat text-white"
+    #paginator
+    [length]="totalPosts"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+  </mat-paginator>
 </div>

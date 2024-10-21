@@ -6,7 +6,7 @@
   [noSubmitButton]="false"
   [submitDisabled]="!commentForm.valid"
   (submitted)="onConfirm()"
->
+  >
   <form [formGroup]="commentForm" (ngSubmit)="onConfirm()">
     <div class="mt-2 mb-1">
       <label for="description" class="w-full">Content</label><br>
@@ -17,9 +17,11 @@
         [modules]="{ toolbar: quillToolbarOptions }">
       </quill-editor>
 
-      <div *ngIf="commentForm.get('content')?.hasError('minLength')" class="p-2 text-red-600">
-        Content must be at least {{ minLength }} characters long.
-      </div>
+      @if (commentForm.get('content')?.hasError('minLength')) {
+        <div class="p-2 text-red-600">
+          Content must be at least {{ minLength }} characters long.
+        </div>
+      }
     </div>
   </form>
 </app-popup-dialog>

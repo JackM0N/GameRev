@@ -16,9 +16,11 @@
         <mat-form-field>
           <mat-label>Release status</mat-label>
           <mat-select formControlName="releaseStatuses" (selectionChange)="onReleaseStatusesFilterChange($event)" multiple>
-            <mat-option *ngFor="let status of releaseStatuses" [value]="status.className">
-              {{ status.name }}
-            </mat-option>
+            @for (status of releaseStatuses; track status) {
+              <mat-option [value]="status.className">
+                {{ status.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
@@ -26,9 +28,11 @@
         <mat-form-field>
           <mat-label>Tags</mat-label>
           <mat-select formControlName="tags" (selectionChange)="onTagFilterChange($event)" multiple>
-            <mat-option *ngFor="let tag of tagList" [value]="tag.id">
-              {{ tag.tagName }}
-            </mat-option>
+            @for (tag of tagList; track tag) {
+              <mat-option [value]="tag.id">
+                {{ tag.tagName }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
@@ -71,26 +75,34 @@
 <!-- Grid of Cards Section -->
 <div class="game-grid-container w-full px-6 py-4">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let game of gameList" class="game-card pixel-border p-4 synthwaveBg flex flex-col text-white">
-      <div class="game-card-header text-center">
-        <h2 class="text-2xl font-arcade">{{ game.title }}</h2>
-        <p class="text-lg">{{ game.developer }} / {{ game.publisher }}</p>
-        <p class="text-sm">{{ game.releaseDate | date: 'dd MMM yyyy' }}</p>
-      </div>
+    @for (game of gameList; track game) {
+      <div class="game-card pixel-border p-4 synthwaveBg flex flex-col text-white">
+        <div class="game-card-header text-center">
+          <h2 class="text-2xl font-arcade">{{ game.title }}</h2>
+          <p class="text-lg">{{ game.developer }} / {{ game.publisher }}</p>
+          <p class="text-sm">{{ game.releaseDate | date: 'dd MMM yyyy' }}</p>
+        </div>
+        
+        <div class="game-card-body mt-4">
+          @if (game.releaseStatus) {
+            <p><strong>Release Status:</strong> {{ findReleaseStatusName(game.releaseStatus) }}</p>
+          }
+          <p class="mt-2"><strong>Score:</strong> {{ game.usersScore }}</p>
+          <p class="mt-2"><strong>Tags:</strong> {{ getTags(game) }}</p>
+          <p class="mt-2"><strong>Description:</strong> {{ game.description }}</p>
+        </div>
 
-      <div class="game-card-body mt-4">
-        <p *ngIf="game.releaseStatus"><strong>Release Status:</strong> {{ findReleaseStatusName(game.releaseStatus) }}</p>
-        <p class="mt-2"><strong>Score:</strong> {{ game.usersScore }}</p>
-        <p class="mt-2"><strong>Tags:</strong> {{ getTags(game) }}</p>
-        <p class="mt-2"><strong>Description:</strong> {{ game.description }}</p>
+        <div class="game-card-footer flex justify-between mt-4">
+          @if (game.title) {
+            <button class="synthwaveButton" (click)="routeToViewGame(game.title)">View</button>
+          }
+          @if (authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])) {
+            <button class="synthwaveButton" (click)="openEditGameDialog(game)">Edit</button>
+            <button class="synthwaveButton" (click)="openGameDeletionConfirmationDialog(game)">Delete</button>
+          }
+        </div>
       </div>
-
-      <div class="game-card-footer flex justify-between mt-4">
-        <button class="synthwaveButton" *ngIf="game.title" (click)="routeToViewGame(game.title)">View</button>
-        <button *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])" class="synthwaveButton" (click)="openEditGameDialog(game)">Edit</button>
-        <button *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin', 'Critic'])" class="synthwaveButton" (click)="openGameDeletionConfirmationDialog(game)">Delete</button>
-      </div>
-    </div>
+    }
   </div>
 
   <!-- Paginator -->

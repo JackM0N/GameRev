@@ -21,15 +21,19 @@
                 <input class="bg-inputBackGround w-full h-8 p-2 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow" formControlName="usernameOrEmail" required/>
               </div>
 
-              <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-                Please provide a login.
-              </div>
+              @if (loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('required')) {
+                <div class="font-arcade text-red-600 font-bold">
+                  Please provide a login.
+                </div>
+              }
 
-              <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
-                Please provide a longer login.
-                <div class="m-0 p-0 text-sm">(min {{ loginForm.get('usernameOrEmail')?.getError('minlength')["requiredLength"] }} characters)</div>
-              </div>
-  
+              @if (loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.hasError('minlength')) {
+                <div class="font-arcade text-red-600 font-bold">
+                  Please provide a longer login.
+                  <div class="m-0 p-0 text-sm">(min {{ loginForm.get('usernameOrEmail')?.getError('minlength')["requiredLength"] }} characters)</div>
+                </div>
+              }
+
               <div class="my-2">
                 <label class="text-white font-arcade">Password</label>
                 <div class="flex items-center bg-inputBackGround w-full h-8 border-arcadeBlueLight border-2 shadow-arcadeScreenShadow">
@@ -40,20 +44,24 @@
                     (mousedown)="hidePasswordClickEvent($event)"
                     [attr.aria-label]="'Hide password'"
                     [attr.aria-pressed]="hidePassword()"
-                  >
+                    >
                     <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                   </button>
                 </div>
               </div>
 
-              <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')" class="font-arcade text-red-600 font-bold">
-                Please provide a password.
-              </div>
+              @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+                <div class="font-arcade text-red-600 font-bold">
+                  Please provide a password.
+                </div>
+              }
 
-              <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')" class="font-arcade text-red-600 font-bold">
-                Please provide a longer password.
-                <div class="m-0 p-0 text-sm">(min {{ loginForm.get('password')?.getError('minlength')["requiredLength"] }} characters)</div>
-              </div>
+              @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')) {
+                <div class="font-arcade text-red-600 font-bold">
+                  Please provide a longer password.
+                  <div class="m-0 p-0 text-sm">(min {{ loginForm.get('password')?.getError('minlength')["requiredLength"] }} characters)</div>
+                </div>
+              }
 
               <div class="h-8 flex justify-between items-center mb-2 mt-4">
                 <div class="h-full w-1/2 mr-1 flex justify-center text-white bg-arcadeBlueLight shadow-arcadeScreenShadow font-arcade" [ngClass]="{'opacity-70': !loginForm.valid}">
@@ -86,8 +94,10 @@
   </form>
 
   <div class="small-images-container flex flex-wrap justify-center items-center gap-4">
-    <div *ngFor="let image of images" class="smallBgImageSize h-20 w-20 animate-wiggle" 
-      [ngClass]="image.classNames">
-    </div>
+    @for (image of images; track image) {
+      <div class="smallBgImageSize h-20 w-20 animate-wiggle"
+        [ngClass]="image.classNames">
+      </div>
+    }
   </div>
 </div>

@@ -40,76 +40,81 @@
 <div class="mt-4 bg-[#222] max-w-5xl mx-auto">
   <!-- Each Review -->
   <div class="review-container">
-    <div class="review-item p-4 bg-[#333] border-[2px] border-pink-500 shadow mb-4" *ngFor="let review of reviewList">
-      <!-- Post info -->
-      <p class="pb-2">
-        <strong>
-          <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + review.userNickname">{{ review.userNickname }}</a>
+    @for (review of reviewList; track review) {
+      <div class="review-item p-4 bg-[#333] border-[2px] border-pink-500 shadow mb-4">
+        <!-- Post info -->
+        <p class="pb-2">
+          <strong>
+            <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + review.userNickname">{{ review.userNickname }}</a>
           </strong>, Score: {{ review.score }}, Date: {{ formatDateArray(review.postDate) }}
-      </p>
-      
-      <!-- Content -->
-      <p class="text-sm sm:text-base my-2">
-        {{ review.content }}
-      </p>
-
-      <!-- Likes and dislikes -->
-      <p class="text-base pt-2 max-[450px]:hidden">
-        <span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }} | <span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}
-      </p>
-      <div class="text-base pt-2 min-[450px]:hidden">
-        <div><span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }}</div>
-        <div><span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}</div>
-      </div>
-
-      <!-- Review Actions -->
-      <div *ngIf="authService.isAuthenticated()" class="flex justify-between mt-4">
-        <div>
-          <button
-            class="synthwaveButton synthwaveButtonSmall"
-            (click)="openReviewDeletionConfirmationDialog(review)"
-            *ngIf="canDeleteReview(review)">
-            Delete
-          </button>
-
-          <button
-            class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
-            (click)="openEditReviewDialog(review)"
-            *ngIf="ownsReview(review)">
-            Edit
-          </button>
-
-          <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
-            (click)="openReportReviewDialog(review)"
-            *ngIf="canReportReview(review)">
-            Report
-          </button>
+        </p>
+        <!-- Content -->
+        <p class="text-sm sm:text-base my-2">
+          {{ review.content }}
+        </p>
+        <!-- Likes and dislikes -->
+        <p class="text-base pt-2 max-[450px]:hidden">
+          <span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }} | <span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}
+        </p>
+        <div class="text-base pt-2 min-[450px]:hidden">
+          <div><span class="text-[#1abb04]">Likes</span>: {{ review.positiveRating }}</div>
+          <div><span class="text-[#e9061d]">Dislikes</span>: {{ review.negativeRating }}</div>
         </div>
-        
-        <!-- Like / dislike -->
-        <div *ngIf="review.userNickname != authService.getUsername()">
-          <button
-            class="synthwaveButton synthwaveButtonSmall"
+        <!-- Review Actions -->
+        @if (authService.isAuthenticated()) {
+          <div class="flex justify-between mt-4">
+            <div>
+              @if (canDeleteReview(review)) {
+                <button
+                  class="synthwaveButton synthwaveButtonSmall"
+                  (click)="openReviewDeletionConfirmationDialog(review)"
+                  >
+                  Delete
+                </button>
+              }
+              @if (ownsReview(review)) {
+                <button
+                  class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
+                  (click)="openEditReviewDialog(review)"
+                  >
+                  Edit
+                </button>
+              }
+              @if (canReportReview(review)) {
+                <button class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
+                  (click)="openReportReviewDialog(review)"
+                  >
+                  Report
+                </button>
+              }
+            </div>
+            <!-- Like / dislike -->
+            @if (review.userNickname != authService.getUsername()) {
+              <div>
+                <button
+                  class="synthwaveButton synthwaveButtonSmall"
             [ngClass]="{
               'likeButton': review.ownRatingIsPositive != true,
               'likeButtonNotLiked': review.ownRatingIsPositive == true,
               }"
-            (click)="toggleLike(review)">
-            {{ review.ownRatingIsPositive == true ? 'Remove like': 'Like 👍' }}
-          </button>
-
-          <button
-            class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
+                  (click)="toggleLike(review)">
+                  {{ review.ownRatingIsPositive == true ? 'Remove like': 'Like 👍' }}
+                </button>
+                <button
+                  class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
             [ngClass]="{
               'dislikeButton': review.ownRatingIsPositive != false,
               'dislikeButtonNotLiked': review.ownRatingIsPositive == false
               }"
-            (click)="toggleDislike(review)">
-            {{ review.ownRatingIsPositive == false ? 'Remove dislike': 'Dislike 👎' }}
-          </button>
-        </div>
+                  (click)="toggleDislike(review)">
+                  {{ review.ownRatingIsPositive == false ? 'Remove dislike': 'Dislike 👎' }}
+                </button>
+              </div>
+            }
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
 
   <!-- Paginator -->
@@ -123,10 +128,14 @@
     </mat-paginator>
   </div>
 
-  <div *ngIf="totalReviews == 0" class="p-4 border border-gray-300 text-center max-w-80 m-auto my-6" colspan="7">
-    No reviews yet
-  </div>
+  @if (totalReviews == 0) {
+    <div class="p-4 border border-gray-300 text-center max-w-80 m-auto my-6" colspan="7">
+      No reviews yet
+    </div>
+  }
 
   <!-- Add Review Button -->
-  <button class="synthwaveButton" type="button" (click)="openAddReviewDialog()" *ngIf="this.canAddReview()">Add review</button>
+  @if (this.canAddReview()) {
+    <button class="synthwaveButton" type="button" (click)="openAddReviewDialog()">Add review</button>
+  }
 </div>

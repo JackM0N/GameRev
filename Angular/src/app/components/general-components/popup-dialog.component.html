@@ -12,29 +12,31 @@
     <div class="mt-5 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5">
       <div class="pixel-border p-[6px]">
         <div class="w-full">
-          <button 
-            class="text-xl w-full px-2" 
-            [ngClass]="cancelColor ? cancelColor : 'bg-gray-800 hover:bg-gray-900'" 
-            type="button" 
+          <button
+            class="text-xl w-full px-2"
+            [ngClass]="cancelColor ? cancelColor : 'bg-gray-800 hover:bg-gray-900'"
+            type="button"
             (click)="onCancel()">
             {{ cancelText }}
           </button>
         </div>
       </div>
-    
-      <div *ngIf="noSubmitButton != true" class="pixel-border p-[6px]">
-        <div class="w-full">
-          <button
-            class="text-xl w-full px-2 disabled:opacity-80"
-            [ngClass]="submitColor ? submitColor : 'bg-red-600 hover:bg-red-700'"
-            type="submit"
-            (click)="onConfirm()"
-            [disabled]="submitDisabled">
-            {{ submitText }}
-          </button>
+
+      @if (noSubmitButton != true) {
+        <div class="pixel-border p-[6px]">
+          <div class="w-full">
+            <button
+              class="text-xl w-full px-2 disabled:opacity-80"
+              [ngClass]="submitColor ? submitColor : 'bg-red-600 hover:bg-red-700'"
+              type="submit"
+              (click)="onConfirm()"
+              [disabled]="submitDisabled">
+              {{ submitText }}
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </div>
-    
+
   </div>
 </div>

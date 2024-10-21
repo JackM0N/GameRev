@@ -16,9 +16,11 @@
         <mat-form-field class="synthwaveFormField">
           <mat-label>Review status</mat-label>
           <mat-select (selectionChange)="onReviewStatusesFilterChange($event)" multiple>
-            <mat-option *ngFor="let status of reviewStatuses" [value]="status.className">
-              {{ status.name }}
-            </mat-option>
+            @for (status of reviewStatuses; track status) {
+              <mat-option [value]="status.className">
+                {{ status.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
@@ -64,7 +66,7 @@
     <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
       <div class="px-1 overflow-x-auto">
         <table class="appearance-none bg-black" mat-table [dataSource]="this.dataSource" matSort (matSortChange)="loadReviews()">
-          
+
           <ng-container matColumnDef="gameTitle">
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef>
               Game
@@ -116,20 +118,23 @@
             </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
               {{findReviewStatusName(element)}}
-              <span *ngIf="element.statusChangedBy">(by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+              @if (element.statusChangedBy) {
+                <span>(by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+              }
             </td>
           </ng-container>
 
           <ng-container matColumnDef="options">
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
             <td class="synthwaveBg bg-repeat border-2 border-white" mat-cell *matCellDef="let element">
-              <button
-                class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-                type="button"
-                *ngIf="element.statusChangedBy == undefined"
-                (click)="approveReview(element)">
-                Approve
-              </button>
+              @if (element.statusChangedBy == undefined) {
+                <button
+                  class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                  type="button"
+                  (click)="approveReview(element)">
+                  Approve
+                </button>
+              }
 
               <button
                 class="w-full text-white font-arcade text-center text-base pinkTextShadow"
@@ -138,29 +143,31 @@
                 Edit
               </button>
 
-              <button
-                class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-                type="button"
-                *ngIf="element.reviewStatus != 'DELETED' && canDeleteReview(element)"
-                (click)="softDeleteReview(element)">
-                Delete
-              </button>
+              @if (canDeleteReview(element)) {
+                @if (element.reviewStatus != 'DELETED') {
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="softDeleteReview(element)">
+                    Delete
+                  </button>
+                }
+                @else if (element.reviewStatus == 'DELETED') {
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="restoreReview(element)">
+                    Restore
+                  </button>
 
-              <button
-                class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-                type="button"
-                *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)"
-                (click)="restoreReview(element)">
-                Restore
-              </button>
-              
-              <button
-                class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-                type="button"
-                *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)"
-                (click)="openDeleteReviewDialog(element)">
-                Delete permanently
-              </button>
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="openDeleteReviewDialog(element)">
+                    Delete permanently
+                  </button>
+                }
+              }
             </td>
           </ng-container>
 
@@ -184,8 +191,10 @@
 </div>
 
 <!-- No Critic Reviews Message -->
-<div *ngIf="totalReviews < 1" class="max-w-[500px] m-auto pixel-border px-[6px]">
-  <div class="py-[6px]">
-    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No critic reviews to show</p>
+@if (totalReviews < 1) {
+  <div class="max-w-[500px] m-auto pixel-border px-[6px]">
+    <div class="py-[6px]">
+      <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No critic reviews to show</p>
+    </div>
   </div>
-</div>
+}
