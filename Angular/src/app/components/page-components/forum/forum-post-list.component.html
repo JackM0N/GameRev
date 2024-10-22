@@ -114,9 +114,7 @@
             
             <!-- Comment count and last response when the screen is small -->
             <td class="p-2 sm:p-4 border-b border-[#00CFFF]">
-              {{ post.commentCount }} replies@if (post.lastResponseDate && post.commentCount && post.commentCount > 0) {
-              , last on {{ formatDateTimeArray(post.lastResponseDate) }}
-            }
+              {{ post.commentCount }} replies@if (post.lastResponseDate && post.commentCount && post.commentCount > 0) {, last on {{ formatDateTimeArray(post.lastResponseDate) }}}
           </td>
 
           <!-- Last reply (visible when screen is big) -->
