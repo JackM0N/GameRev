@@ -60,7 +60,7 @@ export class GameFormDialogComponent {
         releaseDate: new Date(this.data.game.releaseDate[0], this.data.game.releaseDate[1] -1, this.data.game.releaseDate[2], 15)
       });
 
-      var status = this.releaseStatuses.find(rs => rs.className === this.data.game.releaseStatus);
+      var status = this.releaseStatuses.find(rs => rs.className === this.data.game.releaseStatus || rs.name === this.data.game.releaseStatus);
 
       if (status) {
         this.addingGameForm.patchValue({
