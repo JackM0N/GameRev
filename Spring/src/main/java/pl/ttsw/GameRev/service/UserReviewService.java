@@ -15,10 +15,8 @@ import pl.ttsw.GameRev.mapper.UserReviewMapper;
 import pl.ttsw.GameRev.model.Rating;
 import pl.ttsw.GameRev.model.UserReview;
 import pl.ttsw.GameRev.model.WebsiteUser;
-import pl.ttsw.GameRev.repository.GameRepository;
-import pl.ttsw.GameRev.repository.RatingRepository;
-import pl.ttsw.GameRev.repository.UserReviewRepository;
-import pl.ttsw.GameRev.repository.WebsiteUserRepository;
+import pl.ttsw.GameRev.repository.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +29,7 @@ public class UserReviewService{
     private final RatingRepository ratingRepository;
     private final WebsiteUserService websiteUserService;
     private final UserReviewMapper userReviewMapper;
+    private final ReportRepository reportRepository;
 
     public Page<UserReviewDTO> getUserReviewByGame(
             String title,
@@ -146,6 +145,8 @@ public class UserReviewService{
         if (userReview.getUser() != websiteUserService.getCurrentUser()) {
             throw new BadCredentialsException("You cant delete a review that doesn't belong to you");
         }
+
+        reportRepository.deleteAllByUserReviewId(userReviewDTO.getId());
 
         userReviewRepository.deleteById(userReviewDTO.getId());
         return true;

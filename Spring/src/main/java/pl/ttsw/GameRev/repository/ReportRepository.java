@@ -15,4 +15,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     Optional<Report> findByUserAndUserReview(WebsiteUser user, UserReview userReview);
     Page<Report> findAllByUserReviewIdAndApprovedIsNullOrApprovedIsTrue(Long userReviewId, Pageable pageable);
     Page<Report> findAll(Specification<Report> spec, Pageable pageable);
+    void deleteAllByUserReviewId(Long userReviewId);
 }
