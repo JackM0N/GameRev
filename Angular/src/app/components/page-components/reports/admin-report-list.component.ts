@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';
+import { UserReviewService } from '../../../services/user-review.service';
 
 class ReportInformation {
   reports: Report[] = [];
@@ -44,6 +45,7 @@ export class AdminReportListComponent implements AfterViewInit {
 
   constructor(
     private reportService: ReportService,
+    private userReviewService: UserReviewService,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
@@ -203,12 +205,12 @@ export class AdminReportListComponent implements AfterViewInit {
   }
 
   deleteReview(review: UserReview) {
-    this.reportService.deleteReview(review).subscribe({
+    this.userReviewService.deleteUserReview(review).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Report disapproved');
+        this.notificationService.popSuccessToast('Report deleted successfully');
         this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
-      error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
+      error: error => this.notificationService.popErrorToast('Report deletion failed', error)
     });
   }
 

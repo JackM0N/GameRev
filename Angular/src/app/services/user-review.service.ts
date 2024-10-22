@@ -92,15 +92,11 @@ export class UserReviewService {
     return this.http.put<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
-  deleteUserReview(userReview: UserReview): Observable<UserReview> {
+  deleteUserReview(review: UserReview): Observable<Report> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
-
-    const options = {
-      headers: headers,
-      body: userReview
-    };
-    return this.http.delete<UserReview>(this.baseUrl, options);
+    
+    return this.http.delete<Report>(`${this.baseUrl}/${review.id}`, { headers: headers });
   }
 
   updateUserReviewRating(userReview: UserReview): Observable<UserReview> {

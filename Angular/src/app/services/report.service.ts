@@ -112,11 +112,4 @@ export class ReportService {
 
     return this.http.delete<Report>(`${this.baseUrl}/${report.id}`, { headers: headers });
   }
-
-  deleteReview(review: UserReview): Observable<Report> {
-    const token = this.authService.getToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
-    
-    return this.http.delete<Report>(`${this.baseUrl}/${review.id}`, { headers: headers });
-  }
 }
