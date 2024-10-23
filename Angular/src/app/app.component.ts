@@ -13,7 +13,7 @@ Quill.register('modules/resize', QuillResizeImage);
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  protected title = 'Gamerev';
+  public title = 'Gamerev';
   protected isNavbarOpen = false;
 
   protected styles: { [key: string]: string } = {};
