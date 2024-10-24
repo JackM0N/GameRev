@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { NotificationService } from '../../../services/notification.service';
-import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
+import { quillTextLengthValidator } from '../../../validators/quillTextLengthValidator';
 
 @Component({
   selector: 'app-forum-comment-edit-dialog',

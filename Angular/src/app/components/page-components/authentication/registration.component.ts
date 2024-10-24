@@ -4,7 +4,7 @@ import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WebsiteUser } from '../../../models/websiteUser';
 import { AuthService } from '../../../services/auth.service';
-import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
+import { passwordMatchValidator } from '../../../validators/passwordMatchValidator';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';

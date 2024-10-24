@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { AuthService } from '../../../services/auth.service';
-import { quillTextLengthValidator } from '../../../util/quillTextLengthValidator';
+import { quillTextLengthValidator } from '../../../validators/quillTextLengthValidator';
 import { FileUploadOptions } from '../../../enums/fileUploadOptions';
 
 @Component({

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { NewCredentials } from '../../../../models/newCredentials';
-import { passwordMatchValidator } from '../../../../util/passwordMatchValidator';
+import { passwordMatchValidator } from '../../../../validators/passwordMatchValidator';
 
 @Component({
   selector: 'app-password-change',
