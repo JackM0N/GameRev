@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
-
 import Quill from 'quill';
 import QuillResizeImage from 'quill-resize-image';
 
