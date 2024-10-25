@@ -26,7 +26,7 @@ export class ImageCacheService {
     localStorage.setItem(url, name);
   }
 
-  public didPictureNameChange(url: string, currentName: string): boolean {
+  public didPictureNameChange(url: string, currentName?: string): boolean {
     return currentName != localStorage.getItem(url);
   }
 

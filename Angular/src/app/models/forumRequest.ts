@@ -8,6 +8,6 @@ export interface ForumRequest {
   description: string,
   game: Game,
   parentForum: Forum,
-  author: WebsiteUser,
+  author: { nickname?: string },
   approved?: boolean,
 }

@@ -6,6 +6,7 @@ import { forumFilters } from '../filters/forumFilters';
 import { AuthService } from './auth.service';
 import { WebsiteUser } from '../models/websiteUser';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +27,8 @@ export class ForumService {
     private http: HttpClient,
   ) {}
 
-  getForumPath(id: number): Observable<Forum> {
-    return this.http.get<Forum>(`${this.pathUrl}/${id}`);
+  getForumPath(id: number): Observable<Forum[]> {
+    return this.http.get<Forum[]>(`${this.pathUrl}/${id}`);
   }
 
   getForums(): Observable<Forum[]> {
@@ -38,7 +39,7 @@ export class ForumService {
     return this.http.get<WebsiteUser[]>(`${this.moderatorsUrl}/${forumId}`);
   }
 
-  getForum(id?: number, page?: number, size?: number, filters?: forumFilters): Observable<Forum> {
+  getForum(id?: number, page?: number, size?: number, filters?: forumFilters): Observable<PaginatedResponse<Forum>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -67,7 +68,7 @@ export class ForumService {
       url += `/${id}`;
     }
 
-    return this.http.get<Forum>(url, { params, headers });
+    return this.http.get<PaginatedResponse<Forum>>(url, { params, headers });
   }
 
   addForum(forum: Forum): Observable<Forum> {
@@ -84,11 +85,11 @@ export class ForumService {
     return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
   }
 
-  deleteForum(id: number, isDeleted: boolean = true): Observable<any> {
+  deleteForum(id: number, isDeleted: boolean = true): Observable<void> {
     const params = new HttpParams().set("isDeleted", isDeleted);
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers, params });
   }
 }

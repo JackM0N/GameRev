@@ -11,7 +11,7 @@ import { NewCredentials } from '../../../../models/newCredentials';
   templateUrl: './email-change-component.html'
 })
 export class EmailChangeComponent {
-  @Input() public passedEmail: string | null = null;
+  @Input() public passedEmail?: string;
   
   protected changeEmailForm: FormGroup;
   protected emailErrorMessage = signal('');

@@ -14,7 +14,6 @@ import { GameInfoReviewListComponent } from './review-list.component';
 import { LibraryFormDialogComponent } from '../../library/library-form-dialog.component';
 import { AuthService } from '../../../../services/auth.service';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
-import { Observer } from 'rxjs';
 import { NotificationService } from '../../../../services/notification.service';
 import { ForumRequestService } from '../../../../services/forumRequest.service';
 import { ForumService } from '../../../../services/forum.service';

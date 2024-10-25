@@ -101,7 +101,7 @@ export class ForumFormDialogComponent {
 
   loadGames() {
     this.gameService.getGames().subscribe({
-      next: (response: any) => {
+      next: response => {
         this.gameList = response.content;
 
         if (this.data && this.data.gameTitle) {
@@ -125,7 +125,7 @@ export class ForumFormDialogComponent {
     this.forumList = [];
 
     this.forumService.getForum(this.parentForumId).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.forumList = response.content;
 
@@ -207,7 +207,6 @@ export class ForumFormDialogComponent {
 
       if (this.data && this.data.editing) {
         forumRequest.id = this.requestId;
-        console.log(forumRequest);
         this.forumRequestService.editRequest(forumRequest).subscribe({
           next: () => { this.notificationService.popSuccessToast('Forum request edited'); },
           error: error => this.notificationService.popErrorToast('Forum request editing failed', error)

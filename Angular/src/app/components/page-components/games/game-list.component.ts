@@ -106,7 +106,7 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     const size = this.paginator.pageSize;
 
     this.gameService.getGames(page, size, 'id', 'asc', this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.totalGames = response.totalElements;
           this.gameList = response.content;
@@ -181,12 +181,9 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     }
 
     this.gameService.deleteGame(game.id).subscribe({
-      next: (response: any) => {
-        if (response) {
-          this.gameList = response;
-          this.loadGames();
-          this.notificationService.popSuccessToast('Deleted game successfuly');
-        }
+      next: () => {
+        this.loadGames();
+        this.notificationService.popSuccessToast('Deleted game successfuly');
       },
       error: error => {
         if (error.error == "Game is used in forums") {

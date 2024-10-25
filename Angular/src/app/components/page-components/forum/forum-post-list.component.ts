@@ -89,7 +89,7 @@ export class ForumPostListComponent implements AfterViewInit {
     const size = this.paginator ? this.paginator.pageSize : 10;
 
     this.forumPostService.getPosts(id, page, size, "postDate", "desc", this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.content.length > 0) {
           this.postList = response.content;
           this.totalPosts = response.totalElements;
@@ -108,7 +108,7 @@ export class ForumPostListComponent implements AfterViewInit {
 
   loadModerators(forumId: number) {
     this.forumService.getModerators(forumId).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.length > 0) {
           this.moderators = response;
         }

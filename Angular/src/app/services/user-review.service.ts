@@ -6,6 +6,7 @@ import { UserReview } from '../models/userReview';
 import { reviewFilters } from '../filters/reviewFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,7 @@ export class UserReviewService {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+  getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
@@ -75,7 +76,7 @@ export class UserReviewService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { params, headers });
+    return this.http.get<PaginatedResponse<UserReview>>(`${this.baseUrl}/${name}`, { params, headers });
   }
 
   addUserReview(userReview: UserReview): Observable<UserReview> {
@@ -92,11 +93,11 @@ export class UserReviewService {
     return this.http.put<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
-  deleteUserReview(review: UserReview): Observable<Report> {
+  deleteUserReview(review: UserReview): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
-    return this.http.delete<Report>(`${this.baseUrl}/${review.id}`, { headers: headers });
+    return this.http.delete<void>(`${this.baseUrl}/${review.id}`, { headers: headers });
   }
 
   updateUserReviewRating(userReview: UserReview): Observable<UserReview> {

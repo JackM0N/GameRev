@@ -6,7 +6,7 @@
   [submitDisabled]="!userReviewForm.valid"
   (submitted)="onSubmit()"
 >
-  <form [formGroup]="userReviewForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="userReviewForm">
     <div class="mt-2">
       <label>Content</label><br>
       <textarea class="w-full text-black px-2 min-h-24" formControlName="content"></textarea>

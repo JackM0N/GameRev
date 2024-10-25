@@ -7,7 +7,6 @@ import { completionStatuses } from '../../../enums/completionStatuses';
 import { AuthService } from '../../../services/auth.service';
 import { LibraryService } from '../../../services/library.service';
 import { NotificationService } from '../../../services/notification.service';
-import { Observer } from 'rxjs';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../models/game';
 
@@ -80,7 +79,7 @@ export class LibraryFormDialogComponent implements OnInit {
 
   loadGames() {
     this.gameService.getGames().subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.gameList = response.content;
 

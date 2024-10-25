@@ -2,7 +2,6 @@ import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observer } from 'rxjs';
 import { NewCredentials } from '../../../../models/newCredentials';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../../../services/user.service';
@@ -27,7 +26,7 @@ export class OwnProfileComponent implements OnInit {
   private selectedImage: File | null = null;
   public imageUrl: string = '';
 
-  public email: string | null = null;
+  public email?: string;
 
   constructor(
     private authService: AuthService,
@@ -56,8 +55,8 @@ export class OwnProfileComponent implements OnInit {
     this.backgroundService.setClasses(['matrixNumbers']);
 
     this.authService.getUserProfileInformation().subscribe({
-      next: (response: any) => {
-        if (response) {
+      next: response => {
+        if (response && response.nickname) {
           this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
           this.changeProfileInformationForm.get('description')?.setValue(response.description);
           this.email = response.email;
@@ -73,7 +72,7 @@ export class OwnProfileComponent implements OnInit {
           } else {
             this.userService.getProfilePicture(response.nickname).subscribe({
               next: response2 => {
-                if (response2) {
+                if (response2 && response.profilepic) {
                   this.imageUrl = URL.createObjectURL(response2);
                   this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
                   this.imageCacheService.cacheProfilePicName("profilePicName" + response.nickname, response.profilepic);

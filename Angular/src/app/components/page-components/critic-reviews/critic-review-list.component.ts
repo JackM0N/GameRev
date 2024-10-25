@@ -97,7 +97,7 @@ export class CriticReviewListComponent implements AfterViewInit {
     const sortDir = this.sort.direction || 'asc';
 
     this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);

@@ -109,7 +109,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
 
   loadGames() {
     this.gameService.getGames().subscribe({
-      next: (response: any) => {
+      next: response => {
         this.gameList = response.content;
       }
     });
@@ -118,7 +118,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
   loadPath(id: number) {
     this.path = undefined;
     this.forumService.getForumPath(id).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.path = response.reverse();
         }
@@ -140,7 +140,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     const size = this.paginator ? this.paginator.pageSize : 10;
 
     this.forumService.getForum(id, page, size, this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.content.length > 0) {
           this.currentForum = response.content[0];
 

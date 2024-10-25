@@ -7,7 +7,7 @@
   [submitDisabled]="!criticReviewForm.valid"
   (submitted)="onSubmit()"
 >
-  <form [formGroup]="criticReviewForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="criticReviewForm">
     <div class="mt-2 mb-1">
       <label for="description" class="w-full">Content</label><br>
 

@@ -1,9 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
 import { UserReview } from '../../../models/userReview';
-import { UserReviewService } from '../../../services/user-review.service';
 import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
 import { Location } from '@angular/common';
@@ -70,7 +68,7 @@ export class UserReportListComponent extends BaseAdComponent implements AfterVie
     const sortDir = this.sort.direction || 'asc';
 
     this.reportService.getOwnUserReports(sortBy, sortDir, page, size).subscribe({
-      next: (response: any) => {
+      next: response => {
         console.log(response);
         if (response) {
           this.totalReports = response.totalElements;

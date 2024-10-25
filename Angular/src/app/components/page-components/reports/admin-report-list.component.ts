@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../services/report.service';
 import { Report } from '../../../models/report';
@@ -80,7 +79,7 @@ export class AdminReportListComponent implements AfterViewInit {
     const size = this.reviewsPaginator.pageSize;
 
     this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.reviewsList = response.content;
           this.totalReviews = response.totalElements;
@@ -121,7 +120,7 @@ export class AdminReportListComponent implements AfterViewInit {
     });
 
     this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (review.id) {
           if (response) {
             this.reportsList[review.id] = {

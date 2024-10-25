@@ -85,6 +85,6 @@ public class GameController {
         if (!gotRemoved) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

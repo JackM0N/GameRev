@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CriticReview } from '../models/criticReview';
+import { PaginatedResponse } from '../models/paginatedResponse';
 import { criticReviewFilters } from '../filters/criticReviewFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
@@ -39,7 +40,7 @@ export class CriticReviewService {
     return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
-  getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
+  getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<PaginatedResponse<CriticReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -62,7 +63,7 @@ export class CriticReviewService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<CriticReview[]>(this.allUrl, { headers, params });
+    return this.http.get<PaginatedResponse<CriticReview>>(this.allUrl, { headers, params });
   }
 
   addCriticReview(criticReview: CriticReview): Observable<CriticReview> {

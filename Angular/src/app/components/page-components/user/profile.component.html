@@ -1,7 +1,7 @@
 
 <div class="text-center bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-auto pixel-border font-arcade mt-4 min-w-80">
   <!-- Nickname -->
-  <p class="text-2xl font-semibold text-white mb-4">{{ this.user.nickname }}</p>
+  <p class="text-2xl font-semibold text-white mb-4">{{ this.user?.nickname }}</p>
 
   <!-- Profile picture -->
   <div class="flex justify-center">
@@ -13,21 +13,21 @@
 
     <div class="mt-4 text-gray-300">
       <!-- Description -->
-      <p class="mb-2"><span class="font-medium text-white"></span> {{ this.user.description }}</p>
+      <p class="mb-2"><span class="font-medium text-white"></span> {{ this.user?.description }}</p>
 
       <!-- Join date -->
-      <p class="mb-2">Joined {{ formatDate(this.user.joinDate) }}</p>
+      <p class="mb-2">Joined {{ formatDate(this.user?.joinDate) }}</p>
 
       <!-- Is banned -->
       <p class="mb-2"><span class="font-medium text-white">Is banned:</span>
-      <span [ngClass]="{ 'text-red-500': this.user.isBanned, 'text-green-500': !this.user.isBanned }">
-        {{ this.user.isBanned ? 'Yes' : 'No' }}
+      <span [ngClass]="{ 'text-red-500': this.user?.isBanned, 'text-green-500': !this.user?.isBanned }">
+        {{ this.user?.isBanned ? 'Yes' : 'No' }}
       </span>
     </p>
 
     <!-- Roles -->
     <div class="grid grid-cols-3 gap-2 m-4 max-w-4xl mx-auto">
-      @for (role of user.roles; track role.id) {
+      @for (role of user?.roles; track role.id) {
         <div class="px-3 py-1 border-[2px] border-[#ff00ff] bg-[#212121] text-base text-white w-fit">
           {{ role.roleName }}
         </div>
@@ -36,7 +36,7 @@
 
     <!-- Actions -->
     <div class="grid grid-cols-3 gap-2 mt-4 max-w-4xl mx-auto">
-      @if (canManageUser() && !this.user.isBanned) {
+      @if (this.user && canManageUser()) {
         @if (this.user.isBanned) {
           <button
           class="synthwaveButton synthwaveButtonSmall"

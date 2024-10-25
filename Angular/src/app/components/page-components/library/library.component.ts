@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { LibraryService } from '../../../services/library.service';
@@ -90,7 +89,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     const sortDir = this.sort.direction || 'asc';
 
     this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.gamesList = response.content;
           this.totalGames = response.totalElements;
@@ -181,8 +180,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     }
 
     this.libraryService.deleteUserGame(userGame.id).subscribe({
-      next: (response: any) => {
-        this.gamesList = response;
+      next: () => {
         this.dataSource.data = this.gamesList;
         this.loadGames();
       },

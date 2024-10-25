@@ -8,7 +8,7 @@
   [submitDisabled]="!deleteAccountForm.valid"
   (submitted)="onConfirm()"
 >
-  <form [formGroup]="deleteAccountForm" (ngSubmit)="onConfirm()">
+  <form [formGroup]="deleteAccountForm">
     <!-- Password Input Field -->
     <div class="mt-1">
       <label>Confirm your password</label>

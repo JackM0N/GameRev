@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReleaseStatus } from '../../../models/releaseStatus';
 import { Game } from '../../../models/game';
-import { Observer } from 'rxjs';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { Tag } from '../../../models/tag';
 import { GameService } from '../../../services/game.service';
@@ -71,7 +70,7 @@ export class GameFormDialogComponent {
   }
 
   onSubmit() {
-    if (this.addingGameForm.valid && this.data.game.title) {
+    if (this.addingGameForm.valid) {
       const gameData = {
         ...this.addingGameForm.value
       };
@@ -80,10 +79,12 @@ export class GameFormDialogComponent {
       gameData.releaseStatus = gameData.releaseStatus.className;
 
       if (this.data.editing) {
-        this.gameService.editGame(this.data.game.title, gameData).subscribe({
-          next: () => { this.notificationService.popSuccessToast('Edited game successfuly'); },
-          error: error => this.notificationService.popErrorToast('Editing game failed', error)
-        });
+        if (this.data.game.title) {
+          this.gameService.editGame(this.data.game.title, gameData).subscribe({
+            next: () => { this.notificationService.popSuccessToast('Edited game successfuly'); },
+            error: error => this.notificationService.popErrorToast('Editing game failed', error)
+          });
+        }
         this.dialogRef.close(true);
         return;
       }

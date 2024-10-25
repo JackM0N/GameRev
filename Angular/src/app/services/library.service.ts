@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Game } from '../models/game';
 import { UserGame } from '../models/userGame';
 import { libraryFilters } from '../filters/libraryFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class LibraryService {
     private http: HttpClient,
   ) {}
 
-  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<Game> {
+  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<PaginatedResponse<UserGame>> {
     var params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
@@ -38,7 +38,7 @@ export class LibraryService {
       params = params.set('completionStatus', filters.completionStatus.toString());
     }
     
-    return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
+    return this.http.get<PaginatedResponse<UserGame>>(`${this.baseUrl}/${nickname}`, {params});
   }
 
   updateUserGame(userReview: UserGame): Observable<UserGame> {

@@ -18,7 +18,6 @@ import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
-import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ForumComment } from '../../../models/forumComment';
@@ -79,7 +78,7 @@ export class ForumPostComponent extends BaseAdComponent {
     this.path = undefined;
 
     this.forumService.getForumPath(id).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.path = response;
           this.path = this.path.reverse();
@@ -97,8 +96,8 @@ export class ForumPostComponent extends BaseAdComponent {
     this.post = undefined;
 
     this.forumPostService.getPost(id).subscribe({
-      next: (response: any) => {
-        if (response && response.content.length > 0) {
+      next: response => {
+        if (response && response.content.length > 0 && response.id && response.picture && response.author && response.author.nickname && response.author.profilepic) {
           this.post = response;
 
           this.loadPostPicture(response.id, response.picture);
@@ -116,7 +115,7 @@ export class ForumPostComponent extends BaseAdComponent {
 
   loadModerators(forumId: number) {
     this.forumService.getModerators(forumId).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.length > 0) {
           this.moderators = response;
         }
@@ -137,7 +136,7 @@ export class ForumPostComponent extends BaseAdComponent {
     }
 
     this.forumCommentService.getComments(id, page, size).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.content.length > 0) {
           this.commentsList = response.content;
 

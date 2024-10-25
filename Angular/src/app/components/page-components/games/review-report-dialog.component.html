@@ -8,7 +8,7 @@
   [submitDisabled]="!reportForm.valid"
   (submitted)="onConfirm()"
   >
-  <form [formGroup]="reportForm" (ngSubmit)="onConfirm()">
+  <form [formGroup]="reportForm">
     <div class="mt-2 mb-1">
       <label class="w-full pinkTextShadowWide pb-1">Description</label>
 

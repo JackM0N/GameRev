@@ -8,6 +8,7 @@ import { PopupDialogComponent } from '../components/general-components/popup-dia
 import { NotificationService } from './notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class UserService {
     protected dialog: MatDialog,
   ) {}
 
-  getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<WebsiteUser> {
+  getUsers(page: number, size: number, sortBy: string, sortDir: string, filters: userFilters): Observable<PaginatedResponse<WebsiteUser>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -53,7 +54,7 @@ export class UserService {
       params = params.set('searchText', filters.search);
     }
     
-    return this.http.get<WebsiteUser>(this.baseUrl, { params, headers });
+    return this.http.get<PaginatedResponse<WebsiteUser>>(this.baseUrl, { params, headers });
   }
 
   getUser(nickname: string): Observable<WebsiteUser> {

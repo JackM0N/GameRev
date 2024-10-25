@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { WebsiteUser } from '../../../models/websiteUser';
-import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { formatDateArray } from '../../../util/formatDate';
@@ -19,13 +18,7 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
   protected imageUrl: string = '';
   protected formatDate = formatDateArray;
 
-  protected user: WebsiteUser = {
-    nickname: '',
-    profilepic: '',
-    description: '',
-    joinDate: [],
-    isBanned: false
-  }
+  protected user?: WebsiteUser;
 
   constructor(
     protected authService: AuthService,
@@ -85,6 +78,6 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
   }
 
   canManageUser(): boolean {
-    return this.authService.isAuthenticated() && this.authService.isAdmin() && this.user.nickname != this.authService.getNickname();
+    return this.authService.isAuthenticated() && this.authService.isAdmin() && this.user?.nickname != this.authService.getNickname();
   }
 }

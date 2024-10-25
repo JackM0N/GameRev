@@ -3,7 +3,6 @@ import { UserReviewService } from '../../../../services/user-review.service';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
 import { UserReview } from '../../../../models/userReview';
-import { Observer } from 'rxjs';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -95,7 +94,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     const sortDir = 'asc';
 
     this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.reviewList = response.content;
           this.totalReviews = response.totalElements;
@@ -110,7 +109,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     this.totalReviews = 0;
 
     this.reportService.getOwnUserReports().subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.reportList = response.content;
           this.totalReviews = response.totalElements;

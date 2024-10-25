@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ForumRequest } from '../models/forumRequest';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class ForumRequestService {
     private authService: AuthService,
   ) {}
 
-  getRequests(page?: number, size?: number, sortBy?: string, sortDir?: string, approved?: boolean): Observable<any> {
+  getRequests(page?: number, size?: number, sortBy?: string, sortDir?: string, approved?: boolean): Observable<PaginatedResponse<ForumRequest>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -43,21 +44,21 @@ export class ForumRequestService {
       params = params.set('approved', approved.toString());
     }
 
-    return this.http.get<any>(this.listUrl, { params, headers });
+    return this.http.get<PaginatedResponse<ForumRequest>>(this.listUrl, { params, headers });
   }
 
-  addRequest(request: ForumRequest): Observable<any> {
+  addRequest(request: ForumRequest): Observable<ForumRequest> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.post<any>(this.addUrl, request, { headers });
+    return this.http.post<ForumRequest>(this.addUrl, request, { headers });
   }
 
-  editRequest(request: ForumRequest): Observable<any> {
+  editRequest(request: ForumRequest): Observable<ForumRequest> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.put<any>(`${this.editUrl}/${request.id}`, request, { headers });
+    return this.http.put<ForumRequest>(`${this.editUrl}/${request.id}`, request, { headers });
   }
 
   approveRequest(request: ForumRequest, approved: boolean): Observable<any> {
@@ -69,10 +70,10 @@ export class ForumRequestService {
     return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
   }
 
-  deleteRequest(request: ForumRequest): Observable<any> {
+  deleteRequest(request: ForumRequest): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.delete<any>(`${this.deleteUrl}/${request.id}`, { headers });
+    return this.http.delete<void>(`${this.deleteUrl}/${request.id}`, { headers });
   }
 }

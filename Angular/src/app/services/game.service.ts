@@ -5,6 +5,7 @@ import { Game } from '../models/game';
 import { gameFilters } from '../filters/gameFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class GameService {
     private http: HttpClient,
   ) {}
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game[]> {
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<PaginatedResponse<Game>> {
     var params = new HttpParams();
 
     if (page) {
@@ -53,7 +54,7 @@ export class GameService {
       }
     }
 
-    return this.http.get<Game[]>(this.baseUrl, { params });
+    return this.http.get<PaginatedResponse<Game>>(this.baseUrl, { params });
   }
 
   getGameByName(name: string): Observable<Game> {
@@ -88,10 +89,10 @@ export class GameService {
     return this.http.put<Game>(`${this.editUrl}/${title}`, formData, { headers });
   }
 
-  deleteGame(id: number): Observable<Game> {
+  deleteGame(id: number): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers });
   }
 }

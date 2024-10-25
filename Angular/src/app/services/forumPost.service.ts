@@ -5,6 +5,7 @@ import { forumPostFilters } from '../filters/forumPostFilters';
 import { ForumPost } from '../models/forumPost';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +26,11 @@ export class ForumPostService {
     private authService: AuthService,
   ) {}
 
-  getPost(id: number): Observable<ForumPost[]> {
-    return this.http.get<ForumPost[]>(`${this.postByIdUrl}/${id}`);
+  getPost(id: number): Observable<ForumPost> {
+    return this.http.get<ForumPost>(`${this.postByIdUrl}/${id}`);
   }
 
-  getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<ForumPost[]> {
+  getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<PaginatedResponse<ForumPost>> {
     var params = new HttpParams();
 
     if (page) {
@@ -50,7 +51,7 @@ export class ForumPostService {
       }
     }
 
-    return this.http.get<ForumPost[]>(`${this.baseUrl}/${id}`, { params });
+    return this.http.get<PaginatedResponse<ForumPost>>(`${this.baseUrl}/${id}`, { params });
   }
 
   addPost(post: ForumPost, picture?: File): Observable<any> {
@@ -81,13 +82,13 @@ export class ForumPostService {
     return this.http.put(`${this.editUrl}/${post.id}`, formData, { headers });
   }
 
-  deletePost(id: number): Observable<any> {
+  deletePost(id: number): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     var params = new HttpParams().set('isDeleted', true);
 
-    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers, params });
   }
 
   getPicture(id: number): Observable<Blob> {

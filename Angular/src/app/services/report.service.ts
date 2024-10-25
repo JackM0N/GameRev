@@ -7,6 +7,7 @@ import { UserReview } from '../models/userReview';
 import { reviewFilters } from '../filters/reviewFilters';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class ReportService {
     return this.http.put<Report>(this.reportUrl, report, { headers: headers });
   }
 
-  getReviewsWithReports(page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+  getReviewsWithReports(page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
@@ -50,10 +51,10 @@ export class ReportService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<UserReview[]>(this.baseUrl, { headers, params });
+    return this.http.get<PaginatedResponse<UserReview>>(this.baseUrl, { headers, params });
   }
 
-  getReportsForReview(reviewId: number, sortBy: string, sortDir: string, page?: number, size?: number): Observable<UserReview[]> {
+  getReportsForReview(reviewId: number, sortBy: string, sortDir: string, page?: number, size?: number): Observable<PaginatedResponse<Report>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -68,10 +69,10 @@ export class ReportService {
       params = params.set('size', size.toString());
     }
 
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${reviewId}`, { headers, params });
+    return this.http.get<PaginatedResponse<Report>>(`${this.baseUrl}/${reviewId}`, { headers, params });
   }
 
-  getOwnUserReports(sortBy?: string, sortDir?: string, page?: number, size?: number): Observable<UserReview[]> {
+  getOwnUserReports(sortBy?: string, sortDir?: string, page?: number, size?: number): Observable<PaginatedResponse<Report>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -87,7 +88,7 @@ export class ReportService {
       params = params.set('size', size.toString());
     }
 
-    return this.http.get<UserReview[]>(this.ownReports, { headers, params });
+    return this.http.get<PaginatedResponse<Report>>(this.ownReports, { headers, params });
   }
 
   approveReport(report: Report): Observable<Report> {
@@ -106,10 +107,10 @@ export class ReportService {
     return this.http.put<Report>(this.approveUrl, report, { headers: headers });
   }
 
-  deleteReport(report: Report): Observable<Report> {
+  deleteReport(report: Report): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.delete<Report>(`${this.baseUrl}/${report.id}`, { headers: headers });
+    return this.http.delete<void>(`${this.baseUrl}/${report.id}`, { headers: headers });
   }
 }

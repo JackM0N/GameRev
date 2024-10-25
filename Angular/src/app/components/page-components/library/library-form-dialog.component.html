@@ -7,7 +7,7 @@
   [submitDisabled]="!libraryForm.valid"
   (submitted)="onConfirm()"
 >
-  <form [formGroup]="libraryForm" (ngSubmit)="onConfirm()">
+  <form [formGroup]="libraryForm">
     <div class="mt-2 mb-1">
       <label class="pinkTextShadowWide">Game</label>
       <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="game">

@@ -7,6 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { StyleSanitizerUtil } from '../util/styleSanitizerUtil';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class ForumCommentService {
     private sanitizer: DomSanitizer
   ) {}
 
-  getComments(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumCommentFilters): Observable<ForumComment[]> {
+  getComments(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumCommentFilters): Observable<PaginatedResponse<ForumComment>> {
     var params = new HttpParams();
 
     if (page) {
@@ -47,7 +48,7 @@ export class ForumCommentService {
       }
     }
 
-    return this.http.get<ForumComment[]>(`${this.baseUrl}/${id}`, { params });
+    return this.http.get<PaginatedResponse<ForumComment>>(`${this.baseUrl}/${id}`, { params });
   }
 
   editComment(comment: any, picture?: File): Observable<ForumComment> {
@@ -88,12 +89,12 @@ export class ForumCommentService {
     return this.http.post<ForumComment>(this.addUrl, formData, { headers });
   }
 
-  deleteComment(id: number): Observable<any> {
+  deleteComment(id: number): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const params = new HttpParams().set('isDeleted', true);
 
-    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers, params });
   }
 }

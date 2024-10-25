@@ -104,7 +104,7 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
     const sortDir = this.sort.direction || 'asc';
     
     this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.totalUsers = response.totalElements;
           this.dataSource = new MatTableDataSource<WebsiteUser>(response.content);
