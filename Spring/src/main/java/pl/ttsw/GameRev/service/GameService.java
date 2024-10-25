@@ -16,6 +16,7 @@ import pl.ttsw.GameRev.filter.GameFilter;
 import pl.ttsw.GameRev.mapper.GameMapper;
 import pl.ttsw.GameRev.model.Game;
 import pl.ttsw.GameRev.model.Tag;
+import pl.ttsw.GameRev.repository.GamePlatformRepository;
 import pl.ttsw.GameRev.repository.GameRepository;
 import pl.ttsw.GameRev.repository.TagRepository;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class GameService {
     private final GameRepository gameRepository;
     private final TagRepository tagRepository;
+    private final GamePlatformRepository gamePlatformRepository;
     private final GameMapper gameMapper;
 
     @Value("${game.pics.directory}")
@@ -155,8 +157,9 @@ public class GameService {
 
     public boolean deleteGame(Long id) {
         if (gameRepository.existsById(id)) {
-            gameRepository.deleteById(id);
-            return true;
+          gamePlatformRepository.deleteAllByGameId(id);
+          gameRepository.deleteById(id);
+          return true;
         }
         return false;
     }
