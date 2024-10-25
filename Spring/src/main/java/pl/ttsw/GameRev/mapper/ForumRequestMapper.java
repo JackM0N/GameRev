@@ -12,5 +12,6 @@ public interface ForumRequestMapper {
     ForumRequestDTO toDto(ForumRequest forumRequest);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "author", ignore = true)
     ForumRequest partialUpdate(ForumRequestDTO forumRequestDTO, @MappingTarget ForumRequest forumRequest);
 }
