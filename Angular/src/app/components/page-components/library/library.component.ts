@@ -89,8 +89,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.gamesList = response.content;
           this.totalGames = response.totalElements;
@@ -105,10 +105,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      }
+    });
   }
 
   openEditUserGameDialog(userGame: UserGame) {
@@ -182,18 +180,16 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.libraryService.deleteUserGame(userGame.id).subscribe({
+      next: (response: any) => {
         this.gamesList = response;
         this.dataSource.data = this.gamesList;
         this.loadGames();
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.libraryService.deleteUserGame(userGame.id).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

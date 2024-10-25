@@ -211,7 +211,7 @@ export class ForumPostListComponent implements AfterViewInit {
           }
     
         } else {
-          const observerPicture: Observer<any> = {
+          this.forumPostService.getPicture(post.id).subscribe({
             next: response2 => {
               if (response2) {
                 this.imageCacheService.cacheBlob("postPic" + post.id, response2);
@@ -223,10 +223,8 @@ export class ForumPostListComponent implements AfterViewInit {
                 }
               }
             },
-            error: error => { console.error(error); },
-            complete: () => {}
-          };
-          this.forumPostService.getPicture(post.id).subscribe(observerPicture);
+            error: error => { console.error(error); }
+          });
         }
       }
     });

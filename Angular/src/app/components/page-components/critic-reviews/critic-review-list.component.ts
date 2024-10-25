@@ -96,17 +96,15 @@ export class CriticReviewListComponent implements AfterViewInit {
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);
         }
       },
-      error: error => { console.error(error); },
-      complete: () => {}
-    };
-    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

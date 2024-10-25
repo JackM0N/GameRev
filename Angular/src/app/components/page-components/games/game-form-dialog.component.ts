@@ -97,7 +97,7 @@ export class GameFormDialogComponent {
   }
 
   loadTags() {
-    const observerTag: Observer<any> = {
+    this.tagService.getTags().subscribe({
       next: response => {
         if (response) {
           this.tagsList = response;
@@ -119,10 +119,8 @@ export class GameFormDialogComponent {
           });
         }
       },
-      error: error => { console.error(error); },
-      complete: () => {}
-    };
-    this.tagService.getTags().subscribe(observerTag);
+      error: error => { console.error(error); }
+    });
   }
 
   isReleaseStatusInvalid() {

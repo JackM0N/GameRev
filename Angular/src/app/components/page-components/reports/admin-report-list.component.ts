@@ -79,8 +79,8 @@ export class AdminReportListComponent implements AfterViewInit {
     const page = this.reviewsPaginator.pageIndex + 1;
     const size = this.reviewsPaginator.pageSize;
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.reviewsList = response.content;
           this.totalReviews = response.totalElements;
@@ -92,10 +92,8 @@ export class AdminReportListComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe(observer);
+      }
+    });
   }
 
   loadReportsForReview(review: UserReview, refreshing: boolean = false) {
@@ -122,8 +120,8 @@ export class AdminReportListComponent implements AfterViewInit {
       }
     });
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe({
+      next: (response: any) => {
         if (review.id) {
           if (response) {
             this.reportsList[review.id] = {
@@ -158,10 +156,8 @@ export class AdminReportListComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

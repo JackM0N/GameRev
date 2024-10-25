@@ -55,8 +55,8 @@ export class OwnProfileComponent implements OnInit {
     this.adService.setAdVisible(false);
     this.backgroundService.setClasses(['matrixNumbers']);
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.authService.getUserProfileInformation().subscribe({
+      next: (response: any) => {
         if (response) {
           this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
           this.changeProfileInformationForm.get('description')?.setValue(response.description);
@@ -71,7 +71,7 @@ export class OwnProfileComponent implements OnInit {
             }
 
           } else {
-            const observerProfilePicture: Observer<any> = {
+            this.userService.getProfilePicture(response.nickname).subscribe({
               next: response2 => {
                 if (response2) {
                   this.imageUrl = URL.createObjectURL(response2);
@@ -81,19 +81,15 @@ export class OwnProfileComponent implements OnInit {
               },
               error: error => {
                 console.error(error);
-              },
-              complete: () => {}
-            };
-            this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
+              }
+            });
           }
         }
       },
       error: error => {
         this.notificationService.popErrorToast('Unable to retrieve profile information', error);
-      },
-      complete: () => {}
-    };
-    this.authService.getUserProfileInformation().subscribe(observer);
+      }
+    });
   }
 
   openLogoutDialog() {

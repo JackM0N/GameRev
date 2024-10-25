@@ -46,7 +46,7 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       if (params['name']) {
-        const observer: Observer<WebsiteUser> = {
+        this.userService.getUser(params['name']).subscribe({
           next: response => {
             if (response) {
               this.user = response;
@@ -60,7 +60,7 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
                     this.imageUrl = cachedImage;
                   }
                 } else {
-                  const observerProfilePicture: Observer<any> = {
+                  this.userService.getProfilePicture(response.nickname).subscribe({
                     next: response2 => {
                       this.imageUrl = URL.createObjectURL(response2);
                       this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
@@ -70,20 +70,16 @@ export class ProfileComponent extends BaseAdComponent implements OnInit {
                     },
                     error: error => {
                       console.error(error);
-                    },
-                    complete: () => {}
-                  };
-                  this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
+                    }
+                  });
                 }
               }
             }
           },
           error: error => {
             console.error(error);
-          },
-          complete: () => {}
-        };
-        this.userService.getUser(params['name']).subscribe(observer);
+          }
+        });
       }
     });
   }

@@ -69,7 +69,6 @@ export class ForumRequestsComponent implements AfterViewInit {
           this.totalRequests = response.totalElements;
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
-
       },
       error: error => console.error(error)
     });

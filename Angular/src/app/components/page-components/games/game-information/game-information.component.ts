@@ -170,7 +170,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
       return;
     }
 
-    const observer: Observer<any> = {
+    this.gameService.deleteGame(game.id).subscribe({
       next: () => {
         this.notificationService.popSuccessToast('Deleted game successfuly');
         this.router.navigate(['/games']);
@@ -198,10 +198,8 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
         }
 
         this.notificationService.popErrorToast('Deleting game failed', error);
-      },
-      complete: () => {}
-    };
-    this.gameService.deleteGame(game.id).subscribe(observer);
+      }
+    });
   }
 
   openEditGameDialog() {

@@ -94,34 +94,30 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     const sortBy = 'id';
     const sortDir = 'asc';
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.reviewList = response.content;
           this.totalReviews = response.totalElements;
         }
       },
-      error: error => { console.error(error); },
-      complete: () => {}
-    };
-    this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   loadReports() {
     this.reportList = [];
     this.totalReviews = 0;
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.reportService.getOwnUserReports().subscribe({
+      next: (response: any) => {
         if (response) {
           this.reportList = response.content;
           this.totalReviews = response.totalElements;
         }
       },
-      error: error => { console.error(error); },
-      complete: () => {}
-    };
-    this.reportService.getOwnUserReports().subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {

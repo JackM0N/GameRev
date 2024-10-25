@@ -69,8 +69,8 @@ export class UserReportListComponent extends BaseAdComponent implements AfterVie
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.reportService.getOwnUserReports(sortBy, sortDir, page, size).subscribe({
+      next: (response: any) => {
         console.log(response);
         if (response) {
           this.totalReports = response.totalElements;
@@ -78,10 +78,8 @@ export class UserReportListComponent extends BaseAdComponent implements AfterVie
           this.dataSource = new MatTableDataSource<UserReview>(response.content);
         }
       },
-      error: error => { console.error(error); },
-      complete: () => {}
-    };
-    this.reportService.getOwnUserReports(sortBy, sortDir, page, size).subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   openReportDeletionConfirmationDialog(report: Report) {

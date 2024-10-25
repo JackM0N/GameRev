@@ -167,7 +167,7 @@ export class ForumPostComponent extends BaseAdComponent {
       }
 
     } else {
-      const observerPicture: Observer<any> = {
+      this.forumPostService.getPicture(postId).subscribe({
         next: response2 => {
           if (response2) {
             this.imageUrl = URL.createObjectURL(response2);
@@ -177,10 +177,8 @@ export class ForumPostComponent extends BaseAdComponent {
         },
         error: error => {
           console.error(error);
-        },
-        complete: () => {}
-      };
-      this.forumPostService.getPicture(postId).subscribe(observerPicture);
+        }
+      });
     }
   }
 
@@ -203,7 +201,7 @@ export class ForumPostComponent extends BaseAdComponent {
       }
 
     } else {
-      const observerPicture: Observer<any> = {
+      this.userService.getProfilePicture(nickName).subscribe({
         next: response2 => {
           if (response2) {
             if (this.post && this.post.author && this.post.author.nickname == nickName) {
@@ -221,10 +219,8 @@ export class ForumPostComponent extends BaseAdComponent {
         },
         error: error => {
           console.error(error);
-        },
-        complete: () => {}
-      };
-      this.userService.getProfilePicture(nickName).subscribe(observerPicture);
+        }
+      });
     }
   }
 

@@ -105,8 +105,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.gameService.getGames(page, size, 'id', 'asc', this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.totalGames = response.totalElements;
           this.gameList = response.content;
@@ -119,10 +119,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
         this.totalGames = 0;
         this.gameList = [];
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.gameService.getGames(page, size, 'id', 'asc', this.filters).subscribe(observer);
+      }
+    });
   }
 
   openAddNewGameDialog() {
@@ -182,8 +180,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
+    this.gameService.deleteGame(game.id).subscribe({
+      next: (response: any) => {
         if (response) {
           this.gameList = response;
           this.loadGames();
@@ -213,11 +211,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
         }
 
         this.notificationService.popErrorToast('Deleting game failed', error);
-      },
-      complete: () => {}
-    };
-
-    this.gameService.deleteGame(game.id).subscribe(observer);
+      }
+    });
   }
 
   getTags(game: Game) {

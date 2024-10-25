@@ -102,9 +102,9 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
-
-    const observer: Observer<any> = {
-      next: response => {
+    
+    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe({
+      next: (response: any) => {
         if (response) {
           this.totalUsers = response.totalElements;
           this.dataSource = new MatTableDataSource<WebsiteUser>(response.content);
@@ -115,11 +115,8 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    
-    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

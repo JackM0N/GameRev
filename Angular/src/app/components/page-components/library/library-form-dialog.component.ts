@@ -79,8 +79,8 @@ export class LibraryFormDialogComponent implements OnInit {
   }
 
   loadGames() {
-    const observer: Observer<any> = {
-      next: response => {
+    this.gameService.getGames().subscribe({
+      next: (response: any) => {
         if (response) {
           this.gameList = response.content;
 
@@ -102,12 +102,8 @@ export class LibraryFormDialogComponent implements OnInit {
           }
         }
       },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.gameService.getGames().subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   addUserGame() {
