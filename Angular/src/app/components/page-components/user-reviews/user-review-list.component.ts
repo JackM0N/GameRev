@@ -16,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserReviewFormDialogComponent } from './user-review-form-dialog.component';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginatedResponse } from '../../../models/paginatedResponse';
 
 @Component({
   selector: 'app-user-review-list',
@@ -69,7 +70,7 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
+    const observer: Partial<Observer<PaginatedResponse<UserReview>>> = {
       next: response => {
         if (response) {
           this.totalReviews = response.totalElements;
@@ -82,6 +83,7 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
       },
       complete: () => {}
     };
+    
     if (this.userId) {
       this.userReviewService.getUserReviewsAdmin(this.userId, page, size, sortBy, sortDir).subscribe(observer);
     } else {

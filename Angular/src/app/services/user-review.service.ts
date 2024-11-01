@@ -31,7 +31,7 @@ export class UserReviewService {
     return this.http.get<UserReview[]>(this.baseUrl);
   }
 
-  getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -40,10 +40,10 @@ export class UserReviewService {
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
     );
-    return this.http.get<UserReview[]>(this.ownReviews, { headers, params });
+    return this.http.get<PaginatedResponse<UserReview>>(this.ownReviews, { headers, params });
   }
 
-  getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -52,7 +52,7 @@ export class UserReviewService {
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
     );
-    return this.http.get<UserReview[]>(`${this.adminReviews}/${userId}`, { headers, params });
+    return this.http.get<PaginatedResponse<UserReview>>(`${this.adminReviews}/${userId}`, { headers, params });
   }
 
   getUserReviewById(id: string): Observable<UserReview> {
