@@ -51,13 +51,13 @@ export class ForumCommentService {
     return this.http.get<PaginatedResponse<ForumComment>>(`${this.baseUrl}/${id}`, { params });
   }
 
-  editComment(comment: any, picture?: File): Observable<ForumComment> {
+  editComment(comment: Partial<ForumComment>, picture?: File): Observable<ForumComment> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const sanitizedComment = {
       ...comment,
-      content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content.trim())
+      content: this.sanitizer.sanitize(SecurityContext.HTML, comment.content!.trim())
     };
 
     const formData = new FormData();
@@ -70,13 +70,13 @@ export class ForumCommentService {
     return this.http.put<ForumComment>(`${this.editUrl}/${comment.id}`, formData, { headers });
   }
 
-  addComment(comment: any, picture?: File): Observable<ForumComment> {
+  addComment(comment: Partial<ForumComment>, picture?: File): Observable<ForumComment> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const sanitizedComment = {
       ...comment,
-      content: StyleSanitizerUtil.sanitizeContentAndReapplyStyles(comment.content.trim(), this.sanitizer)
+      content: StyleSanitizerUtil.sanitizeContentAndReapplyStyles(comment.content!.trim(), this.sanitizer)
     };
 
     const formData = new FormData();

@@ -99,11 +99,11 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
 
     this.forumPostService.getPost(id).subscribe({
       next: response => {
-        if (response && response.content.length > 0 && response.id && response.picture && response.author && response.author.nickname && response.author.profilepic) {
+        if (response) {
           this.post = response;
 
-          this.loadPostPicture(response.id, response.picture);
-          this.loadUserProfilePicture(response.author.nickname, response.author.profilepic);
+          this.loadPostPicture(response.id!, response.picture!);
+          this.loadUserProfilePicture(response.author!.nickname!, response.author!.profilepic!);
 
           // Potential fix for the issue where the path is not properly loaded when the component is initialized
           if (this.route.snapshot.params['forumid']) {

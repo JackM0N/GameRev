@@ -128,7 +128,10 @@ export class ForumPostFormDialogComponent implements OnInit {
       }
 
       this.forumPostService.addPost(newForumPost, this.selectedImage).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Post added'); },
+        next: (response) => {
+          // TODO: Should add the new post to the forum post list from response
+          this.notificationService.popSuccessToast('Post added');
+        },
         error: error => { this.checkError(error); }
       });
 

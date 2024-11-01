@@ -54,7 +54,7 @@ export class ForumPostService {
     return this.http.get<PaginatedResponse<ForumPost>>(`${this.baseUrl}/${id}`, { params });
   }
 
-  addPost(post: ForumPost, picture?: File): Observable<any> {
+  addPost(post: ForumPost, picture?: File): Observable<ForumPost> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
@@ -65,10 +65,10 @@ export class ForumPostService {
       formData.append('picture', picture);
     }
   
-    return this.http.post(this.addUrl, formData, { headers });
+    return this.http.post<ForumPost>(this.addUrl, formData, { headers });
   }
   
-  editPost(post: ForumPost, picture?: File): Observable<any> {
+  editPost(post: ForumPost, picture?: File): Observable<ForumPost> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
@@ -79,7 +79,7 @@ export class ForumPostService {
       formData.append('picture', picture);
     }
 
-    return this.http.put(`${this.editUrl}/${post.id}`, formData, { headers });
+    return this.http.put<ForumPost>(`${this.editUrl}/${post.id}`, formData, { headers });
   }
 
   deletePost(id: number): Observable<void> {

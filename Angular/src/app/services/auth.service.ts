@@ -138,29 +138,29 @@ export class AuthService {
     return this.http.get<WebsiteUser>(this.profileInformationUrl, { headers });
   }
 
-  changeProfile(userData: NewCredentials): Observable<any> {
+  changeProfile(userData: NewCredentials): Observable<void> {
     const token = this.getToken();
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.put<WebsiteUser>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
+    return this.http.put<void>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
   }
 
-  changeProfilePicture(username: string, profilePicture: File): Observable<any> {
+  changeProfilePicture(username: string, profilePicture: File): Observable<void> {
     const token = this.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const formData = new FormData();
     formData.append('file', profilePicture, profilePicture.name);
 
-    return this.http.post<any>(`${this.profileChangePictureUrl}/${username}/profile-picture`, formData, {
+    return this.http.post<void>(`${this.profileChangePictureUrl}/${username}/profile-picture`, formData, {
       headers: headers
     });
   }
 
-  deleteOwnAccount(userData: NewCredentials): Observable<any> {
+  deleteOwnAccount(userData: NewCredentials): Observable<void> {
     const token = this.getToken();
 
     const headers = new HttpHeaders({
@@ -168,11 +168,11 @@ export class AuthService {
       'Content-Type': 'application/json'
     });
 
-    return this.http.put<WebsiteUser>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
+    return this.http.put<void>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
   }
 
-  requestPasswordReset(email: string): Observable<any> {
+  requestPasswordReset(email: string): Observable<void> {
     const url = `${this.requestPasswordResetUrl}?email=${encodeURIComponent(email)}`;
-    return this.http.post<any>(url, {});
+    return this.http.post<void>(url, {});
   }
 }

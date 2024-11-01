@@ -117,7 +117,8 @@ export class ForumRequestsComponent implements AfterViewInit, OnInit {
 
   approveRequest(forumRequest: ForumRequest, approve: boolean, action1: string, action2: string) {
     this.forumRequestService.approveRequest(forumRequest, approve).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log(response);
         this.notificationService.popSuccessToast('Request ' + action2 + 'd successfully');
         this.loadForumRequests();
       },

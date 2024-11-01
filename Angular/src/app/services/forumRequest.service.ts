@@ -61,13 +61,13 @@ export class ForumRequestService {
     return this.http.put<ForumRequest>(`${this.editUrl}/${request.id}`, request, { headers });
   }
 
-  approveRequest(request: ForumRequest, approved: boolean): Observable<any> {
+  approveRequest(request: ForumRequest, approved: boolean): Observable<ForumRequest> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
     const params = new HttpParams().set('approved', approved.toString());
 
-    return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
+    return this.http.put<ForumRequest>(`${this.approveUrl}/${request.id}`, request, { headers, params });
   }
 
   deleteRequest(request: ForumRequest): Observable<void> {

@@ -69,7 +69,6 @@ export class UserReportListComponent extends BaseAdComponent implements AfterVie
 
     this.reportService.getOwnUserReports(sortBy, sortDir, page, size).subscribe({
       next: response => {
-        console.log(response);
         if (response) {
           this.totalReports = response.totalElements;
           this.reportList = response.content;
