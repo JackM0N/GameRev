@@ -17,7 +17,7 @@ export class UserReviewFormDialogComponent implements OnInit {
     gameTitle: '',
     userNickname: '',
     content: '',
-    postDate: new Date(),
+    postDate: undefined,
     score: undefined,
   };
 

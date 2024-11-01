@@ -74,11 +74,11 @@ export class CriticReviewListComponent implements AfterViewInit, OnInit {
     this.paginator.page.subscribe(() => this.loadReviews());
 
     if (this.searchInput) {
-      fromEvent(this.searchInput.nativeElement, 'input').pipe(
-        map((event: any) => event.target.value),
+      fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+        map((event) => (event.target as HTMLInputElement).value),
         debounceTime(300),
         distinctUntilChanged()
-
+        
       ).subscribe(value => {
         this.onSearchChange(value);
       });

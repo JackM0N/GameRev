@@ -348,10 +348,11 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
   activateSearchFilter() {
     setTimeout(() => {
       if (this.searchInput) {
-        fromEvent(this.searchInput.nativeElement, 'input').pipe(
-          map((event: any) => event.target.value),
+        fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+          map((event) => (event.target as HTMLInputElement).value),
           debounceTime(300),
           distinctUntilChanged()
+          
         ).subscribe(value => {
           this.onSearchFilterChange(value);
         });

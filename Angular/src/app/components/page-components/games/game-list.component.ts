@@ -80,8 +80,8 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit,
     this.paginator.page.subscribe(() => this.loadGames());
 
     if (this.searchInput) {
-      fromEvent(this.searchInput.nativeElement, 'input').pipe(
-        map((event: any) => event.target.value),
+      fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+        map((event) => (event.target as HTMLInputElement).value),
         debounceTime(300),
         distinctUntilChanged()
 

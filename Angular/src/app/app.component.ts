@@ -62,7 +62,7 @@ export class AppComponent implements OnInit {
     this.isNavbarOpen = false;
   }
 
-  canUseRoute(route: any) {
+  canUseRoute(route: { roles?: string[], guestOnly?: boolean, guestsCanAccess?: boolean }) {
     if (!this.authService.isAuthenticated()) {
       return route.guestOnly || route.guestsCanAccess;
 

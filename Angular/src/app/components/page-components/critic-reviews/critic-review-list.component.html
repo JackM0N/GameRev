@@ -127,7 +127,7 @@
           <ng-container matColumnDef="options">
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
             <td class="synthwaveBg bg-repeat border-2 border-white" mat-cell *matCellDef="let element">
-              @if (element.statusChangedBy == undefined) {
+              @if (element.statusChangedBy === undefined) {
                 <button
                   class="w-full text-white font-arcade text-center text-base pinkTextShadow"
                   type="button"

@@ -7,7 +7,7 @@ export interface CriticReview {
   userNickname?: string;
 
   content?: string;
-  postDate?: any;
+  postDate?: [number, number, number];
   score?: number;
 
   user?: WebsiteUser;
