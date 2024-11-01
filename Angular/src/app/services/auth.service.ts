@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { LoginCredentials } from '../models/loginCredentials';
 import { isPlatformBrowser } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -8,6 +8,7 @@ import { NewCredentials } from '../models/newCredentials';
 import { Role } from '../models/role';
 import { WebsiteUser } from '../models/websiteUser';
 import { environment } from '../../environments/environment';
+import { AuthResponse } from '../models/authResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -35,42 +36,28 @@ export class AuthService {
     }
   }
 
-  registerUser(userData: WebsiteUser): Observable<any> {
-    return this.http.post<any>(this.registerUrl, userData)
-      .pipe(
-        map(response => {
-          const token = response.token;
-          
-          if (token && isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.tokenKey, token);
-          }
-          return response;
-        }),
-        catchError(error => {
-          console.error('Registration failed:', error);
-          return throwError(() => new Error(error));
-        })
-      );
+  registerUser(userData: WebsiteUser): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(this.registerUrl, userData).pipe(
+      tap(response => {
+        const token = response.token;
+        if (token && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem(this.tokenKey, token);
+        }
+      })
+    );
   }
 
-  login(credentials: LoginCredentials): Observable<any> {
-    return this.http.post<any>(this.loginUrl, credentials)
-      .pipe(
-        map(response => {
-          const token = response.token;
-          
-          if (token && isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.tokenKey, token);
-          }
-          return response;
-        }),
-        catchError(error => {
-          console.error('Login failed:', error);
-          return throwError(() => new Error(error));
-        })
-      );
+  login(credentials: LoginCredentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(this.loginUrl, credentials).pipe(
+      tap(response => {
+        const token = response.token;
+        if (token && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem(this.tokenKey, token);
+        }
+      })
+    );
   }
-
+  
   isAuthenticated(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem(this.tokenKey);
@@ -154,25 +141,21 @@ export class AuthService {
   changeProfile(userData: NewCredentials): Observable<any> {
     const token = this.getToken();
 
-    const url = `${this.profileChangeUrl}/${userData.username}`;
-
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.put<WebsiteUser>(url, userData, { headers });
+    return this.http.put<WebsiteUser>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
   }
 
   changeProfilePicture(username: string, profilePicture: File): Observable<any> {
     const token = this.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    const url = `${this.profileChangePictureUrl}/${username}/profile-picture`;
-
     const formData = new FormData();
     formData.append('file', profilePicture, profilePicture.name);
 
-    return this.http.post<any>(url, formData, {
+    return this.http.post<any>(`${this.profileChangePictureUrl}/${username}/profile-picture`, formData, {
       headers: headers
     });
   }
@@ -180,14 +163,12 @@ export class AuthService {
   deleteOwnAccount(userData: NewCredentials): Observable<any> {
     const token = this.getToken();
 
-    const url = `${this.profileChangeUrl}/${userData.username}`;
-
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
 
-    return this.http.put<WebsiteUser>(url, userData, { headers });
+    return this.http.put<WebsiteUser>(`${this.profileChangeUrl}/${userData.username}`, userData, { headers });
   }
 
   requestPasswordReset(email: string): Observable<any> {

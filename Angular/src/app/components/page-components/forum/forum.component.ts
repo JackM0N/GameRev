@@ -20,6 +20,7 @@ import { forumFilters } from '../../../filters/forumFilters';
 import { MatSelectChange } from '@angular/material/select';
 import { LastPost } from '../../../models/lastPost';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Game } from '../../../models/game';
 
 @Component({
   selector: 'app-forum',
@@ -30,8 +31,8 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
   protected totalSubforums = 0;
   protected noSubForums = false;
   protected currentForum?: Forum;
-  protected path?: any;
-  protected gameList: any[] = [];
+  protected path?: Forum[];
+  protected gameList: Game[] = [];
 
   protected forumId?: number = undefined;
   private routeParamsSubscription?: Subscription;

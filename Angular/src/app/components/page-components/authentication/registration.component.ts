@@ -99,9 +99,7 @@ export class RegistrationComponent extends BaseAdComponent implements OnInit {
       };
 
       this.authService.registerUser(userData).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Registration successful', NotificationAction.GO_TO_HOME);
-        },
+        next: () => this.notificationService.popSuccessToast('Registration successful', NotificationAction.GO_TO_HOME),
         error: error => this.notificationService.popErrorToast('Registration failed', error)
       });
     }

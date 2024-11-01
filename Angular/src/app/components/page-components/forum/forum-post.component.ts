@@ -143,9 +143,9 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           this.commentsList = response.content;
 
           // Load profile pics for all comments
-          this.commentsList.forEach((comment: any) => {
+          this.commentsList.forEach((comment: ForumComment) => {
             if (comment.author.nickname != this.post?.author?.nickname) {
-              this.loadUserProfilePicture(comment.author.nickname, comment.author.profilepic);
+              this.loadUserProfilePicture(comment.author.nickname!, comment.author.profilepic!);
             }
           });
         }

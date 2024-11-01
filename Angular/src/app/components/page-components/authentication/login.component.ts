@@ -91,7 +91,7 @@ export class LoginComponent extends BaseAdComponent implements OnInit {
         next: () => { this.notificationService.popSuccessToast('Login successful', NotificationAction.GO_TO_HOME); },
         error: error => {
           if (error.error == 'Bad credentials') {
-            this.notificationService.popErrorToast('Bad login or password', error);
+            this.notificationService.popErrorToast('Bad login or password');
           } else {
             this.notificationService.popErrorToast('Login failed', error);
           }

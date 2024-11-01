@@ -137,8 +137,9 @@ export class ForumPostFormDialogComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file: File | null = target.files ? target.files[0] : null;
 
     if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
       this.maxSizeError();

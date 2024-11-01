@@ -13,7 +13,7 @@ import { FileUploadOptions } from '../../../enums/fileUploadOptions';
 export class ForumCommentFormComponent {
   protected commentForm: FormGroup;
   protected minLength = 4;
-  @Input() public postId: any;
+  @Input() public postId?: number;
   @Output() public commentPosted = new EventEmitter<void>();
 
   protected imageUrl = '';
@@ -63,8 +63,9 @@ export class ForumCommentFormComponent {
     this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file: File | null = target.files ? target.files[0] : null;
 
     if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
       this.maxSizeError();
