@@ -10,7 +10,6 @@ import { CriticReview } from '../../../models/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
@@ -48,7 +47,6 @@ export class CriticReviewListComponent implements AfterViewInit {
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
-    private router: Router,
     private datePipe: DatePipe,
     private adService: AdService
   ) {

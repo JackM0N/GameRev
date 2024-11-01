@@ -89,7 +89,7 @@
           <p class="text-sm">{{ game.releaseDate | date: 'dd MMM yyyy' }}</p>
         </div>
         
-        <div class="game-card-body mt-4">
+        <div class="game-card-body mt-4 flex-grow">
           @if (game.releaseStatus) {
             <p><strong>Release Status:</strong> {{ findReleaseStatusName(game.releaseStatus) }}</p>
           }
