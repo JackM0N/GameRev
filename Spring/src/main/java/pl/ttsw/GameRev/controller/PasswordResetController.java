@@ -11,6 +11,7 @@ import pl.ttsw.GameRev.repository.WebsiteUserRepository;
 import pl.ttsw.GameRev.service.EmailService;
 import pl.ttsw.GameRev.service.PasswordResetTokenService;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/password-reset")
@@ -23,9 +24,12 @@ public class PasswordResetController {
 
     @PostMapping("/request")
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) throws MessagingException, IOException {
-        String resetUrl = passwordResetTokenService.createPasswordResetToken(email);
-        emailService.sendEmail(email,"Password Reset Request", resetUrl);
-        return ResponseEntity.ok("If this email is connected to an account, we are going to sent you an email. Please check your inbox");
+        String resetUrl;
+        try {
+            resetUrl = passwordResetTokenService.createPasswordResetToken(email);
+            emailService.sendEmail(email,"Password Reset Request", resetUrl);
+        } catch (RuntimeException ignored) {}
+        return ResponseEntity.ok(Map.of("message", "If this email is connected to an account, we are going to sent you an email. Please check your inbox"));
     }
 
     @GetMapping("/confirm")
@@ -34,7 +38,7 @@ public class PasswordResetController {
         if (passwordResetToken == null) {
             return ResponseEntity.badRequest().body("Invalid or expired token");
         }
-        return ResponseEntity.ok("Token is valid");
+        return ResponseEntity.ok(Map.of("message", "Token is valid"));
     }
 
     @PostMapping("/reset")
@@ -50,6 +54,6 @@ public class PasswordResetController {
         user.setPassword(passwordEncoder.encode(newPassword));
         websiteUserRepository.save(user);
 
-        return ResponseEntity.ok("Your password has been reset!");
+        return ResponseEntity.ok(Map.of("message", "Your password has been reset!"));
     }
 }
