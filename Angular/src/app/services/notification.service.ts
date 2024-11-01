@@ -3,6 +3,7 @@ import { Toast, ToasterService } from 'angular-toaster';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { NotificationAction } from '../enums/notificationActions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class NotificationService {
     this.toasterService.pop(toast);
   }
 
-  popErrorToast(title: string, error?: string) {
+  popErrorToast(title: string, error?: HttpErrorResponse | string) {
     if (error) {
       console.error(error);
     }

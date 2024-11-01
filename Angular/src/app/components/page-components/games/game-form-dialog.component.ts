@@ -104,11 +104,11 @@ export class GameFormDialogComponent implements OnInit {
           this.tagsList = response;
           this.tagsList.sort((a, b) => b.priority - a.priority);
   
-          const tags: any = [];
+          const tags: Tag[] = [];
           const formTags = this.addingGameForm.get('tags');
           if (formTags && formTags.value) {
-            formTags.value.forEach((tag: any) => {
-              const matchingTag = this.tagsList.find((t: any) => t.id === tag.id);
+            formTags.value.forEach((tag: Tag) => {
+              const matchingTag = this.tagsList.find((t: Tag) => t.id === tag.id);
               if (matchingTag) {
                 tags.push(matchingTag);
               }

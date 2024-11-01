@@ -6,6 +6,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { ForumPost } from '../../../models/forumPost';
 import { FileUploadOptions } from '../../../enums/fileUploadOptions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post-form-dialog',
@@ -87,7 +88,7 @@ export class ForumPostFormDialogComponent implements OnInit {
     this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
   }
 
-  checkError(error: any) {
+  checkError(error: HttpErrorResponse) {
     if (error.error == "Maximum upload size exceeded") {
       this.maxSizeError();
       

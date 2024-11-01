@@ -27,7 +27,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     public jwtHelper: JwtHelperService,
-    @Inject(PLATFORM_ID) private platformId: any
+    @Inject(PLATFORM_ID) private platformId: number
   ) {
     if (!isPlatformBrowser(this.platformId)) {
       console.log('Not running in the browser');

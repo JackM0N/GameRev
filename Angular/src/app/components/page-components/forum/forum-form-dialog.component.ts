@@ -9,6 +9,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ForumRequest } from '../../../models/forumRequest';
 import { AuthService } from '../../../services/auth.service';
 import { ForumRequestService } from '../../../services/forumRequest.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-form-dialog',
@@ -117,7 +118,7 @@ export class ForumFormDialogComponent implements OnInit {
           }
         }
       },
-      error: (error: any) => { console.error(error); }
+      error: (error: HttpErrorResponse) => { console.error(error); }
     });
   }
 
@@ -143,7 +144,7 @@ export class ForumFormDialogComponent implements OnInit {
           }
         }
       },
-      error: (error: any) => { console.error(error); }
+      error: (error: HttpErrorResponse) => { console.error(error); }
     });
   }
 

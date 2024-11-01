@@ -21,6 +21,7 @@ import { ImageCacheService } from '../../../services/imageCache.service';
 import { UserService } from '../../../services/user.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ForumComment } from '../../../models/forumComment';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post',
@@ -88,7 +89,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           }
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load forum path', error)
     });
   }
 
@@ -109,7 +110,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           }
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load post', error)
     });
   }
 
@@ -120,7 +121,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           this.moderators = response;
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load moderator info', error)
     });
   }
 
@@ -148,7 +149,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           });
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load comments', error)
     });
   }
 

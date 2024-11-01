@@ -18,6 +18,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { AdService } from '../../../services/ad.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post-list',
@@ -102,7 +103,7 @@ export class ForumPostListComponent implements AfterViewInit, OnChanges, OnInit 
           this.activateSearchFilter();
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load posts', error)
     });
   }
 
@@ -113,7 +114,7 @@ export class ForumPostListComponent implements AfterViewInit, OnChanges, OnInit 
           this.moderators = response;
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load moderator info', error)
     });
   }
 

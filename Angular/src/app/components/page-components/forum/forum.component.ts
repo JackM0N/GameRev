@@ -18,6 +18,8 @@ import { GameService } from '../../../services/game.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { forumFilters } from '../../../filters/forumFilters';
 import { MatSelectChange } from '@angular/material/select';
+import { LastPost } from '../../../models/lastPost';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum',
@@ -123,7 +125,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
           this.path = response.reverse();
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load forum path', error)
     });
   }
 
@@ -162,7 +164,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
           this.activateSearchFilter();
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load forum', error)
     });
   }
 
@@ -289,7 +291,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
     this.router.navigate(['forum', id]);
   }
 
-  navigateToLastPost(lastPost: any) {
+  navigateToLastPost(lastPost: LastPost) {
     this.router.navigate(['forum/' + lastPost.forum_id + '/post/' + lastPost.forum_post_id]);
   }
 
