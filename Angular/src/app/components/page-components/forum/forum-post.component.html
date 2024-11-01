@@ -61,7 +61,11 @@
       <div class="comment bg-[#2A2A2A] p-6 border border-[#00CFFF] mb-4">
         <div class="flex items-start space-x-4">
           <!-- Commenter Image -->
-          <img [src]="comment.author.nickname === post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')" alt="Commenter profile picture" class="w-12 h-12 rounded-full object-cover">
+          <img
+            [src]="comment.author.nickname === post?.author?.nickname ? authorProfilePic: (comment.author.picture || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541')"
+            alt="Commenter profile picture"
+            class="w-12 h-12 rounded-full object-cover"
+          >
           
           <div class="flex-1">
             <div class="comment-header flex justify-between items-center text-sm text-[#B0B0B0] mb-2">

@@ -22,6 +22,7 @@ import { UserService } from '../../../services/user.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ForumComment } from '../../../models/forumComment';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Forum } from '../../../models/forum';
 
 @Component({
   selector: 'app-forum-post',
@@ -33,9 +34,9 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
 
   @Input() protected post?: ForumPost;
 
-  protected commentsList: any[] = [];
+  protected commentsList: ForumComment[] = [];
   protected totalComments = 0;
-  protected path?: any;
+  protected path?: Forum[];
   protected moderators: WebsiteUser[] = [];
   protected imageUrl?: string;
   protected authorProfilePic?: string;
@@ -192,7 +193,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
           this.authorProfilePic = cachedImage;
 
         } else {
-          this.commentsList.forEach((comment: any) => {
+          this.commentsList.forEach((comment: ForumComment) => {
             if (comment.author.nickname == nickName) {
               comment.author.picture = cachedImage;
             }
@@ -207,7 +208,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
             if (this.post && this.post.author && this.post.author.nickname == nickName) {
               this.authorProfilePic = URL.createObjectURL(response2);
             } else {
-              this.commentsList.forEach((comment: any) => {
+              this.commentsList.forEach((comment: ForumComment) => {
                 if (comment.author.nickname == nickName) {
                   comment.author.picture = URL.createObjectURL(response2);
                 }
@@ -270,7 +271,7 @@ export class ForumPostComponent extends BaseAdComponent implements OnInit {
     this.forumCommentService.deleteComment(id).subscribe({
       next: () => {
         this.notificationService.popSuccessToast('Comment deleted successfully');
-        this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);
+        this.commentsList = this.commentsList.filter((comment: ForumComment) => comment.id !== id);
       },
       error: error => this.notificationService.popErrorToast('Comment deletion failed', error)
     });
