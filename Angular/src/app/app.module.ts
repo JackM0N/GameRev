@@ -70,6 +70,7 @@ import { CriticReviewFormDialogComponent } from './components/page-components/cr
 import { ForumCommentFormComponent } from './components/page-components/forum/forum-comment-form.component';
 import { CriticReviewContentDialogComponent } from './components/page-components/critic-reviews/critic-review-content-dialog.component';
 import { UserReportListComponent } from './components/page-components/reports/user-report-list.component';
+import { NotFoundComponent } from './components/page-components/not-found/not-found.component';
 
 @NgModule({
     declarations: [
@@ -107,10 +108,11 @@ import { UserReportListComponent } from './components/page-components/reports/us
       CriticReviewFormDialogComponent,
       ForumCommentFormComponent,
       CriticReviewContentDialogComponent,
-      UserReportListComponent
+      UserReportListComponent,
+      NotFoundComponent,
     ],
     bootstrap: [
-        AppComponent
+      AppComponent
     ],
     imports: [
       BrowserModule,

@@ -16,6 +16,7 @@ import { ForumComponent } from './components/page-components/forum/forum.compone
 import { ForumPostComponent } from './components/page-components/forum/forum-post.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
 import { UserReportListComponent } from './components/page-components/reports/user-report-list.component';
+import { NotFoundComponent } from './components/page-components/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: ForumComponent},
@@ -35,6 +36,8 @@ const routes: Routes = [
   { path: 'reports', component: AdminReportListComponent, canActivate: [authGuard], data: { roles: ['Admin'] }},
   { path: 'library', component: LibraryComponent, canActivate: [authGuard]},
   { path: 'critic-reviews', component: CriticReviewListComponent, canActivate: [authGuard], data: { roles: ['Admin', 'Critic'] }},
+
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
