@@ -23,11 +23,17 @@ public class ReportController {
     public ResponseEntity<Page<UserReviewDTO>> reviewsWithReports(UserReviewFilter userReviewFilter, Pageable pageable) {
         return ResponseEntity.ok(userReviewService.getUserReviewsWithReports(userReviewFilter, pageable));
     }
-    
+
     @GetMapping("/{reviewId}")
     public ResponseEntity<Page<ReportDTO>> reviewReports(@PathVariable long reviewId, Pageable pageable) {
         UserReviewDTO userReviewDTO = userReviewService.getUserReviewById(reviewId);
         return ResponseEntity.ok(reportService.getReportsByReview(userReviewDTO, pageable));
+    }
+
+    @GetMapping("/my-reports")
+    public ResponseEntity<Page<ReportDTO>> myReports(Pageable pageable) {
+        Page<ReportDTO> userReportDTO = reportService.getReportByOwner(pageable);
+        return ResponseEntity.ok(userReportDTO);
     }
     
     @PutMapping("/approve")
@@ -38,11 +44,11 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(reportDTO));
     }
 
-    @DeleteMapping("/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws BadRequestException {
-        if (reviewId == null) {
+    @DeleteMapping("/{reportId}")
+    public ResponseEntity<?> deleteReport(@PathVariable Long reportId) throws BadRequestException {
+        if (reportId == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(userReviewService.deleteUserReviewById(reviewId));
+        return ResponseEntity.ok(reportService.deleteReportById(reportId));
     }
 }

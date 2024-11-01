@@ -16,4 +16,6 @@ export interface WebsiteUser {
   lastActionDate?: string;
 
   roles?: Role[];
+
+  picture?: string; // dynamically loaded, not always present
 }

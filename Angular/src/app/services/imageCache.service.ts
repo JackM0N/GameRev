@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ImageCacheService {
-  constructor() {}
-
   // Check if an image is already cached
   public isCached(url: string): boolean {
     return localStorage.getItem(url) !== null;
@@ -28,7 +26,7 @@ export class ImageCacheService {
     localStorage.setItem(url, name);
   }
 
-  public didPictureNameChange(url: string, currentName: string): boolean {
+  public didPictureNameChange(url: string, currentName?: string): boolean {
     return currentName != localStorage.getItem(url);
   }
 

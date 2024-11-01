@@ -1,29 +1,30 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Forum } from '../../../interfaces/forum';
+import { Forum } from '../../../models/forum';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumPostService } from '../../../services/forumPost.service';
-import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPost } from '../../../models/forumPost';
 import { FileUploadOptions } from '../../../enums/fileUploadOptions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post-form-dialog',
   templateUrl: './forum-post-form-dialog.component.html',
 })
-export class ForumPostFormDialogComponent {
+export class ForumPostFormDialogComponent implements OnInit {
   protected forumPostForm: FormGroup;
-  protected titleMinLength: number = 4;
-  protected contentMinLength: number = 8;
+  protected titleMinLength = 4;
+  protected contentMinLength = 8;
   protected forumList: Forum[] = [];
 
-  private title: string = '';
-  private content: string = '';
+  private title = '';
+  private content = '';
   private forumId?: number;
   private postId?: number;
 
   private selectedImage?: File;
-  protected imageUrl: string = '';
+  protected imageUrl = '';
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
@@ -87,11 +88,13 @@ export class ForumPostFormDialogComponent {
     this.notificationService.popErrorToast('Image size too large. Max size is 10MB.');
   }
 
-  checkError(error: any) {
+  checkError(error: HttpErrorResponse) {
     if (error.error == "Maximum upload size exceeded") {
       this.maxSizeError();
+      
     } else if (this.data?.editing) {
       this.notificationService.popErrorToast('Post editing failed', error);
+
     } else {
       this.notificationService.popErrorToast('Post adding failed', error);
     }
@@ -125,7 +128,10 @@ export class ForumPostFormDialogComponent {
       }
 
       this.forumPostService.addPost(newForumPost, this.selectedImage).subscribe({
-        next: () => { this.notificationService.popSuccessToast('Post added'); },
+        next: (response) => {
+          // TODO: Should add the new post to the forum post list from response
+          this.notificationService.popSuccessToast('Post added');
+        },
         error: error => { this.checkError(error); }
       });
 
@@ -134,8 +140,9 @@ export class ForumPostFormDialogComponent {
     }
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file: File | null = target.files ? target.files[0] : null;
 
     if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
       this.maxSizeError();

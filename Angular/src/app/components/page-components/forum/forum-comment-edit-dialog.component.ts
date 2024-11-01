@@ -1,22 +1,21 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { trimmedValidator } from '../../../validators/trimmedValidator';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { NotificationService } from '../../../services/notification.service';
+import { quillTextLengthValidator } from '../../../validators/quillTextLengthValidator';
 
 @Component({
   selector: 'app-forum-comment-edit-dialog',
   templateUrl: './forum-comment-edit-dialog.component.html',
 })
-export class ForumCommentEditDialogComponent {
+export class ForumCommentEditDialogComponent implements OnInit {
   protected commentForm: FormGroup;
-  protected content: string = '';
-  public minLength: number = 4;
+  protected content = '';
+  public minLength = 4;
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
     ['clean']
   ];
 
@@ -31,7 +30,7 @@ export class ForumCommentEditDialogComponent {
     }
   ) {
     this.commentForm = this.formBuilder.group({
-      content: [this.content, [Validators.required, Validators.minLength(this.minLength), trimmedValidator(this.minLength), trimmedValidator(this.minLength)]],
+      content: [this.content, [Validators.required, quillTextLengthValidator(this.minLength)]],
     });
   }
 

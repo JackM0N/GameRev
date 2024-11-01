@@ -1,37 +1,37 @@
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
-import { CriticReview } from '../../../interfaces/criticReview';
+import { CriticReview } from '../../../models/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { criticReviewFilters } from '../../../interfaces/criticReviewFilters';
+import { criticReviewFilters } from '../../../filters/criticReviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';
+import { CriticReviewContentDialogComponent } from './critic-review-content-dialog.component';
+import { CriticReviewFormDialogComponent } from './critic-review-form-dialog.component';
 
 @Component({
   selector: 'app-critic-review-list',
   templateUrl: './critic-review-list.component.html'
 })
-export class CriticReviewListComponent implements AfterViewInit {
+export class CriticReviewListComponent implements AfterViewInit, OnInit {
   protected dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
   protected formatDate = formatDateArray;
   protected reviewStatuses = reviewStatuses;
-  protected noCriticReviews = false;
 
   private filters: criticReviewFilters = {};
   protected filterForm: FormGroup;
@@ -47,7 +47,6 @@ export class CriticReviewListComponent implements AfterViewInit {
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
-    private router: Router,
     private datePipe: DatePipe,
     private adService: AdService
   ) {
@@ -75,11 +74,11 @@ export class CriticReviewListComponent implements AfterViewInit {
     this.paginator.page.subscribe(() => this.loadReviews());
 
     if (this.searchInput) {
-      fromEvent(this.searchInput.nativeElement, 'input').pipe(
-        map((event: any) => event.target.value),
+      fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+        map((event) => (event.target as HTMLInputElement).value),
         debounceTime(300),
         distinctUntilChanged()
-
+        
       ).subscribe(value => {
         this.onSearchChange(value);
       });
@@ -87,28 +86,23 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   loadReviews() {
+    this.totalReviews = 0;
+    this.dataSource = new MatTableDataSource<CriticReview>([]);
+
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
+    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe({
       next: response => {
         if (response) {
           this.totalReviews = response.totalElements;
           this.dataSource = new MatTableDataSource<CriticReview>(response.content);
-          this.noCriticReviews = (this.dataSource.data.length == 0);
-
-        } else {
-          this.noCriticReviews = true
         }
       },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.criticReviewService.getAllReviews(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -190,12 +184,23 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   findReviewStatusName(review: CriticReview) {
-    var status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
+    const status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
     return status;
   }
 
-  editReview(review: CriticReview) {
-    this.router.navigate(['/critic-reviews/edit/' + review.id]);
+  openEditCriticReviewDialog(review: CriticReview) {
+    const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
+      data: {
+        editing: true,
+        review: review
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadReviews();
+      }
+    });
   }
 
   // Filters
@@ -264,5 +269,14 @@ export class CriticReviewListComponent implements AfterViewInit {
     this.filterForm.get('userScore')?.get('min')?.setValue(1);
     this.filterForm.get('userScore')?.get('max')?.setValue(10);
     this.loadReviews();
+  }
+
+  openContentDialog(review: CriticReview) {
+    const dialogTitle = 'Review by ' + review.user?.nickname;
+    const dialogContent = review.content;
+
+    this.dialog.open(CriticReviewContentDialogComponent, {
+      data: { dialogTitle, dialogContent }
+    });
   }
 }

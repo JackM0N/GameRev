@@ -6,6 +6,6 @@ export interface ForumComment {
   forumPost: ForumPost,
   author: WebsiteUser,
   content: string,
-  postDate: Date,
+  postDate: [],
   isDeleted?: boolean
 }

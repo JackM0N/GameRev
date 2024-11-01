@@ -1,27 +1,31 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Game } from '../interfaces/game';
-import { gameFilters } from '../interfaces/gameFilters';
+import { Game } from '../models/game';
+import { gameFilters } from '../filters/gameFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling games
 export class GameService {
-  private baseUrl = 'http://localhost:8080/games';
-  private addUrl = 'http://localhost:8080/games/create';
-  private editUrl = 'http://localhost:8080/games/edit';
-  private deleteUrl = 'http://localhost:8080/games/delete';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/games';
+  private addUrl = this.apiUrl + '/games/create';
+  private editUrl = this.apiUrl + '/games/edit';
+  private deleteUrl = this.apiUrl + '/games/delete';
 
   constructor(
     private authService: AuthService,
     private http: HttpClient,
   ) {}
 
-  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<Game[]> {
-    var params = new HttpParams();
+  getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<PaginatedResponse<Game>> {
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());
@@ -50,7 +54,7 @@ export class GameService {
       }
     }
 
-    return this.http.get<Game[]>(this.baseUrl, { params });
+    return this.http.get<PaginatedResponse<Game>>(this.baseUrl, { params });
   }
 
   getGameByName(name: string): Observable<Game> {
@@ -85,10 +89,10 @@ export class GameService {
     return this.http.put<Game>(`${this.editUrl}/${title}`, formData, { headers });
   }
 
-  deleteGame(id: number): Observable<Game> {
+  deleteGame(id: number): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    return this.http.delete<Game>(`${this.deleteUrl}/${id}`, { headers });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers });
   }
 }

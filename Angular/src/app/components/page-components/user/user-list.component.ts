@@ -2,19 +2,17 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewCh
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
-import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
-import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { Role } from '../../../interfaces/role';
-import { userFilters } from '../../../interfaces/userFilters';
+import { Role } from '../../../models/role';
+import { userFilters } from '../../../filters/userFilters';
 import { BackgroundService } from '../../../services/background.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
@@ -25,7 +23,7 @@ import { AdService } from '../../../services/ad.service';
   templateUrl: './user-list.component.html'
 })
 export class UserListComponent extends BaseAdComponent implements OnInit, AfterViewInit {
-  protected totalUsers: number = 0;
+  protected totalUsers = 0;
   protected dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
   protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'roles', 'options'];
   protected isAdmin = false;
@@ -38,8 +36,7 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
   protected filterForm: FormGroup;
 
   constructor(
-    private userService: UserService,
-    private notificationService: NotificationService,
+    protected userService: UserService,
     private authService: AuthService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
@@ -88,8 +85,8 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
     });
 
     if (this.searchInput) {
-      fromEvent(this.searchInput.nativeElement, 'input').pipe(
-        map((event: any) => event.target.value),
+      fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+        map((event) => (event.target as HTMLInputElement).value),
         debounceTime(300),
         distinctUntilChanged()
 
@@ -104,8 +101,8 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
     const size = this.paginator.pageSize;
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
-
-    const observer: Observer<any> = {
+    
+    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe({
       next: response => {
         if (response) {
           this.totalUsers = response.totalElements;
@@ -117,65 +114,12 @@ export class UserListComponent extends BaseAdComponent implements OnInit, AfterV
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    
-    this.userService.getUsers(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
-  openBanDialog(user: WebsiteUser) {
-    const dialogTitle = 'User banning';
-    const dialogContent = 'Are you sure you want to ban user ' + user.username + '?';
-    const submitText = 'Ban';
-    const cancelText = 'Cancel';
-
-    const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
-      data: { dialogTitle, dialogContent, submitText, cancelText }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.banUser(user);
-      }
-    });
-  }
-
-  openUnbanDialog(user: WebsiteUser) {
-    const dialogTitle = 'User unbanning';
-    const dialogContent = 'Are you sure you want to unban user ' + user.username + '?';
-    const submitText = 'Unban';
-    const cancelText = 'Cancel';
-
-    const dialogRef = this.dialog.open(PopupDialogComponent, {
-      width: '300px',
-      data: { dialogTitle, dialogContent, submitText, cancelText  }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.unbanUser(user);
-      }
-    });
-  }
-
-  banUser(user: WebsiteUser) {
-    this.userService.banUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User banned successfuly!'); },
-      error: error => this.notificationService.popErrorToast('User ban failed', error)
-    });
-  }
-
-  unbanUser(user: WebsiteUser) {
-    this.userService.unbanUser(user).subscribe({
-      next: () => { this.notificationService.popSuccessToast('User unbanned successfuly!'); },
-      error: error => this.notificationService.popErrorToast('User unban failed', error)
-    });
   }
 
   openProfile(user: WebsiteUser) {

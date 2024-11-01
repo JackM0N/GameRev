@@ -8,15 +8,17 @@
 </div>
 
 <!-- Add new request button -->
-<div class="pixel-border w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]" *ngIf="authService.isAuthenticated() && authService.hasAnyRole(['Admin'])">
-  <div class="flex justify-center font-arcade h-12 text-2xl bg-black text-white pinkTextShadow">
-    <button class="pinkTextShadowWide" (click)="openAddNewRequestDialog()">Add a new request</button>
+@if (authService.isAuthenticated() && authService.hasAnyRole(['Admin'])) {
+  <div class="pixel-border max-w-[400px] h-fit py-[6px] m-auto mt-8 px-[6px]">
+    <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
+      <button class="pinkTextShadowWide px-[1px] py-2" (click)="openAddNewRequestDialog()">Add a new request</button>
+    </div>
   </div>
-</div>
+}
 
 <!-- Filters Section -->
 <div class="pixel-border w-11/12 h-fit py-[6px] m-auto mt-10 px-[6px]">
-  <div class="synthwaveBg bg-repeat text-black p-6">
+  <div class="synthwaveBg bg-repeat text-black p-4 sm:p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <form [formGroup]="filterForm" class="contents">
         <!-- Approved -->
@@ -32,7 +34,7 @@
     </div>
 
     <!-- Clear Filters Button -->
-    <div class="absolute bottom-4 right-4">
+    <div class="mt-4 lg:mt-0 lg:absolute bottom-4 right-4">
       <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
@@ -41,107 +43,123 @@
 <div class="grow z-10 bg-repeat m-0 font-arcade py-10 flex-row justify-center items-center tracking-wider">
   <!-- Forum Requests Table -->
   <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
-    <div class="px-1 overflow-x-auto">
-      <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadForumRequests()">
-        <!-- Forum Name Column -->
-        <ng-container matColumnDef="forumName">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="forumName" *matHeaderCellDef>
-            Forum Name
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.forumName}}
-          </td>
-        </ng-container>
+    <div class="px-[6px]">
+      <div class="overflow-x-auto">
+        <table class="appearance-none bg-black" mat-table [dataSource]="dataSource" matSort (matSortChange)="loadForumRequests()">
+          <!-- Forum Name Column -->
+          <ng-container matColumnDef="forumName">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="forumName" *matHeaderCellDef>
+              Forum Name
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-sm sm:text-base pinkTextShadow px-2 border-2 border-white" *matCellDef="let element">
+              {{element.forumName}}
+            </td>
+          </ng-container>
 
-        <!-- Description Column -->
-        <ng-container matColumnDef="description">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Description
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.description}}
-          </td>
-        </ng-container>
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="description" *matHeaderCellDef>
+              Description
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-base pinkTextShadow border-2 px-2 border-white" *matCellDef="let element">
+              {{element.description}}
+            </td>
+          </ng-container>
 
-        <!-- Game Column -->
-        <ng-container matColumnDef="game">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Game
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.game.title}}
-          </td>
-        </ng-container>
+          <!-- Game Column -->
+          <ng-container matColumnDef="game">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="game" *matHeaderCellDef>
+              Game
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-base pinkTextShadow border-2 px-2 border-white" *matCellDef="let element">
+              {{element.game.title}}
+            </td>
+          </ng-container>
 
-        <!-- Parent Forum Column -->
-        <ng-container matColumnDef="parentForum">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Parent Forum
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.parentForum.forumName}}
-          </td>
-        </ng-container>
+          <!-- Parent Forum Column -->
+          <ng-container matColumnDef="parentForum">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="parentForum.forumName" *matHeaderCellDef>
+              Parent Forum
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-base pinkTextShadow border-2 px-2 border-white" *matCellDef="let element">
+              {{element.parentForum.forumName}}
+            </td>
+          </ng-container>
 
-        <!-- Author Column -->
-        <ng-container matColumnDef="author">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Author
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.author.nickname}}
-          </td>
-        </ng-container>
+          <!-- Author Column -->
+          <ng-container matColumnDef="author">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="author.nickname" *matHeaderCellDef>
+              Author
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-base pinkTextShadow border-2 px-2 border-white" *matCellDef="let element">
+              {{element.author.nickname}}
+            </td>
+          </ng-container>
 
-        <!-- Approved Column -->
-        <ng-container matColumnDef="approved">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Approved
-          </th>
-          <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{element.approved ? 'Yes' : 'No'}}
-          </td>
-        </ng-container>
+          <!-- Approved Column -->
+          <ng-container matColumnDef="approved">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="approved" *matHeaderCellDef>
+              Approved
+            </th>
+            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm sm:text-base pinkTextShadow border-2 px-2 border-white" *matCellDef="let element">
+              {{element.approved ? 'Yes' : 'No'}}
+            </td>
+          </ng-container>
 
-        <!-- Options Column -->
-        <ng-container matColumnDef="options">
-          <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
-            Options
-          </th>
-          <td class="synthwaveBg bg-repeat border-2 border-white" *matCellDef="let element">
-            <button
-              class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-              (click)="openEditRequestDialog(element)"
-              *ngIf="canEditRequest(element)">
-              Edit
-            </button>
+          <!-- Options Column -->
+          <ng-container matColumnDef="options">
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base sm:text-lg pinkTextShadowWide px-2 sm:px-4 border-r-2 border-l-2 border-b-2 border-white" *matHeaderCellDef>
+              Options
+            </th>
+            <td class="synthwaveBg bg-repeat border-2 border-white px-2" *matCellDef="let element">
+              @if (canEditRequest(element)) {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                  (click)="openEditRequestDialog(element)"
+                  >
+                  Edit
+                </button>
+              }
 
-            <button class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-              (click)="openApproveRequestDialog(element, true)"
-              *ngIf="element.approved != true && authService.hasAnyRole(['Admin'])">
-              Approve
-            </button>
+              @if (authService.isAdmin()) {
+                @if (element.approved !== true) {
+                  <button class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openApproveRequestDialog(element, true)"
+                    >
+                    Approve
+                  </button>
+                  
+                  <button
+                    class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openDeleteRequestDialog(element)"
+                    >
+                    Delete
+                  </button>
+                }
+                @else if (element.approved !== false) {
+                  <button
+                    class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
+                    (click)="openApproveRequestDialog(element, false)"
+                    >
+                    Disaprove
+                  </button>
+                }
+              }
+            </td>
+          </ng-container>
 
-            <button
-              class="w-full text-white font-arcade text-center text-base pinkTextShadow"
-              (click)="openApproveRequestDialog(element, false)"
-              *ngIf="element.approved != false && authService.hasAnyRole(['Admin'])">
-              Disaprove
-            </button>
-          </td>
-        </ng-container>
-
-        <!-- Header and Row Definitions -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
     </div>
 
     <!-- Paginator for Forum Requests -->
-     <div [hidden]="requestList.length < 5">
+    <div [hidden]="totalRequests < 6">
       <mat-paginator
         class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        [length]="requestList.length"
+        [length]="totalRequests"
         [pageSize]="5"
         [pageSizeOptions]="[5, 10, 20]"
         showFirstLastButtons>

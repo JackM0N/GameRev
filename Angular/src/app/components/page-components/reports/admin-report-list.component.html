@@ -1,0 +1,148 @@
+
+<div class="w-fit m-auto mb-6 pixel-border py-[6px] px-[6px]">
+  <div class="synthwaveBg py-2 px-6">
+    <div class="text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent text-4xl font-arcade">
+      Report list
+    </div>
+  </div>
+</div>
+
+<!-- Filters Section -->
+<div [hidden]="noReviews" class="pixel-border w-11/12 h-fit py-[6px] m-auto mb-8 px-[6px]">
+  <div class="synthwaveBg bg-repeat text-white p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="filterForm" class="contents">
+        <!-- Post date -->
+        <mat-form-field>
+          <mat-label>Post date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+            <input matStartDate formControlName="start" placeholder="From" (dateChange)="onStartDateChange($event)">
+            <input matEndDate formControlName="end" placeholder="To" (dateChange)="onEndDateChange($event)">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <!-- Score -->
+        <div class="bg-[#F5F5F5] grow p-4">
+          <label class="text-base text-[rgb(98,98,126)] pr-4">Score</label>
+          <mat-slider min="1" max="10" showTickMarks discrete formGroupName="userScore">
+            <input formControlName="min" value="1" matSliderStartThumb (valueChange)="onScoreMinFilterChange($event)">
+            <input formControlName="max" value="10" matSliderEndThumb (valueChange)="onScoreMaxFilterChange($event)">
+          </mat-slider>
+        </div>
+      </form>
+    </div>
+
+    <!-- Clear Filters Button -->
+    <div class="mt-4 lg:mt-0 lg:absolute bottom-4 right-4">
+      <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews Section -->
+<div [hidden]="noReviews" class="text-white font-arcade synthwaveBg bg-repeat pixel-border max-[500px]:w-full w-11/12 h-fit m-auto bg-black pinkTextShadow pb-4">
+  <div class="p-5 px-6">
+    <h3 class="text-lg pb-4">Reviews with reports</h3>
+
+    <div class="review-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      @for (review of this.reviewsList; track review.id) {
+        <div class="review-item p-6 bg-[#1A1A1A] border-2 border-[#FF00FF] shadow-lg">
+          <div class="m-0 p-0 text-base sm:text-lg font-bold text-[#FF00FF] noTextShadow">by {{ review.userNickname }}</div>
+
+          <p class="text-sm sm:text-base">{{ review.content }}</p>
+
+          <div class="text-sm mt-2 grid grid-cols-1 sm:grid-cols-2">
+            <div><strong>Score:</strong> {{ review.score }}</div>
+            <div><strong>Date:</strong> {{ formatDate(review.postDate) }}</div>
+            <div><strong>Likes:</strong> {{ review.positiveRating }}</div>
+            <div><strong>Dislikes:</strong> {{ review.negativeRating }}</div>
+          </div>
+
+          <mat-expansion-panel hideToggle class="!bg-[#282828] border-2 !mt-4 !rounded-none report-expansion-panel" (opened)="onPanelOpened(review)" #panel>
+            <mat-expansion-panel-header class="!px-2">
+              <mat-panel-title class="!text-white font-arcade !px-2">
+                {{ panel.expanded ? 'Hide reports' : 'Show reports' }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            @if (review.id) {
+              @if (this.reportsList[review.id]) {
+                @if (this.reportsList[review.id].totalReports > 0) {
+                  <div class="overflow-x-auto">
+                    <table mat-table [dataSource]="this.reportsList[review.id].dataSource" class="reportsTable mat-elevation-z8 appearance-none bg-black synthwaveBg bg-repeat font-arcade text-white">
+                      <ng-container matColumnDef="user">
+                        <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> User </th>
+                        <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element"> {{element.user.nickname}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="content">
+                        <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> Content </th>
+                        <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element"> {{element.content}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="options">
+                        <th class="text-white font-arcade border-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
+                        <td class="text-white font-arcade border-2 border-white p-8" mat-cell *matCellDef="let element">
+                          @if (!element.approved) {
+                            <button class="pinkTextShadow" type="button" (click)="approveReport(element)">Approve</button>
+                          }
+                          @if (element.approved) {
+                            <button class="pinkTextShadow" type="button" (click)="disapproveReport(element)">Disapprove</button>
+                          }
+                        </td>
+                      </ng-container>
+                      
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                  </div>
+
+                  <div [hidden]="this.reportsList[review.id].totalReports < 6">
+                    <mat-paginator
+                      class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white border-2 border-white"
+                      [id]="review.id"
+                      [length]="this.reportsList[review.id].totalReports"
+                      [pageSize]="5"
+                      [pageSizeOptions]="[5, 10, 20]"
+                      showFirstLastButtons>
+                    </mat-paginator>
+                  </div>
+                } @else {
+                  <p>No reports found for this review.</p>
+                }
+              } @else {
+                <p>Loading...</p>
+              }
+            } @else {
+              <p>Review ID is not available</p>
+            }
+          </mat-expansion-panel>
+          <button type="button" (click)="openReviewDeletionConfirmationDialog(review)" class="mb-4 mt-4 w-full bg-[#FF00FF] hover:bg-[#d600d6] text-white px-6 py-2">
+            Delete review
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div [hidden]="totalReviews < 6">
+    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+      #reviewsPaginator
+      [length]="totalReviews"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+
+@if (this.noReviews) {
+  <div class="max-w-[500px] m-auto pixel-border">
+    <div class="py-[0.1px]">
+      <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No reports have been made yet</p>
+    </div>
+  </div>
+}

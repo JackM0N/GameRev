@@ -1,17 +1,17 @@
-﻿import { Component, Input, signal } from '@angular/core';
+﻿import { Component, Input, signal, OnChanges } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { NewCredentials } from '../../../../interfaces/newCredentials';
+import { NewCredentials } from '../../../../models/newCredentials';
 
 @Component({
   selector: 'app-email-change',
   templateUrl: './email-change-component.html'
 })
-export class EmailChangeComponent {
-  @Input() public passedEmail: string | null = null;
+export class EmailChangeComponent implements OnChanges {
+  @Input() public passedEmail?: string;
   
   protected changeEmailForm: FormGroup;
   protected emailErrorMessage = signal('');

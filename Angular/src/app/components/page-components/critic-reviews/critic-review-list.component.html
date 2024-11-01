@@ -16,9 +16,11 @@
         <mat-form-field class="synthwaveFormField">
           <mat-label>Review status</mat-label>
           <mat-select (selectionChange)="onReviewStatusesFilterChange($event)" multiple>
-            <mat-option *ngFor="let status of reviewStatuses" [value]="status.className">
-              {{ status.name }}
-            </mat-option>
+            @for (status of reviewStatuses; track status) {
+              <mat-option [value]="status.className">
+                {{ status.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
@@ -52,19 +54,19 @@
     </div>
 
     <!-- Clear Filters Button -->
-    <div class="absolute bottom-4 right-4">
+    <div class="mt-4 lg:mt-0 lg:absolute bottom-4 right-4">
       <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
 </div>
 
 <!-- Review Table Section -->
-<div [hidden]="this.noCriticReviews">
+<div [hidden]="totalReviews < 1">
   <div class="grow z-10 bg-repeat m-0 font-arcade flex-row justify-center items-center tracking-wider">
     <div class="pixel-border max-[500px]:w-full w-11/12 h-fit py-[6px] m-auto">
       <div class="px-1 overflow-x-auto">
         <table class="appearance-none bg-black" mat-table [dataSource]="this.dataSource" matSort (matSortChange)="loadReviews()">
-          
+
           <ng-container matColumnDef="gameTitle">
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="gameTitle" mat-header-cell *matHeaderCellDef>
               Game
@@ -79,7 +81,7 @@
               User
             </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
-              <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.user.nickname">{{element.user.nickname}}</a>
+              <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.user.nickname">{{element.user.nickname}}</a>
             </td>
           </ng-container>
 
@@ -87,7 +89,9 @@
             <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="content" mat-header-cell *matHeaderCellDef>
               Content
             </th>
-            <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element" [innerHTML]="element.content"></td>
+            <td (click)="openContentDialog(element)" class="synthwaveBg quillViewCell bg-repeat text-white font-arcade ml-1 text-center pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
+              <quill-view [content]="element.content"></quill-view>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="postDate">
@@ -114,18 +118,56 @@
             </th>
             <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-sm pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">
               {{findReviewStatusName(element)}}
-              <span *ngIf="element.statusChangedBy">(by <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+              @if (element.statusChangedBy) {
+                <span>(by <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.statusChangedBy.nickname">{{element.statusChangedBy.nickname}}</a>)</span>
+              }
             </td>
           </ng-container>
 
           <ng-container matColumnDef="options">
-            <th class="max-[590px]:hidden synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
-            <td class="max-[590px]:hidden synthwaveBg bg-repeat border-2 border-white" mat-cell *matCellDef="let element">
-              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.statusChangedBy == undefined" (click)="approveReview(element)">Approve</button>
-              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="editReview(element)">Edit</button>
-              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus != 'DELETED' && canDeleteReview(element)" (click)="softDeleteReview(element)">Delete</button>
-              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)" (click)="restoreReview(element)">Restore</button>
-              <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" *ngIf="element.reviewStatus == 'DELETED' && canDeleteReview(element)" (click)="openDeleteReviewDialog(element)">Delete permanently</button>
+            <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
+            <td class="synthwaveBg bg-repeat border-2 border-white" mat-cell *matCellDef="let element">
+              @if (element.statusChangedBy === undefined) {
+                <button
+                  class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                  type="button"
+                  (click)="approveReview(element)">
+                  Approve
+                </button>
+              }
+
+              <button
+                class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                type="button"
+                (click)="openEditCriticReviewDialog(element)">
+                Edit
+              </button>
+
+              @if (canDeleteReview(element)) {
+                @if (element.reviewStatus !== 'DELETED') {
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="softDeleteReview(element)">
+                    Delete
+                  </button>
+                }
+                @else if (element.reviewStatus === 'DELETED') {
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="restoreReview(element)">
+                    Restore
+                  </button>
+
+                  <button
+                    class="w-full text-white font-arcade text-center text-base pinkTextShadow"
+                    type="button"
+                    (click)="openDeleteReviewDialog(element)">
+                    Delete permanently
+                  </button>
+                }
+              }
             </td>
           </ng-container>
 
@@ -135,16 +177,24 @@
       </div>
 
       <!-- Paginator -->
-      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-        #paginator
-        [length]="totalReviews"
-        [pageSize]="5"
-        [pageSizeOptions]="[2, 5, 10, 20]"
-        showFirstLastButtons>
-      </mat-paginator>
+      <div [hidden]="totalReviews < 6">
+        <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+          #paginator
+          [length]="totalReviews"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 20]"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- No Critic Reviews Message -->
-<div *ngIf="this.noCriticReviews" class="text-center text-white pinkTextShadowWide">No critic reviews to show</div>
+@if (totalReviews < 1) {
+  <div class="max-w-[500px] m-auto pixel-border px-[6px]">
+    <div class="py-[6px]">
+      <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">No critic reviews to show</p>
+    </div>
+  </div>
+}

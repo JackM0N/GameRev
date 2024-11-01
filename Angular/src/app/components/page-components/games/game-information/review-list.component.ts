@@ -2,20 +2,19 @@
 import { UserReviewService } from '../../../../services/user-review.service';
 import { AuthService } from '../../../../services/auth.service';
 import { ReportService } from '../../../../services/report.service';
-import { UserReview } from '../../../../interfaces/userReview';
-import { Observer } from 'rxjs';
+import { UserReview } from '../../../../models/userReview';
 import { ReviewReportDialogComponent } from '../review-report-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
-import { Game } from '../../../../interfaces/game';
-import { Report } from '../../../../interfaces/report';
+import { Game } from '../../../../models/game';
+import { Report } from '../../../../models/report';
 import { formatDateArray } from '../../../../util/formatDate';
 import { NotificationService } from '../../../../services/notification.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { reviewFilters } from '../../../../interfaces/reviewFilters';
+import { reviewFilters } from '../../../../filters/reviewFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserReviewFormDialogComponent } from '../../user-reviews/user-review-form-dialog.component';
 
@@ -33,7 +32,10 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   @ViewChild(MatSort) protected sort!: MatSort;
 
   protected reviewList: UserReview[] = [];
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
+
+  protected reportList: Report[] = [];
+
   protected formatDateArray = formatDateArray;
   
   private filters: reviewFilters = {};
@@ -69,6 +71,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.loadReviews();
+
+    if (this.authService.isAuthenticated()) {
+      this.loadReports();
+    }
+
     this.paginator.page.subscribe(() => this.loadReviews());
   }
 
@@ -78,27 +85,38 @@ export class GameInfoReviewListComponent implements AfterViewInit {
       return;
     }
 
+    this.reviewList = [];
+    this.totalReviews = 0;
+
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
     const sortBy = 'id';
     const sortDir = 'asc';
 
-    const observer: Observer<any> = {
+    this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe({
       next: response => {
         if (response) {
           this.reviewList = response.content;
           this.totalReviews = response.totalElements;
-        } else {
-          this.reviewList = [];
-          this.totalReviews = 0;
         }
       },
-      error: error => {
-        console.error(error);
+      error: error => { console.error(error); }
+    });
+  }
+
+  loadReports() {
+    this.reportList = [];
+    this.totalReviews = 0;
+
+    this.reportService.getOwnUserReports().subscribe({
+      next: response => {
+        if (response) {
+          this.reportList = response.content;
+          this.totalReviews = response.totalElements;
+        }
       },
-      complete: () => {}
-    };
-    this.userReviewService.getUserReviewsForGame(this.gameTitle, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   openReviewDeletionConfirmationDialog(review: UserReview) {
@@ -127,7 +145,6 @@ export class GameInfoReviewListComponent implements AfterViewInit {
         console.log("Username is null");
         return;
       }
-
       review.userNickname = username;
 
       this.userReviewService.deleteUserReview(review).subscribe({
@@ -218,8 +235,17 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     }
 
     this.reportService.reportReview(this.report).subscribe({
-      next: () => { this.notificationService.popSuccessToast('Report sent successfully'); },
-      error: error => this.notificationService.popErrorToast('Report submission failed', error)
+      next: () => {
+        this.notificationService.popSuccessToast('Report sent successfully');
+        this.reportList.push({ ...this.report });
+      },
+      error: error => {
+        if (error.error == "You've already reported this review") {
+          this.notificationService.popErrorToast(error.error, error);
+        } else {
+          this.notificationService.popErrorToast('Report submission failed', error);
+        }
+      }
     });
   }
 
@@ -227,7 +253,6 @@ export class GameInfoReviewListComponent implements AfterViewInit {
     const dialogContent = 'Report review by ' + review.userNickname;
 
     const dialogRef = this.dialog.open(ReviewReportDialogComponent, {
-      width: '400px',
       data: { dialogContent }
     });
 
@@ -254,6 +279,11 @@ export class GameInfoReviewListComponent implements AfterViewInit {
 
     const userName = this.authService.getUsername();
     return !this.reviewList.some(review => review.userNickname === userName);
+  }
+
+  canReportReview(review: UserReview) {
+    // check reportList if user has already reported this review
+    return !this.ownsReview(review) && !this.reportList.some(report => report.userReview.id === review.id);
   }
 
   openAddReviewDialog() {

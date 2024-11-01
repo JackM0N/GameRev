@@ -53,17 +53,17 @@
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-        
+
         <!-- Search Filter -->
         <mat-form-field class="w-full text-white">
           <mat-label>Search</mat-label>
-          <input matInput #searchInput formControlName="search">
+          <input matInput formControlName="search" #searchInput>
         </mat-form-field>
       </form>
     </div>
 
     <!-- Clear Filters Button -->
-    <div class="absolute bottom-4 right-4">
+    <div class="mt-4 lg:mt-0 lg:absolute bottom-4 right-4">
       <button class="synthwaveButton" (click)="clearFilters()">Clear Filters</button>
     </div>
   </div>
@@ -100,7 +100,7 @@
             Nickname
           </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
-            <a class="text-cyan-400 hover:text-cyan-300" [href]="'profile/' + element.nickname">{{element.nickname}}</a>
+            <a class="text-cyan-400 hover:text-cyan-300" [routerLink]="'/profile/' + element.nickname">{{element.nickname}}</a>
           </td>
         </ng-container>
 
@@ -170,7 +170,7 @@
             Roles
           </th>
           <td class="synthwaveBg bg-repeat text-white font-arcade text-center text-sm pinkTextShadow border-2 border-white" *matCellDef="let element">
-            {{ parseRoles(element.roles) }} </td>
+          {{ parseRoles(element.roles) }} </td>
         </ng-container>
 
         <!-- Options Column -->
@@ -179,10 +179,35 @@
             Options
           </th>
           <td class="synthwaveBg bg-repeat border-2 border-white" *matCellDef="let element">
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" (click)="openProfile(element)">Profile</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin" (click)="openUserReviews(element)">Reviews</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && !element.isBanned" (click)="openBanDialog(element)">Ban</button>
-            <button class="w-full text-white font-arcade text-center text-sm pinkTextShadow" *ngIf="isAdmin && element.isBanned" (click)="openUnbanDialog(element)">Unban</button>
+
+            <button
+              class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+              (click)="openProfile(element)">
+              Profile
+            </button>
+
+            @if (isAdmin) {
+              <button
+                class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                (click)="openUserReviews(element)">
+                Reviews
+              </button>
+
+              @if (element.isBanned) {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                  (click)="userService.openUnbanDialog(element)">
+                  Unban
+                </button>
+              }
+              @else {
+                <button
+                  class="w-full text-white font-arcade text-center text-sm pinkTextShadow"
+                  (click)="userService.openBanDialog(element)">
+                  Ban
+                </button>
+              }
+            }
           </td>
         </ng-container>
 
@@ -193,11 +218,13 @@
     </div>
 
     <!-- Paginator -->
-    <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
-      [length]="totalUsers"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons>
-    </mat-paginator>
+    <div [hidden]="totalUsers < 6">
+      <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
+        [length]="totalUsers"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
   </div>
 </div>

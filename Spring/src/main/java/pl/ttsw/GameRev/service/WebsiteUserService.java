@@ -83,7 +83,7 @@ public class WebsiteUserService {
                     .equal(root.get("id"), Long.parseLong(websiteUserFilter.getSearchText())));
         }
         Page<WebsiteUser> websiteUsers = websiteUserRepository.findAll(spec, pageable);
-        if (getCurrentUser().getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))){
+        if (getCurrentUser().getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()))) {
             return websiteUsers.map(websiteUserMapper::toDto);
         }
         return websiteUsers.map(websiteUserMapper::toDtoWithoutSensitiveData);
@@ -103,10 +103,10 @@ public class WebsiteUserService {
     public WebsiteUserDTO updateUserProfile(String username, UpdateWebsiteUserDTO request) throws BadRequestException {
         WebsiteUser user = getCurrentUser();
 
-        if (user == null){
+        if (user == null) {
             throw new BadRequestException("You need to login first");
         }
-        if (!username.equals(user.getUsername())){
+        if (!username.equals(user.getUsername())) {
             throw new BadCredentialsException("You can only edit your own profile");
         }
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -129,7 +129,7 @@ public class WebsiteUserService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         WebsiteUser currentUser = getCurrentUser();
-        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))){
+        if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
 
@@ -151,7 +151,7 @@ public class WebsiteUserService {
         Role role = roleRepository.findByRoleName(roleDTO.getRoleName())
                 .orElseThrow(() -> new BadRequestException("Role not found"));
 
-        if (websiteUser.getRoles().contains(role) && !isAdded){
+        if (websiteUser.getRoles().contains(role) && !isAdded) {
             roles.remove(role);
             websiteUser.setRoles(roles);
             websiteUserRepository.save(websiteUser);
@@ -168,8 +168,9 @@ public class WebsiteUserService {
     }
 
     public boolean banUser(WebsiteUserDTO userDTO) {
-        WebsiteUser user = websiteUserRepository.findByUsername(userDTO.getUsername())
+        WebsiteUser user = websiteUserRepository.findByNickname(userDTO.getNickname())
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
+
         WebsiteUser currentUser = getCurrentUser();
 
         if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {

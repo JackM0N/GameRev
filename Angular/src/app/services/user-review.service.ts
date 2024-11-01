@@ -2,20 +2,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { UserReview } from '../interfaces/userReview';
-import { reviewFilters } from '../interfaces/reviewFilters';
+import { UserReview } from '../models/userReview';
+import { reviewFilters } from '../filters/reviewFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling user reviews
 export class UserReviewService {
-  private baseUrl = 'http://localhost:8080/users-reviews';
-  private getByIdUrl = 'http://localhost:8080/users-reviews/id';
-  private ratingUrl = 'http://localhost:8080/users-reviews/add-rating';
-  private ownReviews = 'http://localhost:8080/users-reviews/my-reviews';
-  private adminReviews = 'http://localhost:8080/users-reviews/admin/';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/users-reviews';
+  private getByIdUrl = this.apiUrl + '/users-reviews/id';
+  private ratingUrl = this.apiUrl + '/users-reviews/add-rating';
+  private ownReviews = this.apiUrl + '/users-reviews/my-reviews';
+  private adminReviews = this.apiUrl + '/users-reviews/admin/';
 
   constructor(
     private authService: AuthService,
@@ -27,7 +31,7 @@ export class UserReviewService {
     return this.http.get<UserReview[]>(this.baseUrl);
   }
 
-  getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getOwnUserReviews(page: number, size: number, sortBy: string, sortDir: string): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -36,10 +40,10 @@ export class UserReviewService {
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
     );
-    return this.http.get<UserReview[]>(this.ownReviews, { headers, params });
+    return this.http.get<PaginatedResponse<UserReview>>(this.ownReviews, { headers, params });
   }
 
-  getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<UserReview[]> {
+  getUserReviewsAdmin(userId: number, page: number, size: number, sortBy: string, sortDir: string): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
@@ -48,18 +52,18 @@ export class UserReviewService {
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
     );
-    return this.http.get<UserReview[]>(`${this.adminReviews}/${userId}`, { headers, params });
+    return this.http.get<PaginatedResponse<UserReview>>(`${this.adminReviews}/${userId}`, { headers, params });
   }
 
   getUserReviewById(id: string): Observable<UserReview> {
     return this.http.get<UserReview>(`${this.getByIdUrl}/${id}`);
   }
 
-  getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<UserReview[]> {
+  getUserReviewsForGame(name: string, page: number, size: number, sortBy: string, sortDir: string, filters: reviewFilters): Observable<PaginatedResponse<UserReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
     
-    var params = new HttpParams()
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
@@ -72,7 +76,7 @@ export class UserReviewService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<UserReview[]>(`${this.baseUrl}/${name}`, { params, headers });
+    return this.http.get<PaginatedResponse<UserReview>>(`${this.baseUrl}/${name}`, { params, headers });
   }
 
   addUserReview(userReview: UserReview): Observable<UserReview> {
@@ -89,15 +93,11 @@ export class UserReviewService {
     return this.http.put<UserReview>(this.baseUrl, userReview, { headers: headers });
   }
 
-  deleteUserReview(userReview: UserReview): Observable<UserReview> {
+  deleteUserReview(review: UserReview): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
-
-    const options = {
-      headers: headers,
-      body: userReview
-    };
-    return this.http.delete<UserReview>(this.baseUrl, options);
+    
+    return this.http.delete<void>(`${this.baseUrl}/${review.id}`, { headers: headers });
   }
 
   updateUserReviewRating(userReview: UserReview): Observable<UserReview> {

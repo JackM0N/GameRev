@@ -13,3 +13,9 @@ Angular/node_modules/
 .vscode/
 workspace.code-workspace
 .VSCodeCounter
+
+/src/environments/environment.maja-dev.ts
+
+.gitignore
+
+/dist/

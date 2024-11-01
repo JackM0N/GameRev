@@ -1,39 +1,38 @@
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../services/report.service';
-import { Report } from '../../../interfaces/report';
-import { UserReview } from '../../../interfaces/userReview';
+import { Report } from '../../../models/report';
+import { UserReview } from '../../../models/userReview';
 import { formatDateArray } from '../../../util/formatDate';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
-import { reviewFilters } from '../../../interfaces/reviewFilters';
+import { reviewFilters } from '../../../filters/reviewFilters';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackgroundService } from '../../../services/background.service';
 import { AdService } from '../../../services/ad.service';
+import { UserReviewService } from '../../../services/user-review.service';
 
 class ReportInformation {
   reports: Report[] = [];
-  totalReports: number = 0;
+  totalReports = 0;
   dataSource: MatTableDataSource<Report> = new MatTableDataSource<Report>([]);
 }
 
 @Component({
-  selector: 'app-report-list',
-  templateUrl: './report-list.component.html',
-  styleUrl: './report-list.component.css'
+  selector: 'app-admin-report-list',
+  templateUrl: './admin-report-list.component.html'
 })
-export class ReportListComponent implements AfterViewInit {
+export class AdminReportListComponent implements AfterViewInit, OnInit {
   protected reviewsList: UserReview[] = [];
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected noReviews = false;
 
   protected reportsList: ReportInformation[] = [];
-  protected displayedColumns: string[] = ['id', 'user', 'content', 'options'];
+  protected displayedColumns: string[] = ['user', 'content', 'options'];
   protected formatDate = formatDateArray;
   
   private filters: reviewFilters = {};
@@ -45,6 +44,7 @@ export class ReportListComponent implements AfterViewInit {
 
   constructor(
     private reportService: ReportService,
+    private userReviewService: UserReviewService,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
     private fb: FormBuilder,
@@ -78,7 +78,7 @@ export class ReportListComponent implements AfterViewInit {
     const page = this.reviewsPaginator.pageIndex + 1;
     const size = this.reviewsPaginator.pageSize;
 
-    const observer: Observer<any> = {
+    this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe({
       next: response => {
         if (response) {
           this.reviewsList = response.content;
@@ -91,13 +91,11 @@ export class ReportListComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.reportService.getReviewsWithReports(page, size, "id", "asc", this.filters).subscribe(observer);
+      }
+    });
   }
 
-  loadReportsForReview(review: UserReview, refreshing: boolean = false) {
+  loadReportsForReview(review: UserReview, refreshing = false) {
     if (!refreshing && review.id != undefined && this.reportsList[review.id] !== undefined) {
       return;
     }
@@ -107,8 +105,8 @@ export class ReportListComponent implements AfterViewInit {
       return;
     }
 
-    var page = undefined;
-    var size = undefined;
+    let page = undefined;
+    let size = undefined;
     const sortBy = 'id';
     const sortDir = 'asc';
 
@@ -121,7 +119,7 @@ export class ReportListComponent implements AfterViewInit {
       }
     });
 
-    const observer: Observer<any> = {
+    this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe({
       next: response => {
         if (review.id) {
           if (response) {
@@ -157,10 +155,8 @@ export class ReportListComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.reportService.getReportsForReview(review.id, sortBy, sortDir, page, size).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
@@ -204,12 +200,12 @@ export class ReportListComponent implements AfterViewInit {
   }
 
   deleteReview(review: UserReview) {
-    this.reportService.deleteReview(review).subscribe({
+    this.userReviewService.deleteUserReview(review).subscribe({
       next: () => {
-        this.notificationService.popSuccessToast('Report disapproved');
+        this.notificationService.popSuccessToast('Report deleted successfully');
         this.reviewsList = this.reviewsList.filter(r => r.id !== review.id);
       },
-      error: error => this.notificationService.popErrorToast('Report disapproving failed', error)
+      error: error => this.notificationService.popErrorToast('Report deletion failed', error)
     });
   }
 

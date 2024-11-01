@@ -1,39 +1,42 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild, OnInit } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
-import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPost } from '../../../models/forumPost';
 import { ForumCommentService } from '../../../services/forumComment.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
 import { ForumService } from '../../../services/forum.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumComment } from '../../../interfaces/forumComment';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ForumCommentEditDialogComponent } from './forum-comment-edit-dialog.component';
 import { NotificationAction } from '../../../enums/notificationActions';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
-import { Observer } from 'rxjs';
 import { UserService } from '../../../services/user.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ForumComment } from '../../../models/forumComment';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Forum } from '../../../models/forum';
 
 @Component({
   selector: 'app-forum-post',
   templateUrl: './forum-post.component.html'
 })
-export class ForumPostComponent extends BaseAdComponent {
-  @Input() protected post?: ForumPost;
+export class ForumPostComponent extends BaseAdComponent implements OnInit {
   @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
 
-  protected commentsList: any[] = [];
-  protected totalComments: number = 0;
-  protected path?: any;
+  @Input() protected post?: ForumPost;
+
+  protected commentsList: ForumComment[] = [];
+  protected totalComments = 0;
+  protected path?: Forum[];
   protected moderators: WebsiteUser[] = [];
   protected imageUrl?: string;
   protected authorProfilePic?: string;
@@ -48,6 +51,7 @@ export class ForumPostComponent extends BaseAdComponent {
     private userService: UserService,
     private route: ActivatedRoute,
     protected dialog: MatDialog,
+    private sanitizer: DomSanitizer,
     protected backgroundService: BackgroundService,
     adService: AdService,
     cdRef: ChangeDetectorRef
@@ -76,7 +80,7 @@ export class ForumPostComponent extends BaseAdComponent {
     this.path = undefined;
 
     this.forumService.getForumPath(id).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response) {
           this.path = response;
           this.path = this.path.reverse();
@@ -86,7 +90,7 @@ export class ForumPostComponent extends BaseAdComponent {
           }
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load forum path', error)
     });
   }
 
@@ -94,11 +98,12 @@ export class ForumPostComponent extends BaseAdComponent {
     this.post = undefined;
 
     this.forumPostService.getPost(id).subscribe({
-      next: (response: any) => {
-        if (response && response.content.length > 0) {
+      next: response => {
+        if (response) {
           this.post = response;
-          this.loadPostPicture(response.id, response.picture);
-          this.loadUserProfilePicture(response.author.nickname, response.author.profilepic);
+
+          this.loadPostPicture(response.id!, response.picture!);
+          this.loadUserProfilePicture(response.author!.nickname!, response.author!.profilepic!);
 
           // Potential fix for the issue where the path is not properly loaded when the component is initialized
           if (this.route.snapshot.params['forumid']) {
@@ -106,26 +111,26 @@ export class ForumPostComponent extends BaseAdComponent {
           }
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load post', error)
     });
   }
 
   loadModerators(forumId: number) {
     this.forumService.getModerators(forumId).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.length > 0) {
           this.moderators = response;
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load moderator info', error)
     });
   }
 
   loadComments(id: number) {
     this.commentsList = [];
 
-    var page = 1;
-    var size = 10;
+    let page = 1;
+    let size = 10;
 
     if (this.paginator) {
       page = this.paginator.pageIndex + 1;
@@ -133,18 +138,24 @@ export class ForumPostComponent extends BaseAdComponent {
     }
 
     this.forumCommentService.getComments(id, page, size).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.content.length > 0) {
           this.commentsList = response.content;
-          this.commentsList.forEach((comment: any) => {
+
+          // Load profile pics for all comments
+          this.commentsList.forEach((comment: ForumComment) => {
             if (comment.author.nickname != this.post?.author?.nickname) {
-              this.loadUserProfilePicture(comment.author.nickname, comment.author.profilepic);
+              this.loadUserProfilePicture(comment.author.nickname!, comment.author.profilepic!);
             }
           });
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load comments', error)
     });
+  }
+
+  getTrustedContent(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   loadPostPicture(postId: number, pictureUrl: string) {
@@ -157,7 +168,7 @@ export class ForumPostComponent extends BaseAdComponent {
       }
 
     } else {
-      const observerPicture: Observer<any> = {
+      this.forumPostService.getPicture(postId).subscribe({
         next: response2 => {
           if (response2) {
             this.imageUrl = URL.createObjectURL(response2);
@@ -167,10 +178,8 @@ export class ForumPostComponent extends BaseAdComponent {
         },
         error: error => {
           console.error(error);
-        },
-        complete: () => {}
-      };
-      this.forumPostService.getPicture(postId).subscribe(observerPicture);
+        }
+      });
     }
   }
 
@@ -184,7 +193,7 @@ export class ForumPostComponent extends BaseAdComponent {
           this.authorProfilePic = cachedImage;
 
         } else {
-          this.commentsList.forEach((comment: any) => {
+          this.commentsList.forEach((comment: ForumComment) => {
             if (comment.author.nickname == nickName) {
               comment.author.picture = cachedImage;
             }
@@ -193,13 +202,13 @@ export class ForumPostComponent extends BaseAdComponent {
       }
 
     } else {
-      const observerPicture: Observer<any> = {
+      this.userService.getProfilePicture(nickName).subscribe({
         next: response2 => {
           if (response2) {
             if (this.post && this.post.author && this.post.author.nickname == nickName) {
               this.authorProfilePic = URL.createObjectURL(response2);
             } else {
-              this.commentsList.forEach((comment: any) => {
+              this.commentsList.forEach((comment: ForumComment) => {
                 if (comment.author.nickname == nickName) {
                   comment.author.picture = URL.createObjectURL(response2);
                 }
@@ -211,10 +220,8 @@ export class ForumPostComponent extends BaseAdComponent {
         },
         error: error => {
           console.error(error);
-        },
-        complete: () => {}
-      };
-      this.userService.getProfilePicture(nickName).subscribe(observerPicture);
+        }
+      });
     }
   }
 
@@ -231,7 +238,6 @@ export class ForumPostComponent extends BaseAdComponent {
 
   openEditCommentDialog(comment: ForumComment) {
     const dialogRef = this.dialog.open(ForumCommentEditDialogComponent, {
-      width: '400px',
       data: {
         commentId: comment.id,
         commentContent: comment.content
@@ -265,7 +271,7 @@ export class ForumPostComponent extends BaseAdComponent {
     this.forumCommentService.deleteComment(id).subscribe({
       next: () => {
         this.notificationService.popSuccessToast('Comment deleted successfully');
-        this.commentsList = this.commentsList.filter((comment: any) => comment.id !== id);
+        this.commentsList = this.commentsList.filter((comment: ForumComment) => comment.id !== id);
       },
       error: error => this.notificationService.popErrorToast('Comment deletion failed', error)
     });
@@ -296,7 +302,6 @@ export class ForumPostComponent extends BaseAdComponent {
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: post.forum.id,
         editing: true,

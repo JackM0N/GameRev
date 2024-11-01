@@ -1,11 +1,11 @@
-﻿import { ChangeDetectorRef, Component } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BackgroundService } from '../../services/background.service';
 import { AdService } from '../../services/ad.service';
 
 @Component({
   template: ''
 })
-export abstract class BaseAdComponent {
+export abstract class BaseAdComponent implements OnInit {
   constructor(
     protected _adService: AdService,
     protected _backgroundService: BackgroundService,

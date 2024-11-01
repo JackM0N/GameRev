@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { inject, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -47,7 +47,7 @@ import { OwnProfileComponent } from './components/page-components/user/own-profi
 import { ProfileComponent } from './components/page-components/user/profile.component';
 import { UserListComponent } from './components/page-components/user/user-list.component';
 import { GameListComponent } from './components/page-components/games/game-list.component';
-import { ReportListComponent } from './components/page-components/reports/report-list.component';
+import { AdminReportListComponent } from './components/page-components/reports/admin-report-list.component';
 import { GameInfoCriticReviewComponent } from './components/page-components/games/game-information/critic-review.component';
 import { GameInfoReviewListComponent } from './components/page-components/games/game-information/review-list.component';
 import { NotificationService } from './services/notification.service';
@@ -65,101 +65,106 @@ import { ForumPostFormDialogComponent } from './components/page-components/forum
 import { GameFormDialogComponent } from './components/page-components/games/game-form-dialog.component';
 import { LibraryFormDialogComponent } from './components/page-components/library/library-form-dialog.component';
 import { ForumRequestsComponent } from './components/page-components/forum/forum-requests.component';
-import { ForumRequestFormDialogComponent } from './components/page-components/forum/forum-request-form-dialog.component';
 import { UserReviewFormDialogComponent } from './components/page-components/user-reviews/user-review-form-dialog.component';
 import { CriticReviewFormDialogComponent } from './components/page-components/critic-reviews/critic-review-form-dialog.component';
 import { ForumCommentFormComponent } from './components/page-components/forum/forum-comment-form.component';
+import { CriticReviewContentDialogComponent } from './components/page-components/critic-reviews/critic-review-content-dialog.component';
+import { UserReportListComponent } from './components/page-components/reports/user-report-list.component';
+import { NotFoundComponent } from './components/page-components/not-found/not-found.component';
 
 @NgModule({
     declarations: [
-        AppComponent,
-        LoginComponent,
-        RegistrationComponent,
-        OwnProfileComponent,
-        AccountDeletionConfirmationDialogComponent,
-        GameListComponent,
-        GameInformationComponent,
-        UserListComponent,
-        PopupDialogComponent,
-        ProfileComponent,
-        ReviewReportDialogComponent,
-        ReportListComponent,
-        LibraryComponent,
-        LibraryFormDialogComponent,
-        UserReviewListComponent,
-        ResetPasswordConfirmationDialogComponent,
-        AdBoxComponent,
-        CriticReviewListComponent,
-        GameInfoCriticReviewComponent,
-        GameInfoReviewListComponent,
-        EmailChangeComponent,
-        PasswordChangeComponent,
-        ForumComponent,
-        ForumPostListComponent,
-        ForumPostComponent,
-        ForumCommentEditDialogComponent,
-        ForumFormDialogComponent,
-        ForumPostFormDialogComponent,
-        GameFormDialogComponent,
-        ForumRequestsComponent,
-        ForumRequestFormDialogComponent,
-        UserReviewFormDialogComponent,
-        CriticReviewFormDialogComponent,
-        ForumCommentFormComponent
+      AppComponent,
+      LoginComponent,
+      RegistrationComponent,
+      OwnProfileComponent,
+      AccountDeletionConfirmationDialogComponent,
+      GameListComponent,
+      GameInformationComponent,
+      UserListComponent,
+      PopupDialogComponent,
+      ProfileComponent,
+      ReviewReportDialogComponent,
+      AdminReportListComponent,
+      LibraryComponent,
+      LibraryFormDialogComponent,
+      UserReviewListComponent,
+      ResetPasswordConfirmationDialogComponent,
+      AdBoxComponent,
+      CriticReviewListComponent,
+      GameInfoCriticReviewComponent,
+      GameInfoReviewListComponent,
+      EmailChangeComponent,
+      PasswordChangeComponent,
+      ForumComponent,
+      ForumPostListComponent,
+      ForumPostComponent,
+      ForumCommentEditDialogComponent,
+      ForumFormDialogComponent,
+      ForumPostFormDialogComponent,
+      GameFormDialogComponent,
+      ForumRequestsComponent,
+      UserReviewFormDialogComponent,
+      CriticReviewFormDialogComponent,
+      ForumCommentFormComponent,
+      CriticReviewContentDialogComponent,
+      UserReportListComponent,
+      NotFoundComponent,
     ],
     bootstrap: [
-        AppComponent
+      AppComponent
     ],
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSelectModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatButtonToggleModule,
-        MatSortModule,
-        MatExpansionModule,
-        MatSliderModule,
-        QuillModule.forRoot(),
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: () => {
-                    return localStorage.getItem('access_token');
-                },
-                allowedDomains: [''],
-                disallowedRoutes: ['localhost:8080/login']
-            }
-        }),
-        BrowserAnimationsModule,
-        ToasterModule.forRoot()
+      BrowserModule,
+      AppRoutingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatIconModule,
+      MatButtonModule,
+      MatDialogModule,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatSelectModule,
+      MatTableModule,
+      MatPaginatorModule,
+      MatButtonToggleModule,
+      MatSortModule,
+      MatExpansionModule,
+      MatSliderModule,
+      QuillModule.forRoot(),
+      JwtModule.forRoot({
+        config: {
+          tokenGetter: () => {
+            const authService = inject(AuthService);
+            return authService.getToken();
+          },
+          allowedDomains: [''],
+          disallowedRoutes: ['localhost:8080/login']
+        }
+      }),
+      BrowserAnimationsModule,
+      ToasterModule.forRoot()
     ],
     providers: [
-        provideAnimationsAsync(),
-        AuthService,
-        ToasterService,
-        GameService,
-        TagService,
-        UserReviewService,
-        ReportService,
-        LibraryService,
-        ImageCacheService,
-        BackgroundService,
-        AdService,
-        NotificationService,
-        ForumService,
-        ForumPostService,
-        { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
-        DatePipe,
-        provideHttpClient(withInterceptorsFromDi())
+      provideAnimationsAsync(),
+      AuthService,
+      ToasterService,
+      GameService,
+      TagService,
+      UserReviewService,
+      ReportService,
+      LibraryService,
+      ImageCacheService,
+      BackgroundService,
+      AdService,
+      NotificationService,
+      ForumService,
+      ForumPostService,
+      { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+      DatePipe,
+      provideHttpClient(withInterceptorsFromDi())
     ]
 })
-export class AppModule { }
+export class AppModule {}

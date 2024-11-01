@@ -1,23 +1,23 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 import { NotificationService } from '../../../services/notification.service';
-import { UserReview } from '../../../interfaces/userReview';
+import { UserReview } from '../../../models/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 
 @Component({
   selector: 'app-user-review-form-dialog',
   templateUrl: './user-review-form-dialog.component.html',
 })
-export class UserReviewFormDialogComponent {
+export class UserReviewFormDialogComponent implements OnInit {
   protected userReviewForm: FormGroup;
   
   protected userReview: UserReview = {
     gameTitle: '',
     userNickname: '',
     content: '',
-    postDate: new Date(),
+    postDate: undefined,
     score: undefined,
   };
 

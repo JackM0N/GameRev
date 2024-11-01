@@ -1,16 +1,14 @@
-import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observer } from 'rxjs';
-import { NewCredentials } from '../../../../interfaces/newCredentials';
+import { NewCredentials } from '../../../../models/newCredentials';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../../../services/user.service';
 import { ImageCacheService } from '../../../../services/imageCache.service';
 import { BackgroundService } from '../../../../services/background.service';
 import { PopupDialogComponent } from '../../../general-components/popup-dialog.component';
 import { AccountDeletionConfirmationDialogComponent } from '../account-deletion-confirmation-dialog.component';
-import { BaseAdComponent } from '../../../base-components/base-ad-component';
 import { AdService } from '../../../../services/ad.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationAction } from '../../../../enums/notificationActions';
@@ -20,15 +18,15 @@ import { FileUploadOptions } from '../../../../enums/fileUploadOptions';
   selector: 'app-own-profile',
   templateUrl: './own-profile.component.html'
 })
-export class OwnProfileComponent extends BaseAdComponent implements OnInit {
+export class OwnProfileComponent implements OnInit {
   public changeProfileInformationForm: FormGroup;
   public changeProfilePictureForm: FormGroup;
 
   public hidePassword = signal(true);
   private selectedImage: File | null = null;
-  public imageUrl: string = '';
+  public imageUrl = '';
 
-  public email: string | null = null;
+  public email?: string;
 
   constructor(
     private authService: AuthService,
@@ -39,11 +37,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     public dialog: MatDialog,
     private notificationService: NotificationService,
     private backgroundService: BackgroundService,
-    adService: AdService,
-    cdRef: ChangeDetectorRef
+    private adService: AdService
   ) {
-    super(adService, backgroundService, cdRef);
-    
     this.changeProfileInformationForm = this.formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       nickname: ['', [Validators.minLength(3)]],
@@ -55,14 +50,13 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     });
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-
+  ngOnInit(): void {
+    this.adService.setAdVisible(false);
     this.backgroundService.setClasses(['matrixNumbers']);
 
-    const observer: Observer<any> = {
+    this.authService.getUserProfileInformation().subscribe({
       next: response => {
-        if (response) {
+        if (response && response.nickname) {
           this.changeProfileInformationForm.get('nickname')?.setValue(response.nickname);
           this.changeProfileInformationForm.get('description')?.setValue(response.description);
           this.email = response.email;
@@ -76,9 +70,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
             }
 
           } else {
-            const observerProfilePicture: Observer<any> = {
+            this.userService.getProfilePicture(response.nickname).subscribe({
               next: response2 => {
-                if (response2) {
+                if (response2 && response.profilepic) {
                   this.imageUrl = URL.createObjectURL(response2);
                   this.imageCacheService.cacheBlob("profilePic" + response.nickname, response2);
                   this.imageCacheService.cacheProfilePicName("profilePicName" + response.nickname, response.profilepic);
@@ -86,19 +80,15 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
               },
               error: error => {
                 console.error(error);
-              },
-              complete: () => {}
-            };
-            this.userService.getProfilePicture(response.nickname).subscribe(observerProfilePicture);
+              }
+            });
           }
         }
       },
       error: error => {
         this.notificationService.popErrorToast('Unable to retrieve profile information', error);
-      },
-      complete: () => {}
-    };
-    this.authService.getUserProfileInformation().subscribe(observer);
+      }
+    });
   }
 
   openLogoutDialog() {
@@ -121,7 +111,8 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.notificationService.popSuccessToast('Successfully logged out', NotificationAction.GO_TO_HOME);
+    this.notificationService.popSuccessToast('Successfully logged out');
+    this.router.navigate(['/login']);
   }
 
   openAccountDeletionDialog() {
@@ -225,8 +216,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file: File | null = target.files ? target.files[0] : null;
 
     if (file && file.size > FileUploadOptions.MAX_FILE_SIZE) {
       this.maxSizeError();
@@ -241,5 +233,9 @@ export class OwnProfileComponent extends BaseAdComponent implements OnInit {
 
   routeToOwnReviews() {
     this.router.navigate(['/user-reviews']);
+  }
+
+  routeToOwnReports() {
+    this.router.navigate(['/user-reports']);
   }
 }

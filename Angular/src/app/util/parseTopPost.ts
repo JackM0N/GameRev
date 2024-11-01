@@ -1,4 +1,4 @@
-import { LastPost } from "../interfaces/lastPost";
+import { LastPost } from "../models/lastPost";
 
 export function parseTopPost(topPost: string): LastPost {
   // example: "2,Limbus Company,1,Update is finally here!,2024-08-13 10:16:00.0,Brazzoz Wheeler"

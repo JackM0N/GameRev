@@ -8,7 +8,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class ReviewReportDialogComponent {
   public reportForm: FormGroup;
-  protected content: string = '';
+  protected content = '';
   protected descriptionMinLength = 8;
   
   constructor(

@@ -39,7 +39,16 @@ public class ForumService {
     public Page<ForumDTO> getForum(Long id, ForumFilter forumFilter, Pageable pageable) {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Forum not found"));
-        Specification<Forum> spec = getForumSpecification(forumFilter, forum);
+
+        boolean isAdmin = false;
+        try {
+            WebsiteUser currentUser = websiteUserService.getCurrentUser();
+            isAdmin = currentUser.getRoles().stream().anyMatch(role -> "Admin".equals(role.getRoleName()));
+        } catch (Exception e) {
+            // Assuming unauthenticated user
+        }
+
+        Specification<Forum> spec = getForumSpecification(forumFilter, forum, isAdmin);
 
         try {
             WebsiteUser currentUser = websiteUserService.getCurrentUser();
@@ -47,7 +56,8 @@ public class ForumService {
             if (currentUser.getRoles().stream().noneMatch(role -> "Admin".equals(role.getRoleName()))) {
                 forumFilter.setIsDeleted(false);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             forumFilter.setIsDeleted(false);
         }
 
@@ -73,10 +83,15 @@ public class ForumService {
     }
 
     public ForumDTO createForum(ForumDTO forumDTO) throws BadRequestException {
+        if (forumRepository.existsForumByForumName(forumDTO.getForumName())) {
+            throw new BadRequestException("A forum with this name already exists.");
+        }
+
         Forum forum = forumMapper.toEntity(forumDTO);
 
         forum.setGame(gameRepository.findGameByTitle(forumDTO.getGameTitle())
                 .orElseThrow(() -> new BadRequestException("Game not found")));
+
         forum.setParentForum(forumRepository.findById(forumDTO.getParentForumId())
                 .orElseThrow(() -> new BadRequestException("Parent forum not found")));
 
@@ -100,7 +115,7 @@ public class ForumService {
                     .orElseThrow(() -> new BadRequestException("Game not found"));
             forum.setGame(game);
         }
-        if (forumDTO.getParentForumId() != null){
+        if (forumDTO.getParentForumId() != null) {
             Forum foundForum = forumRepository.findById(forumDTO.getParentForumId())
                     .orElseThrow(() -> new BadRequestException("Parent forum not found"));
             forum.setParentForum(foundForum);
@@ -116,10 +131,21 @@ public class ForumService {
         return true;
     }
 
-    private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum) {
+    private static Specification<Forum> getForumSpecification(ForumFilter forumFilter, Forum forum, boolean isAdmin) {
         Specification<Forum> spec = (root, query, builder) -> builder.equal(root.get("parentForum"), forum);
 
-        spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+        if (isAdmin) {
+            if (forumFilter.getIsDeleted() != null) {
+                spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), forumFilter.getIsDeleted()));
+            } else {
+                spec = spec.and((root, query, builder) -> builder.or(
+                        builder.isTrue(root.get("isDeleted")),
+                        builder.isFalse(root.get("isDeleted"))
+                ));
+            }
+        } else {
+            spec = spec.and((root, query, builder) -> builder.isFalse(root.get("isDeleted")));
+        }
 
         if (forumFilter.getGameId() != null) {
             spec = spec.and((root, query, builder) -> {
@@ -127,6 +153,7 @@ public class ForumService {
                 return builder.equal(gameJoin.get("id"), forumFilter.getGameId());
             });
         }
+
         if (forumFilter.getSearchText() != null) {
             String likePattern = "%" + forumFilter.getSearchText().toLowerCase() + "%";
             spec = spec.and((root, query, builder) ->  builder.like(builder.lower(root.get("forumName")), likePattern));

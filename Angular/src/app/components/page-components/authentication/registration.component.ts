@@ -1,21 +1,22 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { AuthService } from '../../../services/auth.service';
-import { passwordMatchValidator } from '../../../util/passwordMatchValidator';
+import { passwordMatchValidator } from '../../../validators/passwordMatchValidator';
 import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationAction } from '../../../enums/notificationActions';
+import { BaseAdComponent } from '../../base-components/base-ad-component';
+import { AdService } from '../../../services/ad.service';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrl: '/src/app/styles/shared-form-styles.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegistrationComponent {
+export class RegistrationComponent extends BaseAdComponent implements OnInit {
   registrationForm: FormGroup;
 
   emailErrorMessage = signal('');
@@ -23,12 +24,42 @@ export class RegistrationComponent {
   hidePassword = signal(true);
   hideConfirmPassword = signal(true);
 
+  protected images = [
+    // Left Side
+    { classNames: 'smallBgImage1 animate-wiggle-slow absolute top-[12%] left-[15%]' },
+    { classNames: 'smallBgImage2 animate-wiggle-reverse absolute top-[20%] left-[10%]' },
+    { classNames: 'smallBgImage3 animate-wiggle absolute top-[35%] left-[25%]' },
+    { classNames: 'smallBgImage4 animate-wiggle-slow absolute top-[50%] left-[12%]' },
+    { classNames: 'smallBgImage5 animate-wiggle-reverse-slow absolute top-[60%] left-[8%]' },
+    { classNames: 'smallBgImage6 animate-wiggle-reverse-slow absolute top-[75%] left-[18%]' },
+    { classNames: 'smallBgImage7 animate-wiggle-slow absolute top-[90%] left-[20%]' },
+    
+    // Center
+    { classNames: 'smallBgImage8 animate-wiggle-reverse absolute top-[10%] left-[45%]' },
+    { classNames: 'smallBgImage9 animate-wiggle absolute top-[25%] left-[50%]' },
+    { classNames: 'smallBgImage10 animate-wiggle-reverse-slow absolute top-[40%] left-[60%]' },
+    { classNames: 'smallBgImage11 animate-wiggle-reverse absolute top-[55%] left-[55%]' },
+    { classNames: 'smallBgImage12 animate-wiggle-slow absolute top-[70%] left-[40%]' },
+    
+    // Right Side
+    { classNames: 'smallBgImage13 animate-wiggle-reverse-slow absolute top-[15%] left-[75%]' },
+    { classNames: 'smallBgImage14 animate-wiggle-reverse absolute top-[30%] left-[80%]' },
+    { classNames: 'smallBgImage15 animate-wiggle-reverse absolute top-[45%] left-[85%]' },
+    { classNames: 'smallBgImage16 animate-wiggle-slow absolute top-[60%] left-[70%]' },
+    { classNames: 'smallBgImage17 animate-wiggle absolute top-[75%] left-[85%]' },
+    { classNames: 'smallBgImage18 animate-wiggle-reverse-slow absolute top-[90%] left-[65%]' },
+  ];
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private backgroundService: BackgroundService
+    protected backgroundService: BackgroundService,
+    adService: AdService,
+    cdRef: ChangeDetectorRef
   ) {
+    super(adService, backgroundService, cdRef);
+    
     this.registrationForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, Validators.minLength(4)]],
@@ -53,7 +84,8 @@ export class RegistrationComponent {
     }
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.backgroundService.setClasses(['pinkStars']);
   }
 
@@ -67,9 +99,7 @@ export class RegistrationComponent {
       };
 
       this.authService.registerUser(userData).subscribe({
-        next: () => {
-          this.notificationService.popSuccessToast('Registration successful', NotificationAction.GO_TO_HOME);
-        },
+        next: () => this.notificationService.popSuccessToast('Registration successful', NotificationAction.GO_TO_HOME),
         error: error => this.notificationService.popErrorToast('Registration failed', error)
       });
     }

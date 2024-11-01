@@ -1,12 +1,10 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { GameService } from '../../../services/game.service';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
 import { AuthService } from '../../../services/auth.service';
 import { releaseStatuses } from '../../../enums/releaseStatuses';
 import { BackgroundService } from '../../../services/background.service';
@@ -16,38 +14,31 @@ import { AdService } from '../../../services/ad.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { MatSelectChange } from '@angular/material/select';
-import { Tag } from '../../../interfaces/tag';
+import { Tag } from '../../../models/tag';
 import { TagService } from '../../../services/tag.service';
-import { gameFilters } from '../../../interfaces/gameFilters';
+import { gameFilters } from '../../../filters/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumRequestService } from '../../../services/forumRequest.service';
-import { ForumService } from '../../../services/forum.service';
 
 @Component({
   selector: 'app-game-list',
   templateUrl: './game-list.component.html'
 })
-export class GameListComponent extends BaseAdComponent implements AfterViewInit {
-  protected gamesList: Game[] = [];
-  protected totalGames: number = 0;
-  protected dataSource: MatTableDataSource<Game> = new MatTableDataSource<Game>(this.gamesList);
-  protected displayedColumns: string[] = ['id', 'title', 'developer', 'publisher', 'releaseDate', 'releaseStatus', 'usersScore', 'tags', 'description', 'options'];
+export class GameListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
+  protected gameList: Game[] = [];
+  protected totalGames = 0;
 
   protected releaseStatuses = releaseStatuses;
   protected tagList: Tag[] = [];
   private filters: gameFilters = {};
   protected filterForm: FormGroup;
   
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('searchInput', { static: true }) searchInput?: ElementRef;
+  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+  @ViewChild('searchInput', { static: true }) private searchInput?: ElementRef;
 
   constructor(
     private gameService: GameService,
-    private forumRequestService: ForumRequestService,
-    private forumService: ForumService,
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
@@ -84,18 +75,13 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
     this.loadGames();
     
     this.paginator.page.subscribe(() => this.loadGames());
-    this.sort.sortChange.subscribe(() => {
-      this.paginator.pageIndex = 0;
-      this.loadGames();
-    });
 
     if (this.searchInput) {
-      fromEvent(this.searchInput.nativeElement, 'input').pipe(
-        map((event: any) => event.target.value),
+      fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+        map((event) => (event.target as HTMLInputElement).value),
         debounceTime(300),
         distinctUntilChanged()
 
@@ -118,27 +104,23 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
   loadGames() {
     const page = this.paginator.pageIndex + 1;
     const size = this.paginator.pageSize;
-    const sortBy = this.sort.active || 'id';
-    const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
+    this.gameService.getGames(page, size, 'id', 'asc', this.filters).subscribe({
       next: response => {
         if (response) {
           this.totalGames = response.totalElements;
-          this.dataSource = new MatTableDataSource<Game>(response.content);
+          this.gameList = response.content;
         } else {
           this.totalGames = 0;
-          this.dataSource = new MatTableDataSource<Game>([]);
+          this.gameList = [];
         }
       },
       error: error => {
         this.totalGames = 0;
-        this.dataSource = new MatTableDataSource<Game>([]);
+        this.gameList = [];
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.gameService.getGames(page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      }
+    });
   }
 
   openAddNewGameDialog() {
@@ -192,63 +174,42 @@ export class GameListComponent extends BaseAdComponent implements AfterViewInit 
     });
   }
 
-  openErrorDialog() {
-    const dialogTitle = 'Deleting game failed';
-
-    this.forumRequestService.getRequests().subscribe({
-      next: (response) => {
-        if (response && response.content && response.totalElements > 0) {
-
-          // There are forum requests that are related to this game
-          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
-          this.dialog.open(PopupDialogComponent, {
-            width: '400px',
-            data: { dialogTitle, dialogContent, noSubmitButton: true }
-          });
-
-        } else {
-
-          // There are no forum requests that are related to this game, check forums
-          this.forumService.getForums().subscribe({
-            next: (response2) => {
-              if (response2 && response2.length > 0) {
-                // There are forums that are related to this game
-                const dialogContent = 'There are forums that are related to this game. Please delete them first.';
-                this.dialog.open(PopupDialogComponent, {
-                  width: '400px',
-                  data: { dialogTitle, dialogContent, noSubmitButton: true }
-                });
-              }
-            }
-          });
-
-        }
-      }
-    });
-  }
-
   deleteGame(game: Game) {
     if (!game || !game.id) {
       console.log('Game ID is not valid.');
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        if (response) {
-          this.dataSource.data = response;
-          this.loadGames();
-          this.notificationService.popSuccessToast('Deleted game successfuly');
-        }
+    this.gameService.deleteGame(game.id).subscribe({
+      next: () => {
+        this.loadGames();
+        this.notificationService.popSuccessToast('Deleted game successfuly');
       },
       error: error => {
-        this.notificationService.popErrorToast('Deleting game failed', error);
-        this.openErrorDialog();
-      },
-      complete: () => {}
-    };
+        if (error.error == "Game is used in forums") {
+          const dialogTitle = 'Deleting game failed';
+          const dialogContent = 'There are forums that are related to this game. Please delete them first.';
 
-    this.gameService.deleteGame(game.id).subscribe(observer);
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
+          });
+
+          return;
+
+        } else if (error.error == "Game is used in forum requests") {
+          const dialogTitle = 'Deleting game failed';
+          const dialogContent = 'There are forum requests that are related to this game. Please delete them first.';
+
+          this.dialog.open(PopupDialogComponent, {
+            width: '400px',
+            data: { dialogTitle, dialogContent, noSubmitButton: true }
+          });
+        }
+
+        this.notificationService.popErrorToast('Deleting game failed', error);
+      }
+    });
   }
 
   getTags(game: Game) {

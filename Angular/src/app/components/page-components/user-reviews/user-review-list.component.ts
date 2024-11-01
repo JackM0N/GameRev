@@ -1,8 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observer } from 'rxjs';
-import { UserReview } from '../../../interfaces/userReview';
+import { UserReview } from '../../../models/userReview';
 import { UserReviewService } from '../../../services/user-review.service';
 import { MatSort } from '@angular/material/sort';
 import { formatDateArray } from '../../../util/formatDate';
@@ -16,15 +16,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserReviewFormDialogComponent } from './user-review-form-dialog.component';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginatedResponse } from '../../../models/paginatedResponse';
 
 @Component({
   selector: 'app-user-review-list',
   templateUrl: './user-review-list.component.html'
 })
-export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit {
+export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   protected reviewList: UserReview[] = [];
   protected dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
   protected userId?: number;
   protected formatDate = formatDateArray;
@@ -69,7 +70,7 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
+    const observer: Partial<Observer<PaginatedResponse<UserReview>>> = {
       next: response => {
         if (response) {
           this.totalReviews = response.totalElements;
@@ -82,6 +83,7 @@ export class UserReviewListComponent extends BaseAdComponent implements AfterVie
       },
       complete: () => {}
     };
+    
     if (this.userId) {
       this.userReviewService.getUserReviewsAdmin(this.userId, page, size, sortBy, sortDir).subscribe(observer);
     } else {

@@ -19,15 +19,15 @@ body {
 @font-face {
   font-family: 'arcade';
   font-weight: 400;
-  src: url(./app/fonts/joystixMonospace.otf) format('opentype');
+  src: url(assets/fonts/joystixMonospace.otf) format('opentype');
 }
 
 .pinkStars {
-  background-image: url(./app/images/pinkStars-bg.png);
+  background-image: url(assets/images/pinkStars-bg.png);
 }
 
 .matrixNumbers {
-  background-image: url(./app/images/matrixNumbers.png);
+  background-image: url(assets/images/matrixNumbers.png);
   background-size: 600px 300px;
 }
 
@@ -36,57 +36,57 @@ body {
 }
 
 .screenBg {
-  background-image: url(./app/images/screen-bg.png);
+  background-image: url(assets/images/screen-bg.png);
   background-size: 6px 6px;
 }
 
 .synthwaveFloor {
-  background-image: url(./app/images/synthwaveFloor.jpg);
+  background-image: url(assets/images/synthwaveFloor.jpg);
 }
 
 .neonAtSymbols {
-  background-image: url(./app/images/neonAtSymbols.jpg);
+  background-image: url(assets/images/neonAtSymbols.jpg);
 }
 
 .neonStarsSymbols {
-  background-image: url(./app/images/neonStarsSymbols.jpg);
+  background-image: url(assets/images/neonStarsSymbols.jpg);
 }
 
 .fallingCds {
-  background-image: url(./app/images/fallingCds.png);
+  background-image: url(assets/images/fallingCds.png);
 }
 
 .synthwaveBg {
-  background-image: url(./app/images/synthwaveBg.png) !important;
+  background-image: url(assets/images/synthwaveBg.png) !important;
   background-size: 22px 22px !important;
 }
 
 .screenHead {
-  background-image: url(./app/images/screenHead.png);
+  background-image: url(assets/images/screenHead.png);
   background-size: 320px 320px;
   background-repeat: no-repeat;
 }
 
 .arcadeButtons {
-  background-image: url(./app/images/arcadeButtons.png);
+  background-image: url(assets/images/arcadeButtons.png);
   background-repeat: no-repeat;
   background-size: 70px 60px;
 }
 
 .arcadeJoystick {
-  background-image: url(./app/images/arcadeJoystick.png);
+  background-image: url(assets/images/arcadeJoystick.png);
   background-repeat: no-repeat;
   background-size: 60px 60px;
 }
 
 .arcadeButtonsOrange {
-  background-image: url(./app/images/arcadeButtonsOrange.png);
+  background-image: url(assets/images/arcadeButtonsOrange.png);
   background-repeat: no-repeat;
   background-size: 70px 60px;
 }
 
 .arcadeJoystickOrange {
-  background-image: url(./app/images/arcadeJoystickOrange.png);
+  background-image: url(assets/images/arcadeJoystickOrange.png);
   background-repeat: no-repeat;
   background-size: 60px 60px;
 }
@@ -168,39 +168,34 @@ body {
   text-shadow: 1px 1px 0px #fb049c;
 }
 
-.pinkTextShadowWide {
-  text-shadow: 2px 2px 0px #fb049c;
-}
-
 .noTextShadow {
   text-shadow: none;
 }
 
+.pinkTextShadowWide {
+  text-shadow: 2px 2px 0px #fb049c;
+}
+
 /*material edits*/
 /*table column sort*/
-.mat-sort-header-arrow{
+.mat-sort-header-arrow {
   color: white !important;
   fill: white !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
 /*paginator*/
-.mat-mdc-select-trigger
-{
-    width: 70px !important;
-}
-
-.mat-mdc-paginator-page-size{
+.mat-mdc-paginator-page-size {
   text-align: center;
 }
 
-.mat-mdc-paginator-page-size-label{
+.mat-mdc-paginator-page-size-label {
   color: white;
   font-family: 'arcade';
   font-size: large;
 }
 
-.mat-mdc-paginator-range-label{
+.mat-mdc-paginator-range-label {
   color: white;
   font-family: 'arcade';
   font-size: large;
@@ -221,241 +216,242 @@ body {
   border-top-right-radius: 0px !important;
 }
 
-.mat-mdc-paginator-container{
+.mat-mdc-paginator-container {
   display: flex;
   flex-direction: column;
   border-left: 6px white solid;
   border-right: 6px white solid;
 }
 
-.mat-mdc-form-field div::before, .mat-mdc-form-field div::after{
+.mat-mdc-form-field div::before, .mat-mdc-form-field div::after {
   background: none !important;
 }
 
-.cdk-overlay-pane{
+.cdk-overlay-pane {
   background-color: black;
   color: white;
 }
 
-.mat-mdc-select-panel{
+.mat-mdc-select-panel {
   background-color: black !important;
   color: white !important;
   border-radius: 0px !important;
 }
 
-.mat-mdc-option{
+.mat-mdc-option {
   background-color: black !important;
   color: white !important;
   text-shadow: 2px 2px 0px #fb049c !important;
   font-size: large !important;
 }
 
-.mdc-list-item__primary-text{
+.mdc-list-item__primary-text {
   color: white !important;
   font-family: "arcade" !important;
 }
 
-.mat-mdc-option:hover{
+.mat-mdc-option:hover {
   background-color: rgb(68, 0, 54) !important;
 }
 
-.mat-mdc-paginator-icon{
+.mat-mdc-paginator-icon {
   fill: white !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
-.mat-mdc-select-arrow svg{
+.mat-mdc-select-arrow svg {
   fill: black !important;
   filter: drop-shadow( 2px 2px 0px #fb049c) !important;
 }
 
-.mat-mdc-form-field-infix > mat-select > div > div > span > span{
+.mat-mdc-form-field-infix > mat-select > div > div > span > span {
   color: white;
   font-family: 'arcade';
   font-size: large;
 }
 
 /*date picker*/
-.mat-datepicker-toggle-default-icon{
+.mat-datepicker-toggle-default-icon {
   fill: black !important;
 }
 
-.mat-calendar{
+.mat-calendar {
   background: black;
   color: white !important;
 }
 
-.mdc-icon-button{
+/*
+.mdc-icon-button {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important; 
 }
+*/
 
-.mdc-button__label{
+.mdc-button__label {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-.mat-calendar-arrow{
+.mat-calendar-arrow {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span{
+.mat-calendar-table > thead > tr > th, .mat-calendar-table > tbody > tr > td, .mat-calendar-table > tbody > tr > td > button > span {
   fill: white !important;
   color: white !important;
   filter: drop-shadow( 1px 1px 0px #fb049c) !important;
 }
 
-mat-datepicker-toggle > button{
+mat-datepicker-toggle > button {
   margin-top: -10px !important;
 }
 
-mat-datepicker-toggle > button > span{
+mat-datepicker-toggle > button > span {
   display: none !important;
 }
 
 /*select*/
-.mat-mdc-select-min-line{
+.mat-mdc-select-min-line {
   margin-left: 8px;
   color: black; 
   filter: none !important;
 }
 
-.mat-mdc-select-arrow{
+.mat-mdc-select-arrow {
   margin: 8px;
 }
 
-.mat-mdc-select-value-text{
+.mat-mdc-select-value-text {
   color: black !important;
 }
 
-.noTextShadow > div > div > span > span{
+.noTextShadow > div > div > span > span {
   color: black;
   font-family: 'arcade';
-  font-size: large;
+  font-size: inherit !important;
   text-wrap: wrap;
 }
 
-
-
-/*practical joke until later solution*/
 .smallBgImageSize {
   background-repeat: no-repeat;
   background-size: 40px 32px;
+  width: 40px;
+  height: 32px;
 }
 
 .smallBgImage1 {
-  background-image: url(./app/images/arcade/56.png);
+  background-image: url(assets/images/arcade/56.png);
 }
 
 .smallBgImage2 {
-  background-image: url(./app/images/arcade/19.png);
+  background-image: url(assets/images/arcade/19.png);
 }
 
 .smallBgImage3 {
-  background-image: url(./app/images/arcade/6.png);
+  background-image: url(assets/images/arcade/6.png);
 }
 
 .smallBgImage4 {
-  background-image: url(./app/images/arcade/7.png);
+  background-image: url(assets/images/arcade/7.png);
 }
 
 .smallBgImage5 {
-  background-image: url(./app/images/arcade/10.png);
+  background-image: url(assets/images/arcade/10.png);
 }
 
 .smallBgImage6 {
-  background-image: url(./app/images/arcade/13.png);
+  background-image: url(assets/images/arcade/13.png);
 }
 
 .smallBgImage7 {
-  background-image: url(./app/images/arcade/20.png);
+  background-image: url(assets/images/arcade/20.png);
 }
 
 .smallBgImage8 {
-  background-image: url(./app/images/arcade/22.png);
+  background-image: url(assets/images/arcade/22.png);
 }
 
 .smallBgImage9 {
-  background-image: url(./app/images/arcade/23.png);
+  background-image: url(assets/images/arcade/23.png);
 }
 
 .smallBgImage10 {
-  background-image: url(./app/images/arcade/24.png);
+  background-image: url(assets/images/arcade/24.png);
 }
 
 .smallBgImage11 {
-  background-image: url(./app/images/arcade/25.png);
+  background-image: url(assets/images/arcade/25.png);
 }
 
 .smallBgImage12 {
-  background-image: url(./app/images/arcade/26.png);
+  background-image: url(assets/images/arcade/26.png);
 }
 
 .smallBgImage13 {
-  background-image: url(./app/images/arcade/50.png);
+  background-image: url(assets/images/arcade/50.png);
 }
 
 .smallBgImage14 {
-  background-image: url(./app/images/arcade/28.png);
+  background-image: url(assets/images/arcade/28.png);
 }
 
 .smallBgImage15 {
-  background-image: url(./app/images/arcade/36.png);
+  background-image: url(assets/images/arcade/36.png);
 }
 
 .smallBgImage16 {
-  background-image: url(./app/images/arcade/37.png);
+  background-image: url(assets/images/arcade/37.png);
 }
 
 .smallBgImage17 {
-  background-image: url(./app/images/arcade/42.png);
+  background-image: url(assets/images/arcade/42.png);
 }
 
 .smallBgImage18 {
-  background-image: url(./app/images/arcade/46.png);
+  background-image: url(assets/images/arcade/46.png);
 }
 
 .smallBgImage19 {
-  background-image: url(./app/images/arcade/52.png);
+  background-image: url(assets/images/arcade/52.png);
 }
 
 
 /* Quill editor styles */
-.quill-editor-custom {
-  width: 100%; /* Ensure the editor takes full width */
-  box-sizing: border-box; /* Ensure padding and border are included in the width */
-  margin-bottom: 18px; /* Consistent margin bottom */
-  font-size: 14px;
-  
-  font-family: Arial, sans-serif !important; /* Ensure normal font */
+.white-quill-editor {
   text-shadow: none !important; /* Remove any text shadow */
 }
 
-.quill-editor-custom .ql-container {
-  height: 150px; /* Set a consistent height for the editor */
-  border: 1px solid #d6d6d6; /* Border to match input fields */
-  border-radius: 0px; /* No border radius */
-  font-size: 14px;
+.white-quill-editor .ql-editor {
+  background-color: white;
 }
 
-.quill-editor-custom .ql-toolbar {
-  border: 1px solid #d6d6d6; /* Toolbar border to match input fields */
-  border-bottom: none; /* Remove bottom border to avoid double border */
-  border-radius: 0px; /* No border radius */
-  margin-bottom: 0px; /* Consistent margin bottom */
+.white-quill-editor::before {
+  color: gray !important;
 }
 
-.quill-editor-custom .ql-editor {
-  font-size: 14px;
-  font-family: Arial, sans-serif;
+.comment-quill-editor .ql-container {
+  height: 150px;
+  border: none !important;
+}
+
+.comment-quill-editor .ql-toolbar {
+  border: none !important;
+  border-bottom: 1px solid #00CFFF !important;
+}
+
+.comment-quill-editor::before {
+  color: gray !important;
+}
+
+.comment-quill-editor .ql-editor::before {
+  color: gray !important;
 }
 
 .ql-editor::before {
-  color: inherit !important;
   font-style: italic;
 }
 
@@ -471,6 +467,9 @@ table {
   border-bottom: 2px solid white !important; /* Or any style you prefer */
 }
 
+.ql-editor {
+  font-family: "arcade" !important;
+}
 
 .synthwaveButton {
   background-color: #FF00FF;
@@ -557,4 +556,109 @@ mat-paginator .mat-mdc-select-min-line {
 
 mat-paginator .mat-mdc-select-value {
   padding-right: 42px;
+}
+
+.deleted-forum {
+  background: repeating-linear-gradient(160deg, #222222, #222222 70px, #535353 10px, #535353 80px);
+}
+
+.deleted-forum:hover {
+  background: repeating-linear-gradient(160deg, #333333, #333333 70px, #535353 10px, #535353 80px);
+}
+
+.clampContent {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.forumPaginator {
+  background-color: inherit !important;
+  background-size: 22px 22px !important;
+}
+
+.forumPaginator .mat-mdc-paginator-container {
+  border: none !important;
+}
+
+.quillViewCell .ql-editor {
+  max-height: 140px;
+  overflow: auto;
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.quillViewCell .ql-editor * {
+  cursor: pointer;
+}
+
+.quillViewCell {
+  padding: 0 !important;
+}
+
+.noQuillViewPadding .ql-editor {
+  padding: 0 !important;
+}
+
+.comment-body {
+  max-height: 26rem;
+  overflow-y: auto;
+}
+
+
+.small-date-picker .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.small-date-picker .mat-mdc-form-field-flex {
+  height: 28px !important;
+}
+
+.small-date-picker .mat-mdc-form-field-infix {
+  padding: 0px !important;
+  margin: 0px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  width: 190px !important;
+}
+
+.small-date-picker mat-date-range-input {
+  margin-top: 2px !important;
+}
+
+.small-date-picker .mat-mdc-form-field-icon-suffix {
+  padding: 0px !important;
+  margin: 0px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+}
+
+.compactPaginator .mat-mdc-paginator-container {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.compactPaginator .mat-mdc-paginator-range-label {
+  padding: 0px !important;
+  margin: 0px !important;
+  font-size: medium !important;
+}
+
+.compactPaginator .mat-mdc-paginator-page-size-label {
+  font-size: medium !important;
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.compactPaginator mat-form-field {
+  padding: 0px !important;
+  margin: 0px !important;
+  margin-left: 6px !important;
+}
+
+.report-expansion-panel .mat-expansion-panel-body {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
 }

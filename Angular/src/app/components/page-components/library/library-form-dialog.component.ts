@@ -1,15 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CompletionStatus } from '../../../interfaces/completionStatus';
-import { UserGame } from '../../../interfaces/userGame';
+import { CompletionStatus } from '../../../models/completionStatus';
+import { UserGame } from '../../../models/userGame';
 import { completionStatuses } from '../../../enums/completionStatuses';
 import { AuthService } from '../../../services/auth.service';
 import { LibraryService } from '../../../services/library.service';
 import { NotificationService } from '../../../services/notification.service';
-import { Observer } from 'rxjs';
 import { GameService } from '../../../services/game.service';
-import { Game } from '../../../interfaces/game';
+import { Game } from '../../../models/game';
 
 @Component({
   selector: 'app-library-form-dialog',
@@ -19,7 +18,7 @@ export class LibraryFormDialogComponent implements OnInit {
   protected libraryForm: FormGroup;
   protected completionStatuses: CompletionStatus[] = completionStatuses;
   protected gameList: Game[] = [];
-  protected title: string = "";
+  protected title = "";
 
   private userGame: UserGame = {
     id: undefined,
@@ -79,7 +78,7 @@ export class LibraryFormDialogComponent implements OnInit {
   }
 
   loadGames() {
-    const observer: Observer<any> = {
+    this.gameService.getGames().subscribe({
       next: response => {
         if (response) {
           this.gameList = response.content;
@@ -102,12 +101,8 @@ export class LibraryFormDialogComponent implements OnInit {
           }
         }
       },
-      error: error => {
-        console.error(error);
-      },
-      complete: () => {}
-    };
-    this.gameService.getGames().subscribe(observer);
+      error: error => { console.error(error); }
+    });
   }
 
   addUserGame() {

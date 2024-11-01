@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.ttsw.GameRev.model.Forum;
+import java.util.List;
 
 @Repository
 public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecificationExecutor<Forum> {
@@ -19,7 +20,7 @@ public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecific
             "         ) AS rn " +
             "  FROM forum_post fp " +
             "  INNER JOIN forum f ON f.forum_id = fp.forum_id " +
-            "  LEFT JOIN forum_comment fc ON fc.forum_post_id = fp.forum_post_id " +
+            "  LEFT JOIN forum_comment fc ON fc.forum_post_id = fp.forum_post_id AND fc.is_deleted = FALSE " +
             "  LEFT JOIN website_user wu ON fc.author_id = wu.user_id " +
             "  WHERE f.forum_id = :forumId " +
             ") " +
@@ -29,4 +30,5 @@ public interface ForumRepository extends JpaRepository<Forum, Long>, JpaSpecific
             nativeQuery = true)
     String findTopPostForForum(@Param("forumId") Long forumId);
     boolean existsForumByForumName(String forumName);
+    List<Forum> findByGameId(Long gameId);
 }

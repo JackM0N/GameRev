@@ -5,10 +5,10 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class BackgroundService {
-  private mainStyleSubject = new BehaviorSubject<{ [key: string]: string }>({});
+  private mainStyleSubject = new BehaviorSubject<Record<string, string>>({});
   mainStyle$ = this.mainStyleSubject.asObservable();
 
-  private styleSubject = new BehaviorSubject<{ [key: string]: string }>({});
+  private styleSubject = new BehaviorSubject<Record<string, string>>({});
   style$ = this.styleSubject.asObservable();
 
   private classesSubject = new BehaviorSubject<string[]>([]);
@@ -20,11 +20,11 @@ export class BackgroundService {
     this.classesSubject.next([]);
   }
 
-  setMainContentStyle(styles: { [key: string]: string }) {
+  setMainContentStyle(styles: Record<string, string>) {
     this.mainStyleSubject.next(styles);
   }
 
-  setStyle(styles: { [key: string]: string }) {
+  setStyle(styles: Record<string, string>) {
     this.styleSubject.next(styles);
   }
 

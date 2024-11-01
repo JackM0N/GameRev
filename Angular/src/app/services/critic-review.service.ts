@@ -2,22 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { CriticReview } from '../interfaces/criticReview';
-import { criticReviewFilters } from '../interfaces/criticReviewFilters';
+import { CriticReview } from '../models/criticReview';
+import { PaginatedResponse } from '../models/paginatedResponse';
+import { criticReviewFilters } from '../filters/criticReviewFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling critics reviews
 export class CriticReviewService {
-  private baseUrl = 'http://localhost:8080/critics-reviews';
-  private idUrl = 'http://localhost:8080/critics-reviews/id';
-  private allUrl = 'http://localhost:8080/critics-reviews/list';
-  private addUrl = 'http://localhost:8080/critics-reviews/create';
-  private editUrl = 'http://localhost:8080/critics-reviews/edit';
-  private reviewUrl = 'http://localhost:8080/critics-reviews/review'; // for approving/disapproving
-  private deleteUrl = 'http://localhost:8080/critics-reviews/delete';
+  private apiUrl: string = environment.apiUrl;
+  
+  private baseUrl = this.apiUrl + '/critics-reviews';
+  private idUrl = this.apiUrl + '/critics-reviews/id';
+  private allUrl = this.apiUrl + '/critics-reviews/list';
+  private addUrl = this.apiUrl + '/critics-reviews/create';
+  private editUrl = this.apiUrl + '/critics-reviews/edit';
+  private reviewUrl = this.apiUrl + '/critics-reviews/review'; // for approving/disapproving
+  private deleteUrl = this.apiUrl + '/critics-reviews/delete';
 
   constructor(
     private authService: AuthService,
@@ -36,11 +40,11 @@ export class CriticReviewService {
     return this.http.get<CriticReview>(`${this.idUrl}/${id}`, { headers });
   }
 
-  getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<CriticReview[]> {
+  getAllReviews(page: number, size: number, sortBy: string, sortDir: string, filters: criticReviewFilters): Observable<PaginatedResponse<CriticReview>> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams()
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
@@ -59,7 +63,7 @@ export class CriticReviewService {
       params = params.set('scoreFrom', filters.scoreMin.toString()).set('scoreTo', filters.scoreMax.toString());
     }
 
-    return this.http.get<CriticReview[]>(this.allUrl, { headers, params });
+    return this.http.get<PaginatedResponse<CriticReview>>(this.allUrl, { headers, params });
   }
 
   addCriticReview(criticReview: CriticReview): Observable<CriticReview> {
@@ -80,7 +84,7 @@ export class CriticReviewService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (criticReview.reviewStatus) {
       params = new HttpParams()

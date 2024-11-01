@@ -65,7 +65,7 @@ public class ForumCommentService {
 
         Path filepath = null;
         try {
-            if(picture != null && !picture.isEmpty()) {
+            if (picture != null && !picture.isEmpty()) {
                 String fileName = "comment"+ forumComment.getId() + "_" + picture.getOriginalFilename();
                 filepath = Paths.get(commentPicDirectory, fileName);
                 Files.copy(picture.getInputStream(), filepath);
@@ -95,9 +95,9 @@ public class ForumCommentService {
                 || currentUser == forumComment.getAuthor()) {
             forumCommentMapper.partialUpdateContent(forumCommentDTO, forumComment);
 
-            if(picture != null && !picture.isEmpty()) {
+            if (picture != null && !picture.isEmpty()) {
                 String oldPicturePath = forumComment.getPicture();
-                if(oldPicturePath != null && !oldPicturePath.isEmpty()) {
+                if (oldPicturePath != null && !oldPicturePath.isEmpty()) {
                     Path oldFilePath = Paths.get(oldPicturePath);
                     Files.deleteIfExists(oldFilePath);
                 }
@@ -110,7 +110,7 @@ public class ForumCommentService {
 
             forumCommentRepository.save(forumComment);
             return forumCommentMapper.toDto(forumComment);
-        }else {
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }
@@ -132,12 +132,13 @@ public class ForumCommentService {
             forumComment.setIsDeleted(isDeleted);
             if (isDeleted) {
                 forumComment.setDeletedAt(LocalDateTime.now());
-            }else {
+            } else {
                 forumComment.setDeletedAt(null);
             }
             forumCommentRepository.save(forumComment);
             return true;
-        }else {
+
+        } else {
             throw new BadCredentialsException("You dont have permission to perform this action");
         }
     }
@@ -145,6 +146,7 @@ public class ForumCommentService {
     private static Specification<ForumComment> getForumCommentSpecification(ForumCommentFilter forumCommentFilter, ForumPost post) {
         Specification<ForumComment> spec = ((root, query, builder) -> builder.equal(root.get("forumPost"), post));
         spec = spec.and((root, query, builder) -> builder.equal(root.get("isDeleted"), false));
+
         if (forumCommentFilter.getUserId() != null) {
             spec = spec.and((root, query, builder) -> {
                 Join<ForumComment, WebsiteUser> join = root.join("author");

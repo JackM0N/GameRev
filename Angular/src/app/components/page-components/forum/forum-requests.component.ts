@@ -1,27 +1,30 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { ForumRequestService } from '../../../services/forumRequest.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ForumRequest } from '../../../interfaces/forumRequest';
+import { ForumRequest } from '../../../models/forumRequest';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from '../../../services/auth.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { BackgroundService } from '../../../services/background.service';
-import { ForumRequestFormDialogComponent } from './forum-request-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { MatSelectChange } from '@angular/material/select';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ForumFormDialogComponent } from './forum-form-dialog.component';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-forum-requests',
   templateUrl: './forum-requests.component.html'
 })
-export class ForumRequestsComponent implements AfterViewInit {
+export class ForumRequestsComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) protected paginator!: MatPaginator;
 
   protected requestList: ForumRequest[] = [];
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
+  protected totalRequests = 0;
   protected displayedColumns: string[] = ['forumName', 'description', 'game', 'parentForum', 'author', 'approved', 'options'];
+  @ViewChild(MatSort) protected sort!: MatSort;
 
   private approvedFilter?: boolean = undefined;
   protected filterForm: FormGroup;
@@ -52,27 +55,31 @@ export class ForumRequestsComponent implements AfterViewInit {
 
   loadForumRequests() {
     this.requestList = [];
+    this.totalRequests = 0;
 
     const page = this.paginator ? this.paginator.pageIndex : 0;
     const size = this.paginator ? this.paginator.pageSize : 10;
+    const sortBy = this.sort.active || 'id';
+    const sortDir = this.sort.direction || 'asc';
 
-    this.forumRequestService.getRequests(page, size, this.approvedFilter).subscribe({
+    this.forumRequestService.getRequests(page, size, sortBy, sortDir, this.approvedFilter).subscribe({
       next: (response) => {
         if (response) {
           this.requestList = response.content;
+          this.totalRequests = response.totalElements;
           this.dataSource = new MatTableDataSource<ForumRequest>(this.requestList);
         }
-
       },
       error: error => console.error(error)
     });
   }
 
   openAddNewRequestDialog() {
-    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
-        editing: false
+        editing: false,
+        requesting: true
       }
     });
 
@@ -84,15 +91,16 @@ export class ForumRequestsComponent implements AfterViewInit {
   }
 
   openEditRequestDialog(forumRequest: ForumRequest) {
-    const dialogRef = this.dialog.open(ForumRequestFormDialogComponent, {
+    const dialogRef = this.dialog.open(ForumFormDialogComponent, {
       width: '300px',
       data: {
         editing: true,
-        parentForum: forumRequest.parentForum,
+        requesting: true,
+        parentForumId: forumRequest.parentForum.id,
         id: forumRequest.id,
         name: forumRequest.forumName,
         description: forumRequest.description,
-        game: forumRequest.game
+        gameTitle: forumRequest.game.title
       }
     });
 
@@ -109,7 +117,8 @@ export class ForumRequestsComponent implements AfterViewInit {
 
   approveRequest(forumRequest: ForumRequest, approve: boolean, action1: string, action2: string) {
     this.forumRequestService.approveRequest(forumRequest, approve).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log(response);
         this.notificationService.popSuccessToast('Request ' + action2 + 'd successfully');
         this.loadForumRequests();
       },
@@ -123,7 +132,7 @@ export class ForumRequestsComponent implements AfterViewInit {
 
     const dialogTitle = 'Forum request ' + action1;
     const dialogContent = 'Are you sure you want to ' + action2 + ' the request for forum ' + request.forumName + '?';
-    const submitText = action2.charAt(0).toUpperCase() + action2.slice(1);;
+    const submitText = action2.charAt(0).toUpperCase() + action2.slice(1);
     const cancelText = 'Cancel';
 
     const dialogRef = this.dialog.open(PopupDialogComponent, {
@@ -138,8 +147,43 @@ export class ForumRequestsComponent implements AfterViewInit {
     });
   }
 
-  clearFilters() {
+  openDeleteRequestDialog(request: ForumRequest) {
+    const dialogTitle = 'Forum request deletion';
+    const dialogContent = 'Are you sure you want to delete the request for forum ' + request.forumName + '?';
+    const submitText = 'Delete';
+    const cancelText = 'Cancel';
 
+    const dialogRef = this.dialog.open(PopupDialogComponent, {
+      width: '400px',
+      data: { dialogTitle, dialogContent, submitText, cancelText }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.deleteRequest(request);
+      }
+    });
+  }
+
+  deleteRequest(request: ForumRequest) {
+    if (!request || !request.id) {
+      console.error('Request ID is not valid.');
+      return;
+    }
+
+    this.forumRequestService.deleteRequest(request).subscribe({
+      next: () => {
+        this.notificationService.popSuccessToast('Deleted request successfuly');
+        this.loadForumRequests();
+      },
+      error: error => this.notificationService.popErrorToast('Deleting request failed', error)
+    });
+  }
+
+  clearFilters() {
+    this.filterForm.reset();
+    this.approvedFilter = undefined;
+    this.loadForumRequests();
   }
 
   onApprovedFilterChange(event: MatSelectChange) {

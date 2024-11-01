@@ -1,25 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Game } from '../interfaces/game';
-import { UserGame } from '../interfaces/userGame';
-import { libraryFilters } from '../interfaces/libraryFilters';
+import { UserGame } from '../models/userGame';
+import { libraryFilters } from '../filters/libraryFilters';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling user's game library
 export class LibraryService {
-  private baseUrl = 'http://localhost:8080/library';
+  private apiUrl: string = environment.apiUrl;
+
+  private baseUrl = this.apiUrl + '/library';
 
   constructor(
     private authService: AuthService,
     private http: HttpClient,
   ) {}
 
-  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<Game> {
-    var params = new HttpParams()
+  getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<PaginatedResponse<UserGame>> {
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
@@ -35,7 +38,7 @@ export class LibraryService {
       params = params.set('completionStatus', filters.completionStatus.toString());
     }
     
-    return this.http.get<Game>(`${this.baseUrl}/${nickname}`, {params});
+    return this.http.get<PaginatedResponse<UserGame>>(`${this.baseUrl}/${nickname}`, {params});
   }
 
   updateUserGame(userReview: UserGame): Observable<UserGame> {

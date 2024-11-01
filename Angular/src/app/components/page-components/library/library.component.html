@@ -19,37 +19,43 @@
           <mat-option value="0">False</mat-option>
         </mat-select>
       </mat-form-field>
-      
+
       <mat-form-field>
         <mat-label>Completion statuses</mat-label>
         <mat-select (selectionChange)="onCompletionStatusFilterChange($event)" multiple>
-          <mat-option *ngFor="let status of completionStatuses" [value]="status.className">
-            {{ status.name }}
-          </mat-option>
+          @for (status of completionStatuses; track status.className) {
+            <mat-option [value]="status.className">
+              {{ status.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
-      
+
       <mat-form-field>
         <mat-label>Tags</mat-label>
         <mat-select (selectionChange)="onTagFilterChange($event)" multiple>
-          <mat-option *ngFor="let tag of tagList" [value]="tag.id">
-            {{ tag.tagName }}
-          </mat-option>
+          @for (tag of tagList; track tag.id) {
+            <mat-option [value]="tag.id">
+              {{ tag.tagName }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
   </div>
 </div>
 
-<div *ngIf="libraryEmpty" class="max-w-[400px] m-auto pixel-border p-1 mb-6">
-  <div>
-    <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">Library is empty</p>
+@if (libraryEmpty) {
+  <div class="max-w-[400px] m-auto pixel-border p-1 mb-6">
+    <div>
+      <p class="text-center text-white bg-[#1A1A1A] py-2 px-0 font-arcade">Library is empty</p>
+    </div>
   </div>
-</div>
+}
 
-<div class="pixel-border w-[330px] h-fit py-[4px] m-auto mb-8 px-[4px]">
-  <div class="flex justify-center font-arcade h-10 text-xl bg-black text-white pinkTextShadow">
-    <button class="pinkTextShadowWide" (click)="openAddUserGameDialog()">Add a new game</button>
+<div class="pixel-border w-fit h-fit p-[6px] m-auto mb-8">
+  <div class="flex justify-center font-arcade text-xl bg-black text-white pinkTextShadow">
+    <button class="pinkTextShadowWide px-8 py-2" (click)="openAddUserGameDialog()">Add a new game</button>
   </div>
 </div>
 
@@ -60,31 +66,31 @@
         <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="game" mat-header-cell *matHeaderCellDef> Game </th>
         <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element">{{element.game.title}}</td>
       </ng-container>
-    
+
       <ng-container matColumnDef="completionStatus">
         <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="completionStatus" mat-header-cell *matHeaderCellDef> Completion Status </th>
         <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{findCompletionStatusName(element.completionStatus)}} </td>
       </ng-container>
-    
+
       <ng-container matColumnDef="isFavourite">
         <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-sort-header="isFavourite" mat-header-cell *matHeaderCellDef> Is Favorite </th>
         <td class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-base pinkTextShadow border-2 border-white" mat-cell *matCellDef="let element"> {{element.isFavourite ? 'Yes' : 'No'}} </td>
       </ng-container>
-    
+
       <ng-container matColumnDef="options">
         <th class="synthwaveBg bg-repeat text-white font-arcade ml-1 text-center text-lg pinkTextShadowWide px-4 pt-0 border-r-2 border-l-2 border-b-2 border-white" mat-header-cell *matHeaderCellDef> Options </th>
-        <td class="max-[590px]:hidden synthwaveBg bg-repeat  border-2 border-white" mat-cell *matCellDef="let element">
+        <td class="synthwaveBg bg-repeat  border-2 border-white" mat-cell *matCellDef="let element">
           <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="openEditUserGameDialog(element)">Update</button>
           <button class="w-full text-white font-arcade text-center text-base pinkTextShadow" type="button" (click)="openGameDeletionConfirmationDialog(element)">Delete</button>
         </td>
       </ng-container>
-    
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
 
-  <div [hidden]="totalGames < 5">
+  <div [hidden]="totalGames < 6">
     <mat-paginator class="font-arcade text-base pinkTextShadowWide synthwaveBg bg-repeat text-white appearance-none"
       [length]="totalGames"
       [pageSize]="10"

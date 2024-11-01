@@ -1,12 +1,11 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { LibraryService } from '../../../services/library.service';
 import { AuthService } from '../../../services/auth.service';
-import { UserGame } from '../../../interfaces/userGame';
+import { UserGame } from '../../../models/userGame';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -14,8 +13,8 @@ import { BackgroundService } from '../../../services/background.service';
 import { NotificationService } from '../../../services/notification.service';
 import { completionStatuses } from '../../../enums/completionStatuses';
 import { MatSelectChange } from '@angular/material/select';
-import { libraryFilters } from '../../../interfaces/libraryFilters';
-import { Tag } from '../../../interfaces/tag';
+import { libraryFilters } from '../../../filters/libraryFilters';
+import { Tag } from '../../../models/tag';
 import { TagService } from '../../../services/tag.service';
 import { LibraryFormDialogComponent } from './library-form-dialog.component';
 
@@ -23,9 +22,9 @@ import { LibraryFormDialogComponent } from './library-form-dialog.component';
   selector: 'app-library',
   templateUrl: './library.component.html'
 })
-export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
+export class LibraryComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   private gamesList: UserGame[] = [];
-  protected totalGames: number = 0;
+  protected totalGames = 0;
   protected dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
   protected libraryEmpty = false;
   protected displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
@@ -77,7 +76,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   loadGames() {
-    var nickname = this.authService.getNickname();
+    const nickname = this.authService.getNickname();
 
     if (!nickname) {
       console.log('Nickname is not valid.');
@@ -89,7 +88,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
     const sortBy = this.sort.active || 'id';
     const sortDir = this.sort.direction || 'asc';
 
-    const observer: Observer<any> = {
+    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe({
       next: response => {
         if (response) {
           this.gamesList = response.content;
@@ -105,10 +104,8 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.libraryService.getUserGames(nickname, page, size, sortBy, sortDir, this.filters).subscribe(observer);
+      }
+    });
   }
 
   openEditUserGameDialog(userGame: UserGame) {
@@ -182,18 +179,15 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
       return;
     }
 
-    const observer: Observer<any> = {
-      next: response => {
-        this.gamesList = response;
+    this.libraryService.deleteUserGame(userGame.id).subscribe({
+      next: () => {
         this.dataSource.data = this.gamesList;
         this.loadGames();
       },
       error: error => {
         console.error(error);
-      },
-      complete: () => {}
-    };
-    this.libraryService.deleteUserGame(userGame.id).subscribe(observer);
+      }
+    });
   }
 
   compare(a: number | string, b: number | string, isAsc: boolean) {

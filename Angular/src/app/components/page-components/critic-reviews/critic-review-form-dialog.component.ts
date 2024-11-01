@@ -1,23 +1,23 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NotificationService } from '../../../services/notification.service';
-import { CriticReview } from '../../../interfaces/criticReview';
+import { CriticReview } from '../../../models/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 
 @Component({
   selector: 'app-critic-review-form-dialog',
   templateUrl: './critic-review-form-dialog.component.html',
 })
-export class CriticReviewFormDialogComponent {
+export class CriticReviewFormDialogComponent implements OnInit {
   protected criticReviewForm: FormGroup;
-  protected contentMinLength: number = 8;
+  protected contentMinLength = 8;
   
   protected criticReview: CriticReview = {
     gameTitle: '',
     userNickname: '',
     content: '',
-    postDate: new Date(),
+    postDate: undefined,
     score: undefined,
   };
 
@@ -42,10 +42,6 @@ export class CriticReviewFormDialogComponent {
       content: [this.criticReview.content, [Validators.required, Validators.minLength(this.contentMinLength)]],
       score: [this.criticReview.score, [Validators.required]]
     });
-  }
-
-  onCancel(): void {
-    this.dialogRef.close(false);
   }
   
   ngOnInit() {
@@ -79,8 +75,8 @@ export class CriticReviewFormDialogComponent {
       }
 
       this.criticReviewService.addCriticReview(reviewData).subscribe({
-        next: () => this.notificationService.popSuccessToast('Added review successfully'),
-        error: error => this.notificationService.popErrorToast('Adding review failed', error)
+        next: () => this.notificationService.popSuccessToast('Requested review successfully'),
+        error: error => this.notificationService.popErrorToast('Requesting review failed', error)
       });
       this.dialogRef.close(true);
     }

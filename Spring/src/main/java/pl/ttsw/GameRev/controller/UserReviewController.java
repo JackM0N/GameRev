@@ -89,9 +89,17 @@ public class UserReviewController {
 
     @PutMapping("/report")
     public ResponseEntity<ReportDTO> reportUserReview(@RequestBody ReportDTO reportDTO) throws BadRequestException {
-        if (reportDTO == null){
+        if (reportDTO == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(reportService.createReport(reportDTO));
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws BadRequestException {
+        if (reviewId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userReviewService.deleteUserReviewById(reviewId));
     }
 }

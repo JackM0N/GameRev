@@ -1,5 +1,5 @@
-﻿import { Component, Input } from '@angular/core';
-import { CriticReview } from '../../../../interfaces/criticReview';
+﻿import { Component, Input, OnInit } from '@angular/core';
+import { CriticReview } from '../../../../models/criticReview';
 import { CriticReviewService } from '../../../../services/critic-review.service';
 import { formatDateArray } from '../../../../util/formatDate';
 import { AuthService } from '../../../../services/auth.service';
@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
   selector: 'app-gameinfo-critic-review',
   templateUrl: './critic-review.component.html'
 })
-export class GameInfoCriticReviewComponent {
+export class GameInfoCriticReviewComponent implements OnInit {
   @Input() public gameTitle?: string;
   
   protected criticReview?: CriticReview;
@@ -23,7 +23,6 @@ export class GameInfoCriticReviewComponent {
   ) {}
 
   ngOnInit() {
-    // Load critic review
     this.loadCriticReview();
   }
 
@@ -45,14 +44,13 @@ export class GameInfoCriticReviewComponent {
     });
   }
 
-  canAddCriticReview() {
+  canRequestCriticReview() {
     return this.authService.isAuthenticated() && this.authService.hasRole('Critic');
   }
 
-  openAddCriticReviewDialog() {
+  openRequestCriticReviewDialog() {
     if (this.gameTitle) {
       const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
-        width: '400px',
         data: {
           editing: false,
           gameTitle: this.gameTitle
@@ -70,7 +68,6 @@ export class GameInfoCriticReviewComponent {
   openEditCriticReviewDialog(review: CriticReview) {
     if (this.gameTitle) {
       const dialogRef = this.dialog.open(CriticReviewFormDialogComponent, {
-        width: '400px',
         data: {
           editing: true,
           gameTitle: this.gameTitle,
@@ -86,5 +83,3 @@ export class GameInfoCriticReviewComponent {
     }
   }
 }
-
-

@@ -24,4 +24,5 @@ public class ForumPostDTO implements Serializable {
     Long views;
     Boolean isDeleted;
     LocalDateTime deletedAt;
+    String picture;
 }

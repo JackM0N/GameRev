@@ -74,7 +74,7 @@ public class CriticReviewService {
     }
 
     public CriticReviewDTO createCriticReview(CriticReviewDTO criticReviewDTO) throws BadRequestException {
-        if (criticReviewRepository.findByGameTitle(criticReviewDTO.getGameTitle()).isPresent()){
+        if (criticReviewRepository.findByGameTitle(criticReviewDTO.getGameTitle()).isPresent()) {
             throw new BadRequestException("Critic review already exists");
         }
         CriticReview criticReview = criticReviewMapper.toEntity(criticReviewDTO);

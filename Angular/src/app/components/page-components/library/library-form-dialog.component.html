@@ -1,23 +1,28 @@
 
-<form class="font-arcade pixel-border h-fit p-[6px] max-w-[400px] text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="libraryForm" (ngSubmit)="onConfirm()">
-  <div class="w-full py-4 px-6 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col justify-center bg-black">
-    <p class="text-2xl text-center mb-2">{{title}}</p>
-
+<app-popup-dialog
+  class="max-w-[500px]"
+  [dialogTitle]="title"
+  [submitColor]="''"
+  [noSubmitButton]="false"
+  [submitDisabled]="!libraryForm.valid"
+  (submitted)="onConfirm()"
+>
+  <form [formGroup]="libraryForm">
     <div class="mt-2 mb-1">
-      <label>Game</label>
+      <label class="pinkTextShadowWide">Game</label>
       <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="game">
         <mat-option>-</mat-option>
-        @for (game of gameList; track game) {
+        @for (game of gameList; track game.id) {
           <mat-option [value]="game">{{game.title}}</mat-option>
         }
       </mat-select>
       @if (isGameInvalid()) {
-        <mat-error class="text-red-500">Please choose a game</mat-error>
+        <mat-error class="text-red-500 noTextShadow">Please choose a game</mat-error>
       }
     </div>
 
     <div class="mt-2 mb-1">
-      <label>Completion status</label>
+      <label class="pinkTextShadowWide">Completion status</label>
       <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="completionStatus">
         <mat-option>-</mat-option>
         @for (status of completionStatuses; track status) {
@@ -25,30 +30,16 @@
         }
       </mat-select>
       @if (isCompletionStatusInvalid()) {
-        <mat-error class="text-red-500">Please choose a status</mat-error>
+        <mat-error class="text-red-500 noTextShadow">Please choose a status</mat-error>
       }
     </div>
 
     <div class="mt-2 mb-1">
-      <label>Favorite</label>
+      <label class="pinkTextShadowWide">Favorite</label>
       <mat-select class="border-2 bg-white text-black noTextShadow" formControlName="isFavourite">
         <mat-option [value]="false">False</mat-option>
         <mat-option [value]="true">True</mat-option>
       </mat-select>
     </div>
-
-    <div class="font-arcade text-xl flex justify-center gap-3 mt-4">
-      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
-        <div class="bg-red-700 text-center">
-          <button class="px-[10px]" type="button" (click)="onCancel()">Cancel</button>
-        </div>
-      </div>
-      
-      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
-        <div class="bg-green-600 text-center">
-          <button class="px-[10px] disabled:opacity-30" type="submit" [disabled]="!libraryForm.valid">Update</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
+  </form>
+</app-popup-dialog>

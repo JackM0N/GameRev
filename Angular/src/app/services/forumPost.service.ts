@@ -1,33 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { forumPostFilters } from '../interfaces/forumPostFilters';
-import { ForumPost } from '../interfaces/forumPost';
+import { forumPostFilters } from '../filters/forumPostFilters';
+import { ForumPost } from '../models/forumPost';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 // Service for handling forum posts
 export class ForumPostService {
-  private baseUrl = 'http://localhost:8080/forum-post';
-  private postByIdUrl = 'http://localhost:8080/post/origin';
-  private deleteUrl = 'http://localhost:8080/forum-post/delete';
-  private addUrl = 'http://localhost:8080/forum-post/create';
-  private editUrl = 'http://localhost:8080/forum-post/edit';
-  private pictureUrl = 'http://localhost:8080/forum-post/picture';
+  private apiUrl: string = environment.apiUrl;
+  
+  private baseUrl = this.apiUrl + '/forum-post';
+  private postByIdUrl = this.apiUrl + '/post/origin';
+  private deleteUrl = this.apiUrl + '/forum-post/delete';
+  private addUrl = this.apiUrl + '/forum-post/create';
+  private editUrl = this.apiUrl + '/forum-post/edit';
+  private pictureUrl = this.apiUrl + '/forum-post/picture';
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
   ) {}
 
-  getPost(id: number): Observable<ForumPost[]> {
-    return this.http.get<ForumPost[]>(`${this.postByIdUrl}/${id}`);
+  getPost(id: number): Observable<ForumPost> {
+    return this.http.get<ForumPost>(`${this.postByIdUrl}/${id}`);
   }
 
-  getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<ForumPost[]> {
-    var params = new HttpParams();
+  getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<PaginatedResponse<ForumPost>> {
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());
@@ -47,10 +51,10 @@ export class ForumPostService {
       }
     }
 
-    return this.http.get<ForumPost[]>(`${this.baseUrl}/${id}`, { params });
+    return this.http.get<PaginatedResponse<ForumPost>>(`${this.baseUrl}/${id}`, { params });
   }
 
-  addPost(post: ForumPost, picture?: File): Observable<any> {
+  addPost(post: ForumPost, picture?: File): Observable<ForumPost> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
@@ -61,10 +65,10 @@ export class ForumPostService {
       formData.append('picture', picture);
     }
   
-    return this.http.post(this.addUrl, formData, { headers });
+    return this.http.post<ForumPost>(this.addUrl, formData, { headers });
   }
   
-  editPost(post: ForumPost, picture?: File): Observable<any> {
+  editPost(post: ForumPost, picture?: File): Observable<ForumPost> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   
@@ -75,16 +79,16 @@ export class ForumPostService {
       formData.append('picture', picture);
     }
 
-    return this.http.put(`${this.editUrl}/${post.id}`, formData, { headers });
+    return this.http.put<ForumPost>(`${this.editUrl}/${post.id}`, formData, { headers });
   }
 
-  deletePost(id: number): Observable<any> {
+  deletePost(id: number): Observable<void> {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams().set('isDeleted', true);
+    const params = new HttpParams().set('isDeleted', true);
 
-    return this.http.delete(`${this.deleteUrl}/${id}`, { headers, params });
+    return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers, params });
   }
 
   getPicture(id: number): Observable<Blob> {

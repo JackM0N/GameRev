@@ -5,7 +5,7 @@ export interface UserReview {
   gameTitle?: string;
   userNickname?: string;
   content?: string;
-  postDate?: any;
+  postDate?: [number, number, number];
   score?: number;
   positiveRating?: number;
   negativeRating?: number;

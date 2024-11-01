@@ -14,20 +14,17 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PasswordResetTokenService {
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-    private WebsiteUserRepository websiteUserRepository;
-
-    public PasswordResetTokenService(PasswordResetTokenRepository passwordResetTokenRepository, WebsiteUserRepository websiteUserRepository) {
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
-        this.websiteUserRepository = websiteUserRepository;
-    }
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final WebsiteUserRepository websiteUserRepository;
 
     public String createPasswordResetToken(String email) {
         WebsiteUser user = websiteUserRepository.findByEmail(email)
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
+
         if (user == null) {
             throw new RuntimeException("User not found");
         }
+
         String token = UUID.randomUUID().toString();
         PasswordResetToken passwordResetToken = new PasswordResetToken();
         passwordResetToken.setToken(token);
@@ -35,7 +32,7 @@ public class PasswordResetTokenService {
         passwordResetToken.setExpiryDate(LocalDateTime.now().plus(Duration.ofHours(1)));
         passwordResetTokenRepository.save(passwordResetToken);
 
-        return "http://localhost:8080/password-reset/confirm?token="+token;
+        return "http://localhost:8080/password-reset/confirm?token=" + token;
     }
 
     public PasswordResetToken validatePasswordResetToken(String token) {

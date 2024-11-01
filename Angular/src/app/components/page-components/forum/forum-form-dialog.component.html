@@ -1,12 +1,17 @@
 
-<form class="font-arcade pixel-border h-fit p-[6px] max-w-[400px] text-white text-base caret-[#fb049c] pinkTextShadowWide" [formGroup]="forumForm" (ngSubmit)="onConfirm()">
-  <div class="w-full py-4 px-6 synthwaveFloor bg-contain bg-no-repeat bg-bottom z-10 flex flex-col justify-center bg-black">
-    <h1 class="text-2xl text-center mb-2">{{data?.editing ? "Editing a forum" : "Adding a new forum"}}</h1>
-
+<app-popup-dialog
+  class="max-w-[500px]"
+  [dialogTitle]="dialogTitle"
+  [submitColor]="''"
+  [noSubmitButton]="false"
+  [submitDisabled]="!forumForm.valid"
+  (submitted)="onConfirm()"
+  >
+  <form [formGroup]="forumForm">
     <div class="mt-2 mb-1">
       <label class="w-full">Parent forum</label><br>
       <mat-select class="border-2 bg-white text-black noTextShadow w-full p-1" formControlName="parentForum">
-        @for (forum of forumList; track forum) {
+        @for (forum of forumList; track forum.id) {
           <mat-option [value]="forum">{{forum.forumName}}</mat-option>
         }
       </mat-select>
@@ -15,44 +20,46 @@
     <div class="mt-2 mb-1">
       <label class="w-full">Name</label><br>
       <input class="w-full py-2 px-3 text-black text-sm" placeholder="Forum name" matInput formControlName="name">
-      <div *ngIf="forumForm.get('name')?.hasError('minLength')" class="p-2 text-red-600">
-        Name must be at least {{ nameMinLength }} characters long.
-      </div>
+      @if (forumForm.get('name')?.touched && forumForm.get('name')?.hasError('required')) {
+        <div class="font-arcade text-red-600 font-bold noTextShadow">
+          Please provide a name.
+        </div>
+      }
+      @if (forumForm.get('name')?.hasError('minLength')) {
+        <div class="p-2 text-red-600 noTextShadow">
+          Name must be at least {{ nameMinLength }} characters long.
+        </div>
+      }
     </div>
 
     <div class="mt-2 mb-1">
       <label class="w-full">Description</label><br>
       <textarea class="w-full text-black py-1 px-2 min-h-24 text-sm" placeholder="Forum description" matInput formControlName="description"></textarea>
-      <div *ngIf="forumForm.get('description')?.hasError('minLength')" class="p-2 text-red-600">
-        Description must be at least {{ descriptionMinLength }} characters long.
-      </div>
+      @if (forumForm.get('description')?.touched && forumForm.get('description')?.hasError('required')) {
+        <div class="font-arcade text-red-600 font-bold noTextShadow">
+          Please provide a description.
+        </div>
+      }
+      @if (forumForm.get('description')?.hasError('minLength')) {
+        <div class="p-2 text-red-600 noTextShadow">
+          Description must be at least {{ descriptionMinLength }} characters long.
+        </div>
+      }
     </div>
 
     <div class="mt-2 mb-1">
       <label class="w-full">Game</label><br>
       <mat-select class="border-2 bg-white text-black noTextShadow w-full text-sm p-1" formControlName="game">
         <mat-option>-</mat-option>
-        @for (game of gameList; track game) {
+        @for (game of gameList; track game.id) {
           <mat-option [value]="game">{{game.title}}</mat-option>
         }
       </mat-select>
-      <div *ngIf="isGameInvalid()" class="p-2 text-red-600">
-        Please choose a game.
-      </div>
-    </div>
-
-    <div class="font-arcade text-xl flex justify-center gap-3 mt-4">
-      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
-        <div class="bg-red-700 text-center">
-          <button class="px-[10px]" type="button" (click)="onCancel()">Cancel</button>
+      @if (isGameInvalid()) {
+        <div class="p-2 text-red-600 noTextShadow">
+          Please choose a game.
         </div>
-      </div>
-
-      <div class="pixel-border w-32 h-fit py-[6px] px-[6px]">
-        <div class="bg-green-600 text-center">
-          <button class="px-[10px] disabled:opacity-30" type="submit" [disabled]="!forumForm.valid">Submit</button>
-        </div>
-      </div>
+      }
     </div>
-  </div>
-</form>
+  </form>
+</app-popup-dialog>

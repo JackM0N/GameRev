@@ -61,7 +61,7 @@ public class ForumCommentController {
         ForumCommentDTO request = mapper.readValue(commentJson, ForumCommentDTO.class);
         ForumCommentDTO comment = forumCommentService.createForumComment(request, picture);
 
-        if (comment == null){
+        if (comment == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(comment);
@@ -71,7 +71,7 @@ public class ForumCommentController {
     public ResponseEntity<ForumCommentDTO> edit(
             @PathVariable Long id,
             @RequestParam(value = "comment") String commentJson,
-            @RequestParam(value = "picture") MultipartFile picture) throws IOException
+            @RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException
     {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())

@@ -1,30 +1,41 @@
-import { AfterViewInit, Component, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, SimpleChanges, ViewChild, OnChanges, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
 import { formatDateTimeArray } from '../../../util/formatDate';
-import { ForumPost } from '../../../interfaces/forumPost';
+import { ForumPost } from '../../../models/forumPost';
 import { ForumPostFormDialogComponent } from './forum-post-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
 import { ForumService } from '../../../services/forum.service';
-import { WebsiteUser } from '../../../interfaces/websiteUser';
+import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
-import { Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { forumPostFilters } from '../../../filters/forumPostFilters';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { AdService } from '../../../services/ad.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post-list',
   templateUrl: './forum-post-list.component.html'
 })
-export class ForumPostListComponent implements AfterViewInit {
+export class ForumPostListComponent implements AfterViewInit, OnChanges, OnInit {
   @Input() public currentForumId?: number;
   protected postList: ForumPost[] = [];
-  protected totalPosts: number = 0;
+  protected totalPosts = 0;
   @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
   protected moderators: WebsiteUser[] = [];
+
+  @ViewChild('searchInput', { static: false }) private searchInput?: ElementRef;
+  protected filtered = false;
+  private filters: forumPostFilters = {};
+  protected filterForm: FormGroup;
 
   constructor(
     private forumPostService: ForumPostService,
@@ -33,14 +44,34 @@ export class ForumPostListComponent implements AfterViewInit {
     private forumService: ForumService,
     protected dialog: MatDialog,
     protected authService: AuthService,
-    private router: Router
-  ) {}
+    private fb: FormBuilder,
+    private elRef: ElementRef,
+    private router: Router,
+    private adService: AdService,
+    private datePipe: DatePipe,
+  ) {
+    this.filterForm = this.fb.group({
+      dateRange: this.fb.group({
+        start: [null],
+        end: [null]
+      }),
+      search: [null]
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentForumId'] && changes['currentForumId'].currentValue) {
       this.loadPosts(changes['currentForumId'].currentValue);
       this.loadModerators(changes['currentForumId'].currentValue);
     }
+  }
+
+  ngOnInit(): void {
+    this.adService.adBoxActive$.subscribe(() => {
+      setTimeout(() => {
+        this.adjustFilterVisibility();
+      }, 0);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -58,32 +89,37 @@ export class ForumPostListComponent implements AfterViewInit {
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const size = this.paginator ? this.paginator.pageSize : 10;
 
-    this.forumPostService.getPosts(id, page, size).subscribe({
-      next: (response: any) => {
+    this.forumPostService.getPosts(id, page, size, "postDate", "desc", this.filters).subscribe({
+      next: response => {
         if (response && response.content.length > 0) {
           this.postList = response.content;
           this.totalPosts = response.totalElements;
           this.loadPostPictures();
+
+          setTimeout(() => {
+            this.adjustFilterVisibility();
+          }, 0);
+
+          this.activateSearchFilter();
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load posts', error)
     });
   }
 
   loadModerators(forumId: number) {
     this.forumService.getModerators(forumId).subscribe({
-      next: (response: any) => {
+      next: response => {
         if (response && response.length > 0) {
           this.moderators = response;
         }
       },
-      error: (error: any) => console.error(error)
+      error: (error: HttpErrorResponse) => this.notificationService.popErrorToast('Failed to load moderator info', error)
     });
   }
 
   openNewPostDialog() {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: this.currentForumId,
         editing: false
@@ -116,7 +152,6 @@ export class ForumPostListComponent implements AfterViewInit {
 
   openEditPostDialog(post: ForumPost) {
     const dialogRef = this.dialog.open(ForumPostFormDialogComponent, {
-      width: '400px',
       data: {
         forumId: this.currentForumId,
         editing: true,
@@ -168,6 +203,7 @@ export class ForumPostListComponent implements AfterViewInit {
   loadPostPictures() {
     this.postList.forEach(post => {
       if (post.picture && post.id) {
+
         const didPicChange = this.imageCacheService.didPictureNameChange("postPicName" + post.id, post.picture);
         if (!didPicChange && this.imageCacheService.isCached("postPic" + post.id)) {
           const cachedImage = this.imageCacheService.getCachedImage("postPic" + post.id);
@@ -176,7 +212,7 @@ export class ForumPostListComponent implements AfterViewInit {
           }
     
         } else {
-          const observerPicture: Observer<any> = {
+          this.forumPostService.getPicture(post.id).subscribe({
             next: response2 => {
               if (response2) {
                 this.imageCacheService.cacheBlob("postPic" + post.id, response2);
@@ -188,12 +224,8 @@ export class ForumPostListComponent implements AfterViewInit {
                 }
               }
             },
-            error: error => {
-              console.error(error);
-            },
-            complete: () => {}
-          };
-          this.forumPostService.getPicture(post.id).subscribe(observerPicture);
+            error: error => { console.error(error); }
+          });
         }
       }
     });
@@ -203,5 +235,112 @@ export class ForumPostListComponent implements AfterViewInit {
     if (id) {
       this.router.navigate([`forum/${this.currentForumId ?? 0}/post/${id}`]);
     }
+  }
+
+  // Filters
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.adjustFilterVisibility();
+  }
+
+  protected hideFilters = false;
+  protected isFilterExpanded = false;
+  toggleFilterPanel() {
+    this.isFilterExpanded = !this.isFilterExpanded;
+  }
+
+  private isForumContentSmall(): boolean {
+    const subForumContent = this.elRef.nativeElement.querySelector('#forum-posts');
+    const filterForm = this.elRef.nativeElement.querySelector('#posts-filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#posts-filters-menu-button');
+
+    if (subForumContent && filterForm && filterMenuButton) {
+      const subForumContentWidth = subForumContent.offsetWidth;
+      
+      return (subForumContentWidth < 960);
+    }
+
+    return false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    const filterForm = this.elRef.nativeElement.querySelector('#posts-filter-form');
+    const filterMenuButton = this.elRef.nativeElement.querySelector('#posts-filters-menu-button');
+
+    if (filterForm && this.isFilterExpanded && !filterForm.contains(targetElement) && (filterMenuButton && !filterMenuButton.contains(targetElement))) {
+      this.isFilterExpanded = false;
+    }
+  }
+
+  adjustFilterVisibility() {
+    const isSmall = this.isForumContentSmall();
+
+    this.hideFilters = isSmall;
+
+    if (!isSmall && this.isFilterExpanded) {
+      this.isFilterExpanded = false;
+    }
+  }
+
+  activateSearchFilter() {
+    setTimeout(() => {
+      if (this.searchInput) {
+        fromEvent<InputEvent>(this.searchInput.nativeElement, 'input').pipe(
+          map((event) => (event.target as HTMLInputElement).value),
+          debounceTime(300),
+          distinctUntilChanged()
+
+        ).subscribe(value => {
+          this.onSearchFilterChange(value);
+        });
+      }
+    }, 0);
+  }
+
+  onSearchFilterChange(value: string) {
+    this.filters.search = value;
+    this.filtered = true;
+    this.loadPosts(this.currentForumId ?? 0);
+  }
+
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+      
+      if (formattedDate) {
+        this.filters.startDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadPosts(this.currentForumId ?? 0);
+      }
+    }
+  }
+
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    const selectedDate = event.value;
+
+    if (selectedDate) {
+      const formattedDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+
+      if (formattedDate) {
+        this.filters.endDate = formattedDate;
+      }
+
+      if (this.filters.startDate && this.filters.endDate) {
+        this.loadPosts(this.currentForumId ?? 0);
+      }
+    }
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.filterForm.reset();
+    this.loadPosts(this.currentForumId ?? 0);
   }
 }
