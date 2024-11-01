@@ -6,6 +6,15 @@ import QuillResizeImage from 'quill-resize-image';
 
 Quill.register('modules/resize', QuillResizeImage);
 
+interface Route {
+  label: string;
+  link: string;
+  roles?: string[];
+  guestOnly?: boolean;
+  guestsCanAccess?: boolean;
+  onlyMobile?: boolean;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,8 +28,8 @@ export class AppComponent implements OnInit {
   protected mainStyles: Record<string, string> = {};
   protected classes: string[] = [];
 
-  protected routes = [
-    { label: 'Forums', link: '/', onlyMobile: true },
+  protected routes: Route[] = [
+    { label: 'Forums', link: '/' },
     { label: 'Games', link: '/games', guestsCanAccess: true },
     { label: 'Reports', link: '/reports', roles: ['Admin'] },
     { label: 'Critics', link: '/critic-reviews', roles: ['Admin', 'Critic'] },
@@ -62,7 +71,7 @@ export class AppComponent implements OnInit {
     this.isNavbarOpen = false;
   }
 
-  canUseRoute(route: { roles?: string[], guestOnly?: boolean, guestsCanAccess?: boolean }) {
+  canUseRoute(route: Route) {
     if (!this.authService.isAuthenticated()) {
       return route.guestOnly || route.guestsCanAccess;
 
