@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { PopupDialogData } from '../../models/popupDialogData';
 
 @Component({
   selector: 'app-popup-dialog',
@@ -20,7 +21,7 @@ export class PopupDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PopupDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) protected injectedData: any
+    @Inject(MAT_DIALOG_DATA) protected injectedData: PopupDialogData
   ) {}
 
   ngOnInit(): void {
