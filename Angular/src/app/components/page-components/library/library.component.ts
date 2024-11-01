@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,9 +22,9 @@ import { LibraryFormDialogComponent } from './library-form-dialog.component';
   selector: 'app-library',
   templateUrl: './library.component.html'
 })
-export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
+export class LibraryComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   private gamesList: UserGame[] = [];
-  protected totalGames: number = 0;
+  protected totalGames = 0;
   protected dataSource: MatTableDataSource<UserGame> = new MatTableDataSource<UserGame>(this.gamesList);
   protected libraryEmpty = false;
   protected displayedColumns: string[] = ['game', 'completionStatus', 'isFavourite', 'options'];
@@ -76,7 +76,7 @@ export class LibraryComponent extends BaseAdComponent implements AfterViewInit {
   }
 
   loadGames() {
-    var nickname = this.authService.getNickname();
+    const nickname = this.authService.getNickname();
 
     if (!nickname) {
       console.log('Nickname is not valid.');

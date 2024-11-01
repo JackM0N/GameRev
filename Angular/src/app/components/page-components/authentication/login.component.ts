@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../models/loginCredentials';
@@ -14,7 +14,7 @@ import { AdService } from '../../../services/ad.service';
   selector: 'app-login',
   templateUrl: './login.component.html'
 })
-export class LoginComponent extends BaseAdComponent {
+export class LoginComponent extends BaseAdComponent implements OnInit {
   protected loginForm: FormGroup;
   protected hidePassword = signal(true);
 

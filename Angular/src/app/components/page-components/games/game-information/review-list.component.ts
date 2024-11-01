@@ -32,7 +32,7 @@ export class GameInfoReviewListComponent implements AfterViewInit {
   @ViewChild(MatSort) protected sort!: MatSort;
 
   protected reviewList: UserReview[] = [];
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
 
   protected reportList: Report[] = [];
 

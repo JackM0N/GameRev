@@ -25,7 +25,7 @@ export class GameService {
   ) {}
 
   getGames(page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: gameFilters): Observable<PaginatedResponse<Game>> {
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());

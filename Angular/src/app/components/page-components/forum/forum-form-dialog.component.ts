@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GameService } from '../../../services/game.service';
@@ -14,15 +14,15 @@ import { ForumRequestService } from '../../../services/forumRequest.service';
   selector: 'app-forum-form-dialog',
   templateUrl: './forum-form-dialog.component.html',
 })
-export class ForumFormDialogComponent {
+export class ForumFormDialogComponent implements OnInit {
   protected forumForm: FormGroup;
-  protected nameMinLength: number = 4;
-  protected descriptionMinLength: number = 8;
+  protected nameMinLength = 4;
+  protected descriptionMinLength = 8;
   protected gameList: Game[] = [];
   protected forumList: Forum[] = [];
 
-  private description: string = '';
-  private name: string = '';
+  private description = '';
+  private name = '';
   private game?: Game;
   private parentForumId?: number;
   private forumId?: number;

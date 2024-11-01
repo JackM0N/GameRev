@@ -31,7 +31,7 @@ export class ForumPostService {
   }
 
   getPosts(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumPostFilters): Observable<PaginatedResponse<ForumPost>> {
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());
@@ -86,7 +86,7 @@ export class ForumPostService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams().set('isDeleted', true);
+    const params = new HttpParams().set('isDeleted', true);
 
     return this.http.delete<void>(`${this.deleteUrl}/${id}`, { headers, params });
   }

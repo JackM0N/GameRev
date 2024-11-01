@@ -1,4 +1,4 @@
-﻿import { Component, Input, signal } from '@angular/core';
+﻿import { Component, Input, signal, OnChanges } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
@@ -10,7 +10,7 @@ import { NewCredentials } from '../../../../models/newCredentials';
   selector: 'app-email-change',
   templateUrl: './email-change-component.html'
 })
-export class EmailChangeComponent {
+export class EmailChangeComponent implements OnChanges {
   @Input() public passedEmail?: string;
   
   protected changeEmailForm: FormGroup;

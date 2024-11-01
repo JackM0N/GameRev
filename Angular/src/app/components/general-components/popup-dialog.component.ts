@@ -6,14 +6,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './popup-dialog.component.html',
 })
 export class PopupDialogComponent implements OnInit {
-  @Input() dialogTitle: string = '';
-  @Input() dialogContent: string = '';
-  @Input() submitText: string = 'Submit';
-  @Input() cancelText: string = 'Cancel';
-  @Input() noSubmitButton: boolean = false;
-  @Input() cancelColor: string = '';
-  @Input() submitColor: string = '';
-  @Input() submitDisabled: boolean = false;
+  @Input() dialogTitle = '';
+  @Input() dialogContent = '';
+  @Input() submitText = 'Submit';
+  @Input() cancelText = 'Cancel';
+  @Input() noSubmitButton = false;
+  @Input() cancelColor = '';
+  @Input() submitColor = '';
+  @Input() submitDisabled = false;
   
   @Output() submitted = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();

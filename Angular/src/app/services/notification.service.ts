@@ -25,7 +25,7 @@ export class NotificationService {
       this.router.navigate(['/']);
     }
     
-    var toast: Toast = {
+    const toast: Toast = {
       type: 'success',
       title: title,
       showCloseButton: true
@@ -37,7 +37,7 @@ export class NotificationService {
     if (error) {
       console.error(error);
     }
-    var toast: Toast = {
+    const toast: Toast = {
       type: 'error',
       title: title,
       showCloseButton: true

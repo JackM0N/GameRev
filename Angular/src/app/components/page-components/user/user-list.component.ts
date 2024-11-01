@@ -24,7 +24,7 @@ import { AdService } from '../../../services/ad.service';
   templateUrl: './user-list.component.html'
 })
 export class UserListComponent extends BaseAdComponent implements OnInit, AfterViewInit {
-  protected totalUsers: number = 0;
+  protected totalUsers = 0;
   protected dataSource: MatTableDataSource<WebsiteUser> = new MatTableDataSource<WebsiteUser>([]);
   protected displayedColumns: string[] = ['nickname', 'lastActionDate', 'description', 'joinDate', 'isBanned', 'roles', 'options'];
   protected isAdmin = false;

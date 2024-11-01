@@ -24,7 +24,7 @@ export class OwnProfileComponent implements OnInit {
 
   public hidePassword = signal(true);
   private selectedImage: File | null = null;
-  public imageUrl: string = '';
+  public imageUrl = '';
 
   public email?: string;
 

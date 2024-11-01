@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
 import Quill from 'quill';
@@ -11,12 +11,12 @@ Quill.register('modules/resize', QuillResizeImage);
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public title = 'Gamerev';
   protected isNavbarOpen = false;
 
-  protected styles: { [key: string]: string } = {};
-  protected mainStyles: { [key: string]: string } = {};
+  protected styles: Record<string, string> = {};
+  protected mainStyles: Record<string, string> = {};
   protected classes: string[] = [];
 
   protected routes = [

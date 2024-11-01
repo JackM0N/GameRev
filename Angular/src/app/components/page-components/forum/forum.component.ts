@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -23,7 +23,7 @@ import { MatSelectChange } from '@angular/material/select';
   selector: 'app-forum',
   templateUrl: './forum.component.html'
 })
-export class ForumComponent extends BaseAdComponent implements AfterViewInit {
+export class ForumComponent extends BaseAdComponent implements AfterViewInit, OnInit, OnDestroy {
   protected subForumList: Forum[] = [];
   protected totalSubforums = 0;
   protected noSubForums = false;
@@ -304,8 +304,8 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit {
     this.adjustFilterVisibility();
   }
 
-  protected hideFilters: boolean = false;
-  protected isFilterExpanded: boolean = false;
+  protected hideFilters = false;
+  protected isFilterExpanded = false;
   toggleFilterPanel() {
     this.isFilterExpanded = !this.isFilterExpanded;
   }

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Forum } from '../../../models/forum';
@@ -11,19 +11,19 @@ import { FileUploadOptions } from '../../../enums/fileUploadOptions';
   selector: 'app-forum-post-form-dialog',
   templateUrl: './forum-post-form-dialog.component.html',
 })
-export class ForumPostFormDialogComponent {
+export class ForumPostFormDialogComponent implements OnInit {
   protected forumPostForm: FormGroup;
-  protected titleMinLength: number = 4;
-  protected contentMinLength: number = 8;
+  protected titleMinLength = 4;
+  protected contentMinLength = 8;
   protected forumList: Forum[] = [];
 
-  private title: string = '';
-  private content: string = '';
+  private title = '';
+  private content = '';
   private forumId?: number;
   private postId?: number;
 
   private selectedImage?: File;
-  protected imageUrl: string = '';
+  protected imageUrl = '';
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],

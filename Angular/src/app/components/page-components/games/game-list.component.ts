@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { GameService } from '../../../services/game.service';
 import { Game } from '../../../models/game';
 import { MatPaginator } from '@angular/material/paginator';
@@ -25,9 +25,9 @@ import { NotificationService } from '../../../services/notification.service';
   selector: 'app-game-list',
   templateUrl: './game-list.component.html'
 })
-export class GameListComponent extends BaseAdComponent implements AfterViewInit {
+export class GameListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   protected gameList: Game[] = [];
-  protected totalGames: number = 0;
+  protected totalGames = 0;
 
   protected releaseStatuses = releaseStatuses;
   protected tagList: Tag[] = [];

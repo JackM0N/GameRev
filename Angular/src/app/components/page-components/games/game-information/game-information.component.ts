@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Game } from '../../../../models/game';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../../services/game.service';
@@ -23,16 +23,16 @@ import { GameFormDialogComponent } from '../game-form-dialog.component';
   selector: 'app-game-information',
   templateUrl: './game-information.component.html'
 })
-export class GameInformationComponent extends BaseAdComponent implements OnInit {
+export class GameInformationComponent extends BaseAdComponent implements OnInit, AfterViewInit {
   @ViewChild(GameInfoReviewListComponent) protected reviewListComponent!: GameInfoReviewListComponent;
   
   protected formatDate = formatDateArray;
   protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  protected usersScoreText: string = '';
+  protected usersScoreText = '';
 
-  protected gameTitle: string = '';
+  protected gameTitle = '';
 
-  protected toggleSmallScreenMenu: boolean = false;
+  protected toggleSmallScreenMenu = false;
 
   protected game: Game = {
     title: '',
@@ -76,7 +76,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
           this.game = game;
 
           // Replace release status with status from the list so it shows up in select
-          for (let status of this.releaseStatuses) {
+          for (const status of this.releaseStatuses) {
             if (status.className === this.game.releaseStatus) {
               this.game.releaseStatus = status.name;
               break;
@@ -107,7 +107,7 @@ export class GameInformationComponent extends BaseAdComponent implements OnInit 
 
   updateUsersScoreText(score?: number) {
     if (this.game.usersScore) {
-      var calculatedScore = this.game.usersScore;
+      let calculatedScore = this.game.usersScore;
 
       if (score) {
         calculatedScore = calculatedScore - score;

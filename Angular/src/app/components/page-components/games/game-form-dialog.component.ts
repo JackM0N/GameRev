@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReleaseStatus } from '../../../models/releaseStatus';
@@ -13,10 +13,10 @@ import { TagService } from '../../../services/tag.service';
   selector: 'app-game-form-dialog',
   templateUrl: './game-form-dialog.component.html',
 })
-export class GameFormDialogComponent {
+export class GameFormDialogComponent implements OnInit {
   protected addingGameForm: FormGroup;
   protected releaseStatuses: ReleaseStatus[] = releaseStatuses;
-  protected listTitle: string = 'Add a new game';
+  protected listTitle = 'Add a new game';
   protected tagsList: Tag[] = [];
 
   constructor(
@@ -59,7 +59,7 @@ export class GameFormDialogComponent {
         releaseDate: new Date(this.data.game.releaseDate[0], this.data.game.releaseDate[1] -1, this.data.game.releaseDate[2], 15)
       });
 
-      var status = this.releaseStatuses.find(rs => rs.className === this.data.game.releaseStatus || rs.name === this.data.game.releaseStatus);
+      const status = this.releaseStatuses.find(rs => rs.className === this.data.game.releaseStatus || rs.name === this.data.game.releaseStatus);
 
       if (status) {
         this.addingGameForm.patchValue({

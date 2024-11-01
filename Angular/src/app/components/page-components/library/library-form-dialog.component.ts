@@ -18,7 +18,7 @@ export class LibraryFormDialogComponent implements OnInit {
   protected libraryForm: FormGroup;
   protected completionStatuses: CompletionStatus[] = completionStatuses;
   protected gameList: Game[] = [];
-  protected title: string = "";
+  protected title = "";
 
   private userGame: UserGame = {
     id: undefined,

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,7 @@ import { AdService } from '../../../services/ad.service';
   templateUrl: './registration.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegistrationComponent extends BaseAdComponent {
+export class RegistrationComponent extends BaseAdComponent implements OnInit {
   registrationForm: FormGroup;
 
   emailErrorMessage = signal('');

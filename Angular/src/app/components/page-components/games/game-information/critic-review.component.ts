@@ -1,4 +1,4 @@
-﻿import { Component, Input } from '@angular/core';
+﻿import { Component, Input, OnInit } from '@angular/core';
 import { CriticReview } from '../../../../models/criticReview';
 import { CriticReviewService } from '../../../../services/critic-review.service';
 import { formatDateArray } from '../../../../util/formatDate';
@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
   selector: 'app-gameinfo-critic-review',
   templateUrl: './critic-review.component.html'
 })
-export class GameInfoCriticReviewComponent {
+export class GameInfoCriticReviewComponent implements OnInit {
   @Input() public gameTitle?: string;
   
   protected criticReview?: CriticReview;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AdService } from '../../../services/ad.service';
 import { BackgroundService } from '../../../services/background.service';
 
@@ -6,7 +6,7 @@ import { BackgroundService } from '../../../services/background.service';
   selector: 'app-not-found',
   templateUrl: './not-found.component.html'
 })
-export class NotFoundComponent {
+export class NotFoundComponent implements OnInit {
   constructor(
     private adService: AdService,
     private backgroundService: BackgroundService

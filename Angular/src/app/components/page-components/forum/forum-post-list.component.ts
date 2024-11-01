@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, SimpleChanges, ViewChild, OnChanges, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ForumPostService } from '../../../services/forumPost.service';
@@ -23,10 +23,10 @@ import { DatePipe } from '@angular/common';
   selector: 'app-forum-post-list',
   templateUrl: './forum-post-list.component.html'
 })
-export class ForumPostListComponent implements AfterViewInit {
+export class ForumPostListComponent implements AfterViewInit, OnChanges, OnInit {
   @Input() public currentForumId?: number;
   protected postList: ForumPost[] = [];
-  protected totalPosts: number = 0;
+  protected totalPosts = 0;
   @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
   protected moderators: WebsiteUser[] = [];
@@ -243,8 +243,8 @@ export class ForumPostListComponent implements AfterViewInit {
     this.adjustFilterVisibility();
   }
 
-  protected hideFilters: boolean = false;
-  protected isFilterExpanded: boolean = false;
+  protected hideFilters = false;
+  protected isFilterExpanded = false;
   toggleFilterPanel() {
     this.isFilterExpanded = !this.isFilterExpanded;
   }

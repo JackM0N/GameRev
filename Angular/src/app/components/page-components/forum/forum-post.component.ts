@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild, OnInit } from '@angular/core';
 import { BackgroundService } from '../../../services/background.service';
 import { BaseAdComponent } from '../../base-components/base-ad-component';
 import { AdService } from '../../../services/ad.service';
@@ -26,14 +26,14 @@ import { ForumComment } from '../../../models/forumComment';
   selector: 'app-forum-post',
   templateUrl: './forum-post.component.html'
 })
-export class ForumPostComponent extends BaseAdComponent {
+export class ForumPostComponent extends BaseAdComponent implements OnInit {
   @ViewChild('paginator') protected paginator!: MatPaginator;
   protected formatDateTimeArray = formatDateTimeArray;
 
   @Input() protected post?: ForumPost;
 
   protected commentsList: any[] = [];
-  protected totalComments: number = 0;
+  protected totalComments = 0;
   protected path?: any;
   protected moderators: WebsiteUser[] = [];
   protected imageUrl?: string;
@@ -127,8 +127,8 @@ export class ForumPostComponent extends BaseAdComponent {
   loadComments(id: number) {
     this.commentsList = [];
 
-    var page = 1;
-    var size = 10;
+    let page = 1;
+    let size = 10;
 
     if (this.paginator) {
       page = this.paginator.pageIndex + 1;

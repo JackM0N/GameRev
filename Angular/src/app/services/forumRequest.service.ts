@@ -29,7 +29,7 @@ export class ForumRequestService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (sortBy && sortDir) {
       params = params.set('sort', sortBy + ',' + sortDir);
@@ -65,7 +65,7 @@ export class ForumRequestService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams().set('approved', approved.toString());
+    const params = new HttpParams().set('approved', approved.toString());
 
     return this.http.put<any>(`${this.approveUrl}/${request.id}`, request, { headers, params });
   }

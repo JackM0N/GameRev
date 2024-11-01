@@ -44,7 +44,7 @@ export class CriticReviewService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams()
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir
@@ -84,7 +84,7 @@ export class CriticReviewService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (criticReview.reviewStatus) {
       params = new HttpParams()

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Game } from '../../../models/game';
@@ -10,7 +10,7 @@ import { UserReviewService } from '../../../services/user-review.service';
   selector: 'app-user-review-form-dialog',
   templateUrl: './user-review-form-dialog.component.html',
 })
-export class UserReviewFormDialogComponent {
+export class UserReviewFormDialogComponent implements OnInit {
   protected userReviewForm: FormGroup;
   
   protected userReview: UserReview = {

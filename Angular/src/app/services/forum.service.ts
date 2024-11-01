@@ -43,7 +43,7 @@ export class ForumService {
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
 
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());
@@ -63,7 +63,7 @@ export class ForumService {
       }
     }
 
-    var url = this.baseUrl;
+    let url = this.baseUrl;
     if (id) {
       url += `/${id}`;
     }
@@ -85,7 +85,7 @@ export class ForumService {
     return this.http.put<Forum>(`${this.editUrl}/${forum.id}`, forum, { headers });
   }
 
-  deleteForum(id: number, isDeleted: boolean = true): Observable<void> {
+  deleteForum(id: number, isDeleted = true): Observable<void> {
     const params = new HttpParams().set("isDeleted", isDeleted);
     const token = this.authService.getToken();
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();

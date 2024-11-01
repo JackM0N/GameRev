@@ -22,7 +22,7 @@ export class LibraryService {
   ) {}
 
   getUserGames(nickname: string, page: number, size: number, sortBy: string, sortDir: string, filters: libraryFilters): Observable<PaginatedResponse<UserGame>> {
-    var params = new HttpParams()
+    let params = new HttpParams()
       .set('page', (page - 1).toString())
       .set('size', size.toString())
       .set('sort', sortBy + ',' + sortDir

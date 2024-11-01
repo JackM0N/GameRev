@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ForumCommentService } from '../../../services/forumComment.service';
@@ -9,10 +9,10 @@ import { quillTextLengthValidator } from '../../../validators/quillTextLengthVal
   selector: 'app-forum-comment-edit-dialog',
   templateUrl: './forum-comment-edit-dialog.component.html',
 })
-export class ForumCommentEditDialogComponent {
+export class ForumCommentEditDialogComponent implements OnInit {
   protected commentForm: FormGroup;
-  protected content: string = '';
-  public minLength: number = 4;
+  protected content = '';
+  public minLength = 4;
   
   protected quillToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],

@@ -12,11 +12,11 @@ import { FileUploadOptions } from '../../../enums/fileUploadOptions';
 })
 export class ForumCommentFormComponent {
   protected commentForm: FormGroup;
-  protected minLength: number = 4;
+  protected minLength = 4;
   @Input() public postId: any;
   @Output() public commentPosted = new EventEmitter<void>();
 
-  protected imageUrl: string = '';
+  protected imageUrl = '';
   private selectedImage?: File;
   
   protected modules = {

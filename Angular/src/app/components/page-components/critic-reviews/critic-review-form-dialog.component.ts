@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NotificationService } from '../../../services/notification.service';
@@ -9,9 +9,9 @@ import { CriticReviewService } from '../../../services/critic-review.service';
   selector: 'app-critic-review-form-dialog',
   templateUrl: './critic-review-form-dialog.component.html',
 })
-export class CriticReviewFormDialogComponent {
+export class CriticReviewFormDialogComponent implements OnInit {
   protected criticReviewForm: FormGroup;
-  protected contentMinLength: number = 8;
+  protected contentMinLength = 8;
   
   protected criticReview: CriticReview = {
     gameTitle: '',

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,7 +18,7 @@ import { UserReviewService } from '../../../services/user-review.service';
 
 class ReportInformation {
   reports: Report[] = [];
-  totalReports: number = 0;
+  totalReports = 0;
   dataSource: MatTableDataSource<Report> = new MatTableDataSource<Report>([]);
 }
 
@@ -26,9 +26,9 @@ class ReportInformation {
   selector: 'app-admin-report-list',
   templateUrl: './admin-report-list.component.html'
 })
-export class AdminReportListComponent implements AfterViewInit {
+export class AdminReportListComponent implements AfterViewInit, OnInit {
   protected reviewsList: UserReview[] = [];
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected noReviews = false;
 
   protected reportsList: ReportInformation[] = [];
@@ -95,7 +95,7 @@ export class AdminReportListComponent implements AfterViewInit {
     });
   }
 
-  loadReportsForReview(review: UserReview, refreshing: boolean = false) {
+  loadReportsForReview(review: UserReview, refreshing = false) {
     if (!refreshing && review.id != undefined && this.reportsList[review.id] !== undefined) {
       return;
     }
@@ -105,8 +105,8 @@ export class AdminReportListComponent implements AfterViewInit {
       return;
     }
 
-    var page = undefined;
-    var size = undefined;
+    let page = undefined;
+    let size = undefined;
     const sortBy = 'id';
     const sortDir = 'asc';
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { ForumRequestService } from '../../../services/forumRequest.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ForumRequest } from '../../../models/forumRequest';
@@ -17,12 +17,12 @@ import { MatSort } from '@angular/material/sort';
   selector: 'app-forum-requests',
   templateUrl: './forum-requests.component.html'
 })
-export class ForumRequestsComponent implements AfterViewInit {
+export class ForumRequestsComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) protected paginator!: MatPaginator;
 
   protected requestList: ForumRequest[] = [];
   protected dataSource: MatTableDataSource<ForumRequest> = new MatTableDataSource<ForumRequest>([]);
-  protected totalRequests: number = 0;
+  protected totalRequests = 0;
   protected displayedColumns: string[] = ['forumName', 'description', 'game', 'parentForum', 'author', 'approved', 'options'];
   @ViewChild(MatSort) protected sort!: MatSort;
 

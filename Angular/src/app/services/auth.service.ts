@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 })
 // Service for handling website authentication
 export class AuthService {
-  private tokenKey: string = 'gamerev_access_token';
+  private tokenKey = 'gamerev_access_token';
   private apiUrl: string = environment.apiUrl;
   
   private registerUrl = this.apiUrl + '/register';

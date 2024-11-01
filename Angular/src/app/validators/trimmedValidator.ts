@@ -1,7 +1,7 @@
 ﻿import { AbstractControl, ValidatorFn } from "@angular/forms";
 
 export function trimmedValidator(minLength: number): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: boolean } | null => {
+  return (control: AbstractControl): Record<string, boolean> | null => {
     const trimmedValue = control.value ? control.value.trim() : '';
 
     if (trimmedValue.length === 0) {

@@ -144,7 +144,7 @@
               </button>
 
               @if (canDeleteReview(element)) {
-                @if (element.reviewStatus != 'DELETED') {
+                @if (element.reviewStatus !== 'DELETED') {
                   <button
                     class="w-full text-white font-arcade text-center text-base pinkTextShadow"
                     type="button"
@@ -152,7 +152,7 @@
                     Delete
                   </button>
                 }
-                @else if (element.reviewStatus == 'DELETED') {
+                @else if (element.reviewStatus === 'DELETED') {
                   <button
                     class="w-full text-white font-arcade text-center text-base pinkTextShadow"
                     type="button"

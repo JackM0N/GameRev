@@ -28,7 +28,7 @@ export class ForumCommentService {
   ) {}
 
   getComments(id: number, page?: number, size?: number, sortBy?: string, sortDir?: string, filters?: forumCommentFilters): Observable<PaginatedResponse<ForumComment>> {
-    var params = new HttpParams();
+    let params = new HttpParams();
 
     if (page) {
       params = params.set('page', (page - 1).toString());

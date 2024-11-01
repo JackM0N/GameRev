@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserReview } from '../../../models/userReview';
@@ -20,10 +20,10 @@ import { Report } from '../../../models/report';
   selector: 'app-report-review-list',
   templateUrl: './user-report-list.component.html'
 })
-export class UserReportListComponent extends BaseAdComponent implements AfterViewInit {
+export class UserReportListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   protected reportList: UserReview[] = [];
   protected dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
-  protected totalReports: number = 0;
+  protected totalReports = 0;
   protected displayedColumns: string[] = ['content', 'approved', 'options'];
   protected userId?: number;
   protected formatDate = formatDateArray;

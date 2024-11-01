@@ -1,7 +1,7 @@
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { MatSort } from '@angular/material/sort';
@@ -9,7 +9,7 @@ import { formatDateArray } from '../../../util/formatDate';
 import { CriticReview } from '../../../models/criticReview';
 import { CriticReviewService } from '../../../services/critic-review.service';
 import { reviewStatuses } from '../../../enums/reviewStatuses';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PopupDialogComponent } from '../../general-components/popup-dialog.component';
 import { NotificationService } from '../../../services/notification.service';
@@ -26,9 +26,9 @@ import { CriticReviewFormDialogComponent } from './critic-review-form-dialog.com
   selector: 'app-critic-review-list',
   templateUrl: './critic-review-list.component.html'
 })
-export class CriticReviewListComponent implements AfterViewInit {
+export class CriticReviewListComponent implements AfterViewInit, OnInit {
   protected dataSource: MatTableDataSource<CriticReview> = new MatTableDataSource<CriticReview>([]);
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected displayedColumns: string[] = ['gameTitle', 'user', 'content', 'postDate', 'score', 'reviewStatus', 'options'];
   protected formatDate = formatDateArray;
   protected reviewStatuses = reviewStatuses;
@@ -184,7 +184,7 @@ export class CriticReviewListComponent implements AfterViewInit {
   }
 
   findReviewStatusName(review: CriticReview) {
-    var status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
+    const status = reviewStatuses.find(rs => rs.className === review.reviewStatus)?.name;
     return status;
   }
 

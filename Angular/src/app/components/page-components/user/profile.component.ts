@@ -15,7 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class ProfileComponent extends BaseAdComponent implements OnInit {
   protected selectedImage: File | null = null;
-  protected imageUrl: string = '';
+  protected imageUrl = '';
   protected formatDate = formatDateArray;
 
   protected user?: WebsiteUser;

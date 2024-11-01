@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observer } from 'rxjs';
@@ -21,10 +21,10 @@ import { NotificationService } from '../../../services/notification.service';
   selector: 'app-user-review-list',
   templateUrl: './user-review-list.component.html'
 })
-export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit {
+export class UserReviewListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
   protected reviewList: UserReview[] = [];
   protected dataSource: MatTableDataSource<UserReview> = new MatTableDataSource<UserReview>([]);
-  protected totalReviews: number = 0;
+  protected totalReviews = 0;
   protected displayedColumns: string[] = ['gameTitle', 'content', 'postDate', 'score', 'options'];
   protected userId?: number;
   protected formatDate = formatDateArray;
