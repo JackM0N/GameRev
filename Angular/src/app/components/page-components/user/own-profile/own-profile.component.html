@@ -84,7 +84,7 @@
           }
 
           <!-- Min length current password error -->
-          @if (changeProfileInformationForm.get('currentPassword')?.touched && changeProfileInformationForm.get('currentPassword')?.getError('minlength') != undefined) {
+          @if (changeProfileInformationForm.get('currentPassword')?.touched && changeProfileInformationForm.get('currentPassword')?.getError('minlength') !== undefined) {
             <mat-error class="font-arcade text-red-600 font-bold drop-shadow-lg">
               Please provide a longer password.
               <div class="m-0 p-0 text-sm">(min {{ changeProfileInformationForm.get('currentPassword')?.getError('minlength')["requiredLength"] }} characters)</div>

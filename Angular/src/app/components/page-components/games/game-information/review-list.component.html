@@ -89,25 +89,25 @@
               }
             </div>
             <!-- Like / dislike -->
-            @if (review.userNickname != authService.getUsername()) {
+            @if (review.userNickname !== authService.getUsername()) {
               <div>
                 <button
                   class="synthwaveButton synthwaveButtonSmall"
             [ngClass]="{
-              'likeButton': review.ownRatingIsPositive != true,
-              'likeButtonNotLiked': review.ownRatingIsPositive == true,
+              'likeButton': review.ownRatingIsPositive !== true,
+              'likeButtonNotLiked': review.ownRatingIsPositive === true,
               }"
                   (click)="toggleLike(review)">
-                  {{ review.ownRatingIsPositive == true ? 'Remove like': 'Like 👍' }}
+                  {{ review.ownRatingIsPositive === true ? 'Remove like': 'Like 👍' }}
                 </button>
                 <button
                   class="mt-2 sm:mt-0 sm:ml-2 synthwaveButton synthwaveButtonSmall"
             [ngClass]="{
-              'dislikeButton': review.ownRatingIsPositive != false,
-              'dislikeButtonNotLiked': review.ownRatingIsPositive == false
+              'dislikeButton': review.ownRatingIsPositive !== false,
+              'dislikeButtonNotLiked': review.ownRatingIsPositive === false
               }"
                   (click)="toggleDislike(review)">
-                  {{ review.ownRatingIsPositive == false ? 'Remove dislike': 'Dislike 👎' }}
+                  {{ review.ownRatingIsPositive === false ? 'Remove dislike': 'Dislike 👎' }}
                 </button>
               </div>
             }
@@ -128,7 +128,7 @@
     </mat-paginator>
   </div>
 
-  @if (totalReviews == 0) {
+  @if (totalReviews === 0) {
     <div class="p-4 border border-gray-300 text-center max-w-80 m-auto my-6" colspan="7">
       No reviews yet
     </div>

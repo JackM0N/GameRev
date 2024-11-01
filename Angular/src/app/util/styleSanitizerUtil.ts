@@ -27,7 +27,7 @@ export class StyleSanitizerUtil {
     const originalElementsWithStyle = originalDoc.querySelectorAll('[style]');
     const sanitizedElements = sanitizedDoc.querySelectorAll('*'); // Select all elements
 
-    sanitizedElements.forEach((sanitizedElement, index) => {
+    sanitizedElements.forEach((sanitizedElement) => {
       // Skip elements that don't have a counterpart with a style in the original document
       if (originalElementsWithStyle[styleIndex]) {
         // Check if the tag name matches between sanitized and original content

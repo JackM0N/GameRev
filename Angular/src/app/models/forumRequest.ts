@@ -1,6 +1,5 @@
 import { Forum } from "./forum";
 import { Game } from "./game";
-import { WebsiteUser } from "./websiteUser";
 
 export interface ForumRequest {
   id?: number,

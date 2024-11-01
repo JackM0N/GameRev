@@ -2,13 +2,12 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewCh
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { WebsiteUser } from '../../../models/websiteUser';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
-import { NotificationService } from '../../../services/notification.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';

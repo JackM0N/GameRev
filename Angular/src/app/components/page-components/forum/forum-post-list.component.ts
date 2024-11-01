@@ -12,7 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 import { ForumService } from '../../../services/forum.service';
 import { WebsiteUser } from '../../../models/websiteUser';
 import { ImageCacheService } from '../../../services/imageCache.service';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { forumPostFilters } from '../../../filters/forumPostFilters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AdService } from '../../../services/ad.service';
@@ -66,7 +66,7 @@ export class ForumPostListComponent implements AfterViewInit, OnChanges, OnInit 
   }
 
   ngOnInit(): void {
-    this.adService.adBoxActive$.subscribe(isActive => {
+    this.adService.adBoxActive$.subscribe(() => {
       setTimeout(() => {
         this.adjustFilterVisibility();
       }, 0);

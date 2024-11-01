@@ -1,8 +1,8 @@
 ﻿
 <!-- Critic Review Section -->
-@if (criticReview != undefined || (criticReview == undefined && this.canRequestCriticReview())) {
+@if (criticReview !== undefined || (criticReview === undefined && this.canRequestCriticReview())) {
   <div class="p-4 sm:p-6 mx-auto m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg max-w-7xl">
-    @if (criticReview != undefined) {
+    @if (criticReview !== undefined) {
       <div>
         @if (criticReview.user) {
           <h3 class="text-lg font-bold text-center mb-2">Critic review by {{ this.criticReview.user.nickname }}</h3>
@@ -18,7 +18,7 @@
       </div>
     }
     <!-- No Critic Review -->
-    @if (criticReview == undefined && this.canRequestCriticReview()) {
+    @if (criticReview === undefined && this.canRequestCriticReview()) {
       <div>
         <div class="flex justify-center">
           @if (!this.criticReview) {

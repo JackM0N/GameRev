@@ -122,7 +122,7 @@
               }
 
               @if (authService.isAdmin()) {
-                @if (element.approved != true) {
+                @if (element.approved !== true) {
                   <button class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
                     (click)="openApproveRequestDialog(element, true)"
                     >
@@ -136,7 +136,7 @@
                     Delete
                   </button>
                 }
-                @else if (element.approved != false) {
+                @else if (element.approved !== false) {
                   <button
                     class="w-full text-white font-arcade text-center text-sm sm:text-base pinkTextShadow"
                     (click)="openApproveRequestDialog(element, false)"

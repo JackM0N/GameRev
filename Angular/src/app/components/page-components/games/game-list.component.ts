@@ -3,7 +3,7 @@ import { GameService } from '../../../services/game.service';
 import { Game } from '../../../models/game';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { releaseStatuses } from '../../../enums/releaseStatuses';

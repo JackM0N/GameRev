@@ -88,7 +88,7 @@ export class ForumComponent extends BaseAdComponent implements AfterViewInit, On
       }
     });
 
-    this._adService.adBoxActive$.subscribe(isActive => {
+    this._adService.adBoxActive$.subscribe(() => {
       setTimeout(() => {
         this.adjustFilterVisibility();
       }, 0);
