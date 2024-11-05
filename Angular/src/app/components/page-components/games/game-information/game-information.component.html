@@ -64,17 +64,16 @@
     </div>
 
     @if (gameTitle) {
-      <div>
-        <!-- Critic Review Section -->
-        <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
-        <!-- User Review Section -->
-        <div class="p-2 sm:p-4 md:m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
-          <app-gameinfo-review-list
-            [gameTitle]="gameTitle"
-            [game]="game"
-            (usersScoreUpdated)="updateUsersScoreText($event)">
-          </app-gameinfo-review-list>
-        </div>
+      <!-- Critic Review Section -->
+      <app-gameinfo-critic-review [gameTitle]="gameTitle"></app-gameinfo-critic-review>
+
+      <!-- User Review Section -->
+      <div class="p-2 mt-4 sm:p-4 md:m-4 bg-[#222] border-[2px] border-pink-500 shadow-lg">
+        <app-gameinfo-review-list
+          [gameTitle]="gameTitle"
+          [game]="game"
+          (usersScoreUpdated)="updateUsersScoreText($event)">
+        </app-gameinfo-review-list>
       </div>
     }
   </div>
