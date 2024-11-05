@@ -56,3 +56,6 @@ profile:
 game:
   pics:
     directory: ../Pictures/game_pics
+throttling:
+  enabled: false
+  delay: 2000
