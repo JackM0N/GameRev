@@ -86,7 +86,7 @@
         <div class="game-card-header text-center">
           <h2 class="text-2xl font-arcade">{{ game.title }}</h2>
           <p class="text-lg">{{ game.developer }} / {{ game.publisher }}</p>
-          <p class="text-sm">{{ game.releaseDate }}</p>
+          <p class="text-sm font-semibold">{{ formatDateArray(game.releaseDate) }}</p>
         </div>
         
         <div class="game-card-body mt-4 flex-grow">

@@ -20,12 +20,15 @@ import { gameFilters } from '../../../filters/gameFilters';
 import { GameFormDialogComponent } from './game-form-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NotificationService } from '../../../services/notification.service';
+import { formatDateArray } from '../../../util/formatDate';
 
 @Component({
   selector: 'app-game-list',
   templateUrl: './game-list.component.html'
 })
 export class GameListComponent extends BaseAdComponent implements AfterViewInit, OnInit {
+  protected formatDateArray = formatDateArray;
+
   protected gameList: Game[] = [];
   protected totalGames = 0;
 
